@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/Jaspero/fireshop.svg?style=svg)](https://circleci.com/gh/Jaspero/fireshop)
+
 # Fireshop
 
 Fireshop is a webshop built on [firebase](https://firebase.google.com/) and
