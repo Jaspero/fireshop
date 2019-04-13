@@ -12,6 +12,7 @@ import {
   JpImagePreloadModule,
   JpPreloadService
 } from '@jaspero/ng-image-preload';
+import {ENV_CONFIG} from '@jf/consts/env-config.const';
 import {TransferHttpCacheModule} from '@nguniversal/common';
 import {environment} from '../environments/environment';
 import {AppRoutingModule} from './app-routing.module';
@@ -51,7 +52,7 @@ const ENTRY_COMPONENTS = [UpdateAvailableComponent];
     /**
      * External
      */
-    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireModule.initializeApp(ENV_CONFIG.firebase),
     AngularFirestoreModule.enablePersistence(),
     AngularFireAuthModule,
 

@@ -5,6 +5,7 @@ import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {MatBottomSheet, MatDialog, MatSort} from '@angular/material';
 import {Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
+import {confirmation} from '@jf/utils/confirmation';
 import {FirebaseOperator} from 'shared/enums/firebase-operator.enum';
 import {FirestoreCollections} from 'shared/enums/firestore-collections.enum';
 import {notify} from 'shared/utils/notify.operator';
@@ -31,7 +32,6 @@ import {ExportComponent} from '../export/export.component';
 import {PAGE_SIZES} from '../../consts/page-sizes.const';
 import {RouteData} from '../../interfaces/route-data.interface';
 import {StateService} from '../../services/state/state.service';
-import {confirmation} from '../../utils/confirmation';
 
 @Component({
   selector: 'jfsc-list',

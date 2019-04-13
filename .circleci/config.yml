@@ -8,6 +8,9 @@ jobs:
       NPM_VERSION: "6.9.0"
     steps:
       - checkout
+      - run:
+          name: Set Environemnt
+          command: echo export const ENV_CONFIG=$DEV_PUBLIC_CONFIG > client/shared/consts/env-config.ts
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package-lock.json" }}-{{ checksum "client/package-lock.json" }}-{{ checksum "functions/package-lock.json" }}

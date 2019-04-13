@@ -4,7 +4,11 @@ let NB_INSTANCES = 0;
 
 export const UNIQUE_ID = new InjectionToken<string>('UNIQUE_ID');
 
+export function uidFactory() {
+  return 'jfa-uid-' + NB_INSTANCES++;
+}
+
 export const UNIQUE_ID_PROVIDER = {
   provide: UNIQUE_ID,
-  useFactory: () => 'jfa-uid-' + NB_INSTANCES++
+  useFactory: uidFactory
 };
