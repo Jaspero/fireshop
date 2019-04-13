@@ -4,6 +4,8 @@ jobs:
     working_directory: ~/project
     docker:
       - image: flauc/firebase
+    environment:
+      NPM_VERSION: "6.9.0"
     steps:
       - checkout
       - restore_cache:
