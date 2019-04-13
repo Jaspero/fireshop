@@ -1,0 +1,243 @@
+<section>
+  <mat-toolbar color="primary">
+    <h1>Products</h1>
+    <div class="f1"></div>
+    <a mat-flat-button routerLink="/products/new">Add product</a>
+  </mat-toolbar>
+</section>
+
+<section class="p-y-m">
+  <div class="grid">
+    <div class="col-12">
+      <mat-card>
+
+        <form [formGroup]="filters" autocomplete="off">
+          <div class="toolbar toolbar-inset p-t-0">
+            <mat-form-field appearance="outline">
+              <mat-label>&nbsp;Search</mat-label>
+              <input matInput formControlName="search">
+              <mat-icon matPrefix>search</mat-icon>
+            </mat-form-field>
+            <div class="f1"></div>
+            <button mat-button (click)="openFilter()">
+              <span>&nbsp;Filters&nbsp;</span>
+              <mat-icon>filter_list</mat-icon>
+            </button>
+          </div>
+
+          <ng-template #filterDialog>
+            <div mat-dialog-title>
+              <div class="flex ai-center jc-between">
+                <h6>Filters</h6>
+                <button
+                  tabindex="-1"
+                  mat-icon-button
+                  aria-label="Close dialog"
+                  mat-dialog-close>
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <div mat-dialog-content>
+              <mat-form-field class="w-full m-b-xs">
+                <mat-select placeholder="Category" formControlName="category">
+                  <mat-option [value]="null"> All </mat-option>
+                  <mat-option
+                    *ngFor="let category of categories$ | async"
+                    [value]="category">
+                    {{category.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div mat-dialog-actions>
+              <div class="ta-right w-full">
+                <button mat-button>Reset all</button>&nbsp;
+                <button id="btn-cntShp" mat-flat-button mat-dialog-close color="primary">
+                  Close
+                </button>
+              </div>
+            </div>
+          </ng-template>
+
+        </form>
+
+        <!--Actions toolbar-->
+        <ng-container *ngIf="chips$ | async as chips">
+          <div class="toolbar toolbar-inset" *ngIf="chips.length">
+            <mat-chip-list aria-label="Fish selection">
+              <mat-chip *ngFor="let chip of chips">
+                <span>{{chip.filter}}: {{chip.value}}</span>
+                <mat-icon matChipRemove (click)="removeChip(chip)">cancel</mat-icon>
+              </mat-chip>
+            </mat-chip-list>
+          </div>
+        </ng-container>
+
+        <!--Chips toolbar-->
+        <div class="toolbar toolbar-inset">
+
+          <!--Select all-->
+          <ng-container *ngIf="allChecked$ | async as ac">
+            <mat-checkbox
+              (change)="$event ? masterToggle() : null"
+              [checked]="selection.hasValue() && ac.checked"
+              [indeterminate]="selection.hasValue() && !ac.checked"
+              color="primary"
+              matTooltip="Select">
+            </mat-checkbox>&nbsp;&nbsp;&nbsp;
+          </ng-container>
+
+          <!--Batch actions-->
+          <button mat-button [matMenuTriggerFor]="batchActions" *ngIf="selection.hasValue()">
+            <span>Actions ({{selection.selected.length}})</span>
+            <mat-icon>arrow_drop_down</mat-icon>
+          </button>
+          <mat-menu #batchActions="matMenu">
+            <button mat-menu-item>
+              <mat-icon>vertical_align_top</mat-icon>
+              <span>Export</span>
+            </button>
+            <button mat-menu-item [matMenuTriggerFor]="categories">
+              <mat-icon>forward</mat-icon>
+              <span>Move to</span>
+            </button>
+            <button mat-menu-item [matMenuTriggerFor]="activity">
+              <mat-icon>star_border</mat-icon>
+              <span>Active status</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="deleteSelection()">
+              <mat-icon>delete_forever</mat-icon>
+              <span>Delete</span>
+            </button>
+          </mat-menu>
+          <mat-menu #categories="matMenu">
+            <button mat-menu-item>Insects</button>
+            <button mat-menu-item>Molluscs</button>
+            <button mat-menu-item>Crustaceans</button>
+            <button mat-menu-item>Corals</button>
+            <button mat-menu-item>Arachnids</button>
+            <button mat-menu-item>Velvet worms</button>
+            <button mat-menu-item>Horseshoe crabs</button>
+          </mat-menu>
+          <mat-menu #activity="matMenu">
+            <button mat-menu-item>Active</button>
+            <button mat-menu-item>Inactive</button>
+          </mat-menu>
+
+          <!--Divider-->
+          <div class="f1"></div>
+
+          <!--Import-->
+          <button mat-button>
+            <mat-icon>vertical_align_bottom</mat-icon>
+            <span>Import</span>
+          </button>
+        </div>
+
+        <!--Product table-->
+        <table
+          class="w-full"
+          mat-table
+          matSort
+          matSortDisableClear
+          [dataSource]="items$ | async"
+          [matSortActive]="options.sort.active"
+          [matSortDirection]="options.sort.direction">
+          <ng-container matColumnDef="checkBox">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox
+                (click)="$event.stopPropagation()"
+                (change)="$event ? selection.toggle(row.id) : null"
+                [checked]="selection.isSelected(row.id)"
+                color="primary">
+              </mat-checkbox>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>URL</th>
+            <td mat-cell *matCellDef="let element">{{element.id}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="createdOn">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Created On</th>
+            <td mat-cell *matCellDef="let element">{{element.createdOn | date}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+            <td mat-cell *matCellDef="let element">{{element.name}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+            <td mat-cell *matCellDef="let element">{{element.price | currency}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="active">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Active status</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-button color="primary" (click)="toggleActive(element)">{{element.active}}</button>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="quantity">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Quantity</th>
+            <td mat-cell *matCellDef="let element">{{element.quantity}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element" class="ta-right">
+              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions" matTooltip="Actions">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item [routerLink]="[element.id]">
+                  <mat-icon>info</mat-icon>
+                  <span>Product statistics</span>
+                </button>
+                <button mat-menu-item [routerLink]="[element.id]">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit product</span>
+                </button>
+                <button mat-menu-item (click)="deleteOne(element)">
+                  <mat-icon>delete_forever</mat-icon>
+                  <span>Delete product</span>
+                </button>
+              </mat-menu>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        <div class="flex jc-between p-y-s">
+          <div class="p-x-m hide-xs"></div>
+          <button
+            mat-button
+            color="primary"
+            [disabled]="!(hasMore$ | async)"
+            [class.loading]="dataLoading$ | async"
+            (click)="loadMore$.next(true)">
+            Load More
+          </button>
+          <mat-form-field class="fs-small">
+            <mat-select placeholder="Page size" [formControl]="pageSize">
+              <mat-option *ngFor="let size of pageSizes" [value]="size">
+                {{size}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+      </mat-card>
+    </div>
+  </div>
+</section>

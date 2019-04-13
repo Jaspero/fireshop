@@ -1,0 +1,23 @@
+<div class="grid">
+  <div class="col-12">
+    <!--Profile navigation-->
+    <nav mat-tab-nav-bar mat-align-tabs="center">
+      <a
+        mat-tab-link
+        *ngFor="let link of links"
+        [routerLink]="link.route"
+        routerLinkActive="active"
+        (click)="activeLink = link"
+        [active]="activeLink.route === link.route"
+      >
+        {{ link.label }}
+      </a>
+    </nav>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="col-12">
+    <router-outlet></router-outlet>
+  </div>
+</div>

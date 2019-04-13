@@ -1,0 +1,30 @@
+<mat-form-field class="w-full m-b-s">
+  <input matInput type="text" placeholder="Search" />
+</mat-form-field>
+
+<!--Empty state-->
+<ng-container>
+  <div class="flex jc-center">
+    <mat-icon aria-label="No results">hourglass_empty</mat-icon>
+  </div>
+</ng-container>
+
+<!--No results state-->
+<ng-container> <p class="ta-center">No results.</p> </ng-container>
+
+<!--Loading state-->
+<ng-container>
+  <div class="flex jc-center">
+    <mat-spinner aria-label="Loading" [diameter]="24"></mat-spinner>
+  </div>
+</ng-container>
+
+<!--Content state-->
+<ng-container>
+  <mat-nav-list>
+    <mat-list-item> <a matLine>link</a> </mat-list-item>
+    <mat-list-item> <a matLine>link</a> </mat-list-item>
+    <mat-list-item> <a matLine>link</a> </mat-list-item>
+    <mat-list-item> <a matLine>link</a> </mat-list-item>
+  </mat-nav-list>
+</ng-container>

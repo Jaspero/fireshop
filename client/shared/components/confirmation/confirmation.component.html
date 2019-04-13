@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>{{options.header}}</h1>
+<div *ngIf="options.description" mat-dialog-content>
+  <p>{{options.description}}</p>
+</div>
+<div mat-dialog-actions class="jc-end">
+  <button
+    mat-button
+    [attr.aria-label]="options.negate"
+    [mat-dialog-close]="false">
+    {{options.negate}}
+  </button>
+  <button
+    mat-raised-button
+    tabindex="-1"
+    color="warn"
+    [attr.aria-label]="options.confirm"
+    [mat-dialog-close]="true">
+    {{options.confirm}}
+  </button>
+</div>

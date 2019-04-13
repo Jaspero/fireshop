@@ -1,0 +1,40 @@
+<h1 mat-dialog-title>Are you sure you want to permanently remove your account?</h1>
+
+<form mat-dialog-content [formGroup]="deleteForm">
+  <p class="flex ai-center p-a-xs m-b-xs bg-l-secondary">
+    <mat-icon color="warn">warning</mat-icon>
+    <span class="c-warn">This action is irreversible.</span>
+  </p>
+  <div class="p-y-xs">
+    <mat-form-field class="w-full">
+      <input
+        placeholder="Your email"
+        formControlName="emailConfirmControl"
+        matInput
+        type="email"
+      />
+    </mat-form-field>
+  </div>
+  <div class="p-y-xs">
+    <mat-form-field class="w-full">
+      <input
+        placeholder="Write 'DELETE' to confirm"
+        formControlName="wordDelete"
+        matInput
+        type="text"
+      />
+    </mat-form-field>
+  </div>
+</form>
+
+<div mat-dialog-actions class="jc-end">
+  <button mat-button (click)="closeDeleteDialog()">Cancel</button>
+  <button
+    [disabled]="deleteForm.invalid"
+    mat-flat-button
+    color="warn"
+    (click)="permaDeleteUser()"
+  >
+    Remove account
+  </button>
+</div>

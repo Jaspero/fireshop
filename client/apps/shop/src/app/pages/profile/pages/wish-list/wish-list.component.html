@@ -1,0 +1,13 @@
+<div class="grid fd-col ai-center">
+
+  <div class="col-6 col-m-8 col-s-10 col-xs-12">
+    <h6>Wishlist</h6>
+  </div>
+
+  <div class="col-6 col-m-8 col-s-10 col-xs-12">
+    <div *ngFor="let item of (wishList$ | async)">
+      <jfs-product-card [product]="item"></jfs-product-card>
+    </div>
+  </div>
+
+</div>

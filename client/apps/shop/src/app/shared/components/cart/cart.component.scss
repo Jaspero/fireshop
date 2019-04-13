@@ -1,0 +1,13 @@
+.jfs-cart-quantity-button {
+  outline: none;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 1px 6px;
+  &:hover, &:active, &:focus {
+    background: #eee;
+  }
+  &:disabled {
+    opacity: .5;
+    background: none;
+  }
+}

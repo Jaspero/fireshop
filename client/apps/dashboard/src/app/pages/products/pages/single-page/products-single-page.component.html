@@ -1,0 +1,160 @@
+<form *ngIf="form" [formGroup]="form">
+
+  <section>
+    <mat-toolbar color="primary">
+      <a mat-icon-button routerLink="/products" aria-label="Back" matTooltip="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <span>Products</span>
+    </mat-toolbar>
+  </section>
+
+  <section class="p-y-m">
+    <div class="grid">
+      <div class="col-12">
+        <ng-container *ngIf="isEdit; else newProduct;">
+          <div class="flex ai-center jc-between">
+            <h5>{{form.get('name').value}}</h5>
+            <div>
+              <button mat-icon-button aria-label="Previous product" matTooltip="Previous product" (click)="move(false)">
+                <mat-icon>arrow_back</mat-icon>
+              </button>
+              <button mat-icon-button aria-label="Next product" matTooltip="Next product" (click)="move(true)">
+                <mat-icon>arrow_forward</mat-icon>
+              </button>
+            </div>
+          </div>
+          <button mat-button>
+            <mat-icon>filter_none</mat-icon>
+            <span>&nbsp;Duplicate</span>
+          </button>
+          <button mat-button>
+            <mat-icon>visibility</mat-icon>
+            <span>&nbsp;View</span>
+          </button>
+        </ng-container>
+        <ng-template #newProduct>
+          <h5>New Product</h5>
+        </ng-template>
+      </div>
+    </div>
+    <div class="grid grid-no-gutter">
+      <div class="col-8 col-s-10 col-xs-12">
+        <div class="grid">
+          <div class="col-12">
+            <mat-card>
+              <h6 class="p-y-xs">Product info</h6>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Name</mat-label>
+                  <input matInput formControlName="name" />
+                </mat-form-field>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Short description</mat-label>
+                  <input matInput formControlName="shortDescription" type="text">
+                </mat-form-field>
+              </div>
+              <div class="p-y-xs">
+                <p class="jfsc-wysiwyg-label">Detailed description</p>
+                <jfsc-wysiwyg formControlName="description"></jfsc-wysiwyg>
+              </div>
+            </mat-card>
+          </div>
+          <div class="col-12">
+            <mat-card>
+              <h6 class="p-y-xs">Images</h6>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="p-y-xs">
+                <jfsc-file-upload formControlName="gallery"></jfsc-file-upload>
+              </div>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+      <div class="col-4 col-s-10 col-xs-12">
+        <div class="grid">
+          <div class="col-12">
+            <mat-card>
+              <h6 class="p-y-xs">Pricing</h6>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Price</mat-label>
+                  <span matPrefix>$&nbsp;</span>
+                  <input formControlName="price" matInput type="number">
+                </mat-form-field>
+              </div>
+            </mat-card>
+          </div>
+          <div class="col-12">
+            <mat-card>
+              <h6 class="p-y-xs">Availability</h6>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="p-y-xs">
+                <mat-checkbox color="primary" formControlName="active">Active</mat-checkbox>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Quantity</mat-label>
+                  <input matInput type="number"  formControlName="quantity">
+                </mat-form-field>
+              </div>
+            </mat-card>
+          </div>
+          <div class="col-12">
+            <mat-card>
+              <h6 class="p-y-xs">Organization</h6>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field appearance="outline" class="w-full mat-hint">
+                  <mat-label>URL</mat-label>
+                  <input matInput formControlName="id" />
+                  <mat-error *ngIf="form.get('id').invalid">Only lowercase letters dashes and underscores are allowed</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Category</mat-label>
+                  <mat-select formControlName="category">
+                    <mat-option
+                      *ngFor="let category of categories$ | async"
+                      [value]="category.id">
+                      {{category.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="jfsc-actions-header">
+    <button mat-flat-button color="primary" (click)="backToList()">
+      {{isEdit ? 'Discard changes' : 'cancel'}}
+    </button>
+    &nbsp;
+    <button
+      mat-raised-button
+      type="submit"
+      [disabled]="form.invalid"
+      [class.loading]="loading$ | async"
+      (click)="save()">
+      {{isEdit ? 'Save changes' : 'Save'}}
+    </button>
+  </div>
+
+</form>

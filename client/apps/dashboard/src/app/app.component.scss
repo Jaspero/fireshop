@@ -1,0 +1,28 @@
+@import "../scss/variables";
+
+/* Global loader */
+.jfsc-loading {
+  position: fixed;
+  bottom: 0;
+  height: 8px;
+}
+
+/* Save/cancel header for single-pages */
+:host::ng-deep .jfsc-actions-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: fixed;
+  z-index: 3; // Header z-index +1
+  top: 0;
+  left: 0;
+  width: calc(100% - 200px); // 100% - language select
+  height: 64px; // Header height
+  padding: 0 16px;
+  background: $primary;
+
+  @media (max-width: $screen-xs) {
+    position: static;
+    width: 100%;
+  }
+}

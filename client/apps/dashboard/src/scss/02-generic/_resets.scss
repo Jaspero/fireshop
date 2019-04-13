@@ -1,0 +1,165 @@
+/**
+ * Resets
+ *
+ * Style resets in order to synchronize different browser default styles.
+ *
+ *============================================================================*/
+
+/* Basic page behaviour resets
+ *============================================================================*/
+/**
+ * 1. Best practice box-sizing. Source:
+ *    css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice
+ * 2. Force long words to break into new lines if they don't fit a container.
+ */
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit; /* [1] */
+}
+
+html {
+  box-sizing: border-box; /* [1] */
+  word-wrap: break-word; /* [2] */
+  overflow-wrap: break-word; /* [2] */
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Margin resets
+ *============================================================================*/
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul,
+figure,
+hr,
+fieldset,
+legend {
+  margin: 0;
+}
+
+// Remove trailing margins from nested lists
+li > ol,
+ul {
+  margin-bottom: 0;
+}
+
+/* Table
+ *============================================================================*/
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Semantic markup
+ *============================================================================*/
+
+b,
+strong {
+  font-weight: 700;
+}
+
+i,
+em {
+  font-style: italic;
+}
+
+u {
+  text-decoration: underline;
+}
+
+/* Unset hyperlink style
+ *============================================================================*/
+
+a {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Images
+ *============================================================================*/
+/**
+ * 1. Images will retain their aspect ratio on screen resizing. They
+      will never scale up to be larger than their original size.
+ * 2. Remove whitespace under images.
+ */
+
+img {
+  max-width: 100%; /* [1] */
+  height: auto; /* [1] */
+  vertical-align: middle; /* [2] */
+}
+
+/* mat-form-field bottom padding
+ *============================================================================*/
+/**
+ * Removes the default padding on mat-form-field-wrapper that exists to create
+ * space for hints. Since hints are rarely used, the bottom padding was removed
+ * for easier layout building.
+ */
+
+.mat-form-field > .mat-form-field-wrapper {
+  padding-bottom: 0;
+}
+.mat-form-field > .mat-form-field-wrapper > .mat-form-field-underline {
+  bottom: 0;
+}
+
+// 'mat-hint' class for mat-form-field in case a hint/error has to be used
+.mat-hint.mat-form-field > .mat-form-field-wrapper {
+  padding-bottom: 1.25em;
+}
+.mat-hint.mat-form-field > .mat-form-field-wrapper > .mat-form-field-underline {
+  bottom: 1.25em;
+}
+
+/* mat-button vertical align correction
+ *============================================================================*/
+
+.mat-button,
+.mat-flat-button,
+.mat-icon-button {
+  vertical-align: middle !important;
+}
+
+/* Lets mat-card-image be full width of its container
+ *============================================================================*/
+
+.mat-card-image {
+  max-width: unset;
+}
+
+/* Increases default min-height of mat-dialog-actions
+ *============================================================================*/
+
+.mat-dialog-actions.mat-dialog-actions {
+  min-height: 64px;
+}
+
+/* Increases default height of mat-toolbar
+ *============================================================================*/
+
+.mat-toolbar-row, .mat-toolbar-single-row {
+  height: 80px !important;
+}
+
+/* Fixes position of span as mat-prefix
+ *============================================================================*/
+
+span[matprefix] {
+  position: relative;
+  top: -.25em;
+}

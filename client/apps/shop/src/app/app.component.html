@@ -1,0 +1,87 @@
+<!--Header-->
+<header class="jfs-app-header bg-primary flex ai-center">
+  <!--Main menu trigger-->
+  <button
+    mat-flat-button
+    color="primary"
+    matTooltip="Menu"
+    aria-label="Menu"
+    [matMenuTriggerFor]="mainMenu">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <!--Main menu-->
+  <mat-menu #mainMenu="matMenu">
+    <!--Profile-->
+    <ng-container *ngIf="(state.user$ | async) as user; else anonymous">
+      <a mat-menu-item routerLink="my-profile">
+        <mat-icon>account_circle</mat-icon>
+        <span>{{ user.authData.displayName }}</span>
+      </a>
+    </ng-container>
+
+    <!--Login-->
+    <ng-template #anonymous>
+      <a id="a-ls" mat-menu-item (click)="logIn()">
+        <mat-icon>arrow_forward</mat-icon>
+        <span>Login&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      </a>
+    </ng-template>
+
+    <mat-divider></mat-divider>
+
+    <!--Navigation items-->
+    <a id="a-home" mat-menu-item routerLink="">
+      <mat-icon></mat-icon>
+      <span>Home</span>
+    </a>
+    <a id="a-shop" mat-menu-item routerLink="/shop">
+      <mat-icon></mat-icon>
+      <span>Shop</span>
+    </a>
+
+    <!--Sign out-->
+    <ng-container *ngIf="(state.user$ | async)">
+      <mat-divider></mat-divider>
+      <a mat-menu-item (click)="logOut()">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Logout</span>
+      </a>
+    </ng-container>
+  </mat-menu>
+
+  <!--Divider-->
+  <div class="f1"></div>
+
+  <!--Search button-->
+  <button
+    id="btn-srch"
+    mat-flat-button
+    color="primary"
+    matTooltip="Search"
+    (click)="openSearch()"
+    aria-label="Search for items to shop for">
+    <mat-icon>search</mat-icon>
+  </button>
+
+  <!--Cart button-->
+  <button
+    id="btn-opnChck"
+    mat-flat-button
+    color="primary"
+    matTooltip="Cart"
+    aria-label="Your cart"
+    (click)="openCheckout()">
+    <mat-icon [matBadge]="cart.numOfItems$ | async" matBadgeColor="accent">
+      shopping_cart
+    </mat-icon>
+  </button>
+
+  <!--Online/offline status-->
+  <jfs-network-widget></jfs-network-widget>
+</header>
+
+<!--Main content-->
+<main class="jfs-app-main">
+  <router-outlet></router-outlet>
+</main>

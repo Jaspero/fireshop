@@ -1,0 +1,43 @@
+<div class="grid">
+  <div class="col-12">
+    <h6>Statistics</h6>
+    <p>Name of item: {{ productStats.name }}</p>
+    <p>Total money earned: {{ productStats.earn }}</p>
+    <p>Number of sold items: {{ productStats.num }}</p>
+    <table mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="customerId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>customerId</th>
+        <td mat-cell *matCellDef="let element">{{ element.customerId }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="orderId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>orderId</th>
+        <td mat-cell *matCellDef="let element">{{ element.orderId }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>price</th>
+        <td mat-cell *matCellDef="let element">{{ element.price }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>quantity</th>
+        <td mat-cell *matCellDef="let element">{{ element.quantity }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="time">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>time</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.time | date: 'yyyy/MM/dd' }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 20]"
+      showFirstLastButtons
+    ></mat-paginator>
+  </div>
+</div>

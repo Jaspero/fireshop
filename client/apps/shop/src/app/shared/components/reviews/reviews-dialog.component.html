@@ -1,0 +1,23 @@
+<form [formGroup]="form">
+  <mat-form-field>
+    <input matInput formControlName="dataProduct" [disabled]="true">
+  </mat-form-field>
+
+  <mat-form-field class="w-full">
+    <textarea placeholder="Comment" formControlName="comment" matInput></textarea>
+  </mat-form-field>
+
+
+  <mat-form-field class="w-full">
+    <input type="number"  placeholder="Rating" formControlName="rating" matInput>
+    <span matSuffix>stars</span>
+  </mat-form-field>
+
+  <br>
+
+  <button [disabled]="form.invalid" mat-button (click)="submit()">
+    Submit
+  </button>
+
+
+</form>

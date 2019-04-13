@@ -1,0 +1,47 @@
+<a [routerLink]="['/product', product.id]">
+  <mat-card class="cs-pointer jfs-product-card">
+    <mat-card-header>
+      <img
+        mat-card-avatar
+        src="assets/images/loading.svg"
+        size="s"
+        [jfsLibraryImage]="product.gallery[0]"
+        [webp]="false"
+      />
+      <mat-card-title>{{product.name}}</mat-card-title>
+      <mat-card-subtitle>{{product.shortDescription}}</mat-card-subtitle>
+    </mat-card-header>
+    <img
+      mat-card-image
+      src="assets/images/loading.svg"
+      size="m"
+      [jfsLibraryImage]="product.gallery[0]"
+      [webp]="false"
+      [attr.alt]="product.name"
+    />
+    <mat-card-content>
+      <p>{{ product.price | currency }}</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <div class="flex fd-row-rev">
+        <button
+          id="btn-addCart-0"
+          mat-button
+          (jpStopPropagation)="cart.add(product, product.attributes)">
+          Add to cart
+        </button>
+        <ng-container *ngIf="wishList$ | async as ws">
+          <button
+            id="btn-wshLst-0"
+            mat-icon-button
+            color="primary"
+            [matTooltip]="ws.label"
+            [attr.aria-label]="ws.label"
+            (jpStopPropagation)="wishList.toggle(product.id)">
+            <mat-icon>{{ws.icon}}</mat-icon>
+          </button>
+        </ng-container>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+</a>

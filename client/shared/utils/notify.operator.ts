@@ -1,0 +1,42 @@
+import {MatSnackBar} from '@angular/material';
+import {Observable, throwError} from 'rxjs';
+import {tap, catchError} from 'rxjs/operators';
+
+const DEFAULT_OPTIONS = {
+  success: 'Operation completed',
+  error: 'Operation failed'
+};
+
+export function notify(
+  options: {
+    success?: string;
+    error?: string;
+  } = {}
+): <T>(source$: Observable<T>) => Observable<T> {
+  const finalOptions = {
+    ...DEFAULT_OPTIONS,
+    ...options
+  };
+
+  const snackBar: MatSnackBar = window['rootInjector'].get(MatSnackBar);
+
+  return <T>(source$: Observable<T>) => {
+    return source$.pipe(
+      tap(() => {
+        if (finalOptions.success) {
+          snackBar.open(finalOptions.success, 'Dismiss');
+        }
+      }),
+      catchError(err => {
+        if (finalOptions.error) {
+          snackBar.open(finalOptions.error, 'Dismiss', {
+            panelClass: 'snack-bar-error'
+          });
+        }
+
+        console.error(err);
+        return throwError(err);
+      })
+    );
+  };
+}

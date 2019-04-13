@@ -1,0 +1,44 @@
+service cloud.firestore {
+  function admin() {
+    return request.auth.token.admin == true
+  }
+
+  match /databases/{database}/documents {
+
+    match /settings/{setting} {
+      allow read, write, delete: if admin()
+    }
+
+    match /products-en/{product} {
+  	  allow read: if resource.data.active == true
+      allow read: if admin()
+    }
+
+
+    // Add for other languages
+    match /products-en/{product} {
+      allow write, delete: if admin()
+    }
+
+    match /categories/{category} {
+      allow write, delete: if admin()
+    }
+
+    // Add for other languages
+    match /categories-en/{category} {
+      allow write, delete: if admin()
+    }
+
+    match /orders/{order} {
+      allow read, write: if admin() || resource.data.customerId == auth.uid;
+    }
+
+    match /customers/{customer} {
+      allow read, write, delete: if admin() || resource.data.customerId == auth.uid;
+    }
+
+    match /reviews/{review} {
+      allow write, delete: if resource.data.customerId == auth.uid;
+    }
+  }
+}

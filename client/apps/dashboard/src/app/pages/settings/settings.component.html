@@ -1,0 +1,105 @@
+<form *ngIf="form" [formGroup]="form">
+
+  <section>
+    <mat-toolbar color="primary">
+      <span>Settings</span>
+    </mat-toolbar>
+  </section>
+
+  <section class="p-y-m">
+    <div class="grid grid-no-gutter">
+      <div class="col-8 col-s-10 col-xs-12">
+        <div class="grid">
+          <div class="col-12">
+            <mat-card formGroupName="general-settings">
+              <h6 class="p-y-xs">General</h6>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+<!--              TODO: Add info bubbles-->
+              <div class="p-y-xs flex jc-between">
+                <span>Real Time Data</span>
+                <mat-slide-toggle formControlName="realTimeData"></mat-slide-toggle>
+              </div>
+              <div class="p-y-xs flex jc-between">
+                <span>Shared Statuses</span>
+                <mat-slide-toggle formControlName="sharedStatuses"></mat-slide-toggle>
+              </div>
+              <div class="p-y-xs flex jc-between">
+                <span>Inactive when out of stock</span>
+                <mat-slide-toggle formControlName="inactiveForQuantity"></mat-slide-toggle>
+              </div>
+            </mat-card>
+          </div>
+          <div class="col-12">
+            <mat-card>
+              <h6 class="p-y-xs">Admin</h6>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Admins</mat-label>
+                  <mat-chip-list #chipList>
+                    <mat-chip
+                      *ngFor="let admin of adminEmails.value; index as index"
+                      [removable]="true"
+                      (removed)="removeAdmin(index)">
+                      {{admin}}
+                      <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input
+                      [formControl]="emailControl"
+                      [matChipInputFor]="chipList"
+                      (matChipInputTokenEnd)="emailControl.valid  ? addAdmin($event) : ''">
+                    <mat-error *ngIf="emailControl.invalid && emailControl.value">Please enter valid email</mat-error>
+                    <mat-error *ngIf="alreadyAdmin">This email is already an admin</mat-error>
+                  </mat-chip-list>
+                </mat-form-field>
+              </div>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+      <div class="col-4 col-s-10 col-xs-12">
+        <div class="grid">
+          <div class="col-12">
+            <mat-card formGroupName="currency">
+              <h6 class="p-y-xs">Currency</h6>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Primary currency</mat-label>
+                  <mat-select formControlName="primary">
+                    <mat-option [value]="cur.value" *ngFor="let cur of currencies">
+                      {{cur.value}} ({{cur.symbol}})
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!--  TODO(Trt): global styl-->
+  <div class="jfsc-product-fixed-header flex jc-end ai-center">
+    <button mat-raised-button [routerLink]="['/dashboard']">
+      Discard changes
+    </button>
+    &nbsp;
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="form.invalid"
+      [class.loading]="loading$ | async"
+      (click)="save()">
+      Save
+    </button>
+  </div>
+</form>

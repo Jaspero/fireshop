@@ -1,0 +1,39 @@
+<section>
+  <div class="grid">
+    <div class="col-12">
+      <form *ngIf="form" [formGroup]="form">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>URL</mat-label>
+          <input matInput formControlName="id">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name">
+        </mat-form-field>
+
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description"></textarea>
+        </mat-form-field>
+
+        <div class="flex jc-center">
+
+
+          <div class="m-r-s">
+            <button  mat-button (click)="cancel()">
+              Cancel
+            </button>
+          </div>
+
+
+          <button [disabled]="form.invalid" mat-button (click)="save()">
+            Submit
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</section>

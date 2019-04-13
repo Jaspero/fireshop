@@ -1,0 +1,21 @@
+<ng-container *ngIf="(networkService.isOnline$ | async); else offline">
+  <button
+    mat-flat-button
+    color="primary"
+    matTooltip="You are online"
+    aria-label="You are online"
+  >
+    <mat-icon>wifi</mat-icon>
+  </button>
+</ng-container>
+
+<ng-template #offline>
+  <button
+    mat-flat-button
+    color="primary"
+    matTooltip="You are offline"
+    aria-label="You are offline"
+  >
+    <mat-icon color="warn">wifi_off</mat-icon>
+  </button>
+</ng-template>

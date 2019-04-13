@@ -1,0 +1,101 @@
+<form [formGroup]="filters">
+  <!--Virtual scroll container-->
+  <cdk-virtual-scroll-viewport [itemSize]="50" class="jfs-shop-viewport">
+    <div class="grid jc-start">
+      <div class="col-12">
+        <div class="flex jc-between m-b-s">
+          <!--Filters trigger-->
+          <button id="btn-flt" mat-button (click)="openFilter()">
+            <mat-icon>filter_list</mat-icon>
+            <span>&nbsp;Filters&nbsp;</span>
+          </button>
+
+          <!--Sort by-->
+          <button id="btn-srt" mat-button [matMenuTriggerFor]="sortByMenu">
+            <span>Sort by:</span> <span>&nbsp;{{orderName}}&nbsp;</span>
+            <mat-icon>arrow_drop_down</mat-icon>
+          </button>
+        </div>
+        <mat-menu #sortByMenu="matMenu">
+          <button id="btn-upOrd" *ngFor="let order of orderList" (click)="updateOrder(order)" mat-menu-item>
+            {{order.name}}
+          </button>
+        </mat-menu>
+
+        <!--Filters chips-->
+        <mat-chip-list *ngIf="chipArray.length">
+          <mat-chip *ngFor="let chip of chipArray">
+            <span>{{chip.filter}}: {{chip.value}}</span>
+            <mat-icon matChipRemove (click)="removeChip(chip)">cancel</mat-icon>
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+
+      <!--Products-->
+      <ng-container *ngIf="(products$ | async) as prod">
+        <ng-container *ngIf="prod.length; else emptyList">
+          <div
+            class="col-4 col-s-6 col-xs-12"
+            *cdkVirtualFor="let product of prod">
+            <jfs-product-card [product]="product"></jfs-product-card>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <!--Products empty-->
+      <ng-template #emptyList>
+        <div class="col-12">
+          <p class="p-y-s ta-center">
+            There's nothing here <span class="fs-large">🤔</span>
+          </p>
+        </div>
+      </ng-template>
+    </div>
+  </cdk-virtual-scroll-viewport>
+
+  <!--Loading-->
+  <div class="jfs-shop-loading" *ngIf="(loading$ | async)">
+    <mat-spinner [diameter]="48"></mat-spinner>
+  </div>
+
+  <!--Filters dialog-->
+  <ng-template #filterDialog>
+    <!--Dialog header-->
+    <div mat-dialog-title>
+      <div class="flex ai-center jc-between">
+        <h6>Filters</h6>
+        <button
+          tabindex="-1"
+          mat-icon-button
+          aria-label="Close dialog"
+          mat-dialog-close>
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!--Dialog content-->
+    <div mat-dialog-content>
+      <!--Categories-->
+      <mat-form-field class="w-full m-b-xs">
+        <mat-select placeholder="Category" formControlName="category">
+          <mat-option
+            *ngFor="let category of categories"
+            [value]="category">
+            {{category.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!--Dialog actions-->
+    <div mat-dialog-actions>
+      <div class="ta-right w-full">
+        <button mat-button>Reset all</button>&nbsp;
+        <button id="btn-cntShp" mat-flat-button mat-dialog-close color="primary">
+          Continue shopping
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</form>
