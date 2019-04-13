@@ -16,10 +16,10 @@ jobs:
           command: npm ci
       - run:
           name: Install Client dependencies
-          command: npm --prerfix client ci
+          command: npm --prefix client ci
       - run:
           name: Install Function dependencies
-          command: npm --prerfix functions ci
+          command: npm --prefix functions ci
       - save_cache:
           key: v1-dependencies-{{ checksum "package-lock.json" }}-{{ checksum "client/package-lock.json" }}-{{ checksum "functions/package-lock.json" }}
           paths:
