@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "npm --prefix fireshop run build:prod && npm --prefix fireshop run build:server",
+    "build": "npm --prefix client run build:all",
+    "lint": "npm --prefix client run lint",
     "deploy": "npm run build && firebase deploy"
   },
   "author": {
