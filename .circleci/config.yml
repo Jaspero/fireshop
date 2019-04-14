@@ -19,13 +19,13 @@ jobs:
             - v1-dependencies-{{ checksum "package-lock.json" }}-{{ checksum "client/package-lock.json" }}-{{ checksum "functions/package-lock.json" }}
       - run:
           name: Install Shared dependencies
-          command: npm ci
+          command: npm yes | npm ci || true
       - run:
           name: Install Client dependencies
-          command: npm --prefix client ci
+          command: npm --prefix client yes | npm ci || true
       - run:
           name: Install Function dependencies
-          command: npm --prefix functions ci
+          command: npm --prefix functions yes | npm ci || true
       - save_cache:
           key: v1-dependencies-{{ checksum "package-lock.json" }}-{{ checksum "client/package-lock.json" }}-{{ checksum "functions/package-lock.json" }}
           paths:
