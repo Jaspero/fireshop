@@ -1,9 +1,9 @@
 <!--Upload buttons-->
 <div class="flex jc-end">
-  <button mat-button color="primary" (click)="openUrlUpload()">
+  <button type="button" mat-button color="primary" (click)="openUrlUpload()">
     <span>Add image from URL</span>
   </button>
-  <button mat-button color="primary" (click)="openFileUpload()">
+  <button type="button" mat-button color="primary" (click)="openFileUpload()">
     <span>Add images</span>
   </button>
 </div>
@@ -39,7 +39,7 @@
   <ng-container *ngIf="imageWidth$ | async  as imgWidth">
     <div *ngFor="let val of values; index as index" cdkDropList [cdkDropListData]="index" cdkDropListOrientation="vertical">
       <img class="jfsc-file-upload-image" [width]="imgWidth" [src]="val.data" cdkDrag cdkDragBoundary=".jfsc-file-upload-list" (cdkDragEntered)="entered($event)" (cdkDragEnded)="ended($event)" [cdkDragData]="index">
-      <button mat-icon-button matTooltip="Remove" color="warn" [disabled]="deletingObject[val]" (click)="removeImage(index, val)" style="position: absolute; left: 0;">
+      <button type="button" mat-icon-button matTooltip="Remove" color="warn" [disabled]="deletingObject[val]" (click)="removeImage(index, val)" style="position: absolute; left: 0;">
         <mat-icon>highlight_off</mat-icon>
       </button>
     </div>
