@@ -1,0 +1,24 @@
+@import "../../../scss/variables";
+
+:host {
+  overflow: auto;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+}
+
+:host::ng-deep .mat-horizontal-stepper-header-container {
+  max-width: 400px;
+}
+
+:host::ng-deep .mat-horizontal-content-container {
+  padding: 0;
+}
+
+:host .grid > [class*='col'] {
+  padding-right: 10px;
+}
