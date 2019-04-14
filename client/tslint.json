@@ -94,5 +94,8 @@
     "use-pipe-transform-interface": true,
     "component-class-suffix": true,
     "directive-class-suffix": true
+  },
+  "linterOptions": {
+    "exclude": ["shared/consts/env-config.const.ts"]
   }
 }
