@@ -63,9 +63,7 @@ workflows:
   deploy:
     jobs:
       - build:
-        context: GLOBAL
       - deploy:
-          context: GLOBAL
           requires:
             - build
           filters:
