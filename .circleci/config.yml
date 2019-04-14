@@ -60,7 +60,7 @@ jobs:
 
 workflows:
   version: 2
-  - deploy:
+  -deploy:
     jobs:
       - build
       - deploy:
