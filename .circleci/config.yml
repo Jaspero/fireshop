@@ -10,9 +10,9 @@ jobs:
       - checkout
       - run:
           name: Set Public Environment
-          command: >-
-          echo export const ENV_CONFIG=$DEV_PUBLIC_CONFIG > client/shared/consts/env-config.const.ts
-          cat client/shared/consts/env-config.const.ts
+          command: |
+            echo export const ENV_CONFIG=$DEV_PUBLIC_CONFIG > client/shared/consts/env-config.const.ts
+            cat client/shared/consts/env-config.const.ts
 
       - run:
           name: Set Private Environment
