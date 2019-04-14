@@ -127,7 +127,7 @@
           <button
             mat-button
             color="primary"
-            [disabled]="!(hasMore$ | async)"
+            [disabled]="(hasMore$ | async) === false"
             [class.loading]="dataLoading$ | async"
             (click)="loadMore$.next(true)">
             Load More

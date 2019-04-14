@@ -116,7 +116,7 @@
 
 
         <!--Loading-->
-        <div class="p-y-m flex jc-center" *ngIf="(dataLoading$ | async)">
+        <div class="p-y-m flex jc-center" *ngIf="dataLoading$ | async">
           <mat-spinner [diameter]="40"></mat-spinner>
         </div>
 
@@ -126,7 +126,7 @@
           <button
             mat-button
             color="primary"
-            [disabled]="!(hasMore$ | async)"
+            [disabled]="(hasMore$ | async) === false"
             [class.loading]="dataLoading$ | async"
             (click)="loadMore$.next(true)">
             Load More
