@@ -1,15 +1,8 @@
 service firebase.storage {
   match /b/{bucket}/o {
     match /{allPaths=**} {
-      allow write: if request.auth.token.email == "filip.lauc93@gmail.com" ||
-      	request.auth.token.email == "sven.djanis@gmail.com" ||
-        request.auth.token.email == "marko.tarnaj@gmail.com" ||
-        request.auth.token.email == "h.kolaric92@gmail.com" ||
-        request.auth.token.email == "adelcanin@hotmail.com" ||
-        request.auth.token.email == "maloca1992@gmail.com";
+      allow read: if true
+      allow write: if request.auth.token.admin == true
+    }
   }
-   match /{allPaths=**} {
-		allow read;
-   }
-}
 }
