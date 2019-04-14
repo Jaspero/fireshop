@@ -46,9 +46,7 @@ export class FileUploadComponent extends RxDestroy
     public dialog: MatDialog,
     private cdr: ChangeDetectorRef,
     private afs: AngularFireStorage,
-    private http: HttpClient,
-    private el: ElementRef,
-    private cdk: ChangeDetectorRef
+    private http: HttpClient
   ) {
     super();
   }
@@ -62,7 +60,6 @@ export class FileUploadComponent extends RxDestroy
   values = [];
   lastFrom: number;
   lastTo: number;
-  loader: number;
   deletingObject = {};
   task: AngularFireUploadTask;
   percentage: Observable<number>;
