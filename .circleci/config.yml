@@ -9,8 +9,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Set Environemnt
+          name: Set Public Environment
           command: echo export const ENV_CONFIG=$DEV_PUBLIC_CONFIG > client/shared/consts/env-config.ts
+      - run:
+          name: Set Private Environment
+          command: firebase functions:config:set sendgrid.token="{{ .Environment.GLOBAL.SENDGRID_TOKEN- }}" stripe.token="{{ .Environment.STRIPE_DEV_TOKEN }}" --project=jaspero-site --token {{ .Environment.GLOBAL.FIREBASE_CI_TOKEN }}
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package-lock.json" }}-{{ checksum "client/package-lock.json" }}-{{ checksum "functions/package-lock.json" }}
