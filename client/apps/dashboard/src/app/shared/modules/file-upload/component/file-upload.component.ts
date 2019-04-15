@@ -181,7 +181,11 @@ export class FileUploadComponent extends RxDestroy
    * the changes on server
    */
   save() {
-    if (!this.toRemove.length && !this.values.length) {
+    /**
+     * Break if there are no files to remove and there aren't any files to upload
+     */
+    if (!this.toRemove.length && !this.values.find(val => !val.live)) {
+      this.onChange(this.values.map(val => val.data));
       return of([]);
     }
 
