@@ -34,6 +34,7 @@ export class CustomersSinglePageComponent extends RxDestroy implements OnInit {
   value: string;
   genders = ['Male', 'Female'];
   basicInfoForm: FormGroup;
+  collection = FirestoreCollections.Customers;
 
   ngOnInit() {
     this.activatedRoute.params

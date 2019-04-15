@@ -28,7 +28,7 @@
           </div>
 
 
-          <button [disabled]="form.invalid" mat-button (click)="save()">
+          <button [disabled]="form.invalid" mat-button (click)="save(form.getRawValue())">
             Submit
           </button>
         </div>

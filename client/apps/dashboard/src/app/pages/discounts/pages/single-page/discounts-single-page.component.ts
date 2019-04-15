@@ -6,6 +6,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {combineLatest, from, of} from 'rxjs';
 import {map, switchMap, take} from 'rxjs/operators';
+import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {notify} from '@jf/utils/notify.operator';
@@ -15,7 +16,8 @@ import {notify} from '@jf/utils/notify.operator';
   templateUrl: './discounts-single-page.component.html',
   styleUrls: ['./discounts-single-page.component.css']
 })
-export class DiscountsSinglePageComponent implements OnInit {
+export class DiscountsSinglePageComponent extends SinglePageComponent
+  implements OnInit {
   constructor(
     private fb: FormBuilder,
     private afs: AngularFirestore,
@@ -24,10 +26,13 @@ export class DiscountsSinglePageComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private cdr: ChangeDetectorRef,
     private state: StateService
-  ) {}
+  ) {
+    super(afs, router, state);
+  }
 
   form: FormGroup;
   isEdit: boolean;
+  collection = FirestoreCollections.Discounts;
 
   ngOnInit() {
     combineLatest(this.activatedRoute.params, this.state.language$)
@@ -68,28 +73,24 @@ export class DiscountsSinglePageComponent implements OnInit {
     });
   }
 
-  save() {
-    const {id, ...data} = this.form.getRawValue();
-
-    this.state.language$
-      .pipe(
-        take(1),
-        switchMap(lang =>
-          from(
-            this.afs
-              .collection<any>(`${FirestoreCollections.Discounts}-${lang}`)
-              .doc(id)
-              .set(data)
-          )
-        ),
-        notify()
-      )
-      .subscribe(() => {
-        this.router.navigate(['/discounts']);
-      });
-  }
-
-  cancel() {
-    this.router.navigate(['/discounts']);
-  }
+  // save() {
+  //   const {id, ...data} = this.form.getRawValue();
+  //
+  //   this.state.language$
+  //     .pipe(
+  //       take(1),
+  //       switchMap(lang =>
+  //         from(
+  //           this.afs
+  //             .collection<any>(`${FirestoreCollections.Discounts}-${lang}`)
+  //             .doc(id)
+  //             .set(data)
+  //         )
+  //       ),
+  //       notify()
+  //     )
+  //     .subscribe(() => {
+  //       this.router.navigate(['/discounts']);
+  //     });
+  // }
 }
