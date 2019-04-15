@@ -8,12 +8,11 @@ import {
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
-import {notify} from '@jf/utils/notify.operator';
-import {BehaviorSubject, combineLatest, from, Observable, of} from 'rxjs';
-import {finalize, map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
+import {map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
 import {Product} from '../../../../shared/interfaces/product.interface';
 import {FileUploadComponent} from '../../../../shared/modules/file-upload/component/file-upload.component';
@@ -26,7 +25,8 @@ import {queue} from '../../../../shared/utils/queue.operator';
   styleUrls: ['./products-single-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProductsSinglePageComponent extends RxDestroy implements OnInit {
+export class ProductsSinglePageComponent extends SinglePageComponent
+  implements OnInit {
   constructor(
     private afs: AngularFirestore,
     private fb: FormBuilder,
@@ -35,7 +35,7 @@ export class ProductsSinglePageComponent extends RxDestroy implements OnInit {
     private state: StateService,
     private router: Router
   ) {
-    super();
+    super(router, afs, state);
   }
 
   @ViewChild(FileUploadComponent)
@@ -45,6 +45,7 @@ export class ProductsSinglePageComponent extends RxDestroy implements OnInit {
   categories$: Observable<Category[]>;
   loading$ = new BehaviorSubject(false);
   isEdit: string;
+  collection = FirestoreCollections.Products;
 
   ngOnInit() {
     combineLatest(this.activatedRoute.params, this.state.language$)
@@ -89,45 +90,6 @@ export class ProductsSinglePageComponent extends RxDestroy implements OnInit {
         this.buildForm(data);
         this.cdr.detectChanges();
       });
-  }
-
-  save() {
-    const {id, ...data} = this.form.getRawValue();
-
-    this.loading$.next(true);
-
-    this.state.language$
-      .pipe(
-        take(1),
-        switchMap(lang =>
-          from(
-            this.afs
-              .collection<any>(`${FirestoreCollections.Products}-${lang}`)
-              .doc(id)
-              .set(
-                {
-                  ...data,
-                  ...(this.isEdit ? {} : {createdOn: Date.now()})
-                },
-                {
-                  merge: true
-                }
-              )
-          )
-        ),
-        finalize(() => this.loading$.next(false)),
-        notify()
-      )
-      .subscribe(() => {
-        this.router.navigate(['/products']);
-      });
-  }
-
-  backToList(skipGuard = true) {
-    if (skipGuard) {
-    }
-
-    this.router.navigate(['/products']);
   }
 
   // TODO: I think this can be done in a better way

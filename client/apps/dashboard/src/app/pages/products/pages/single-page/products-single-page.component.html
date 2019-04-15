@@ -143,8 +143,8 @@
   </section>
 
   <div class="jfsc-actions-header">
-    <button mat-flat-button color="primary" (click)="backToList()">
-      {{isEdit ? 'Discard changes' : 'cancel'}}
+    <button mat-flat-button color="primary" (click)="cancel()">
+      {{isEdit ? 'Discard changes' : 'Cancel'}}
     </button>
     &nbsp;
     <button
@@ -152,7 +152,7 @@
       type="submit"
       [disabled]="form.invalid"
       [class.loading]="loading$ | async"
-      (click)="save()">
+      (click)="save(form.getRawValue())">
       {{isEdit ? 'Save changes' : 'Save'}}
     </button>
   </div>

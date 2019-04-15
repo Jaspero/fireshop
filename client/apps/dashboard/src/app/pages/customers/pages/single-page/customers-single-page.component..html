@@ -31,8 +31,16 @@
     </mat-form-field>
   </div>
   <div class="col-12 ta-right">
+    <ng-container class="m-b-s">
+      <button
+        mat-flat-button
+        (click)="cancel()">
+        Cancel
+      </button>
+    </ng-container>
+
     <button
-      (click)="basicSubmit()"
+      (click)="save(basicInfoForm.getRawValue())"
       [disabled]="basicInfoForm ? basicInfoForm.invalid : true"
       mat-flat-button
       color="primary"

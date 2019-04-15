@@ -4,12 +4,11 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {combineLatest, from, of} from 'rxjs';
-import {map, switchMap, take} from 'rxjs/operators';
+import {combineLatest, of} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
 import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
 import {StateService} from '../../../../shared/services/state/state.service';
-import {notify} from '@jf/utils/notify.operator';
 
 @Component({
   selector: 'jfsc-discounts-single-page',
@@ -27,7 +26,7 @@ export class DiscountsSinglePageComponent extends SinglePageComponent
     private cdr: ChangeDetectorRef,
     private state: StateService
   ) {
-    super(afs, router, state);
+    super(router, afs, state);
   }
 
   form: FormGroup;
@@ -72,25 +71,4 @@ export class DiscountsSinglePageComponent extends SinglePageComponent
       description: [data.description || '']
     });
   }
-
-  // save() {
-  //   const {id, ...data} = this.form.getRawValue();
-  //
-  //   this.state.language$
-  //     .pipe(
-  //       take(1),
-  //       switchMap(lang =>
-  //         from(
-  //           this.afs
-  //             .collection<any>(`${FirestoreCollections.Discounts}-${lang}`)
-  //             .doc(id)
-  //             .set(data)
-  //         )
-  //       ),
-  //       notify()
-  //     )
-  //     .subscribe(() => {
-  //       this.router.navigate(['/discounts']);
-  //     });
-  // }
 }

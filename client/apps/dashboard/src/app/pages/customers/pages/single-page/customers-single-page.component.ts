@@ -9,10 +9,10 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {notify} from '@jf/utils/notify.operator';
-import * as nanoid from 'nanoid';
-import {from, fromEvent, of} from 'rxjs';
+import {of} from 'rxjs';
 import {switchMap, takeUntil} from 'rxjs/operators';
+import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
+import {StateService} from '../../../../shared/services/state/state.service';
 
 @Component({
   selector: 'jfsc-single-page',
@@ -20,15 +20,17 @@ import {switchMap, takeUntil} from 'rxjs/operators';
   styleUrls: ['./customers-single-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CustomersSinglePageComponent extends RxDestroy implements OnInit {
+export class CustomersSinglePageComponent extends SinglePageComponent
+  implements OnInit {
   constructor(
     private fb: FormBuilder,
     private afs: AngularFirestore,
     private activatedRoute: ActivatedRoute,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private state: StateService
   ) {
-    super();
+    super(router, afs, state);
   }
 
   value: string;
@@ -57,24 +59,24 @@ export class CustomersSinglePageComponent extends RxDestroy implements OnInit {
       });
   }
 
-  basicSubmit() {
-    const id =
-      this.activatedRoute.params['value'].id === 'new'
-        ? nanoid()
-        : this.activatedRoute.params['value'].id;
-    const data = this.basicInfoForm.getRawValue();
-
-    from(
-      this.afs
-        .collection(`${FirestoreCollections.Customers}`)
-        .doc(id)
-        .set(data)
-    )
-      .pipe(notify())
-      .subscribe(() => {
-        this.router.navigate(['/customers']);
-      });
-  }
+  // basicSubmit() {
+  //   const id =
+  //     this.activatedRoute.params['value'].id === 'new'
+  //       ? nanoid()
+  //       : this.activatedRoute.params['value'].id;
+  //   const data = this.basicInfoForm.getRawValue();
+  //
+  //   from(
+  //     this.afs
+  //       .collection(`${FirestoreCollections.Customers}`)
+  //       .doc(id)
+  //       .set(data)
+  //   )
+  //     .pipe(notify())
+  //     .subscribe(() => {
+  //       this.router.navigate(['/customers']);
+  //     });
+  // }
 
   private customerInfoForm(data) {
     let date: any;
