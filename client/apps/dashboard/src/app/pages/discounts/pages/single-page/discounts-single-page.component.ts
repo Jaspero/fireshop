@@ -13,7 +13,7 @@ import {notify} from '@jf/utils/notify.operator';
 @Component({
   selector: 'jfsc-discounts-single-page',
   templateUrl: './discounts-single-page.component.html',
-  styleUrls: ['./discounts-single-page.component.css']
+  styleUrls: ['./discounts-single-page.component.scss']
 })
 export class DiscountsSinglePageComponent implements OnInit {
   constructor(

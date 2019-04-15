@@ -13,7 +13,7 @@ import {ReviewsDialogComponent} from '../reviews/reviews-dialog.component';
 @Component({
   selector: 'jfs-review-card',
   templateUrl: './review-card.component.html',
-  styleUrls: ['./review-card.component.css']
+  styleUrls: ['./review-card.component.scss']
 })
 export class ReviewCardComponent {
   constructor(
