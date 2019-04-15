@@ -1,32 +1,25 @@
-
 <div class="grid fd-col ai-center">
 
+  <div class="col-6 col-m-8 col-s-10 col-xs-12">
+    <h6>Reviews</h6>
+  </div>
 
-<div class="col-6 col-m-8 col-s-10 col-xs-12">
-  <h6>Reviews</h6>
-</div>
-
-
-<div
-  class="col-6 col-s-8 col-xs-12">
-
-  <ng-container *ngIf="(myReviews$ | async) as rec">
-    <ng-container *ngIf="rec.length; else empty">
-      <div *ngFor="let review of rec" class="m-b-s">
-        <jfs-review-card [review]="review"></jfs-review-card>
-      </div>
+  <div class="col-6 col-s-8 col-xs-12">
+    <ng-container *ngIf="(myReviews$ | async) as rec">
+      <ng-container *ngIf="rec.length; else empty">
+        <div *ngFor="let review of rec" class="m-b-s">
+          <jfs-review-card [review]="review"></jfs-review-card>
+        </div>
+      </ng-container>
     </ng-container>
-  </ng-container>
 
-  <ng-template #empty>
-    <div class="col-12">
-      <p class="p-y-s ta-center">
-        There's nothing here <span class="fs-large">🤔</span>
-      </p>
-    </div>
-  </ng-template>
-
-
-</div>
+    <ng-template #empty>
+      <div class="col-12">
+        <p class="p-y-s ta-center">
+          You haven't made any reviews yet.<br>You can only create reviews on items you have <a class="link c-primary" routerLink="/my-profile/orders">ordered.</a>
+        </p>
+      </div>
+    </ng-template>
+  </div>
 
 </div>
