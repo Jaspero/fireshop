@@ -6,7 +6,7 @@ import {LangListComponent} from '../../../../shared/components/lang-list/lang-li
 @Component({
   selector: 'jfsc-discounts-list',
   templateUrl: './discounts-list.component.html',
-  styleUrls: ['./discounts-list.component.css']
+  styleUrls: ['./discounts-list.component.scss']
 })
 export class DiscountsListComponent extends LangListComponent<Discount> {
   displayedColumns: string[] = [

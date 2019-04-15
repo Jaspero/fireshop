@@ -106,7 +106,7 @@ export class ProductsSinglePageComponent extends RxDestroy implements OnInit {
               .doc(id)
               .set(
                 {
-                  data,
+                  ...data,
                   ...(this.isEdit ? {} : {createdOn: Date.now()})
                 },
                 {
