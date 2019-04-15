@@ -26,7 +26,7 @@ export class CategoriesSinglePageComponent extends SinglePageComponent
     private cdr: ChangeDetectorRef,
     private state: StateService
   ) {
-    super(router, afs, state);
+    super(router, afs, state, activatedRoute, cdr);
   }
 
   form: FormGroup;

@@ -20,8 +20,7 @@ import {StateService} from '../../../../shared/services/state/state.service';
   styleUrls: ['./customers-single-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CustomersSinglePageComponent extends SinglePageComponent
-  implements OnInit {
+export class CustomersSinglePageComponent extends SinglePageComponent {
   constructor(
     private fb: FormBuilder,
     private afs: AngularFirestore,
@@ -30,7 +29,7 @@ export class CustomersSinglePageComponent extends SinglePageComponent
     private router: Router,
     private state: StateService
   ) {
-    super(router, afs, state);
+    super(router, afs, state, activatedRoute, cdr);
   }
 
   value: string;
@@ -38,47 +37,7 @@ export class CustomersSinglePageComponent extends SinglePageComponent
   basicInfoForm: FormGroup;
   collection = FirestoreCollections.Customers;
 
-  ngOnInit() {
-    this.activatedRoute.params
-      .pipe(
-        switchMap(params => {
-          if (params.id !== 'create-single-post') {
-            return this.afs
-              .collection(`${FirestoreCollections.Customers}`)
-              .doc(params.id)
-              .valueChanges();
-          } else {
-            return of({});
-          }
-        }),
-        takeUntil(this.destroyed$)
-      )
-      .subscribe(data => {
-        this.customerInfoForm(data);
-        this.cdr.detectChanges();
-      });
-  }
-
-  // basicSubmit() {
-  //   const id =
-  //     this.activatedRoute.params['value'].id === 'new'
-  //       ? nanoid()
-  //       : this.activatedRoute.params['value'].id;
-  //   const data = this.basicInfoForm.getRawValue();
-  //
-  //   from(
-  //     this.afs
-  //       .collection(`${FirestoreCollections.Customers}`)
-  //       .doc(id)
-  //       .set(data)
-  //   )
-  //     .pipe(notify())
-  //     .subscribe(() => {
-  //       this.router.navigate(['/customers']);
-  //     });
-  // }
-
-  private customerInfoForm(data) {
+  public buildForm(data) {
     let date: any;
 
     if (data) {

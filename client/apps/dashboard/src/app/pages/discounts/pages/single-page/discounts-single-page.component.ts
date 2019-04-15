@@ -61,7 +61,7 @@ export class DiscountsSinglePageComponent extends SinglePageComponent
       });
   }
 
-  buildForm(data: any) {
+  public buildForm(data: any) {
     this.form = this.fb.group({
       id: [
         {value: data.id, disabled: this.isEdit},
