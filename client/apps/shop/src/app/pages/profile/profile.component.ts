@@ -12,7 +12,7 @@ export class ProfileComponent implements OnInit {
 
   links = [
     {
-      label: 'Wish ListComponent',
+      label: 'Wish List',
       route: 'wish-list'
     },
     {

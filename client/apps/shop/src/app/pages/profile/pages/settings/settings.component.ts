@@ -49,7 +49,6 @@ export class SettingsComponent implements OnInit {
       createdOn: data.createdOn || '',
       nickname: data.nickname || '',
       gender: data.gender || '',
-      address: data.address || '',
       bio: data.bio || ''
     });
   }
