@@ -21,7 +21,7 @@ import {notify} from '@jf/utils/notify.operator';
 @Component({
   selector: 'jfs-reviews',
   templateUrl: './reviews-dialog.component.html',
-  styleUrls: ['./reviews-dialog.component.css'],
+  styleUrls: ['./reviews-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReviewsDialogComponent implements OnInit {
