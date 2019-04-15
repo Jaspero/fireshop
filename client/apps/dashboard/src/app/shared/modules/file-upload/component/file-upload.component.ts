@@ -1,8 +1,4 @@
-import {
-  CdkDragEnd,
-  CdkDragEnter,
-  moveItemInArray
-} from '@angular/cdk/drag-drop';
+import {CdkDragEnter, moveItemInArray} from '@angular/cdk/drag-drop';
 import {HttpClient} from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -14,7 +10,7 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import {AngularFireStorage, AngularFireUploadTask} from '@angular/fire/storage';
+import {AngularFireStorage} from '@angular/fire/storage';
 import {
   ControlValueAccessor,
   FormControl,
@@ -23,9 +19,10 @@ import {
 import {MatDialog} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {Breakpoint, currentBreakpoint$} from '@jf/consts/breakpoint.const';
-import * as nanoid from 'nanoid';
-import {forkJoin, Observable} from 'rxjs';
-import {map, takeUntil} from 'rxjs/operators';
+import {ENV_CONFIG} from '@jf/consts/env-config.const';
+import {readFile} from '@jf/utils/read-file';
+import {forkJoin, from, Observable, of} from 'rxjs';
+import {catchError, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'jfsc-file-upload',
@@ -42,6 +39,10 @@ import {map, takeUntil} from 'rxjs/operators';
 })
 export class FileUploadComponent extends RxDestroy
   implements OnInit, ControlValueAccessor {
+  static STORAGE_URL =
+    'https://firebasestorage.googleapis.com/v0/b/' +
+    ENV_CONFIG.firebase.storageBucket;
+
   constructor(
     public dialog: MatDialog,
     private cdr: ChangeDetectorRef,
@@ -51,21 +52,19 @@ export class FileUploadComponent extends RxDestroy
     super();
   }
 
-  @ViewChild('urlUploadDialog') urlUploadDialog: TemplateRef<any>;
+  @ViewChild('urlUploadDialog')
+  urlUploadDialog: TemplateRef<any>;
 
   @ViewChild('file')
   fileEl: ElementRef<HTMLInputElement>;
 
   urlControl = new FormControl('');
-  values = [];
   lastFrom: number;
   lastTo: number;
-  deletingObject = {};
-  task: AngularFireUploadTask;
-  percentage: Observable<number>;
-  imageWidth$: Observable<number>;
-
+  values = [];
   toRemove = [];
+
+  imageWidth$: Observable<number>;
 
   ngOnInit() {
     this.imageWidth$ = currentBreakpoint$.pipe(
@@ -96,15 +95,13 @@ export class FileUploadComponent extends RxDestroy
   }
 
   writeValue(value: string[]) {
-    let gallery = [];
     if (value) {
-      gallery = (value || []).map(val => {
-        return {
+      this.values.push(
+        ...(value || []).map(val => ({
           data: val,
           live: true
-        };
-      });
-      this.values.push(...gallery);
+        }))
+      );
     }
   }
 
@@ -123,37 +120,38 @@ export class FileUploadComponent extends RxDestroy
         });
         this.urlControl.setValue('');
         this.cdr.detectChanges();
-        this.onChange([...this.values]);
       });
   }
 
   removeImage(index: number, item) {
-    if (!item.live) {
-      this.toRemove.push(item);
+    if (item.live && item.data.includes(FileUploadComponent.STORAGE_URL)) {
+      this.toRemove.push(item.data);
     }
+
     this.values.splice(index, 1);
-    this.onChange([...this.values]);
     this.cdr.detectChanges();
   }
 
-  entered(e: CdkDragEnter) {
+  entered(event: CdkDragEnter) {
     if (this.values && this.values.length === 1) {
       return;
     }
 
-    this.lastFrom = e.item.data;
-    this.lastTo = e.container.data;
+    this.lastFrom = event.item.data;
+    this.lastTo = event.container.data;
   }
 
-  ended(e: CdkDragEnd) {
+  ended() {
     if (this.values && this.values.length === 1) {
       return;
     }
+
     if (this.lastFrom === undefined || this.lastTo === undefined) {
       return;
     }
+
     moveItemInArray(this.values, this.lastFrom, this.lastTo);
-    this.onChange([...this.values]);
+
     this.cdr.detectChanges();
   }
 
@@ -161,25 +159,21 @@ export class FileUploadComponent extends RxDestroy
     this.fileEl.nativeElement.click();
   }
 
-  async filesUploaded(event: FileList) {
-    const final = [];
-
-    for (let i = 0; i < event.length; i++) {
-      await new Promise(resolve => {
-        const reader = new FileReader();
-        reader.readAsDataURL(event[i]);
-        reader.onload = () => {
-          final.push({
-            data: reader.result,
-            pushToLive: event[i],
+  filesUploaded(fileList: FileList) {
+    forkJoin(
+      Array.from(fileList).map(file =>
+        readFile(file).pipe(
+          map(data => ({
+            data,
+            pushToLive: file,
             live: false
-          });
-          resolve();
-        };
-      });
-    }
-    this.values.push(...final);
-    this.cdr.detectChanges();
+          }))
+        )
+      )
+    ).subscribe(files => {
+      this.values.push(...files);
+      this.cdr.detectChanges();
+    });
   }
 
   /**
@@ -187,20 +181,42 @@ export class FileUploadComponent extends RxDestroy
    * the changes on server
    */
   save() {
-    return forkJoin([
-      ...this.toRemove.map(file => {
-        return this.afs.ref(file.data).delete();
-      }),
+    if (!this.toRemove.length && !this.values.length) {
+      return of([]);
+    }
+
+    return forkJoin(
+      ...this.toRemove.map(file =>
+        from(this.afs.storage.refFromURL(file).delete()).pipe(
+          /**
+           * Dont' fail if files didn't delete
+           */
+          catchError(() => of([]))
+        )
+      ),
       ...this.values.reduce((acc, cur) => {
         if (!cur.live) {
-          this.task = this.afs.upload(nanoid(), cur.pushToLive);
-          this.percentage = this.task.percentageChanges();
-          this.task.snapshotChanges();
-          acc.push(this.task);
+          acc.push(
+            from(
+              this.afs.upload(cur.pushToLive.name, cur.pushToLive, {
+                contentType: cur.pushToLive.type
+              })
+            ).pipe(
+              switchMap(task => task.ref.getDownloadURL()),
+              tap(url => {
+                cur.data = url;
+              })
+            )
+          );
         }
+
         return acc;
       }, [])
-    ]);
+    ).pipe(
+      tap(() => {
+        this.onChange(this.values.map(val => val.data));
+      })
+    );
   }
 
   openUrlUpload() {
