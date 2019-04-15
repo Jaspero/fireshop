@@ -1,38 +1,61 @@
-<form class="grid" *ngIf="form" [formGroup]="form">
+<form class="grid fd-col ai-center" *ngIf="form" [formGroup]="form">
+
   <div class="col-6 col-m-8 col-s-10 col-xs-12">
-
-    <h6>Personal information</h6>
-    <mat-form-field class="w-full" appearance="outline">
-      <mat-label>Phone number</mat-label>
-      <input matInput type="tel" />
-    </mat-form-field>
-    <mat-form-field class="w-full" appearance="outline">
-      <mat-label>Gender</mat-label>
-      <mat-select formControlName="gender">
-        <mat-option [value]="'Male'">Male</mat-option>
-        <mat-option [value]="'Female'">Female</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field class="w-full" appearance="outline">
-      <mat-label>Tell us about yourself</mat-label>
-      <textarea matInput formControlName="bio"></textarea>
-    </mat-form-field>
-    <h6>Address</h6>
-    <mat-form-field class="w-full" appearance="outline">
-      <mat-label>City</mat-label>
-      <input matInput />
-    </mat-form-field>
-    <mat-form-field class="w-full" appearance="outline">
-      <mat-label>Zip or postal code</mat-label>
-      <input matInput />
-    </mat-form-field>
-    <mat-form-field class="w-full" appearance="outline">
-      <mat-label>Address</mat-label>
-      <input matInput />
-    </mat-form-field>
-    <button mat-flat-button color="primary" (click)="submitForm()">Submit</button>
-    <h6>Account</h6>
-    <button mat-button color="warn" (click)="deleteUser()">Remove account</button>
-
+    <mat-card>
+      <h6 class="p-y-s">Contact information</h6>
+      <p class="fs-small bg-l-secondary p-a-xs m-b-s flex ai-center">
+        <mat-icon>info</mat-icon>
+        <span>&nbsp;This information helps us speed up your check-out process.</span>
+      </p>
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Phone number</mat-label>
+        <input matInput type="tel" />
+      </mat-form-field>
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>City</mat-label>
+        <input matInput />
+      </mat-form-field>
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Zip or postal code</mat-label>
+        <input matInput />
+      </mat-form-field>
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Address</mat-label>
+        <input matInput />
+      </mat-form-field>
+      <div class="ta-right">
+        <button mat-flat-button color="primary" (click)="submitForm()">Submit</button>
+      </div>
+    </mat-card>
   </div>
+
+  <div class="col-6 col-m-8 col-s-10 col-xs-12">
+    <mat-card>
+      <h6 class="p-y-s">Personal information</h6>
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Gender</mat-label>
+        <mat-select formControlName="gender">
+          <mat-option [value]="'Male'">Male</mat-option>
+          <mat-option [value]="'Female'">Female</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Tell us about yourself</mat-label>
+        <textarea matInput formControlName="bio"></textarea>
+      </mat-form-field>
+      <div class="ta-right">
+        <button mat-flat-button color="primary" (click)="submitForm()">Submit</button>
+      </div>
+    </mat-card>
+  </div>
+
+  <div class="col-6 col-m-8 col-s-10 col-xs-12">
+    <mat-card>
+      <h6 class="p-y-s">Account</h6>
+      <p class="m-b-xs">Do you wish to remove your account? You will be asked to type your email address before your account gets removed.</p>
+      <button mat-button color="warn" (click)="deleteUser()">Remove account</button>
+    </mat-card>
+  </div>
+
 </form>
+

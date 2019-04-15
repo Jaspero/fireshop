@@ -1,23 +1,27 @@
-<div class="grid">
-  <div class="col-12">
-    <!--Profile navigation-->
-    <nav mat-tab-nav-bar mat-align-tabs="center">
-      <a
-        mat-tab-link
-        *ngFor="let link of links"
-        [routerLink]="link.route"
-        routerLinkActive="active"
-        (click)="activeLink = link"
-        [active]="activeLink.route === link.route"
-      >
-        {{ link.label }}
-      </a>
-    </nav>
+<section class="p-y-m ta-center bg-primary">
+  <div class="profile-picture-container">
+    <img class="profile-picture" src="assets/images/profile-placeholder.svg" alt="Profile picture" width="100" height="100">
+    <button class="profile-picture-edit" mat-icon-button color="accent" aria-label="edit">
+      <mat-icon>edit</mat-icon>
+    </button>
   </div>
-</div>
+  <h6 class="c-l-primary p-y-xs">John Doe</h6>
+  <p class="c-l-secondary">john@doe.com</p>
+</section>
 
-<div class="grid">
-  <div class="col-12">
-    <router-outlet></router-outlet>
-  </div>
-</div>
+<nav mat-tab-nav-bar backgroundColor="primary" mat-align-tabs="center">
+  <a
+    mat-tab-link
+    *ngFor="let link of links"
+    [routerLink]="link.route"
+    routerLinkActive="active"
+    (click)="activeLink = link"
+    [active]="activeLink.route === link.route"
+  >
+    {{ link.label }}
+  </a>
+</nav>
+
+<section class="p-t-m p-b-l">
+  <router-outlet></router-outlet>
+</section>

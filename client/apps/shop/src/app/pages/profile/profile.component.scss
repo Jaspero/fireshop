@@ -1,0 +1,41 @@
+.profile-picture-container {
+  position: relative;
+  display: inline-block;
+
+  &:after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0);
+    border-radius: 50%;
+    transition: .2s;
+  }
+
+  &:hover {
+    .profile-picture-edit {
+      opacity: 1;
+    }
+    &:after {
+      background: rgba(255,255,255,.75);
+    }
+  }
+}
+
+.profile-picture {
+  border-radius: 50%;
+  transition: .2s;
+}
+
+.profile-picture-edit {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  opacity: 0;
+  transition: .2s;
+}
