@@ -60,6 +60,9 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
       if (doc.exists) {
         this.state.logInValid$.next(true);
         this.dialogRef.close();
+        this.snackBar.open('You are now logged in!', 'Dismiss', {
+          duration: 2500
+        });
       } else {
         this.afAuth.auth.signOut();
         this.snackBar.open(
@@ -87,7 +90,15 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
           .set({
             createdOn: Date.now()
           })
-          .then()
+          .then(() => {
+            this.snackBar.open(
+              'You have successfully created an account',
+              'Dismiss',
+              {
+                duration: 2500
+              }
+            );
+          })
           .catch();
       }
 
