@@ -103,29 +103,6 @@ img {
   vertical-align: middle; /* [2] */
 }
 
-/* mat-form-field bottom padding
- *============================================================================*/
-/**
- * Removes the default padding on mat-form-field-wrapper that exists to create
- * space for hints. Since hints are rarely used, the bottom padding was removed
- * for easier layout building.
- */
-
-.mat-form-field > .mat-form-field-wrapper {
-  padding-bottom: 0;
-}
-.mat-form-field > .mat-form-field-wrapper > .mat-form-field-underline {
-  bottom: 0;
-}
-
-// 'mat-hint' class for mat-form-field in case a hint/error has to be used
-.mat-hint.mat-form-field > .mat-form-field-wrapper {
-  padding-bottom: 1.25em;
-}
-.mat-hint.mat-form-field > .mat-form-field-wrapper > .mat-form-field-underline {
-  bottom: 1.25em;
-}
-
 /* mat-button vertical align correction
  *============================================================================*/
 
@@ -133,13 +110,6 @@ img {
 .mat-flat-button,
 .mat-icon-button {
   vertical-align: middle !important;
-}
-
-/* mat-input-element text clipping correction
- *============================================================================*/
-
-.mat-form-field-infix .mat-input-element {
-  line-height: 1.5;
 }
 
 /* Lets mat-card-image be full width of its container
@@ -161,4 +131,11 @@ img {
 
 .mat-checkbox-layout.mat-checkbox-layout {
   white-space: normal;
+}
+
+/* Default font size for mat-form-field
+ *============================================================================*/
+
+.mat-form-field {
+  font-size: 14px;
 }

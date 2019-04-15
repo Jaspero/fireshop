@@ -18,7 +18,6 @@
           id="btn-gLog"
           mat-raised-button
           class="w-full"
-          tabindex="-1"
           (click)="logInWithGoogle()">
           Login with Google
         </button>
@@ -28,7 +27,6 @@
           id="btn-tLog"
           mat-raised-button
           class="w-full"
-          tabindex="-1"
           (click)="logInWithTwitter()">
           Login with Twitter
         </button>
@@ -38,7 +36,6 @@
           id="btn-fLog"
           mat-raised-button
           class="w-full"
-          tabindex="-1"
           (click)="logInWithFacebook()">
           Login with Facebook
         </button>
@@ -52,18 +49,18 @@
 
     <!--Regular login-->
     <form [formGroup]="logInForm">
-      <mat-form-field class="w-full mat-hint">
+      <mat-form-field class="w-full mat-hint" appearance="outline">
+        <mat-label>Email</mat-label>
         <input
-          placeholder="Email"
           formControlName="email"
           matInput
           type="email"
         />
       </mat-form-field>
-      <mat-form-field class="w-full mat-hint">
+      <mat-form-field class="w-full mat-hint" appearance="outline">
+        <mat-label>Password</mat-label>
         <input
           #password
-          placeholder="Password"
           formControlName="password"
           matInput
           type="password"
@@ -116,7 +113,6 @@
           id="btn-gSig"
           mat-raised-button
           class="w-full"
-          tabindex="-1"
           (click)="logInWithGoogle()"
         >
           Sign up with Google
@@ -127,7 +123,6 @@
           id="btn-tSig"
           mat-raised-button
           class="w-full"
-          tabindex="-1"
           (click)="logInWithTwitter()"
         >
           Sign up with Twitter
@@ -138,7 +133,6 @@
           id="btn-fSig"
           mat-raised-button
           class="w-full"
-          tabindex="-1"
           (click)="logInWithFacebook()"
         >
           Sign up with Facebook
@@ -153,14 +147,13 @@
 
     <!--Regular signUp-->
     <form [formGroup]="signUpForm">
-      <mat-form-field class="w-full mat-hint">
+      <mat-form-field class="w-full mat-hint" appearance="outline">
+        <mat-label>Email</mat-label>
         <input
           autofocus
           type="email"
-          placeholder="Email"
           matInput
           formControlName="email"
-          type="email"
         />
         <mat-error *ngIf="signUpForm.get('email').invalid">
           Please enter a valid email
@@ -168,10 +161,10 @@
       </mat-form-field>
       <ng-container formGroupName="pg">
         <div>
-          <mat-form-field class="w-full mat-hint">
+          <mat-form-field class="w-full mat-hint" appearance="outline">
+            <mat-label>Password</mat-label>
             <input
               formControlName="password"
-              placeholder="Password"
               matInput
               type="password"
             />
@@ -179,9 +172,9 @@
               Password must contain at least 6 characters
             </mat-error>
           </mat-form-field>
-          <mat-form-field class="w-full mat-hint m-b-s">
+          <mat-form-field class="w-full mat-hint" appearance="outline">
+            <mat-label>Confirm password</mat-label>
             <input
-              placeholder="Confirm password"
               matInput
               formControlName="repeatPassword"
               type="password"
@@ -227,11 +220,11 @@
 
     <!--Reset form-->
     <form>
-      <mat-form-field class="w-full mat-hint">
+      <mat-form-field class="w-full mat-hint" appearance="outline">
+        <mat-label>Email</mat-label>
         <input
           matInput
           autofocus
-          placeholder="Email"
           [formControl]="resetPasswordControl"
           type="email"
         />
