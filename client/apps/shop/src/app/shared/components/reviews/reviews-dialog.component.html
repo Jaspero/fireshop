@@ -1,23 +1,23 @@
 <form [formGroup]="form">
-  <mat-form-field>
+  <h6 class="m-b-s">Rate this product</h6>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Product ID</mat-label>
     <input matInput formControlName="dataProduct" [disabled]="true">
   </mat-form-field>
-
-  <mat-form-field class="w-full">
-    <textarea placeholder="Comment" formControlName="comment" matInput></textarea>
+  <mat-form-field class="w-full" appearance="outline">
+    <mat-label>Comment</mat-label>
+    <textarea formControlName="comment" matInput></textarea>
+  </mat-form-field>
+  <mat-form-field class="w-full" appearance="outline">
+    <mat-label>Rating</mat-label>
+    <input type="number" formControlName="rating" matInput>
+    <span matSuffix>/5</span>
   </mat-form-field>
 
-
-  <mat-form-field class="w-full">
-    <input type="number"  placeholder="Rating" formControlName="rating" matInput>
-    <span matSuffix>stars</span>
-  </mat-form-field>
-
-  <br>
-
-  <button [disabled]="form.invalid" mat-button (click)="submit()">
-    Submit
-  </button>
-
-
+  <div class="flex jc-end">
+    <button [disabled]="form.invalid" mat-flat-button color="primary" (click)="submit()">
+      Submit
+    </button>
+  </div>
 </form>

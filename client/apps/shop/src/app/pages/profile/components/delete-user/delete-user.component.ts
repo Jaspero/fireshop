@@ -54,7 +54,10 @@ export class DeleteUserComponent implements OnInit {
           Validators.pattern(this.afAuth.auth.currentUser.email)
         ]
       ],
-      wordDelete: ['', [Validators.required, Validators.pattern('DELETE')]]
+      wordDelete: [
+        '',
+        [Validators.required, Validators.pattern('discombobulate')]
+      ]
     });
   }
 }

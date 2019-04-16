@@ -35,7 +35,7 @@ export class ProductsSinglePageComponent extends SinglePageComponent
     private state: StateService,
     private router: Router
   ) {
-    super(router, afs, state);
+    super(router, afs, state, activatedRoute, cdr);
   }
 
   @ViewChild(FileUploadComponent)
@@ -90,6 +90,48 @@ export class ProductsSinglePageComponent extends SinglePageComponent
         this.buildForm(data);
         this.cdr.detectChanges();
       });
+  }
+
+  save() {
+    this.loading$.next(true);
+    this.state.language$
+      .pipe(
+        take(1),
+        switchMap(lang => {
+          return this.fileUploadComponent.save().pipe(
+            switchMap(() => {
+              const {id, ...data} = this.form.getRawValue();
+
+              return from(
+                this.afs
+                  .collection<any>(`${FirestoreCollections.Products}-${lang}`)
+                  .doc(id)
+                  .set(
+                    {
+                      ...data,
+                      ...(this.isEdit ? {} : {createdOn: Date.now()})
+                    },
+                    {
+                      merge: true
+                    }
+                  )
+              );
+            })
+          );
+        }),
+        finalize(() => this.loading$.next(false)),
+        notify()
+      )
+      .subscribe(() => {
+        this.router.navigate(['/products']);
+      });
+  }
+
+  backToList(skipGuard = true) {
+    if (skipGuard) {
+    }
+
+    this.router.navigate(['/products']);
   }
 
   // TODO: I think this can be done in a better way

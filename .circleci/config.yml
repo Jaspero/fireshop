@@ -36,13 +36,9 @@ jobs:
       - run:
           name: Linting
           command: npm run lint
-      - run:
-          name: Building
-          command: npm run build
       - save_cache:
           key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
-            - dist
             - package-lock.json
             - firebase.json
   deploy:
