@@ -92,29 +92,32 @@ export class ProductsSinglePageComponent extends RxDestroy implements OnInit {
   }
 
   save() {
-    const {id, ...data} = this.form.getRawValue();
-
     this.loading$.next(true);
-
     this.state.language$
       .pipe(
         take(1),
-        switchMap(lang =>
-          from(
-            this.afs
-              .collection<any>(`${FirestoreCollections.Products}-${lang}`)
-              .doc(id)
-              .set(
-                {
-                  ...data,
-                  ...(this.isEdit ? {} : {createdOn: Date.now()})
-                },
-                {
-                  merge: true
-                }
-              )
-          )
-        ),
+        switchMap(lang => {
+          return this.fileUploadComponent.save().pipe(
+            switchMap(() => {
+              const {id, ...data} = this.form.getRawValue();
+
+              return from(
+                this.afs
+                  .collection<any>(`${FirestoreCollections.Products}-${lang}`)
+                  .doc(id)
+                  .set(
+                    {
+                      ...data,
+                      ...(this.isEdit ? {} : {createdOn: Date.now()})
+                    },
+                    {
+                      merge: true
+                    }
+                  )
+              );
+            })
+          );
+        }),
         finalize(() => this.loading$.next(false)),
         notify()
       )
