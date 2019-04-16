@@ -13,7 +13,9 @@ import {
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialogRef, MatSnackBar} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
+import {notify} from '@jf/utils/notify.operator';
 import {auth, firestore} from 'firebase';
+import {from, pipe} from 'rxjs';
 import {filter, switchMap, take, takeUntil} from 'rxjs/operators';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {RepeatPasswordValidator} from '../../helpers/compare-passwords';
@@ -60,6 +62,9 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
       if (doc.exists) {
         this.state.logInValid$.next(true);
         this.dialogRef.close();
+        this.snackBar.open('You are now logged in!', 'Dismiss', {
+          duration: 2500
+        });
       } else {
         this.afAuth.auth.signOut();
         this.snackBar.open(
@@ -77,18 +82,23 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
       doc: firestore.DocumentSnapshot
     ) => {
       this.state.logInValid$.next(true);
-
       if (doc.exists) {
         this.snackBar.open('Logged in with existing account', 'Dismiss', {
           duration: 2500
         });
       } else {
-        docRef
-          .set({
+        from(
+          docRef.set({
             createdOn: Date.now()
           })
-          .then()
-          .catch();
+        )
+          .pipe(
+            notify({
+              success: 'You are now logged in',
+              error: 'Invalid'
+            })
+          )
+          .subscribe();
       }
 
       this.dialogRef.close();
@@ -123,76 +133,65 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
   signUpWithEmail() {
     const data = this.signUpForm.getRawValue();
 
-    this.afAuth.auth
-      .createUserWithEmailAndPassword(data.email, data.pg.password)
-      .then(() =>
-        this.afAuth.auth.signInWithEmailAndPassword(
-          data.email,
-          data.pg.password
-        )
+    from(
+      this.afAuth.auth.createUserWithEmailAndPassword(
+        data.email,
+        data.pg.password
       )
-      .then(() => {
-        this.dialogRef.close();
-        this.snackBar.open('Your account has been created.', 'Dismiss', {
-          duration: 2500
-        });
-      })
-      .catch(res => {
-        if (res.code === 'auth/invalid-email') {
-          this.snackBar.open('Your email is invalid', 'Dismiss', {
-            duration: 2000
-          });
-        } else {
-          this.snackBar.open(
-            'This email address is already in use',
-            'Dismiss',
-            {
-              duration: 2000
-            }
+    )
+      .pipe(
+        switchMap(() => {
+          return this.afAuth.auth.signInWithEmailAndPassword(
+            data.email,
+            data.pg.password
           );
-        }
-      });
+        }),
+        notify({
+          success: 'Your account is successfully created',
+          error: 'Your email is invalid or already in use'
+        })
+      )
+      .subscribe();
   }
 
   loginWithEmail() {
     const dataLogin = this.logInForm.getRawValue();
 
-    this.afAuth.auth
-      .signInWithEmailAndPassword(dataLogin.email, dataLogin.password)
-      .then(() => {
-        this.dialogRef.close();
-      })
-      .catch(() => {
-        this.snackBar.open(
-          'The email and password you entered did not match our records. Please double-check and try again.',
-          'Dismiss',
-          {
-            duration: 2500
-          }
-        );
-        this.logInForm.get('password').reset();
-        this.passwordField.nativeElement.focus();
-      });
+    from(
+      this.afAuth.auth.signInWithEmailAndPassword(
+        dataLogin.email,
+        dataLogin.password
+      )
+    )
+      .pipe(
+        notify({
+          success: 'You are now logged in',
+          error: 'The email and password you entered did not match our records.'
+        }),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(
+        () => {},
+        () => {
+          this.logInForm.get('password').reset();
+          this.passwordField.nativeElement.focus();
+        }
+      );
   }
 
   resetPassword() {
-    this.afAuth.auth
-      .sendPasswordResetEmail(this.resetPasswordControl.value)
-      .then(() => {
-        this.dialogRef.close();
-        this.snackBar.open('Reset password email has been sent.', 'Dismiss', {
-          duration: 2500
-        });
-      })
-      .catch(() => {
-        this.snackBar.open(
-          'There is something wrong please try again.',
-          'Dismiss',
-          {
-            duration: 2500
-          }
-        );
-      });
+    from(
+      this.afAuth.auth.sendPasswordResetEmail(this.resetPasswordControl.value)
+    )
+      .pipe(notify())
+      .subscribe(
+        () => {
+          this.dialogRef.close();
+        },
+        () => {
+          this.resetPasswordControl.value.reset();
+        }
+      );
   }
 
   toggleState(newView: View) {
