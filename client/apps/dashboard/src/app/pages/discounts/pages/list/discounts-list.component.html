@@ -12,51 +12,52 @@
     <div class="col-12">
       <mat-card>
 
+        <form [formGroup]="filters" class="toolbar toolbar-inset p-t-0">
+          <mat-form-field appearance="outline">
+            <mat-label>&nbsp;Search</mat-label>
+            <input matInput formControlName="search">
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
+          <div class="f1"></div>
+          <button mat-button (click)="openFilter()">
+            <span>&nbsp;Filters&nbsp;</span>
+            <mat-icon>filter_list</mat-icon>
+          </button>
+        </form>
 
-          <div class="toolbar toolbar-inset p-t-0">
-            <mat-form-field appearance="outline">
-              <mat-label>&nbsp;Search</mat-label>
-              <input matInput>
-              <mat-icon matPrefix>search</mat-icon>
-            </mat-form-field>
-            <div class="f1"></div>
-            <button mat-button (click)="openFilter()">
-              <span>&nbsp;Filters&nbsp;</span>
-              <mat-icon>filter_list</mat-icon>
-            </button>
+        <jfs-chips [chips$]="filters.valueChanges" (filterValue)="changeFilters($event)"></jfs-chips>
+
+        <ng-template #filterDialog>
+          <div mat-dialog-title>
+            <div class="flex ai-center jc-between">
+              <h6>Filters</h6>
+              <button
+                tabindex="-1"
+                mat-icon-button
+                aria-label="Close dialog"
+                mat-dialog-close>
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
           </div>
 
-          <ng-template #filterDialog>
-            <div mat-dialog-title>
-              <div class="flex ai-center jc-between">
-                <h6>Filters</h6>
-                <button
-                  tabindex="-1"
-                  mat-icon-button
-                  aria-label="Close dialog"
-                  mat-dialog-close>
-                  <mat-icon>close</mat-icon>
-                </button>
-              </div>
-            </div>
+          <div mat-dialog-content>
+            <mat-form-field class="w-full m-b-xs">
+              <mat-select placeholder="Discounts">
+                <mat-option [value]="null"> All </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
 
-            <div mat-dialog-content>
-              <mat-form-field class="w-full m-b-xs">
-                <mat-select placeholder="Discounts">
-                  <mat-option [value]="null"> All </mat-option>
-                </mat-select>
-              </mat-form-field>
+          <div mat-dialog-actions>
+            <div class="ta-right w-full">
+              <button mat-button>Reset all</button>&nbsp;
+              <button id="btn-cntShp" mat-flat-button mat-dialog-close color="primary">
+                Close
+              </button>
             </div>
-
-            <div mat-dialog-actions>
-              <div class="ta-right w-full">
-                <button mat-button>Reset all</button>&nbsp;
-                <button id="btn-cntShp" mat-flat-button mat-dialog-close color="primary">
-                  Close
-                </button>
-              </div>
-            </div>
-          </ng-template>
+          </div>
+        </ng-template>
 
         <div class="toolbar toolbar-inset">
 

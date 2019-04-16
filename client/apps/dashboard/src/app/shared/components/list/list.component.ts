@@ -292,7 +292,7 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
     });
   }
 
-  removeChip(chip) {
-    this.filters.get(chip.filter).setValue('');
+  changeFilters(event) {
+    this.filters.get(event.key).setValue('');
   }
 }

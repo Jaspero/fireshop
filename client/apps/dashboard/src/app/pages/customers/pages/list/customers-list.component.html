@@ -12,15 +12,16 @@
       <mat-card>
 
 
-        <div class="toolbar toolbar-inset p-t-0">
+        <form [formGroup]="filters" class="toolbar toolbar-inset p-t-0">
           <mat-form-field appearance="outline">
             <mat-label>&nbsp;Search</mat-label>
-            <input matInput>
+            <input matInput formControlName="search">
             <mat-icon matPrefix>search</mat-icon>
           </mat-form-field>
           <div class="f1"></div>
-        </div>
+        </form>
 
+        <jfs-chips [chips$]="filters.valueChanges" (filterValue)="changeFilters($event)"></jfs-chips>
 
         <div class="toolbar toolbar-inset">
 

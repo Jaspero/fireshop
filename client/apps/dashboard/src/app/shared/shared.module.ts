@@ -48,6 +48,7 @@ import {ConfirmationComponent} from '@jf/components/confirmation/confirmation.co
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {FileUploadModule} from './modules/file-upload/file-upload.module';
 import {HttpClientModule} from '@angular/common/http';
+import { ChipsComponent } from './components/chips/chips.component';
 
 const IMPORTS = [
   CommonModule,
@@ -103,7 +104,10 @@ const IMPORTS = [
   FileUploadModule
 ];
 
-const COMPONENTS = [WysiwygComponent];
+const COMPONENTS = [
+  WysiwygComponent,
+  ChipsComponent
+];
 
 const ENTRY_COMPONENTS = [
   ConfirmationComponent,
