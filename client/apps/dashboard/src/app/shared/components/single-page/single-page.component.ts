@@ -1,13 +1,15 @@
 import {ChangeDetectorRef, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {notify} from '@jf/utils/notify.operator';
 import * as nanoid from 'nanoid';
-import {from, of} from 'rxjs';
-import {switchMap, take, takeUntil} from 'rxjs/operators';
+import {combineLatest, from, of} from 'rxjs';
+import {map, switchMap, take, takeUntil} from 'rxjs/operators';
 import {StateService} from '../../services/state/state.service';
+import {queue} from '../../utils/queue.operator';
 
 export class SinglePageComponent extends RxDestroy implements OnInit {
   constructor(
@@ -15,32 +17,43 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
     public afs: AngularFirestore,
     public state: StateService,
     public activatedRoute: ActivatedRoute,
-    public cdr: ChangeDetectorRef
+    public cdr: ChangeDetectorRef,
+    public fb: FormBuilder
   ) {
     super();
   }
 
+  isEdit: string;
   collection: FirestoreCollections;
+  form: FormGroup;
 
   ngOnInit() {
-    // works for customers
-
-    this.activatedRoute.params
+    combineLatest(this.activatedRoute.params, this.state.language$)
       .pipe(
-        switchMap(params => {
-          if (params.id !== 'new') {
-            return this.afs
-              .collection(`${this.collection}-${params}`)
-              .doc(params.id)
-              .valueChanges();
-          } else {
+        switchMap(([params, lang]) => {
+          if (params.id === 'new') {
+            this.isEdit = '';
             return of({});
+          } else {
+            this.isEdit = params.id;
+            return this.afs
+              .collection(`${this.collection}-${lang}`)
+              .doc(params.id)
+              .valueChanges()
+              .pipe(
+                take(1),
+                map(value => ({
+                  ...value,
+                  id: params.id
+                })),
+                queue()
+              );
           }
         }),
         takeUntil(this.destroyed$)
       )
       .subscribe(data => {
-        this.buildForm();
+        this.buildForm(data);
         this.cdr.detectChanges();
       });
   }
@@ -56,7 +69,10 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
             this.afs
               .collection(`${this.collection}-${lang}`)
               .doc(item.id ? item.id : nanoid())
-              .set(item)
+              .set({
+                item,
+                ...(this.isEdit ? {} : {createdOn: Date.now()})
+              })
           )
         ),
         notify()
@@ -66,7 +82,7 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
       });
   }
 
-  buildForm() {}
+  buildForm(data: any) {}
 
   cancel() {
     this.router.navigate(['/', this.collection]);

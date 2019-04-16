@@ -5,15 +5,16 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {switchMap, takeUntil} from 'rxjs/operators';
-import {of} from 'rxjs';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {FormBuilder} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {RxDestroy} from '@jaspero/ng-helpers';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSort, MatTableDataSource} from '@angular/material';
+import {ActivatedRoute, Router} from '@angular/router';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {of} from 'rxjs';
+import {switchMap, takeUntil} from 'rxjs/operators';
+import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
+import {StateService} from '../../../../shared/services/state/state.service';
 
 @Component({
   selector: 'jfsc-single-page',
@@ -21,14 +22,17 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
   styleUrls: ['./orders-single-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OrdersSinglePageComponent extends RxDestroy implements OnInit {
+export class OrdersSinglePageComponent extends SinglePageComponent
+  implements OnInit {
   constructor(
     private afs: AngularFirestore,
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private state: StateService,
+    private router: Router
   ) {
-    super();
+    super(router, afs, state, activatedRoute, cdr);
   }
 
   @ViewChild(MatSort) sort: MatSort;
@@ -83,5 +87,14 @@ export class OrdersSinglePageComponent extends RxDestroy implements OnInit {
         }));
         this.cdr.detectChanges();
       });
+  }
+
+  buildForm() {
+    this.form = this.fb.group({
+      product: ['', Validators.required],
+      name: ['', Validators.required],
+      quantity: ['', [Validators.required, Validators.min(0)]],
+      address: ['', Validators.required]
+    });
   }
 }

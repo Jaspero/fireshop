@@ -16,7 +16,7 @@ import {StateService} from '../../../../shared/services/state/state.service';
 
 @Component({
   selector: 'jfsc-single-page',
-  templateUrl: './customers-single-page.component..html',
+  templateUrl: './customers-single-page.component.html',
   styleUrls: ['./customers-single-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -34,7 +34,6 @@ export class CustomersSinglePageComponent extends SinglePageComponent {
 
   value: string;
   genders = ['Male', 'Female'];
-  basicInfoForm: FormGroup;
   collection = FirestoreCollections.Customers;
 
   public buildForm(data) {
@@ -47,7 +46,7 @@ export class CustomersSinglePageComponent extends SinglePageComponent {
       date = '';
     }
 
-    this.basicInfoForm = this.fb.group({
+    this.form = this.fb.group({
       name: [date ? data.name : '', Validators.required],
       dateOfBirth: [date || '', Validators.required],
       gender: [date ? data.gender : '', Validators.required],

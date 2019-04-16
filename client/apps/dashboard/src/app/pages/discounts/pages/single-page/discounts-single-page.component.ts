@@ -1,11 +1,8 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatSnackBar} from '@angular/material';
+import {FormBuilder, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {combineLatest, of} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
 import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
 import {StateService} from '../../../../shared/services/state/state.service';
@@ -15,51 +12,20 @@ import {StateService} from '../../../../shared/services/state/state.service';
   templateUrl: './discounts-single-page.component.html',
   styleUrls: ['./discounts-single-page.component.scss']
 })
-export class DiscountsSinglePageComponent extends SinglePageComponent
-  implements OnInit {
+export class DiscountsSinglePageComponent extends SinglePageComponent {
   constructor(
     private fb: FormBuilder,
     private afs: AngularFirestore,
     private router: Router,
-    private snackBar: MatSnackBar,
     private activatedRoute: ActivatedRoute,
     private cdr: ChangeDetectorRef,
     private state: StateService
   ) {
-    super(router, afs, state);
+    super(router, afs, state, activatedRoute, cdr, fb);
   }
 
-  form: FormGroup;
   isEdit: boolean;
   collection = FirestoreCollections.Discounts;
-
-  ngOnInit() {
-    combineLatest(this.activatedRoute.params, this.state.language$)
-      .pipe(
-        switchMap(([params, lang]) => {
-          if (params.id !== 'new') {
-            this.isEdit = true;
-            return this.afs
-              .collection(`${FirestoreCollections.Discounts}-${lang}`)
-              .doc(params.id)
-              .valueChanges()
-              .pipe(
-                map(value => ({
-                  ...value,
-                  id: params.id
-                }))
-              );
-          } else {
-            this.isEdit = false;
-            return of({});
-          }
-        })
-      )
-      .subscribe(data => {
-        this.buildForm(data);
-        this.cdr.detectChanges();
-      });
-  }
 
   public buildForm(data: any) {
     this.form = this.fb.group({
