@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
 import {Observable} from 'rxjs';
 
 @Component({
-  selector: 'jfs-chips',
+  selector: 'jfsc-chips',
   templateUrl: './chips.component.html',
   styleUrls: ['./chips.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
