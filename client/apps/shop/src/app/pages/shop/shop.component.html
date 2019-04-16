@@ -1,36 +1,40 @@
 <form [formGroup]="filters">
   <!--Virtual scroll container-->
   <cdk-virtual-scroll-viewport [itemSize]="50" class="jfs-shop-viewport">
-    <div class="grid jc-start">
-      <div class="col-12">
-        <div class="flex jc-between m-b-s">
+
+    <!--Filters section-->
+    <section class="jfs-shop-filters bg-primary">
+      <div class="grid">
+        <div class="col-12 flex">
           <!--Filters trigger-->
-          <button id="btn-flt" mat-button (click)="openFilter()">
+          <button id="btn-flt" mat-flat-button color="primary" (click)="openFilter()">
             <mat-icon>filter_list</mat-icon>
             <span>&nbsp;Filters&nbsp;</span>
           </button>
-
+          <!--Divider-->
+          <div class="f1"></div>
           <!--Sort by-->
-          <button id="btn-srt" mat-button [matMenuTriggerFor]="sortByMenu">
+          <button id="btn-srt" mat-flat-button color="primary" [matMenuTriggerFor]="sortByMenu">
             <span>Sort by:</span> <span>&nbsp;{{orderName}}&nbsp;</span>
             <mat-icon>arrow_drop_down</mat-icon>
           </button>
+          <mat-menu #sortByMenu="matMenu">
+            <button id="btn-upOrd" *ngFor="let order of orderList" (click)="updateOrder(order)" mat-menu-item>
+              {{order.name}}
+            </button>
+          </mat-menu>
         </div>
-        <mat-menu #sortByMenu="matMenu">
-          <button id="btn-upOrd" *ngFor="let order of orderList" (click)="updateOrder(order)" mat-menu-item>
-            {{order.name}}
-          </button>
-        </mat-menu>
-
         <!--Filters chips-->
-        <mat-chip-list *ngIf="chipArray.length">
+        <mat-chip-list class="col-12" *ngIf="chipArray.length">
           <mat-chip *ngFor="let chip of chipArray">
             <span>{{chip.filter}}: {{chip.value}}</span>
             <mat-icon matChipRemove (click)="removeChip(chip)">cancel</mat-icon>
           </mat-chip>
         </mat-chip-list>
       </div>
+    </section>
 
+    <div class="grid jc-start">
       <!--Products-->
       <ng-container *ngIf="(products$ | async) as prod">
         <ng-container *ngIf="prod.length; else emptyList">
@@ -41,7 +45,6 @@
           </div>
         </ng-container>
       </ng-container>
-
       <!--Products empty-->
       <ng-template #emptyList>
         <div class="col-12">
@@ -51,6 +54,7 @@
         </div>
       </ng-template>
     </div>
+
   </cdk-virtual-scroll-viewport>
 
   <!--Loading-->
@@ -60,7 +64,6 @@
 
   <!--Filters dialog-->
   <ng-template #filterDialog>
-    <!--Dialog header-->
     <div mat-dialog-title>
       <div class="flex ai-center jc-between">
         <h6>Filters</h6>
@@ -74,9 +77,7 @@
       </div>
     </div>
 
-    <!--Dialog content-->
     <div mat-dialog-content>
-      <!--Categories-->
       <mat-form-field class="w-full m-b-xs">
         <mat-select placeholder="Category" formControlName="category">
           <mat-option
@@ -88,7 +89,6 @@
       </mat-form-field>
     </div>
 
-    <!--Dialog actions-->
     <div mat-dialog-actions>
       <div class="ta-right w-full">
         <button mat-button>Reset all</button>&nbsp;
@@ -98,4 +98,5 @@
       </div>
     </div>
   </ng-template>
+
 </form>
