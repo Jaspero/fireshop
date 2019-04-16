@@ -1,33 +1,36 @@
-<h1 mat-dialog-title>Are you sure you want to permanently remove your account?</h1>
+<h6 class="m-b-s">Do you wish to remove your account?</h6>
 
-<form mat-dialog-content [formGroup]="deleteForm">
-  <p class="flex ai-center p-a-xs m-b-xs bg-l-secondary">
+<form [formGroup]="deleteForm">
+  <p class="flex ai-center p-a-xs m-b-s bg-l-secondary fs-small">
     <mat-icon color="warn">warning</mat-icon>
-    <span class="c-warn"> This action is irreversible.</span>
+    <span class="c-warn">&nbsp;This action is irreversible.</span>
   </p>
-  <div class="p-y-xs">
-    <mat-form-field class="w-full" appearance="outline">
-      <mat-label>Your email</mat-label>
-      <input
-        formControlName="emailConfirmControl"
-        matInput
-        type="email"
-      />
-    </mat-form-field>
-  </div>
-  <div class="p-y-xs">
-    <mat-form-field class="w-full" appearance="outline">
-      <mat-label>Type "discombobulate" to confirm</mat-label>
-      <input
-        formControlName="wordDelete"
-        matInput
-        type="text"
-      />
-    </mat-form-field>
-  </div>
+  <mat-form-field class="w-full" appearance="outline">
+    <mat-label>Your email</mat-label>
+    <input
+      formControlName="emailConfirmControl"
+      matInput
+      type="email"
+    />
+  </mat-form-field>
+  <mat-form-field class="w-full" appearance="outline">
+    <mat-label>Type "discombobulate" to confirm</mat-label>
+    <input
+      formControlName="wordDelete"
+      matInput
+      type="text"
+    />
+  </mat-form-field>
+  <mat-form-field class="w-full" appearance="outline">
+    <mat-label>Why are you removing your account? (optional)</mat-label>
+    <mat-select>
+      <mat-option>I don't like this website.</mat-option>
+      <mat-option>I couldn't find a product.</mat-option>
+    </mat-select>
+  </mat-form-field>
 </form>
 
-<div mat-dialog-actions class="jc-end">
+<div class="ta-right">
   <button mat-button (click)="closeDeleteDialog()">Cancel</button>
   &nbsp;
   <button

@@ -139,3 +139,10 @@ img {
 .mat-form-field {
   font-size: 14px;
 }
+
+/* Fixes opacity for mat-tabs when used with <nav>
+ *============================================================================*/
+
+.mat-tab-link.active {
+  opacity: 1;
+}

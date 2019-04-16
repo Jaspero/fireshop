@@ -78,8 +78,4 @@ export class OrdersComponent extends RxDestroy implements OnInit {
       }
     });
   }
-
-  checkIt() {
-    console.log(this.orders);
-  }
 }
