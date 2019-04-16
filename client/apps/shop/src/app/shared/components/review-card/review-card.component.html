@@ -2,8 +2,14 @@
   <div class="flex ai-center jc-between fw-wrap">
     <h6>{{review.productId}}</h6>
     <div>
+
       <ng-container>
-        <mat-icon *ngFor="let star of fiveStar">star</mat-icon>
+        <mat-icon
+          [class.active]="review.rating >= index + 1"
+          *ngFor="let star of fiveStar; index as index"
+          >
+          star
+        </mat-icon>
       </ng-container>
     </div>
   </div>

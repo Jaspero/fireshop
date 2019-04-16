@@ -66,13 +66,13 @@ export class OrdersComponent extends RxDestroy implements OnInit {
     }
   }
 
-  submitReview(productId, order) {
+  submitReview(productId, data) {
     this.dialog.open(ReviewsDialogComponent, {
       width: '500px',
       data: {
-        customerName: order.name,
-        customerId: order.customerId,
-        orderId: order.orderId,
+        customerName: data.name,
+        customerId: data.customerId,
+        orderId: data.orderId,
         productId: productId,
         createdOn: Date.now()
       }

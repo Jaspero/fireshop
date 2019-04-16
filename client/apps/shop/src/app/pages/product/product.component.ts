@@ -8,7 +8,7 @@ import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Review} from '@jf/interfaces/review.interface';
-import {combineLatest, Observable} from 'rxjs';
+import {combineLatest, Observable, pipe} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {Product} from '../../shared/interfaces/product.interface';
 import {CartService} from '../../shared/services/cart/cart.service';
@@ -104,7 +104,6 @@ export class ProductComponent extends RxDestroy implements OnInit {
         map(actions =>
           actions.map(action => {
             const data = action.payload.doc.data();
-
             return {
               id: action.payload.doc.id,
               ...data
