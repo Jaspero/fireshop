@@ -39,6 +39,7 @@ import {
   StopPropagationModule
 } from '@jaspero/ng-helpers';
 import {JpImagePreloadModule} from '@jaspero/ng-image-preload';
+import {ColorPickerComponent} from '@jf/components/color-picker/color-picker.component';
 import {ConfirmationComponent} from '@jf/components/confirmation/confirmation.component';
 import {LoginSignupDialogComponent} from './components/login-signup-dialog/login-signup-dialog.component';
 import {NetworkWidgetComponent} from './components/network-widget/network-widget.component';
@@ -98,6 +99,7 @@ const MODULES = [
   JpImagePreloadModule
 ];
 const ENTRY_COMPONENTS = [
+  ColorPickerComponent,
   ConfirmationComponent,
   LoginSignupDialogComponent,
   CartComponent,
