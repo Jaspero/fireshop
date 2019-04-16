@@ -101,6 +101,11 @@ export class AppComponent implements OnInit {
     });
   }
 
+  colorPicker: boolean;
+  openColorPicker() {
+    this.colorPicker = !this.colorPicker;
+  }
+
   logOut() {
     const {data} = this.state.currentRoute$.getValue();
 
