@@ -13,7 +13,9 @@ import {
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialogRef, MatSnackBar} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
+import {notify} from '@jf/utils/notify.operator';
 import {auth, firestore} from 'firebase';
+import {from} from 'rxjs';
 import {filter, switchMap, take, takeUntil} from 'rxjs/operators';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {RepeatPasswordValidator} from '../../helpers/compare-passwords';
@@ -86,20 +88,20 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
           duration: 2500
         });
       } else {
-        docRef
-          .set({
-            createdOn: Date.now()
-          })
-          .then(() => {
-            this.snackBar.open(
-              'You have successfully created an account',
-              'Dismiss',
-              {
-                duration: 2500
-              }
-            );
-          })
-          .catch();
+        docRef.set({
+          createdOn: Date.now()
+        });
+        from(
+          this.snackBar.open(
+            'You have successfully created an account',
+            'Dismiss',
+            {
+              duration: 2500
+            }
+          )
+        )
+          .pipe(notify())
+          .subscribe();
       }
 
       this.dialogRef.close();
@@ -144,9 +146,13 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
       )
       .then(() => {
         this.dialogRef.close();
-        this.snackBar.open('Your account has been created.', 'Dismiss', {
-          duration: 2500
-        });
+        this.snackBar.open(
+          'You have successfully created an account',
+          'Dismiss',
+          {
+            duration: 2500
+          }
+        );
       })
       .catch(res => {
         if (res.code === 'auth/invalid-email') {
