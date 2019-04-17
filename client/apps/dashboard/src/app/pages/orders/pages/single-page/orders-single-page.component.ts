@@ -1,4 +1,9 @@
-import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {Validators} from '@angular/forms';
 import {MatSort, MatTableDataSource} from '@angular/material';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
@@ -13,7 +18,8 @@ import {SinglePageComponent} from '../../../../shared/components/single-page/sin
   styleUrls: ['./orders-single-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OrdersSinglePageComponent extends SinglePageComponent {
+export class OrdersSinglePageComponent extends SinglePageComponent
+  implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   displayedColumns = [
     'name',
