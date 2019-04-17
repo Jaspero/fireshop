@@ -1,11 +1,8 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {FormBuilder, Validators} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component} from '@angular/core';
+import {Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
-import {StateService} from '../../../../shared/services/state/state.service';
 
 @Component({
   selector: 'jfsc-discounts-single-page',
@@ -13,18 +10,6 @@ import {StateService} from '../../../../shared/services/state/state.service';
   styleUrls: ['./discounts-single-page.component.scss']
 })
 export class DiscountsSinglePageComponent extends SinglePageComponent {
-  constructor(
-    private fb: FormBuilder,
-    private afs: AngularFirestore,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private cdr: ChangeDetectorRef,
-    private state: StateService
-  ) {
-    super(router, afs, state, activatedRoute, cdr, fb);
-  }
-
-  isEdit: boolean;
   collection = FirestoreCollections.Discounts;
 
   public buildForm(data: any) {

@@ -56,7 +56,7 @@
               <div class="p-y-xs">
                 <mat-form-field appearance="outline" class="w-full">
                   <mat-label>Short description</mat-label>
-                  <input matInput formControlName="shortDescription" type="text">
+                  <input matInput formControlName="shortDescription">
                 </mat-form-field>
               </div>
               <div class="p-y-xs">
@@ -148,11 +148,11 @@
     </button>
     &nbsp;
     <button
-      mat-raised-button
+      mat-flat-button
       type="submit"
       [disabled]="form.invalid"
       [class.loading]="loading$ | async"
-      (click)="save(form.getRawValue())">
+      (click)="save()">
       {{isEdit ? 'Save changes' : 'Save'}}
     </button>
   </div>

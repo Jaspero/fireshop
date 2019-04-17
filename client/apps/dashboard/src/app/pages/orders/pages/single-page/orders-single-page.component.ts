@@ -1,20 +1,11 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
+import {Validators} from '@angular/forms';
 import {MatSort, MatTableDataSource} from '@angular/material';
-import {ActivatedRoute, Router} from '@angular/router';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {of} from 'rxjs';
 import {switchMap, takeUntil} from 'rxjs/operators';
 import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
-import {StateService} from '../../../../shared/services/state/state.service';
 
 @Component({
   selector: 'jfsc-single-page',
@@ -22,19 +13,7 @@ import {StateService} from '../../../../shared/services/state/state.service';
   styleUrls: ['./orders-single-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OrdersSinglePageComponent extends SinglePageComponent
-  implements OnInit {
-  constructor(
-    private afs: AngularFirestore,
-    private fb: FormBuilder,
-    private activatedRoute: ActivatedRoute,
-    private cdr: ChangeDetectorRef,
-    private state: StateService,
-    private router: Router
-  ) {
-    super(router, afs, state, activatedRoute, cdr);
-  }
-
+export class OrdersSinglePageComponent extends SinglePageComponent {
   @ViewChild(MatSort) sort: MatSort;
   displayedColumns = [
     'name',

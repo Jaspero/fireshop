@@ -1,18 +1,7 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnInit
-} from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {RxDestroy} from '@jaspero/ng-helpers';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {of} from 'rxjs';
-import {switchMap, takeUntil} from 'rxjs/operators';
 import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
-import {StateService} from '../../../../shared/services/state/state.service';
 
 @Component({
   selector: 'jfsc-single-page',
@@ -21,17 +10,6 @@ import {StateService} from '../../../../shared/services/state/state.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomersSinglePageComponent extends SinglePageComponent {
-  constructor(
-    private fb: FormBuilder,
-    private afs: AngularFirestore,
-    private activatedRoute: ActivatedRoute,
-    private cdr: ChangeDetectorRef,
-    private router: Router,
-    private state: StateService
-  ) {
-    super(router, afs, state, activatedRoute, cdr);
-  }
-
   value: string;
   genders = ['Male', 'Female'];
   collection = FirestoreCollections.Customers;

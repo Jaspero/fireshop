@@ -30,19 +30,19 @@
               <div class="p-y-xs">
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>URL</mat-label>
-                  <input matInput formControlName="id" type="text">
+                  <input matInput formControlName="id">
                 </mat-form-field>
               </div>
               <div class="p-y-xs">
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Name</mat-label>
-                  <input matInput formControlName="name" type="text">
+                  <input matInput formControlName="name">
                 </mat-form-field>
               </div>
               <div class="p-y-xs">
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Description</mat-label>
-                  <textarea matInput  formControlName="description" type="text"></textarea>
+                  <textarea matInput  formControlName="description"></textarea>
                 </mat-form-field>
               </div>
             </mat-card>
@@ -57,11 +57,11 @@
       {{isEdit ? 'Discard changes' : 'Cancel'}}
     </button>
     <button
-      mat-raised-button
+      mat-flat-button
       type="submit"
       [disabled]="form.invalid"
       [class.loading]="loading$ | async"
-      (click)="save(form.getRawValue())">
+      (click)="save()">
       {{isEdit ? 'Save changes' : 'Save'}}
     </button>
   </div>

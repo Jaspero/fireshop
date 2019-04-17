@@ -27,7 +27,8 @@
 
           <div class="m-r-s">
             <button
-              mat-button
+              mat-flat-button
+              color="primary"
               (click)="cancel()">
               Cancel
             </button>
@@ -35,8 +36,8 @@
 
           <button
             [disabled]="form.invalid"
-            mat-button
-            (click)="save(form.getRawValue())">
+            mat-flat-button
+            (click)="save()">
             Submit
           </button>
         </div>

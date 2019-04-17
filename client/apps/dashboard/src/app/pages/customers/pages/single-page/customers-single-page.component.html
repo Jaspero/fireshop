@@ -34,16 +34,16 @@
     <ng-container class="m-b-s">
       <button
         mat-flat-button
+        color="primary"
         (click)="cancel()">
         Cancel
       </button>
     </ng-container>
 
     <button
-      (click)="save(form.getRawValue())"
-      [disabled]="form ? form.invalid : true"
       mat-flat-button
-      color="primary"
+      (click)="save()"
+      [disabled]="form.invalid"
       type="submit"
     >
       Submit

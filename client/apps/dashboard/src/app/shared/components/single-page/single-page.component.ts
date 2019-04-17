@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -11,6 +11,10 @@ import {map, switchMap, take, takeUntil} from 'rxjs/operators';
 import {StateService} from '../../services/state/state.service';
 import {queue} from '../../utils/queue.operator';
 
+@Component({
+  selector: 'jfsc-single-page',
+  template: ''
+})
 export class SinglePageComponent extends RxDestroy implements OnInit {
   constructor(
     public router: Router,
@@ -58,9 +62,7 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
       });
   }
 
-  save(item) {
-    console.log(item, 'item');
-
+  save(item = this.form.getRawValue()) {
     this.state.language$
       .pipe(
         take(1),
