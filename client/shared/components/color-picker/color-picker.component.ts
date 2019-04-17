@@ -29,36 +29,32 @@ export class ColorPickerComponent implements OnInit {
     {
       label: 'Theme one',
       primary: '#3f51b5',
-      // TODO: Define
-      accent: '#000',
-      warn: '#000',
+      accent: '#ff4081',
+      warn: '#fc2d14',
       class: 'one',
       active: false
     },
     {
       label: 'Theme two',
       primary: '#37474f',
-      // TODO: Define
-      accent: '#000',
-      warn: '#000',
+      accent: '#e91e63',
+      warn: '#fc2d14',
       class: 'two',
       active: false
     },
     {
       label: 'Theme three',
       primary: '#673ab7',
-      // TODO: Define
-      accent: '#000',
-      warn: '#000',
+      accent: '#e91e63',
+      warn: '#fc2d14',
       class: 'three',
       active: false
     },
     {
       label: 'Theme four',
       primary: '#8d6e63',
-      // TODO: Define
-      accent: '#000',
-      warn: '#000',
+      accent: '#63828d',
+      warn: '#fc2d14',
       class: 'four',
       active: false
     }
@@ -78,6 +74,9 @@ export class ColorPickerComponent implements OnInit {
   }
 
   select(theme: Theme) {
+    for (let i = 0; i < this.themes.length; i++) {
+      this.themes[i].active = false;
+    }
     this.document.documentElement.style.setProperty('--primary', theme.primary);
     this.document.documentElement.style.setProperty('--accent', theme.accent);
     this.document.documentElement.style.setProperty('--warn', theme.warn);

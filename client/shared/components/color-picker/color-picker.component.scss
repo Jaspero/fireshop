@@ -17,6 +17,10 @@ button[mat-mini-fab] {
   left: calc(50% - 20px);
   opacity: 0;
   transition: .4s;
+  border: 2px solid transparent;
+  &.active {
+    border: 2px solid red;
+  }
 }
 
 .color-picker.active {
