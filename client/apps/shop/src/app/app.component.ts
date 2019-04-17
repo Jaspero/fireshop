@@ -13,7 +13,7 @@ import {filter, map} from 'rxjs/operators';
 import {environment} from '../environments/environment';
 import {LoginSignupDialogComponent} from './shared/components/login-signup-dialog/login-signup-dialog.component';
 import {UpdateAvailableComponent} from './shared/components/update-available/update-available.component';
-import {BROWSER_CONFIG} from './shared/consts/browser-config.const';
+import {BROWSER_CONFIG} from '@jf/consts/browser-config.const';
 import {CartService} from './shared/services/cart/cart.service';
 import {StateService} from './shared/services/state/state.service';
 import {CartComponent} from './shared/components/cart/cart.component';

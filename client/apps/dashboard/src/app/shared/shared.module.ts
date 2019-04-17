@@ -40,6 +40,7 @@ import {
   SanitizeModule,
   StopPropagationModule
 } from '@jaspero/ng-helpers';
+import {ColorPickerComponent} from '@jf/components/color-picker/color-picker.component';
 import {ExportComponent} from './components/export/export.component';
 import {LangListComponent} from './components/lang-list/lang-list.component';
 import {ListComponent} from './components/list/list.component';
@@ -108,7 +109,7 @@ const COMPONENTS = [WysiwygComponent];
 const ENTRY_COMPONENTS = [
   ConfirmationComponent,
   ExportComponent,
-
+  ColorPickerComponent,
   ListComponent,
   LangListComponent
 ];

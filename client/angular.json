@@ -37,10 +37,7 @@
               "apps/shop/src/assets",
               "apps/shop/src/manifest.json"
             ],
-            "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "apps/shop/src/styles.scss"
-            ],
+            "styles": ["apps/shop/src/styles.scss"],
             "scripts": [],
             "es5BrowserSupport": true
           },
@@ -96,10 +93,7 @@
             "polyfills": "apps/shop/src/polyfills.ts",
             "tsConfig": "apps/shop/src/tsconfig.spec.json",
             "karmaConfig": "apps/shop/src/karma.conf.js",
-            "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "apps/shop/src/styles.scss"
-            ],
+            "styles": ["apps/shop/src/styles.scss"],
             "scripts": [],
             "assets": [
               "apps/shop/src/favicon.ico",
@@ -231,10 +225,7 @@
                 "output": "/skins/content/default"
               }
             ],
-            "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "apps/dashboard/src/styles.scss"
-            ],
+            "styles": ["apps/dashboard/src/styles.scss"],
             "scripts": ["./node_modules/tinymce/tinymce.min.js"]
           },
           "configurations": {
@@ -290,10 +281,7 @@
             "polyfills": "apps/dashboard/src/polyfills.ts",
             "tsConfig": "apps/dashboard/src/tsconfig.spec.json",
             "karmaConfig": "apps/dashboard/src/karma.conf.js",
-            "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "apps/dashboard/src/styles.scss"
-            ],
+            "styles": ["apps/dashboard/src/styles.scss"],
             "scripts": [],
             "assets": [
               "apps/dashboard/src/favicon.ico",
