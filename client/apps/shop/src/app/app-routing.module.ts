@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
+import {CheckOutGuard} from './shared/guards/check-out.guard';
 
 const routes: Routes = [
   {
@@ -16,7 +17,8 @@ const routes: Routes = [
   },
   {
     path: 'checkout',
-    loadChildren: './pages/checkout/checkout.module#CheckoutModule'
+    loadChildren: './pages/checkout/checkout.module#CheckoutModule',
+    canActivate: [CheckOutGuard]
   },
   {
     path: 'my-profile',

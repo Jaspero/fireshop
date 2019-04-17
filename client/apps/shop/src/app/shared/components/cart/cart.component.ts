@@ -28,43 +28,45 @@ export class CartComponent {
 
   loader: boolean;
 
-  // todo: we need to enhance checkout system
   checkOut() {
-    this.loader = true;
-    const orderId = nanoid();
+    this.router.navigate(['/checkout']);
+    this.closeDialog();
 
-    this.afs
-      .collection(`${FirestoreCollections.Orders}`)
-      .doc(orderId)
-      .set({
-        customerId: this.afAuth.auth.currentUser.uid,
-        name: this.afAuth.auth.currentUser.displayName,
-        orderId,
-        status: 'delivery set'
-      })
-      .finally(() => {
-        console.log('success');
-      });
-
-    const today = Date.now();
-
-    this.cart.items$.value.forEach(item => {
-      this.afs
-        .collection(`${FirestoreCollections.OrderedItems}`)
-        .doc(nanoid())
-        .set({
-          ...item,
-          time: today,
-          customerId: this.afAuth.auth.currentUser.uid,
-          name: this.afAuth.auth.currentUser.displayName,
-          orderId
-        })
-        .finally(() => {
-          this.cart.clear();
-          this.loader = false;
-          this.router.navigate(['/']);
-        });
-    });
+    // this.loader = true;
+    // const orderId = nanoid();
+    //
+    // this.afs
+    //   .collection(`${FirestoreCollections.Orders}`)
+    //   .doc(orderId)
+    //   .set({
+    //     customerId: this.afAuth.auth.currentUser.uid,
+    //     name: this.afAuth.auth.currentUser.displayName,
+    //     orderId,
+    //     status: 'delivery set'
+    //   })
+    //   .finally(() => {
+    //     console.log('success');
+    //   });
+    //
+    // const today = Date.now();
+    //
+    // this.cart.items$.value.forEach(item => {
+    //   this.afs
+    //     .collection(`${FirestoreCollections.OrderedItems}`)
+    //     .doc(nanoid())
+    //     .set({
+    //       ...item,
+    //       time: today,
+    //       customerId: this.afAuth.auth.currentUser.uid,
+    //       name: this.afAuth.auth.currentUser.displayName,
+    //       orderId
+    //     })
+    //     .finally(() => {
+    //       this.cart.clear();
+    //       this.loader = false;
+    //       this.router.navigate(['/']);
+    //     });
+    // });
   }
 
   navigate(data) {
