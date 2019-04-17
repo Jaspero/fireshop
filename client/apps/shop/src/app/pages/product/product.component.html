@@ -1,97 +1,95 @@
 <ng-container *ngIf="data$ | async as data">
-  <div class="grid">
 
-    <div class="col-5 col-s-10 col-xs-12">
-      <img src="assets/images/loading.svg" [jpPreload]="data.product.gallery[0]" />
+  <!--Product name-->
+  <section class="bg-primary c-l-primary jfs-product-header">
+    <div class="grid">
+      <div class="col-6 col-xs-12">
+        <h3 class="fw-reg c-l-primary m-b-xs">{{data.product.name}}</h3>
+        <p>{{data.product.shortDescription}}</p>
+      </div>
+      <div class="col-6 col-xs-12 ws-nowrap ta-right">
+        <mat-icon>star</mat-icon>
+        <mat-icon>star</mat-icon>
+        <mat-icon>star</mat-icon>
+        <mat-icon>star</mat-icon>
+        <mat-icon>star</mat-icon>
+        <p><a class="link">5 reviews</a></p>
+      </div>
     </div>
+  </section>
 
-    <div class="col-3 col-s-10 col-xs-12">
-      <div class="flex fd-col jc-center ai-center h-full p-y-m">
-
-        <!--Basic info-->
-        <h6 class="m-b-xs">{{data.product.name}}</h6>
-        <p>{{data.product.price | currency}}</p>
-        <br />
-
-        <!--Add more to cart-->
-        <ng-container *ngIf="data.quantity; else notInCart">
-          <button
-            id="btn-addMore"
-            mat-flat-button
-            color="primary"
-            (click)="cart.add(data.product, null)">
-            <span>&nbsp;Add to cart ({{data.quantity}})&nbsp;</span>
-          </button>
-        </ng-container>
-
-        <!--Add to cart-->
-        <ng-template #notInCart>
-          <button
-            id="btn-addCart-1"
-            mat-flat-button
-            color="primary"
-            (click)="cart.add(data.product, null)">
-            <span>&nbsp;Add to cart&nbsp;</span>
-          </button>
-        </ng-template>
-        <br />
-
+  <!--Product details-->
+  <section class="grid">
+    <div class="col-12">
+      <mat-card class="p-a-0">
+        <div class="grid">
+          <div class="col-6 col-s-12">
+            <h5 class="p-t-s p-b-xs">Description</h5>
+            <div [innerHtml]="data.product.description"></div>
+            <h2 class="m-t-m m-b-xs">{{data.product.price | currency}}</h2>
+            <ng-container *ngIf="data.quantity; else notInCart">
+              <button
+                mat-flat-button
+                color="accent"
+                (click)="cart.add(data.product, null)">
+                <span class="iblock p-x-s">Add more to cart (currently {{data.quantity}})</span>
+              </button>
+            </ng-container>
+            <ng-template #notInCart>
+              <button
+                mat-flat-button
+                color="accent"
+                (click)="cart.add(data.product, null)">
+                <span class="iblock p-x-m">Add to cart</span>
+              </button>
+            </ng-template>
+          </div>
+          <div class="col-6 col-s-12">
+            <img class="w-full" src="assets/images/loading.svg" [jpPreload]="data.product.gallery[0]" />
+            <div class="jfs-gallery">
+              <img
+                class="jfs-gallery-image active"
+                *ngFor="let img of data.product.gallery"
+                src="assets/images/loading.svg"
+                [jpPreload]="img"
+              />
+            </div>
+          </div>
+        </div>
         <button
-          id="btn-wshLst-1"
-          mat-icon-button
-          color="primary"
-          [matTooltip]="data.wishList.label"
-          [attr.aria-label]="data.wishList.label"
+          class="jfs-wishlist-button"
+          mat-mini-fab
+          color="accent"
+          [matTooltip]="data.wishList.tooltip"
+          [attr.aria-label]="data.wishList.tooltip"
           (click)="wishList.toggle(data.product.id)">
           <mat-icon>{{data.wishList.icon}}</mat-icon>
         </button>
-      </div>
-    </div>
-
-    <!--Additional actions-->
-    <div class="col-8 col-s-10 col-xs-12">
-      <mat-card>
-        <mat-tab-group>
-          <mat-tab id="tab-desc" label="Description">
-            <ng-template matTabContent>
-              <p>Description</p>
-            </ng-template>
-          </mat-tab>
-          <mat-tab id="tab-gal" label="Gallery">
-            <ng-template matTabContent>
-              <div *ngFor="let img of data.product.gallery">
-                <img
-                  class="w-full"
-                  src="assets/images/loading.svg"
-                  [jpPreload]="img"
-                />
-              </div>
-            </ng-template>
-          </mat-tab>
-          <mat-tab  id="tab-rew" label="Reviews">
-            <ng-template  matTabContent>
-              <ng-container *ngIf="(rews$ | async) as rec">
-                <ng-container *ngIf="rec.length; else empty">
-                  <div *ngFor="let review of rec" class="m-b-s">
-                    <jfs-review-card [review]="review"></jfs-review-card>
-                  </div>
-                </ng-container>
-              </ng-container>
-            </ng-template>
-          </mat-tab>
-
-        </mat-tab-group>
       </mat-card>
-    </div>
-    <div class="col-8 col-s-10 col-xs-12">
-      <h6>Similar products</h6>
 
+    </div>
+  </section>
+
+  <!--Similar products-->
+  <section class="grid">
+    <div class="col-12">
+      <h6>Similar products</h6>
       <div *ngIf="similar$ | async as similarProducts">
         <ng-container *ngFor="let next of similarProducts">
           <jfs-product-card [product]="next"></jfs-product-card>
         </ng-container>
       </div>
-
     </div>
-  </div>
+    <div class="col-12">
+      <h6>Reviews</h6>
+      <ng-container *ngIf="(rews$ | async) as rec">
+        <ng-container *ngIf="rec.length; else empty">
+          <div *ngFor="let review of rec">
+            <jfs-review-card [review]="review"></jfs-review-card>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </section>
+
 </ng-container>

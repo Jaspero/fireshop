@@ -78,11 +78,13 @@ export class ProductComponent extends RxDestroy implements OnInit {
               quantity: cart ? cart.quantity : 0,
               wishList: inWishList
                 ? {
-                    label: 'Remove from wishlist',
+                    label: 'Already on wishlist',
+                    tooltip: 'Remove from wishlist',
                     icon: 'favorite'
                   }
                 : {
                     label: 'Add to wishlist',
+                    tooltip: 'Add to wishlist',
                     icon: 'favorite_bordered'
                   }
             };
