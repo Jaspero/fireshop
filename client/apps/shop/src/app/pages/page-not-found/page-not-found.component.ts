@@ -5,8 +5,8 @@ import {
   OnInit,
   Optional
 } from '@angular/core';
+import {BROWSER_CONFIG} from '@jf/consts/browser-config.const';
 import {RESPONSE} from '@nguniversal/express-engine/tokens';
-import {BROWSER_CONFIG} from '../../shared/consts/browser-config.const';
 
 @Component({
   selector: 'jfs-page-not-found',

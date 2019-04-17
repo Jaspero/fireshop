@@ -1,0 +1,55 @@
+/**
+ * Theme
+ *
+ *============================================================================*/
+
+/* Root CSS variables
+ *============================================================================*/
+
+:root {
+  --primary: #3f51b5;
+  --accent : #ff4081;
+  --warn   : #fc2d14;
+}
+
+/* Angular material
+ *============================================================================*/
+
+@import '~@angular/material/theming';
+@include mat-core();
+
+$primary-override: (
+  100: var(--primary),
+  500: var(--primary),
+  700: var(--primary),
+  contrast: (
+    100: white,
+    500: white,
+    700: white
+  )
+);
+$accent-override: (
+  100: var(--accent),
+  500: var(--accent),
+  700: var(--accent),
+  contrast: (
+    100: white,
+    500: white,
+    700: white
+  )
+);
+$warn-override: (
+  100: var(--warn),
+  500: var(--warn),
+  700: var(--warn),
+  contrast: (
+    100: white,
+    500: white,
+    700: white
+  )
+);
+$primary: mat-palette($primary-override);
+$accent: mat-palette($accent-override);
+$warn: mat-palette($warn-override);
+$theme: mat-light-theme($primary,$accent,$warn);
+@include angular-material-theme($theme);

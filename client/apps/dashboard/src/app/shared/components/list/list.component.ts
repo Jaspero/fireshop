@@ -74,12 +74,7 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
   additionalRouteData = {
     filters: {
       search: ''
-    },
-    sort: {
-      active: 'name',
-      direction: 'desc'
-    },
-    pageSize: 10
+    }
   };
 
   // TODO: Pull from settings
