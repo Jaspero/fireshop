@@ -37,7 +37,7 @@
     <div class="grid jc-start">
       <!--Products-->
       <ng-container *ngIf="(products$ | async) as prod">
-        <ng-container *ngIf="!prod.length; else emptyList">
+        <ng-container *ngIf="prod.length; else emptyList">
           <div
             class="col-4 col-s-6 col-xs-12"
             *cdkVirtualFor="let product of prod">
