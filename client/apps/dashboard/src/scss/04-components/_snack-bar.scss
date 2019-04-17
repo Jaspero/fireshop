@@ -1,4 +1,4 @@
-@import "../variables";
+@import '../variables';
 
 /**
  * Snack bar
@@ -11,7 +11,7 @@
  *============================================================================*/
 
 .mat-snack-bar-container {
-  background: $primary;
+  background: var(--primary);
   color: $fg-l-primary;
 
   .mat-simple-snackbar-action {
@@ -23,7 +23,7 @@
  *============================================================================*/
 
 .mat-snack-bar-container.snack-bar-error {
-  background: $warn;
+  background: var(--warn);
   color: $fg-l-primary;
 
   .mat-simple-snackbar-action {

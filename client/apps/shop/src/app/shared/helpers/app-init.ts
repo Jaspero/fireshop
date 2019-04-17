@@ -1,6 +1,6 @@
 import {isPlatformBrowser} from '@angular/common';
 import {JpPreloadService} from '@jaspero/ng-image-preload';
-import {BROWSER_CONFIG} from '../consts/browser-config.const';
+import {BROWSER_CONFIG} from '@jf/consts/browser-config.const';
 import {NetworkService} from '../services/network/network.service';
 
 export async function appInit(

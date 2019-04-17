@@ -1,6 +1,6 @@
 import {Directive, ElementRef, Input, Renderer2} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {BROWSER_CONFIG} from '../../apps/shop/src/app/shared/consts/browser-config.const';
+import {BROWSER_CONFIG} from '../consts/browser-config.const';
 
 @Directive({
   selector: '[jfsLibraryImage]'
