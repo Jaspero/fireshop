@@ -29,27 +29,8 @@ export class ProductsListComponent extends LangListComponent<Product>
   ];
   collection = FirestoreCollections.Products;
   categories$: Observable<Category[]>;
-  additionalRouteData = {
-    filters: {
-      search: '',
-      category: ''
-    },
-    sort: {
-      active: 'name',
-      direction: 'desc'
-    },
-    pageSize: 10
-  };
 
   ngOnInit() {
-    this.options = this.state.getRouterData({
-      sort: {
-        direction: 'desc',
-        active: 'createdOn'
-      },
-      pageSize: 10,
-      ...this.additionalRouteData
-    });
     super.ngOnInit();
 
     this.categories$ = this.afs

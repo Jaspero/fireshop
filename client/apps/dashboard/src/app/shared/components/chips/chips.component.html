@@ -1,6 +1,6 @@
 <ng-container *ngIf="chips$ | async as chips">
   <div class="toolbar toolbar-inset" *ngIf="haveLength(chips)">
-    <mat-chip-list aria-label="Fish selection">
+    <mat-chip-list>
       <ng-container *ngFor="let chip of chips | keyvalue">
         <mat-chip *ngIf="chip.value">
           <span>{{chip.key}}: {{chip.value}}</span>

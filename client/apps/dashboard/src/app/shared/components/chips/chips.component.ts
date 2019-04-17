@@ -1,4 +1,10 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from '@angular/core';
 import {Observable} from 'rxjs';
 
 @Component({
@@ -8,18 +14,18 @@ import {Observable} from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChipsComponent {
-  constructor() { }
+  constructor() {}
 
   @Input()
-  chips$: Observable<any>;
+  chips$: Observable<{key: string; value: string}>;
 
-  @Output() filterValue = new EventEmitter<any>();
+  @Output() filterValue = new EventEmitter<string>();
 
   removeChip(chip) {
-    this.filterValue.emit(chip)
+    this.filterValue.emit(chip.key);
   }
 
   haveLength(chips) {
-    return Object.entries(chips).find(item => item[1]);
+    return Object.entries(chips).some(item => !!item[1]);
   }
 }
