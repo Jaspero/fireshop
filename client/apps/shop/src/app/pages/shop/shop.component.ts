@@ -94,7 +94,6 @@ export class ShopComponent extends RxDestroy implements OnInit {
       direction: 'desc'
     }
   ];
-  chipArray = [];
   priceLimit: number;
   categories: any;
 
@@ -145,14 +144,7 @@ export class ShopComponent extends RxDestroy implements OnInit {
                     .limit(this.pageSize)
                     .where('active', FirebaseOperator.Equal, true);
 
-                  this.chipArray = [];
-
                   if (query.order.name) {
-                    this.chipArray.push({
-                      filter: 'order',
-                      value: query.order.name
-                    });
-
                     final = final.orderBy(
                       query.order.type,
                       query.order.direction
@@ -160,11 +152,6 @@ export class ShopComponent extends RxDestroy implements OnInit {
                   }
 
                   if (query.category) {
-                    this.chipArray.push({
-                      filter: 'category',
-                      value: query.category.name
-                    });
-
                     final = final.where(
                       'category',
                       FirebaseOperator.Equal,
@@ -173,11 +160,6 @@ export class ShopComponent extends RxDestroy implements OnInit {
                   }
 
                   if (query.price) {
-                    this.chipArray.push({
-                      filter: 'price',
-                      value: query.price
-                    });
-
                     final = final.where(
                       'price',
                       FirebaseOperator.LargerThenOrEqual,
@@ -230,10 +212,6 @@ export class ShopComponent extends RxDestroy implements OnInit {
     this.dialog.open(this.filterDialog, {
       width: '400px'
     });
-  }
-
-  removeChip(chip) {
-    this.filters.get(chip.filter).setValue('');
   }
 
   updateOrder(order) {
