@@ -14,6 +14,7 @@ import {
   MatSnackBar
 } from '@angular/material';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {Review} from '@jf/interfaces/review.interface';
 import * as nanoid from 'nanoid';
 import {from} from 'rxjs';
 import {notify} from '@jf/utils/notify.operator';
@@ -33,13 +34,7 @@ export class ReviewsDialogComponent implements OnInit {
     private afAuth: AngularFireAuth,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA)
-    public data: {
-      productId: string;
-      createdOn: number;
-      customerId: string;
-      customerName: string;
-      orderId?: string;
-    }
+    public data: Review
   ) {}
 
   ngOnInit() {
@@ -52,11 +47,12 @@ export class ReviewsDialogComponent implements OnInit {
     from(
       this.afs
         .collection(FirestoreCollections.Reviews)
-        .doc(nanoid())
+        .doc(this.data.id ? this.data.id : nanoid())
         .set({
           ...this.data,
           comment,
-          rating
+          rating,
+          ...(this.data.createdOn ? {} : {createdOn: Date.now()})
         })
     )
       .pipe(notify())
@@ -67,12 +63,11 @@ export class ReviewsDialogComponent implements OnInit {
 
   private buildForm() {
     this.form = this.fb.group({
-      dataProduct: [
-        {value: this.data.productId, disabled: true},
-        Validators.required
-      ],
-      comment: ['', Validators.required],
-      rating: ['', [Validators.required, Validators.min(1), Validators.max(5)]]
+      comment: [this.data.comment || '', Validators.required],
+      rating: [
+        this.data.rating || '',
+        [Validators.required, Validators.min(1), Validators.max(5)]
+      ]
     });
   }
 }

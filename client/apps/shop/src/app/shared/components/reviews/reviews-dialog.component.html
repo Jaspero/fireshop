@@ -1,10 +1,8 @@
 <form [formGroup]="form">
   <h6 class="m-b-s">Rate this product</h6>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Product ID</mat-label>
-    <input matInput formControlName="dataProduct" [disabled]="true">
-  </mat-form-field>
+  <h2>{{this.data.productId}}</h2>
+
   <mat-form-field class="w-full" appearance="outline">
     <mat-label>Comment</mat-label>
     <textarea formControlName="comment" matInput></textarea>

@@ -21,7 +21,7 @@
     <p class="">{{review.comment}}</p>
   </div>
   <div *ngIf="review.customerId === afAuth.auth.currentUser.uid">
-    <button mat-button (click)="edit(review.id)">
+    <button mat-button (click)="edit()">
       <mat-icon color="primary">edit</mat-icon>
       <span>Edit</span>
     </button>

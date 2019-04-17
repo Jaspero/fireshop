@@ -1,4 +1,4 @@
-import {Component, HostBinding, Input} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {MatDialog} from '@angular/material';
@@ -25,10 +25,15 @@ export class ReviewCardComponent {
   @Input()
   review: Review;
   fiveStar = new Array(5);
+  isEdit: boolean;
 
   edit() {
+    this.isEdit = true;
+
+    console.log(this.review.id);
+
     this.dialog.open(ReviewsDialogComponent, {
-      width: '500px'
+      data: this.review
     });
   }
 
