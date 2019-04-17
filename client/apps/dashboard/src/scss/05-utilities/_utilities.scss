@@ -90,13 +90,13 @@
  *============================================================================*/
 
 .bg-primary {
-  background-color: $primary;
+  background-color: var(--primary);
 }
 .bg-accent {
-  background-color: $accent;
+  background-color: var(--accent);
 }
 .bg-warm {
-  background-color: $warn;
+  background-color: var(--warn);
 }
 
 .bg-l-primary {
@@ -117,13 +117,13 @@
  *============================================================================*/
 
 .c-primary {
-  color: $primary;
+  color: var(--primary);
 }
 .c-accent {
-  color: $accent;
+  color: var(--accent);
 }
 .c-warm {
-  color: $warn;
+  color: var(--warn);
 }
 
 .c-l-primary {

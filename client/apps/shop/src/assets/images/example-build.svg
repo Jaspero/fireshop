@@ -20,12 +20,12 @@
   <path fill="#fff" d="M9.62 10.23h776.76v662.68H9.62z"/>
   <path fill="#bdbdbd" d="M118.5 81.85h254v20.81h-254z"/>
   <path fill="#e0e0e0" d="M118.5 123.47h555v20.81h-555z"/>
-  <path fill="#64ffda" d="M118.5 165.08h555v20.81h-555z"/>
+  <path fill="#555" d="M118.5 165.08h555v20.81h-555z"/>
   <path fill="url(#a)" d="M113 262h160v158.5H113z"/>
   <path fill="url(#c)" d="M316 262h159v158.5H316z"/>
   <path fill="url(#d)" d="M519 262h159v158.5H519z"/>
   <path fill="url(#e)" d="M113 460h160v156.5H113z"/>
   <path fill="url(#f)" d="M316 460h159v156.5H316z"/>
   <path fill="url(#g)" d="M519 460h159v156.5H519z"/>
-  <path fill="#3f51b5" d="M118.5 265.5h149v149h-149zM321.5 265.5h149v149h-149zM524.5 265.5h149v149h-149zM118.5 461.5h149v149h-149zM321.5 461.5h149v149h-149zM524.5 461.5h149v149h-149z"/>
+  <path fill="#666" d="M118.5 265.5h149v149h-149zM321.5 265.5h149v149h-149zM524.5 265.5h149v149h-149zM118.5 461.5h149v149h-149zM321.5 461.5h149v149h-149zM524.5 461.5h149v149h-149z"/>
 </svg>

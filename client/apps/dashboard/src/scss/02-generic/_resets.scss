@@ -163,3 +163,10 @@ span[matprefix] {
   position: relative;
   top: -.25em;
 }
+
+/* Hardcoded checked color for mat-slide-toggle-bar because of variables
+ *============================================================================*/
+
+.mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+  background-color: rgba(0,0,0,.24);
+}

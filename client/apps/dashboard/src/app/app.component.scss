@@ -19,7 +19,7 @@
   width: calc(100% - 200px); // 100% - language select
   height: 64px; // Header height
   padding: 0 16px;
-  background: $primary;
+  background: var(--primary);
 
   @media (max-width: $screen-xs) {
     position: static;

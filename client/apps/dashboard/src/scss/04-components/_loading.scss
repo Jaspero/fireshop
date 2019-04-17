@@ -1,5 +1,3 @@
-@import '../variables';
-
 /**
  * Loading
  *
@@ -26,7 +24,7 @@ a.loading {
     height: 24px;
     border-radius: 50%;
     border: 3px solid #eee;
-    border-top-color: $primary;
+    border-top-color: var(--primary);
     animation: loading .6s infinite cubic-bezier(0.5, 0.25, 0.5, 0.75);
     @keyframes loading {
       from { transform: rotate(0); }
