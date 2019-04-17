@@ -12,20 +12,20 @@ export class ProfileComponent implements OnInit {
 
   links = [
     {
-      label: 'Wish List',
-      route: 'wish-list'
+      label: 'Settings',
+      route: 'settings'
     },
     {
-      label: 'Reviews',
-      route: 'reviews'
+      label: 'Wish List',
+      route: 'wish-list'
     },
     {
       label: 'Orders',
       route: 'orders'
     },
     {
-      label: 'Settings',
-      route: 'settings'
+      label: 'Reviews',
+      route: 'reviews'
     }
   ];
 

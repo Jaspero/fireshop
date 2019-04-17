@@ -9,7 +9,8 @@ import {MatDialog, MatSnackBar} from '@angular/material';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {SwUpdate} from '@angular/service-worker';
 import {interval} from 'rxjs';
-import {filter, map, tap} from 'rxjs/operators';
+import {filter, map} from 'rxjs/operators';
+import {environment} from '../environments/environment';
 import {LoginSignupDialogComponent} from './shared/components/login-signup-dialog/login-signup-dialog.component';
 import {UpdateAvailableComponent} from './shared/components/update-available/update-available.component';
 import {BROWSER_CONFIG} from './shared/consts/browser-config.const';
@@ -80,7 +81,9 @@ export class AppComponent implements OnInit {
         this.state.currentRoute$.next({data: route.data, url: route.url});
       });
 
-    this.connectSw();
+    if (environment.serviceWorker) {
+      this.connectSw();
+    }
   }
 
   openCheckout() {
