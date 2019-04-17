@@ -15,11 +15,13 @@
           <div class="flex ai-center p-y-xs" *ngFor="let item of order.orderList">
             <img width="100" src="{{item.image}}"/>
             <p class="m-l-xs">{{ item.productId }}, {{ item.quantity }}x (${{ item.price }})</p>
-          </div>
-          <div class="flex ai-center p-y-xs">
-            <button mat-button (click)="submitReview(order.orderList[0].identifier, order)">
-              Submit review
-            </button>
+
+            <div class="flex ai-center p-y-xs">
+              <button mat-button (click)="submitReview(item)">
+                Submit review
+              </button>
+            </div>
+
           </div>
         </mat-expansion-panel>
       </mat-accordion>

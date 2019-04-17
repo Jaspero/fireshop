@@ -7,17 +7,12 @@ import {
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogRef,
-  MatSnackBar
-} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Review} from '@jf/interfaces/review.interface';
+import {notify} from '@jf/utils/notify.operator';
 import * as nanoid from 'nanoid';
 import {from} from 'rxjs';
-import {notify} from '@jf/utils/notify.operator';
 
 @Component({
   selector: 'jfs-reviews',

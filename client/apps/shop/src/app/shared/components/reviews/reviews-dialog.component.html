@@ -1,5 +1,5 @@
 <form [formGroup]="form">
-  <h6 class="m-b-s">Rate this product</h6>
+  <h6 class="m-b-s">{{data.id ? 'Edit this review': 'Rate this product'}}</h6>
 
   <h2>{{this.data.productId}}</h2>
 
