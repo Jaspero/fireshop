@@ -37,7 +37,7 @@
     <div class="grid jc-start">
       <!--Products-->
       <ng-container *ngIf="(products$ | async) as prod">
-        <ng-container *ngIf="prod.length; else emptyList">
+        <ng-container *ngIf="!prod.length; else emptyList">
           <div
             class="col-4 col-s-6 col-xs-12"
             *cdkVirtualFor="let product of prod">
@@ -48,9 +48,7 @@
       <!--Products empty-->
       <ng-template #emptyList>
         <div class="col-12">
-          <p class="p-y-s ta-center">
-            There's nothing here <span class="fs-large">🤔</span>
-          </p>
+          <p class="p-y-s ta-center c-l-primary">No products match your search criteria. Try turning off some filters.</p>
         </div>
       </ng-template>
     </div>
