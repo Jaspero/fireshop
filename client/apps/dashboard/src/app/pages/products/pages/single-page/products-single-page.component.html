@@ -143,10 +143,14 @@
   </section>
 
   <div class="jfsc-actions-header">
-    <button mat-flat-button color="primary" (click)="cancel()">
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="cancel()">
       {{isEdit ? 'Discard changes' : 'Cancel'}}
-    </button>
-    &nbsp;
+    </button> &nbsp;
+
+
     <button
       mat-flat-button
       type="submit"
