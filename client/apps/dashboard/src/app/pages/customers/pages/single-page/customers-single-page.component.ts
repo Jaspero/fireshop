@@ -14,11 +14,11 @@ export class CustomersSinglePageComponent extends SinglePageComponent {
   genders = ['Male', 'Female'];
   collection = FirestoreCollections.Customers;
 
-  public buildForm(data) {
+  buildForm(data) {
     let date: any;
 
     if (data) {
-      const num = new Date(data['dateOfBirth'].seconds).getTime();
+      const num = new Date(data['dateOfBirth']).getTime();
       date = new Date(num * 1000);
     } else {
       date = '';

@@ -1,47 +1,28 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {RxDestroy} from '@jaspero/ng-helpers';
-import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {Component, OnInit} from '@angular/core';
 import {notify} from '@jf/utils/notify.operator';
 import * as nanoid from 'nanoid';
-import {from, of} from 'rxjs';
+import {combineLatest, from, of} from 'rxjs';
 import {map, switchMap, take, takeUntil} from 'rxjs/operators';
-import {StateService} from '../../services/state/state.service';
 import {queue} from '../../utils/queue.operator';
+import {SinglePageComponent} from '../single-page/single-page.component';
 
 @Component({
-  selector: 'jfsc-single-page',
+  selector: 'jfsc-lang-single-page',
   template: ''
 })
-export class SinglePageComponent extends RxDestroy {
-  constructor(
-    public router: Router,
-    public afs: AngularFirestore,
-    public state: StateService,
-    public activatedRoute: ActivatedRoute,
-    public cdr: ChangeDetectorRef,
-    public fb: FormBuilder
-  ) {
-    super();
-  }
-
-  isEdit: string;
-  collection: FirestoreCollections;
-  form: FormGroup;
-
+export class LangSinglePageComponent extends SinglePageComponent
+  implements OnInit {
   ngOnInit() {
-    this.activatedRoute.params
+    combineLatest(this.activatedRoute.params, this.state.language$)
       .pipe(
-        switchMap(params => {
+        switchMap(([params, lang]) => {
           if (params.id === 'new') {
             this.isEdit = '';
             return of({});
           } else {
             this.isEdit = params.id;
             return this.afs
-              .collection(this.collection)
+              .collection(`${this.collection}-${lang}`)
               .doc(params.id)
               .valueChanges()
               .pipe(
@@ -63,13 +44,13 @@ export class SinglePageComponent extends RxDestroy {
   }
 
   save(item = this.form.getRawValue()) {
-    this.activatedRoute.params
+    this.state.language$
       .pipe(
         take(1),
-        switchMap(() =>
+        switchMap(lang =>
           from(
             this.afs
-              .collection(this.collection)
+              .collection(`${this.collection}-${lang}`)
               .doc(item.id ? item.id : nanoid())
               .set({
                 item,
@@ -85,8 +66,4 @@ export class SinglePageComponent extends RxDestroy {
   }
 
   buildForm(data: any) {}
-
-  cancel() {
-    this.router.navigate(['/', this.collection]);
-  }
 }

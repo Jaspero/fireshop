@@ -30,23 +30,21 @@
       <textarea matInput placeholder="Brief" formControlName="brief"></textarea>
     </mat-form-field>
   </div>
-  <div class="col-12 ta-right">
-    <ng-container class="m-b-s">
-      <button
-        mat-flat-button
-        color="primary"
-        (click)="cancel()">
-        Cancel
-      </button>
-    </ng-container> &nbsp;
+  <div class="jfsc-actions-header">
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="cancel()">
+      {{isEdit ? 'Discard changes' : 'Cancel'}}
+    </button> &nbsp;
 
     <button
       mat-flat-button
-      (click)="save()"
-      [disabled]="form.invalid"
       type="submit"
-    >
-      Submit
+      [disabled]="form.invalid"
+      [class.loading]="loading$ | async"
+      (click)="save()">
+      {{isEdit ? 'Save changes' : 'Save'}}
     </button>
   </div>
 </form>

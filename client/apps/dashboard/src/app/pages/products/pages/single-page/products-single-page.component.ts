@@ -1,22 +1,18 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   OnInit,
   ViewChild
 } from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
+import {FormGroup, Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
-import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
+import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
 import {Product} from '../../../../shared/interfaces/product.interface';
 import {FileUploadComponent} from '../../../../shared/modules/file-upload/component/file-upload.component';
-import {StateService} from '../../../../shared/services/state/state.service';
 
 @Component({
   selector: 'jfsc-single-page',
@@ -24,19 +20,8 @@ import {StateService} from '../../../../shared/services/state/state.service';
   styleUrls: ['./products-single-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProductsSinglePageComponent extends SinglePageComponent
+export class ProductsSinglePageComponent extends LangSinglePageComponent
   implements OnInit {
-  constructor(
-    private afs: AngularFirestore,
-    private fb: FormBuilder,
-    private activatedRoute: ActivatedRoute,
-    private cdr: ChangeDetectorRef,
-    private state: StateService,
-    private router: Router
-  ) {
-    super(router, afs, state, activatedRoute, cdr, fb);
-  }
-
   @ViewChild(FileUploadComponent)
   fileUploadComponent: FileUploadComponent;
 

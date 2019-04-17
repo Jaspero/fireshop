@@ -23,22 +23,21 @@
           <textarea matInput formControlName="address"></textarea>
         </mat-form-field>
 
-        <div class="flex jc-center">
-
-          <div class="m-r-s">
-            <button
-              mat-flat-button
-              color="primary"
-              (click)="cancel()">
-              Cancel
-            </button> &nbsp;
-          </div>
+        <div class="jfsc-actions-header">
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="cancel()">
+            {{isEdit ? 'Discard changes' : 'Cancel'}}
+          </button> &nbsp;
 
           <button
-            [disabled]="form.invalid"
             mat-flat-button
+            type="submit"
+            [disabled]="form.invalid"
+            [class.loading]="loading$ | async"
             (click)="save()">
-            Submit
+            {{isEdit ? 'Save changes' : 'Save'}}
           </button>
         </div>
 
