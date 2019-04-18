@@ -23,8 +23,6 @@ export class SearchComponent implements OnInit {
         }
       )
       .valueChanges()
-      .subscribe(val => {
-        console.log(123, val);
-      });
+      .subscribe();
   }
 }

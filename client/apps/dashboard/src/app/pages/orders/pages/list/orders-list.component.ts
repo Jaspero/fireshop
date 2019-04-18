@@ -33,8 +33,6 @@ export class OrdersListComponent extends ListComponent<Order> {
         orderId: element.orderId,
         status: val
       })
-      .finally(() => {
-        console.log('you changed order status to ' + val);
-      });
+      .finally();
   }
 }

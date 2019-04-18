@@ -289,7 +289,6 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
   }
 
   changeFilters(event) {
-    console.log(123);
     this.filters.get(event).setValue('');
   }
 
