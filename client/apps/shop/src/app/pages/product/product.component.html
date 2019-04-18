@@ -7,14 +7,29 @@
         <h3 class="fw-reg c-l-primary m-b-xs">{{data.product.name}}</h3>
         <p>{{data.product.shortDescription}}</p>
       </div>
-      <div class="col-6 col-xs-12 ws-nowrap ta-right">
-        <mat-icon>star</mat-icon>
-        <mat-icon>star</mat-icon>
-        <mat-icon>star</mat-icon>
-        <mat-icon>star</mat-icon>
-        <mat-icon>star</mat-icon>
-        <p><a class="link" (click)="openReviews()">5 reviews</a></p>
-      </div>
+
+      <ng-container *ngIf="(rews$ | async) as rec">
+
+        <ng-template #reviewsDialog>
+          <h6 mat-dialog-title="">Reviews</h6>
+          <ng-container *ngIf="rec.length; else empty">
+            <div *ngFor="let review of rec">
+              <jfs-review-card [review]="review"></jfs-review-card>
+            </div>
+          </ng-container>
+        </ng-template>
+
+        <div class="col-6 col-xs-12 ws-nowrap ta-right">
+          <mat-icon>star</mat-icon>
+          <mat-icon>star</mat-icon>
+          <mat-icon>star</mat-icon>
+          <mat-icon>star</mat-icon>
+          <mat-icon>star</mat-icon>
+          <p><a class="link" (click)="openReviews()">Number of reviews: {{rec.length}}</a></p>
+        </div>
+      </ng-container>
+
+
     </div>
   </section>
 
@@ -45,13 +60,19 @@
             </ng-template>
           </div>
           <div class="col-6 col-s-12">
-            <img class="w-full" src="assets/images/loading.svg" [jpPreload]="data.product.gallery[0]" />
+            <img
+              class="w-full"
+              src="assets/images/loading.svg"
+              [jpPreload]="data.product.gallery[0]"/>
+
+
             <div class="jfs-gallery">
               <img
-                class="jfs-gallery-image"
                 *ngFor="let img of data.product.gallery"
+                class="jfs-gallery-image"
                 src="assets/images/loading.svg"
                 [jpPreload]="img"
+                (click)="changePicture(img, data.product.gallery)"
               />
             </div>
           </div>
@@ -81,16 +102,5 @@
       </div>
     </div>
   </section>
-
-  <ng-template #reviewsDialog>
-    <h6 mat-dialog-title="">Reviews</h6>
-    <ng-container *ngIf="(rews$ | async) as rec">
-      <ng-container *ngIf="rec.length; else empty">
-        <div *ngFor="let review of rec">
-          <jfs-review-card [review]="review"></jfs-review-card>
-        </div>
-      </ng-container>
-    </ng-container>
-  </ng-template>
 
 </ng-container>

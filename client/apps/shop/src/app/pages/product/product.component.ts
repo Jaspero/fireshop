@@ -137,4 +137,8 @@ export class ProductComponent extends RxDestroy implements OnInit {
       width: '600px'
     });
   }
+
+  // changePicture(img, ind) {
+  //   console.log(ind);
+  // }
 }
