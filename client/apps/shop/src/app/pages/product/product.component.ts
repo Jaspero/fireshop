@@ -52,6 +52,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
     };
   }>;
   similar$: Observable<any>;
+  imgIndex = 0;
 
   @ViewChild('reviewsDialog') reviewsDialog: TemplateRef<any>;
 
@@ -138,7 +139,8 @@ export class ProductComponent extends RxDestroy implements OnInit {
     });
   }
 
-  // changePicture(img, ind) {
-  //   console.log(ind);
-  // }
+  changePicture(index) {
+    console.log(index);
+    this.imgIndex = index;
+  }
 }

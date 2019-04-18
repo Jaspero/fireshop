@@ -63,16 +63,16 @@
             <img
               class="w-full"
               src="assets/images/loading.svg"
-              [jpPreload]="data.product.gallery[0]"/>
+              [jpPreload]="data.product.gallery[imgIndex]"/>
 
 
             <div class="jfs-gallery">
               <img
-                *ngFor="let img of data.product.gallery"
+                *ngFor="let img of data.product.gallery; index as i"
                 class="jfs-gallery-image"
                 src="assets/images/loading.svg"
                 [jpPreload]="img"
-                (click)="changePicture(img, data.product.gallery)"
+                (click)="changePicture(i)"
               />
             </div>
           </div>
