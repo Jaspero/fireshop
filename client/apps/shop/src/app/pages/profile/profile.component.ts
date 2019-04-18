@@ -9,7 +9,7 @@ import {Router} from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProfileComponent implements OnInit {
-  constructor(private router: Router, public afAuth: AngularFireAuth) {}
+  constructor(public afAuth: AngularFireAuth, private router: Router) {}
 
   links = [
     {
