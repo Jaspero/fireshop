@@ -13,7 +13,7 @@
         <mat-icon>star</mat-icon>
         <mat-icon>star</mat-icon>
         <mat-icon>star</mat-icon>
-        <p><a class="link">5 reviews</a></p>
+        <p><a class="link" (click)="openReviews()">5 reviews</a></p>
       </div>
     </div>
   </section>
@@ -48,7 +48,7 @@
             <img class="w-full" src="assets/images/loading.svg" [jpPreload]="data.product.gallery[0]" />
             <div class="jfs-gallery">
               <img
-                class="jfs-gallery-image active"
+                class="jfs-gallery-image"
                 *ngFor="let img of data.product.gallery"
                 src="assets/images/loading.svg"
                 [jpPreload]="img"
@@ -71,25 +71,26 @@
   </section>
 
   <!--Similar products-->
-  <section class="grid">
+  <section class="grid p-t-m">
     <div class="col-12">
-      <h6>Similar products</h6>
+      <h5>Similar products</h5>
       <div *ngIf="similar$ | async as similarProducts">
         <ng-container *ngFor="let next of similarProducts">
           <jfs-product-card [product]="next"></jfs-product-card>
         </ng-container>
       </div>
     </div>
-    <div class="col-12">
-      <h6>Reviews</h6>
-      <ng-container *ngIf="(rews$ | async) as rec">
-        <ng-container *ngIf="rec.length; else empty">
-          <div *ngFor="let review of rec">
-            <jfs-review-card [review]="review"></jfs-review-card>
-          </div>
-        </ng-container>
-      </ng-container>
-    </div>
   </section>
+
+  <ng-template #reviewsDialog>
+    <h6 mat-dialog-title="">Reviews</h6>
+    <ng-container *ngIf="(rews$ | async) as rec">
+      <ng-container *ngIf="rec.length; else empty">
+        <div *ngFor="let review of rec">
+          <jfs-review-card [review]="review"></jfs-review-card>
+        </div>
+      </ng-container>
+    </ng-container>
+  </ng-template>
 
 </ng-container>
