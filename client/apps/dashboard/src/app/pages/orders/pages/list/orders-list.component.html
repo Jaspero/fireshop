@@ -11,10 +11,10 @@
     <div class="col-12">
       <mat-card>
 
-        <div class="toolbar toolbar-inset p-t-0">
+        <form [formGroup]="filters" class="toolbar toolbar-inset p-t-0">
           <mat-form-field appearance="outline">
             <mat-label>&nbsp;Search</mat-label>
-            <input matInput>
+            <input matInput formControlName="search">
             <mat-icon matPrefix>search</mat-icon>
           </mat-form-field>
           <div class="f1"></div>
@@ -22,20 +22,9 @@
             <span>&nbsp;Filters&nbsp;</span>
             <mat-icon>filter_list</mat-icon>
           </button>
-        </div>
+        </form>
 
-        <!--Actions toolbar-->
-        <ng-container *ngIf="chips$ | async as chips">
-          <div class="toolbar toolbar-inset" *ngIf="chips.length">
-            <mat-chip-list aria-label="Fish selection">
-              <mat-chip *ngFor="let chip of chips">
-                <span>{{chip.filter}}: {{chip.value}}</span>
-                <mat-icon matChipRemove (click)="removeChip()">cancel</mat-icon>
-              </mat-chip>
-            </mat-chip-list>
-          </div>
-        </ng-container>
-
+        <jfsc-chips [chips$]="filters.valueChanges" (filterValue)="changeFilters($event)"></jfsc-chips>
 
         <ng-template #filterDialog>
           <div mat-dialog-title>
@@ -61,7 +50,7 @@
 
           <div mat-dialog-actions>
             <div class="ta-right w-full">
-              <button mat-button>Reset all</button>&nbsp;
+              <button mat-button (click)="resetAll()">Reset all</button>&nbsp;
               <button id="btn-cntShp" mat-flat-button mat-dialog-close color="primary">
                 Close
               </button>

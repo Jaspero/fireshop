@@ -51,7 +51,7 @@ export class ProductsListComponent extends LangListComponent<Product>
       ref = ref.where(
         'category',
         FirebaseOperator.Equal,
-        this.options.filters.category.id
+        this.options.filters.category
       );
     }
 
