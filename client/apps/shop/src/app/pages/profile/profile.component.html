@@ -5,8 +5,8 @@
       <mat-icon>edit</mat-icon>
     </button>
   </div>
-  <h6 class="c-l-primary p-y-xs">John Doe</h6>
-  <p class="c-l-secondary">john@doe.com</p>
+  <h6 class="c-l-primary p-y-xs">{{afAuth.auth.currentUser.displayName}}</h6>
+  <p class="c-l-secondary">{{afAuth.auth.currentUser.email}}</p>
 </section>
 
 <nav mat-tab-nav-bar backgroundColor="primary" mat-align-tabs="center">
