@@ -73,7 +73,8 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
   filters: FormGroup;
   additionalRouteData = {
     filters: {
-      search: ''
+      search: '',
+      category: ''
     }
   };
 
@@ -287,7 +288,12 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
     });
   }
 
-  removeChip(chip) {
-    this.filters.get(chip.filter).setValue('');
+  changeFilters(event) {
+    console.log(123);
+    this.filters.get(event).setValue('');
+  }
+
+  resetAll() {
+    this.filters.reset();
   }
 }
