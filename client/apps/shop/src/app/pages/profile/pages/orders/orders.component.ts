@@ -43,7 +43,6 @@ export class OrdersComponent extends RxDestroy implements OnInit {
       .valueChanges()
       .pipe(takeUntil(this.destroyed$))
       .subscribe(value => {
-        console.log(value);
         this.orders = value.map(x => {
           x['orderList'] = [];
           return x;

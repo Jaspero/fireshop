@@ -42,9 +42,7 @@ export class CartComponent {
         orderId,
         status: 'delivery set'
       })
-      .finally(() => {
-        console.log('success');
-      });
+      .finally();
 
     const today = Date.now();
 
