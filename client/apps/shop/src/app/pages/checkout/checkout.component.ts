@@ -1,6 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import {ENV_CONFIG} from '@jf/consts/env-config.const';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {CartService} from '../../shared/services/cart/cart.service';
+import {HttpClient} from '@angular/common/http';
 
 declare const Stripe: any;
 
@@ -9,23 +19,49 @@ declare const Stripe: any;
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.scss']
 })
-export class CheckoutComponent implements OnInit {
-  constructor() {}
+export class CheckoutComponent implements OnInit, AfterViewInit {
+  constructor(private cartService: CartService, private _http: HttpClient) {}
 
-  stripeKey = ENV_CONFIG.stripe.token;
+  @ViewChild('card')
+  cardEl: ElementRef;
+
   stripe: any;
   cardObj: any;
   error: any;
 
+  @Input()
+  style: any = {};
+
+  @Output()
+  cardChange: EventEmitter<any> = new EventEmitter();
+
   ngOnInit() {
-    this.stripe = Stripe(this.stripeKey);
-    this._setupCard();
+    this.stripe = Stripe(ENV_CONFIG.stripe.token);
   }
 
-  private _setupCard() {
+  ngAfterViewInit() {
     const elements = this.stripe.elements();
+    this.cardObj = elements.create('card');
+    this.cardObj.mount(this.cardEl.nativeElement);
 
-    const cardElement = elements.create('card');
-    // cardElement.mount('#card-element');
+    this.cardObj.addEventListener('change', event => {
+      this.error = event.error ? event.error.message : null;
+      this.cardChange.next({element: this.cardObj, ...event});
+    });
+  }
+
+  sendRequest() {
+    const orderedItems = this.cartService.items$.getValue().map(val => ({
+      id: val.productId,
+      quantity: val.quantity
+    }));
+
+    this._http
+      .post('http://localhost:5000/jaspero-site/us-central1/stripe/checkout', {
+        orderedItems
+      })
+      .subscribe(res => {
+        console.log(res);
+      });
   }
 }

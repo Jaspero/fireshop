@@ -14,29 +14,33 @@
                 <div class="col-12">
                   <h6 class="m-y-xs">Payment info</h6>
                 </div>
-                  <div class="col-8 col-xs-12">
-                    <mat-form-field class="mat-hint w-full">
-                      <mat-select placeholder="Select a payment method">
-                        <mat-option>Option</mat-option>
-                      </mat-select>
-                    </mat-form-field>
-                  </div>
-                  <div class="col-6 col-xs-12">
-                    <mat-form-field class="mat-hint w-full">
-                      <input matInput type="text" placeholder="Card number">
-                    </mat-form-field>
-                  </div>
-                  <div class="col-3 col-xs-7">
-                    <mat-form-field class="mat-hint w-full">
-                      <input matInput type="text" placeholder="Expiration date">
-                    </mat-form-field>
-                  </div>
-                  <div class="col-3 col-xs-5">
-                    <mat-form-field class="mat-hint w-full">
-                      <input matInput type="text" placeholder="Security code">
-                      <mat-icon matSuffix>info</mat-icon>
-                    </mat-form-field>
-                  </div>
+                <div class="col-8 col-xs-12">
+                  <mat-form-field class="mat-hint w-full">
+                    <mat-select placeholder="Select a payment method">
+                      <mat-option>Option</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-6 col-xs-12">
+                  <mat-form-field class="mat-hint w-full">
+                    <input matInput type="text" placeholder="Card number">
+                  </mat-form-field>
+                </div>
+                <div class="col-3 col-xs-7">
+                  <mat-form-field class="mat-hint w-full">
+                    <input matInput type="text" placeholder="Expiration date">
+                  </mat-form-field>
+                </div>
+                <div class="col-3 col-xs-5">
+                  <mat-form-field class="mat-hint w-full">
+                    <input matInput type="text" placeholder="Security code">
+                    <mat-icon matSuffix>info</mat-icon>
+                  </mat-form-field>
+                </div>
+                <div>
+                  <div #card></div>
+                  <p *ngIf="error">{{error}}</p>
+                </div>
                 <div class="col-12">
                   <h6 class="m-b-xs m-t-s">Billing info</h6>
                 </div>
@@ -100,7 +104,7 @@
               </div>
               <p class="bg-l-secondary p-a-s m-y-xs">You will have a chance to review your order before it's placed</p>
               <div class="ta-right p-y-xs">
-                <button mat-flat-button color="primary" matStepperNext>Continue</button>
+                <button mat-flat-button color="primary" (click)="sendRequest()">Continue</button>
               </div>
             </mat-card>
           </div>
