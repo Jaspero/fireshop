@@ -45,7 +45,7 @@
                   <mat-option [value]="null"> All </mat-option>
                   <mat-option
                     *ngFor="let category of categories$ | async"
-                    [value]="category">
+                    [value]="category.id">
                     {{category.name}}
                   </mat-option>
                 </mat-select>
@@ -54,7 +54,7 @@
 
             <div mat-dialog-actions>
               <div class="ta-right w-full">
-                <button mat-button>Reset all</button>&nbsp;
+                <button mat-button (click)="resetAll()">Reset all</button>&nbsp;
                 <button id="btn-cntShp" mat-flat-button mat-dialog-close color="primary">
                   Close
                 </button>
@@ -65,16 +65,7 @@
         </form>
 
         <!--Actions toolbar-->
-        <ng-container *ngIf="chips$ | async as chips">
-          <div class="toolbar toolbar-inset" *ngIf="chips.length">
-            <mat-chip-list aria-label="Fish selection">
-              <mat-chip *ngFor="let chip of chips">
-                <span>{{chip.filter}}: {{chip.value}}</span>
-                <mat-icon matChipRemove (click)="removeChip(chip)">cancel</mat-icon>
-              </mat-chip>
-            </mat-chip-list>
-          </div>
-        </ng-container>
+        <jfsc-chips [chips$]="filters.valueChanges" (filterValue)="changeFilters($event)"></jfsc-chips>
 
         <!--Chips toolbar-->
         <div class="toolbar toolbar-inset">
