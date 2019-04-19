@@ -67,7 +67,5 @@ export class ProductsListComponent extends LangListComponent<Product>
   }
 
   // TODO: Finish
-  toggleActive(event: MatCheckboxChange) {
-    console.log(event);
-  }
+  toggleActive(event: MatCheckboxChange) {}
 }
