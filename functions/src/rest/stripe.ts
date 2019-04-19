@@ -13,21 +13,7 @@ app.use(cors());
 
 // TODO: Send order
 app.post('/checkout', async (req, res) => {
-  // const array = req.body.map(val =>
-  //   admin
-  //     .firestore()
-  //     .collection('products-en')
-  //     .doc(val.id)
-  // );
-  // console.log('array', array);
-
-  //   .then(snapshots => {
-  //     console.log('snapshots', snapshots);
-  //   })
-  //   .catch(res => {
-  //     console.log('111111', res);
-  //   });
-
+  let finalPrice = 0;
   Promise.all(
     req.body.orderedItems.map(item =>
       admin
@@ -38,8 +24,10 @@ app.post('/checkout', async (req, res) => {
     )
   )
     .then(snapshots => {
-      snapshots.forEach(data => {
-        console.log('data', data);
+      snapshots.forEach(val => {
+        // val.data() brakes ts
+        console.log(val);
+        // const price = req.body.orderedItems.find(x => x.id === )
       });
     })
     .catch(res => {
