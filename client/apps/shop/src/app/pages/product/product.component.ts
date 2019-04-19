@@ -139,7 +139,6 @@ export class ProductComponent extends RxDestroy implements OnInit {
   }
 
   changePicture(index) {
-    console.log(index);
     this.imgIndex = index;
   }
 }
