@@ -1,40 +1,74 @@
-<section>
-  <div class="grid">
-    <div class="col-12">
-      <form *ngIf="form" [formGroup]="form">
-        <mat-form-field class="w-full" appearance="outline">
-          <mat-label>URL</mat-label>
-          <input matInput formControlName="id" type="text">
-        </mat-form-field>
-        <br>
-        <mat-form-field class="w-full" appearance="outline">
-          <mat-label>Name</mat-label>
-          <input matInput formControlName="name" type="text">
-        </mat-form-field>
-        <br>
-        <mat-form-field class="w-full" appearance="outline">
-          <mat-label>Description</mat-label>
-          <textarea matInput  formControlName="description" type="text"></textarea>
-        </mat-form-field>
+<form *ngIf="form" [formGroup]="form">
 
-        <div class="flex jc-center p-t-m">
+  <section>
+    <mat-toolbar color="primary">
+      <a mat-icon-button routerLink="/categories" aria-label="Back" matTooltip="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <span>Categories</span>
+    </mat-toolbar>
+  </section>
 
-          <div class="m-r-s">
-            <button  mat-raised-button (click)="cancel()">
-              Cancel
-            </button>
+  <section class="p-y-m">
+    <div class="grid">
+      <div class="col-8">
+        <h5>New Category</h5>
+      </div>
+    </div>
+  </section>
+
+  <div class="grid grid-no-gutter">
+    <div class="col-8 col-s-10 col-xs-12">
+      <div>
+        <div class="gird">
+          <div class="col-12">
+            <mat-card>
+              <h6 class="p-y-xs">Category info</h6>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field class="w-full" appearance="outline">
+                  <mat-label>URL</mat-label>
+                  <input matInput formControlName="id">
+                </mat-form-field>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field class="w-full" appearance="outline">
+                  <mat-label>Name</mat-label>
+                  <input matInput formControlName="name">
+                </mat-form-field>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field class="w-full" appearance="outline">
+                  <mat-label>Description</mat-label>
+                  <textarea matInput  formControlName="description"></textarea>
+                </mat-form-field>
+              </div>
+            </mat-card>
           </div>
-
-          <div>
-            <button [disabled]="form.invalid" mat-raised-button color="primary" (click)="save()">
-              {{isEdit ? 'Edit' : 'Submit'}}
-            </button>
-          </div>
-
         </div>
-
-      </form>
-
+      </div>
     </div>
   </div>
-</section>
+
+  <div class="jfsc-actions-header">
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="back()">
+      {{isEdit ? 'Discard changes' : 'Cancel'}}
+    </button> &nbsp;
+
+    <button
+      mat-flat-button
+      type="submit"
+      [disabled]="form.invalid"
+      [class.loading]="loading$ | async"
+      (click)="save()">
+      {{isEdit ? 'Save changes' : 'Save'}}
+    </button>
+  </div>
+
+</form>
+
