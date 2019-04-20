@@ -1,21 +1,21 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {notify} from '@jf/utils/notify.operator';
-import * as nanoid from 'nanoid';
-import {from, of} from 'rxjs';
-import {map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {BehaviorSubject, from, Observable, of} from 'rxjs';
+import {finalize, map, switchMap, take, takeUntil} from 'rxjs/operators';
 import {StateService} from '../../services/state/state.service';
 import {queue} from '../../utils/queue.operator';
+import * as nanoid from 'nanoid';
 
 @Component({
   selector: 'jfsc-single-page',
   template: ''
 })
-export class SinglePageComponent extends RxDestroy {
+export class SinglePageComponent extends RxDestroy implements OnInit {
   constructor(
     public router: Router,
     public afs: AngularFirestore,
@@ -30,6 +30,8 @@ export class SinglePageComponent extends RxDestroy {
   isEdit: string;
   collection: FirestoreCollections;
   form: FormGroup;
+
+  loading$ = new BehaviorSubject(false);
 
   ngOnInit() {
     this.activatedRoute.params
@@ -62,31 +64,45 @@ export class SinglePageComponent extends RxDestroy {
       });
   }
 
-  save(item = this.form.getRawValue()) {
-    this.activatedRoute.params
+  save() {
+    this.loading$.next(true);
+
+    const {id, ...item} = this.form.getRawValue();
+
+    this.getSaveData(id, item)
       .pipe(
-        take(1),
-        switchMap(() =>
-          from(
-            this.afs
-              .collection(this.collection)
-              .doc(item.id ? item.id : nanoid())
-              .set({
-                item,
-                ...(this.isEdit ? {} : {createdOn: Date.now()})
-              })
-          )
-        ),
+        finalize(() => this.loading$.next(false)),
         notify()
       )
       .subscribe(() => {
-        this.router.navigate(['/', this.collection]);
+        this.back();
       });
   }
 
   buildForm(data: any) {}
 
-  cancel() {
+  createId(): string {
+    return nanoid();
+  }
+
+  getSaveData(...args: any): Observable<any> {
+    const [id, item] = args;
+
+    return from(
+      this.afs
+        .collection(this.collection)
+        .doc(id || this.createId())
+        .set(
+          {
+            item,
+            ...(this.isEdit ? {} : {createdOn: Date.now()})
+          },
+          {merge: true}
+        )
+    );
+  }
+
+  back() {
     this.router.navigate(['/', this.collection]);
   }
 }

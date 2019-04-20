@@ -15,20 +15,14 @@ export class CustomersSinglePageComponent extends SinglePageComponent {
   collection = FirestoreCollections.Customers;
 
   buildForm(data) {
-    let date: any;
-
-    if (data) {
-      const num = new Date(data['dateOfBirth']).getTime();
-      date = new Date(num * 1000);
-    } else {
-      date = '';
-    }
-
     this.form = this.fb.group({
-      name: [date ? data.name : '', Validators.required],
-      dateOfBirth: [date || '', Validators.required],
-      gender: [date ? data.gender : '', Validators.required],
-      brief: [date ? data.brief : '', Validators.required]
+      name: [data ? data.name : '', Validators.required],
+      dateOfBirth: [
+        data && data.dateOfBirth ? new Date(data.dateOfBirth) : '',
+        Validators.required
+      ],
+      gender: [data ? data.gender : '', Validators.required],
+      brief: [data ? data.brief : '', Validators.required]
     });
   }
 }

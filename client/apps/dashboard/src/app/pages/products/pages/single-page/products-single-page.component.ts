@@ -4,10 +4,10 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {FormGroup, Validators} from '@angular/forms';
+import {Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
@@ -25,10 +25,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   @ViewChild(FileUploadComponent)
   fileUploadComponent: FileUploadComponent;
 
-  form: FormGroup;
   categories$: Observable<Category[]>;
-  loading$ = new BehaviorSubject(false);
-  isEdit: string;
   collection = FirestoreCollections.Products;
 
   ngOnInit() {
@@ -81,6 +78,12 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
           this.router.navigate(['/products', value[1].payload.doc.id]);
         }
       });
+  }
+
+  getSaveData(...args) {
+    return this.fileUploadComponent
+      .save()
+      .pipe(switchMap(() => super.getSaveData(...args)));
   }
 
   buildForm(data: any) {

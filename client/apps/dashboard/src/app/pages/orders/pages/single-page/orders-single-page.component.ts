@@ -36,8 +36,4 @@ export class OrdersSinglePageComponent extends SinglePageComponent
       address: ['', Validators.required]
     });
   }
-
-  cancel() {
-    this.router.navigate(['/orders']);
-  }
 }
