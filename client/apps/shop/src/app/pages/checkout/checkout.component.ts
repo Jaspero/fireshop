@@ -9,6 +9,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {ENV_CONFIG} from '@jf/consts/env-config.const';
+import {environment} from '../../../environments/environment';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {HttpClient} from '@angular/common/http';
 
@@ -57,7 +58,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     }));
 
     this._http
-      .post('http://localhost:5000/jaspero-site/us-central1/stripe/checkout', {
+      .post(`${environment.restApi}/stripe/checkout`, {
         orderedItems
       })
       .subscribe(res => {

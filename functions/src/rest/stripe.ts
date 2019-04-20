@@ -6,8 +6,7 @@ import * as admin from 'firebase-admin';
 import {ENV_CONFIG} from '../consts/env-config.const';
 
 const app = express();
-const si = stripeLib('sk_test_FJbKQgGuN4wRNFZkQLAKV1fn');
-// const si = stripeLib(ENV_CONFIG.stripe.token);
+const si = stripeLib(ENV_CONFIG.stripe.token);
 
 app.use(cors());
 
