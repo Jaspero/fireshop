@@ -22,17 +22,7 @@
           </div>
         </form>
 
-        <!--Actions toolbar-->
-        <ng-container *ngIf="chips$ | async as chips">
-          <div class="toolbar toolbar-inset" *ngIf="chips.length">
-            <mat-chip-list aria-label="Fish selection">
-              <mat-chip *ngFor="let chip of chips">
-                <span>{{chip.filter}}: {{chip.value}}</span>
-                <mat-icon matChipRemove (click)="removeChip()">cancel</mat-icon>
-              </mat-chip>
-            </mat-chip-list>
-          </div>
-        </ng-container>
+        <jfsc-chips [chips$]="filters.valueChanges" (filterValue)="changeFilters($event)"></jfsc-chips>
 
         <div class="toolbar toolbar-inset">
 

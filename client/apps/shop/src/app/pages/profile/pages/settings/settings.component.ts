@@ -60,8 +60,6 @@ export class SettingsComponent implements OnInit {
         `${FirestoreCollections.Customers}/${this.afAuth.auth.currentUser.uid}`
       )
       .set(data)
-      .finally(() => {
-        console.log('success');
-      });
+      .finally();
   }
 }

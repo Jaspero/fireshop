@@ -115,7 +115,6 @@ export class ProductComponent extends RxDestroy implements OnInit {
 
     this.reviewsRating$ = this.rews$.pipe(
       map(reviews => {
-        console.log(reviews, 'reviews');
         return reviews.length;
       })
     );

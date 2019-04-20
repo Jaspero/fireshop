@@ -51,7 +51,7 @@ export class ProductsListComponent extends LangListComponent<Product>
       ref = ref.where(
         'category',
         FirebaseOperator.Equal,
-        this.options.filters.category.id
+        this.options.filters.category
       );
     }
 
@@ -67,7 +67,5 @@ export class ProductsListComponent extends LangListComponent<Product>
   }
 
   // TODO: Finish
-  toggleActive(event: MatCheckboxChange) {
-    console.log(event);
-  }
+  toggleActive(event: MatCheckboxChange) {}
 }

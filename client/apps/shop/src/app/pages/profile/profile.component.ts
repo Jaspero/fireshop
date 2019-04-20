@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
 
 @Component({
@@ -8,7 +9,7 @@ import {Router} from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProfileComponent implements OnInit {
-  constructor(private router: Router) {}
+  constructor(public afAuth: AngularFireAuth, private router: Router) {}
 
   links = [
     {

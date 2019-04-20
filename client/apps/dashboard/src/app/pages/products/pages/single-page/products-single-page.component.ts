@@ -51,7 +51,6 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   // TODO: I think this can be done in a better way
   move(next = true) {
-    console.log('next', next);
     this.state.language$
       .pipe(
         switchMap(lang => {
