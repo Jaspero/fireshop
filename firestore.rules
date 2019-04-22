@@ -6,7 +6,8 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     match /settings/{setting} {
-      allow read, write, delete: if admin()
+      allow read: if true
+      allow write, delete: if admin()
     }
 
     match /products-en/{product} {
@@ -14,18 +15,19 @@ service cloud.firestore {
       allow read: if admin()
     }
 
-
     // Add for other languages
     match /products-en/{product} {
       allow write, delete: if admin()
     }
 
-    match /categories/{category} {
+    // Add for other languages
+    match /categories-en/{category} {
+      allow read: if true
       allow write, delete: if admin()
     }
 
-    // Add for other languages
-    match /categories-en/{category} {
+    match /discounts-en/{discount} {
+      allow read: if true
       allow write, delete: if admin()
     }
 
@@ -38,6 +40,7 @@ service cloud.firestore {
     }
 
     match /reviews/{review} {
+      allow read: if true
       allow write, delete: if resource.data.customerId == auth.uid;
     }
   }

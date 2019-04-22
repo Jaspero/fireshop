@@ -15,9 +15,9 @@ export const userCreated = functions.auth.user().onCreate(async user => {
 
     // Set custom user claims on this newly created user.
     await auth().setCustomUserClaims(user.uid, customClaims);
+  } else {
+    await parseEmail(user.email, 'Welcome to Fireshop', 'user-created', user);
   }
-
-  await parseEmail(user.email, 'Welcome to Fireshop', 'user-created', user);
 
   return true;
 });

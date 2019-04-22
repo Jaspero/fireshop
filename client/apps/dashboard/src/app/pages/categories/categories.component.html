@@ -104,13 +104,6 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
 
-
-        <!--Loading-->
-        <div class="p-y-m flex jc-center" *ngIf="dataLoading$ | async">
-          <mat-spinner [diameter]="40"></mat-spinner>
-        </div>
-
-
         <div class="flex jc-between p-y-s">
           <div class="p-x-m hide-xs"></div>
           <button
