@@ -15,7 +15,7 @@ import {MatDialogRef, MatSnackBar} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {notify} from '@jf/utils/notify.operator';
 import {auth, firestore} from 'firebase';
-import {from, pipe} from 'rxjs';
+import {from} from 'rxjs';
 import {filter, switchMap, take, takeUntil} from 'rxjs/operators';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {RepeatPasswordValidator} from '../../helpers/compare-passwords';

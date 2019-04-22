@@ -4,9 +4,9 @@
   "license": "MIT",
   "scripts": {
     "target-setup": "firebase target:apply hosting shop jp-fireshop && firebase target:apply hosting admin jp-fireshop-admin",
-    "build": "npm --prefix client run build:all",
-    "lint": "npm --prefix client run lint",
-    "deploy": "npm run build && firebase deploy --only functions:userCreated,functions:userDeleted,functions:fileCreated,functions:fileDeleted,functions:orderCreated,functions:exportData,functions:importData,functions:similarProducts,hosting"
+    "build": "npm --prefix client run build:all && npm --prefix functions run build",
+    "lint": "npm --prefix client run lint && npm --prefix functions run lint",
+    "deploy": "firebase deploy --only functions:userCreated,functions:userDeleted,functions:fileCreated,functions:fileDeleted,functions:orderCreated,functions:exportData,functions:importData,functions:similarProducts,hosting"
   },
   "author": {
     "name": "Jaspero Ltd",
