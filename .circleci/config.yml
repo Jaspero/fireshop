@@ -13,7 +13,7 @@ jobs:
           command: echo export const ENV_CONFIG=$DEV_PUBLIC_CONFIG > client/shared/consts/env-config.const.ts
       - run:
           name: Set Private Environment
-          command: firebase functions:config:set sendgrid.token=$SENDGRID_TOKEN stripe.token=$STRIPE_DEV_TOKEN --project=jaspero-site --token $FIREBASE_CI_TOKEN
+          command: firebase functions:config:set sendgrid.token=$SENDGRID_TOKEN stripe.token=$STRIPE_DEV_TOKEN stripe.webhookSecret=$STRIPE_DEV_WEBHOOK --project=jaspero-site --token $FIREBASE_CI_TOKEN
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package-lock.json" }}-{{ checksum "client/package-lock.json" }}-{{ checksum "functions/package-lock.json" }}

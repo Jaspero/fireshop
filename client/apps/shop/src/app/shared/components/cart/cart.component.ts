@@ -1,13 +1,10 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {CartService} from '../../services/cart/cart.service';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {StateService} from '../../services/state/state.service';
-import {Router} from '@angular/router';
-import * as nanoid from 'nanoid';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {AngularFirestore} from '@angular/fire/firestore';
 import {MatDialog, MatDialogRef} from '@angular/material';
-import {ReviewsDialogComponent} from '../reviews/reviews-dialog.component';
+import {Router} from '@angular/router';
+import {CartService} from '../../services/cart/cart.service';
+import {StateService} from '../../services/state/state.service';
 
 @Component({
   selector: 'jfs-cart',
