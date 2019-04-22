@@ -8,7 +8,7 @@
     "build": "ng build --prod",
     "build:dashboard": "ng build --project=dashboard --prod",
     "build:server": "ng run shop:server:production",
-    "build:all": "npm run build && npm run build:dashboard && npm run build:server",
+    "build:all": "npm run build && npm run build:dashboard",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
