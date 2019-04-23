@@ -1,28 +1,56 @@
-import {HttpClient} from '@angular/common/http';
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {AngularFireAuth} from '@angular/fire/auth';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {ENV_CONFIG} from '@jf/consts/env-config.const';
-import {STATIC_CONFIG} from '@jf/consts/static-config.const';
-import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {BehaviorSubject, from, Observable, throwError} from 'rxjs';
-import {finalize, shareReplay, switchMap, take} from 'rxjs/operators';
-import {environment} from '../../../environments/environment';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild
+} from '@angular/core';
+import {StateService} from '../../shared/services/state/state.service';
+import {RxDestroy} from '@jaspero/ng-helpers';
 import {CartService} from '../../shared/services/cart/cart.service';
-import * as nanoid from 'nanoid';
+import {HttpClient} from '@angular/common/http';
+import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFireAuth} from '@angular/fire/auth';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {
+  BehaviorSubject,
+  from,
+  Observable,
+  Subscription,
+  throwError
+} from 'rxjs';
+import {
+  finalize,
+  map,
+  shareReplay,
+  switchMap,
+  take,
+  takeUntil
+} from 'rxjs/operators';
+import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {ENV_CONFIG} from '@jf/consts/env-config.const';
+import {environment} from '../../../environments/environment';
+import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 
 @Component({
   selector: 'jfs-checkout',
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.scss']
 })
-export class CheckoutComponent implements AfterViewInit {
+export class CheckoutComponent extends RxDestroy
+  implements OnInit, AfterViewInit {
   constructor(
-    private cartService: CartService,
+    public cartService: CartService,
     private http: HttpClient,
     private afs: AngularFirestore,
-    private afAuth: AngularFireAuth
-  ) {}
+    private afAuth: AngularFireAuth,
+    private fb: FormBuilder,
+    private router: Router,
+    private state: StateService
+  ) {
+    super();
+  }
 
   @ViewChild('card')
   cardEl: ElementRef<HTMLElement>;
@@ -33,12 +61,79 @@ export class CheckoutComponent implements AfterViewInit {
     clientSecret: string;
   };
   loading$ = new BehaviorSubject(false);
+  billingInfo$: Observable<FormGroup>;
+
+  private shippingSubscription: Subscription;
+
+  ngOnInit() {
+    this.billingInfo$ = this.afAuth.user.pipe(
+      switchMap(user =>
+        this.afs
+          .doc(`${FirestoreCollections.Customers}/${user.uid}`)
+          .valueChanges()
+          .pipe(
+            take(1),
+            map(value => {
+              const group = this.fb.group({
+                billing: this.checkForm(value.billing ? value.billing : {}),
+                shippingInfo: [value.shippingInfo || true],
+                saveInfo: false
+              });
+
+              if (this.shippingSubscription) {
+                this.shippingSubscription.unsubscribe();
+              }
+
+              this.shippingSubscription = group
+                .get('shippingInfo')
+                .valueChanges.pipe(takeUntil(this.destroyed$))
+                .subscribe(value => {
+                  if (value) {
+                    group.removeControl('shipping');
+                  } else {
+                    group.addControl(
+                      'shipping',
+                      this.checkForm(value.shipping || {})
+                    );
+                  }
+                });
+
+              return group;
+            })
+          )
+      )
+    );
+  }
+
+  checkForm(data) {
+    return this.fb.group({
+      firstName: [data.firstName || '', Validators.required],
+      lastName: [data.lastName || '', Validators.required],
+      email: [data.email || '', Validators.required],
+      phone: [data.phone || '', Validators.required],
+      city: [data.city || '', Validators.required],
+      zip: [data.zip || '', Validators.required],
+      country: [data.country || '', Validators.required],
+      line1: [data.line1 || '', Validators.required],
+      line2: [data.line2 || '']
+    });
+  }
 
   ngAfterViewInit() {
     this.connectStripe();
   }
 
-  checkOut() {
+  checkOut(data) {
+    if (data.saveInfo) {
+      this.afs
+        .doc(
+          `${FirestoreCollections.Customers}/${
+            this.afAuth.auth.currentUser.uid
+          }`
+        )
+        .update(data);
+    }
+
     this.loading$.next(true);
 
     from(
@@ -47,8 +142,9 @@ export class CheckoutComponent implements AfterViewInit {
         this.stripe.cardObj,
         {
           payment_method_data: {
-            // TODO: Add input for collecting this
-            billing_details: {name: 'Test'}
+            billing_details: {
+              name: `${data.billing.firstName} ${data.billing.lastName}`
+            }
           }
         }
       )
@@ -75,9 +171,14 @@ export class CheckoutComponent implements AfterViewInit {
         }),
         finalize(() => this.loading$.next(false))
       )
-
-      // TODO: Redirect to success/handle error
-      .subscribe(res => {}, err => {});
+      .subscribe(
+        res => {
+          this.router.navigate(['checkout/success']);
+        },
+        err => {
+          this.router.navigate(['checkout/error']);
+        }
+      );
   }
 
   private connectStripe() {

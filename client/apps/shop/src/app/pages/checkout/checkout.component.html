@@ -1,147 +1,198 @@
 <h5 class="ta-center bg-primary c-l-primary p-y-s">
-  <a routerlink="">Jaspero Fireshop</a>
+  <a (click)="toggleState()" routerLink="/shop">Jaspero Fireshop</a>
 </h5>
 
 <div class="grid grid-no-gutter">
   <div class="col-12">
-    <mat-horizontal-stepper class="bg-l-primary">
+    <ng-container *ngIf="billingInfo$ | async as infoForm">
+      <mat-horizontal-stepper linear class="bg-l-primary">
 
-      <!--Payment content-->
-      <mat-step label="Payment">
-        <div class="grid fw-rev">
-          <div class="col-8 col-s-12">
-            <mat-card>
-              <p class="bg-l-secondary p-a-s ta-center" *ngIf="0">
-                You're doing checkout as a guest. You can <a class="link c-primary">login</a> or <a class="link c-primary">sign-up</a> now.<br>Your data or cart won't be lost.
-              </p>
-              <div class="grid grid-no-gutter jc-start">
-                <div class="col-12">
-                  <h6 class="m-y-xs">Payment info</h6>
-                </div>
-                <div class="col-12">
-                  <div #card></div>
-                  <p class="error" *ngIf="(stripe?.cardChanges$ | async)?.error as cardError">
-                    {{cardError.message}}
+        <!--Payment content-->
+        <mat-step label="Payment" [stepControl]="infoForm">
+          <div class="grid fw-rev">
+            <div class="col-8 col-s-12">
+              <mat-card>
+                <form [formGroup]="infoForm">
+                  <p class="bg-l-secondary p-a-s ta-center" *ngIf="0">
+                    You're doing checkout as a guest. You can <a class="link c-primary">login</a> or <a class="link c-primary">sign-up</a> now.<br>Your data or cart won't be lost.
                   </p>
-                </div>
-                <div class="col-12">
-                  <h6 class="m-b-xs m-t-s">Billing info</h6>
-                </div>
-                <div class="col-6 col-xs-12">
-                  <mat-form-field class="mat-hint w-full">
-                    <input matInput type="text" placeholder="First name">
-                  </mat-form-field>
-                </div>
-                <div class="col-6 col-xs-12">
-                  <mat-form-field class="mat-hint w-full">
-                    <input matInput type="text" placeholder="Last name">
-                  </mat-form-field>
-                </div>
-                <div class="col-6 col-xs-12">
-                  <mat-form-field class="mat-hint w-full">
-                    <input matInput type="text" placeholder="Email">
-                  </mat-form-field>
-                </div>
-                <div class="col-6 col-xs-12">
-                  <mat-form-field class="mat-hint w-full">
-                    <input matInput type="text" placeholder="Phone">
-                  </mat-form-field>
-                </div>
-                <div class="col-4 col-xs-7">
-                  <mat-form-field class="mat-hint w-full">
-                    <input matInput type="text" placeholder="City">
-                  </mat-form-field>
-                </div>
-                <div class="col-4 col-xs-5">
-                  <mat-form-field class="mat-hint w-full">
-                    <input matInput type="text" placeholder="ZIP code">
-                  </mat-form-field>
-                </div>
-                <div class="col-4 col-xs-12">
-                  <mat-form-field class="mat-hint w-full">
-                    <input matInput type="text" placeholder="Country">
-                  </mat-form-field>
-                </div>
-                <div class="col-8 col-xs-12">
-                  <mat-form-field class="mat-hint w-full">
-                    <input matInput type="text" placeholder="Billing address">
-                  </mat-form-field>
-                </div>
-                <div class="col-8 col-xs-12">
-                  <mat-form-field class="mat-hint w-full">
-                    <input matInput type="text" placeholder="Billing address, line 2">
-                  </mat-form-field>
-                </div>
-                <div class="col-12">
-                  <h6 class="m-b-xs m-t-s">Shipping info</h6>
-                  <div class="m-y-xs">
-                    <mat-checkbox color="primary">My shipping address is same as my billing address</mat-checkbox>
+                  <div class="grid grid-no-gutter jc-start">
+                    <div class="col-12">
+                      <h6 class="m-y-xs">Payment info</h6>
+                    </div>
+                    <div class="col-12">
+                      <div #card></div>
+                      <p class="error" *ngIf="(stripe?.cardChanges$ | async)?.error as cardError">
+                        {{cardError.message}}
+                      </p>
+                    </div>
+                    <div class="col-12">
+                      <h6 class="m-b-xs m-t-s">Billing info</h6>
+                    </div>
+                    <ng-container formGroupName="billing">
+                      <div class="col-6 col-xs-12">
+                        <mat-form-field class="mat-hint w-full">
+                          <input matInput type="text" placeholder="First name" formControlName="firstName">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-6 col-xs-12">
+                        <mat-form-field class="mat-hint w-full">
+                          <input matInput type="text" placeholder="Last name" formControlName="lastName">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-6 col-xs-12">
+                        <mat-form-field class="mat-hint w-full">
+                          <input matInput type="text" placeholder="Email" formControlName="email">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-6 col-xs-12">
+                        <mat-form-field class="mat-hint w-full">
+                          <input matInput type="text" placeholder="Phone" formControlName="phone">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-4 col-xs-7">
+                        <mat-form-field class="mat-hint w-full">
+                          <input matInput type="text" placeholder="City" formControlName="city">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-4 col-xs-5">
+                        <mat-form-field class="mat-hint w-full">
+                          <input matInput type="text" placeholder="ZIP code" formControlName="zip">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-4 col-xs-12">
+                        <mat-form-field class="mat-hint w-full">
+                          <input matInput type="text" placeholder="Country" formControlName="country">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-8 col-xs-12">
+                        <mat-form-field class="mat-hint w-full">
+                          <input matInput type="text" placeholder="Billing address" formControlName="line1">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-8 col-xs-12">
+                        <mat-form-field class="mat-hint w-full">
+                          <input matInput type="text" placeholder="Billing address, line 2" formControlName="line2">
+                        </mat-form-field>
+                      </div>
+                    </ng-container>
+                    <div class="col-12">
+                      <h6 class="m-b-xs m-t-s">Shipping info</h6>
+                      <ng-container formGroupName="shipping" *ngIf="infoForm.get('shipping')">
+                        <div class="col-6 col-xs-12">
+                          <mat-form-field class="mat-hint w-full">
+                            <input matInput type="text" placeholder="First name" formControlName="firstName">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-6 col-xs-12">
+                          <mat-form-field class="mat-hint w-full">
+                            <input matInput type="text" placeholder="Last name" formControlName="lastName">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-6 col-xs-12">
+                          <mat-form-field class="mat-hint w-full">
+                            <input matInput type="text" placeholder="Email" formControlName="email">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-6 col-xs-12">
+                          <mat-form-field class="mat-hint w-full">
+                            <input matInput type="text" placeholder="Phone" formControlName="phone">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-4 col-xs-7">
+                          <mat-form-field class="mat-hint w-full">
+                            <input matInput type="text" placeholder="City" formControlName="city">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-4 col-xs-5">
+                          <mat-form-field class="mat-hint w-full">
+                            <input matInput type="text" placeholder="ZIP code" formControlName="zip">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-4 col-xs-12">
+                          <mat-form-field class="mat-hint w-full">
+                            <input matInput type="text" placeholder="Country" formControlName="country">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-8 col-xs-12">
+                          <mat-form-field class="mat-hint w-full">
+                            <input matInput type="text" placeholder="Billing address" formControlName="line1">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-8 col-xs-12">
+                          <mat-form-field class="mat-hint w-full">
+                            <input matInput type="text" placeholder="Billing address, line 2" formControlName="line2">
+                          </mat-form-field>
+                        </div>
+                      </ng-container>
+                      <div class="m-y-xs">
+                        <mat-checkbox color="primary" formControlName="shippingInfo">My shipping address is same as my billing address</mat-checkbox>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div class="p-y-s">
-                <mat-divider></mat-divider>
-              </div>
-              <div class="m-t-xs m-b-s">
-                <mat-checkbox color="primary">Save my payment so checkout is easy next time</mat-checkbox>
-              </div>
-              <p class="bg-l-secondary p-a-s m-y-xs">You will have a chance to review your order before it's placed</p>
-              <div class="ta-right p-y-xs">
-                <button mat-flat-button color="primary">Continue</button>
-              </div>
-            </mat-card>
+                  <div class="p-y-s">
+                    <mat-divider></mat-divider>
+                  </div>
+                  <div class="m-t-xs m-b-s">
+                    <mat-checkbox color="primary" formControlName="saveInfo">Save my payment so checkout is easy next time</mat-checkbox>
+                  </div>
+                  <p class="bg-l-secondary p-a-s m-y-xs">You will have a chance to review your order before it's placed</p>
+                  <div class="ta-right p-y-xs">
+                    <button mat-flat-button color="primary" matStepperNext [disabled]="infoForm.invalid">Continue</button>
+                  </div>
+                </form>
+              </mat-card>
+            </div>
+            <div class="col-4 col-s-12">
+              <mat-card>
+                <h6 class="m-b-xs">Payment methods</h6>
+                <p>We accept the following secure payment methods:</p>
+                <p class="m-y-xs">...</p>
+                <p>When you submit your payment information your data is protected by Secure Socket Layer (SSL) technology certified by a digital certificate.</p>
+              </mat-card>
+            </div>
           </div>
-          <div class="col-4 col-s-12">
-            <mat-card>
-              <h6 class="m-b-xs">Payment methods</h6>
-              <p>We accept the following secure payment methods:</p>
-              <p class="m-y-xs">...</p>
-              <p>When you submit your payment information your data is protected by Secure Socket Layer (SSL) technology certified by a digital certificate.</p>
-            </mat-card>
-          </div>
-        </div>
-      </mat-step>
+        </mat-step>
 
-      <!--Review and purchase content-->
-      <mat-step label="Review & Purchase">
-        <div class="grid fw-rev">
-          <div class="col-8 col-s-12">
-            <mat-card>
-              <h6 class="m-y-xs">Your purchase</h6>
-              <div>
-                <!--TODO(Kole): can you pull cart data here-->
-                <p>[item.name] [item.price] etc.</p>
-                <p>[item.name] [item.price] etc.</p>
-                <p>Subtotal: $69 [local currency: 420kn]</p>
-                <p>Total: $429 [local currency: 1420kn]</p>
-              </div>
-              <div class="p-y-s">
-                <mat-divider></mat-divider>
-              </div>
-              <p>Checkout: out as guest</p>
-              <p>Payment method: visa ending in 69</p>
-              <p>email: pero@pero.com</p>
-              <div class="p-y-s">
-                <mat-divider></mat-divider>
-              </div>
-              <div class="m-t-xs m-b-s">
-                <mat-checkbox color="primary">I agree to the terms of service</mat-checkbox>
-              </div>
-              <div class="ta-right p-y-xs">
-                <button mat-flat-button color="primary" (click)="checkOut()">Purchase</button>
-              </div>
-            </mat-card>
-            <p>Confirmation will be emailed to your address at gmail.com</p>
+        <!--Review and purchase content-->
+        <mat-step label="Review & Purchase">
+          <div class="grid fw-rev">
+            <div class="col-8 col-s-12" *ngIf="cartService.items$ | async as prod">
+              <mat-card>
+                <h6 class="m-y-xs">Your purchase</h6>
+                <div *ngIf="cartService.totalPrice$ | async as price">
+                  <p *ngFor="let products of prod">{{products.name}}: {{products.price | currency }} X{{products.quantity}}</p>
+                  <p>Subtotal: {{price | currency}}</p>
+                  <p>Total: {{price | currency}} </p>
+                </div>
+                <div class="p-y-s">
+                  <mat-divider></mat-divider>
+                </div>
+                <p>Checkout: out as guest</p>
+                <p>Payment method: visa ending in 69</p>
+                <p>email: pero@pero.com</p>
+                <div class="p-y-s">
+                  <mat-divider></mat-divider>
+                </div>
+                <div class="m-t-xs m-b-s">
+                  <mat-checkbox color="primary">I agree to the terms of service</mat-checkbox>
+                </div>
+                <div class="ta-right p-y-xs">
+                  <button mat-flat-button color="primary" (click)="checkOut(infoForm.getRawValue())">Purchase</button>
+                </div>
+              </mat-card>
+              <p>Confirmation will be emailed to your address at gmail.com</p>
+            </div>
+            <div class="col-4 col-s-12">
+              <mat-card>
+                <h6 class="m-b-xs">Secure purchase</h6>
+                <p class="m-b-xs">When you submit your payment information your data is protected by Secure Socket Layer (SSL) technology certified by a digital certificate.</p>
+                <p>Once you've completed this transaction, you'll receive an email message confirming receipt of your purchase.</p>
+              </mat-card>
+            </div>
           </div>
-          <div class="col-4 col-s-12">
-            <mat-card>
-              <h6 class="m-b-xs">Secure purchase</h6>
-              <p class="m-b-xs">When you submit your payment information your data is protected by Secure Socket Layer (SSL) technology certified by a digital certificate.</p>
-              <p>Once you've completed this transaction, you'll receive an email message confirming receipt of your purchase.</p>
-            </mat-card>
-          </div>
-        </div>
-      </mat-step>
-    </mat-horizontal-stepper>
+        </mat-step>
+      </mat-horizontal-stepper>
+    </ng-container>
   </div>
 </div>
