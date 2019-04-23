@@ -1,7 +1,5 @@
 <form [formGroup]="form">
-  <h6 class="m-b-s">{{data.id ? 'Edit this review': 'Rate this product'}}</h6>
-
-  <h2>{{this.data.productId}}</h2>
+  <h6 class="m-b-s">{{data.id ? 'Edit this review': 'Rate this product'}}: {{this.data.productId}}</h6>
 
   <mat-form-field class="w-full" appearance="outline">
     <mat-label>Comment</mat-label>

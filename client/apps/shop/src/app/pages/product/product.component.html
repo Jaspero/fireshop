@@ -13,7 +13,7 @@
         <ng-template #reviewsDialog>
           <h6 mat-dialog-title="">Reviews</h6>
           <ng-container *ngIf="rec.length; else empty">
-            <div *ngFor="let review of rec">
+            <div class="m-b-s" *ngFor="let review of rec">
               <jfs-review-card [review]="review"></jfs-review-card>
             </div>
           </ng-container>
@@ -28,7 +28,6 @@
           <p><a class="link" (click)="openReviews()">Number of reviews: {{rec.length}}</a></p>
         </div>
       </ng-container>
-
 
     </div>
   </section>
