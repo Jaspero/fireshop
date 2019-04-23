@@ -11,7 +11,6 @@ jobs:
       - run:
           name: Set Public Environment
           command: echo export const ENV_CONFIG=$DEV_PUBLIC_CONFIG > client/shared/consts/env-config.const.ts
-
       - run:
           name: Set Private Environment
           command: firebase functions:config:set sendgrid.token=$SENDGRID_TOKEN stripe.token=$STRIPE_DEV_TOKEN --project=jaspero-site --token $FIREBASE_CI_TOKEN
@@ -36,11 +35,26 @@ jobs:
       - run:
           name: Linting
           command: npm run lint
+      - run:
+          name: Building
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                npm run build
+            fi
       - save_cache:
           key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
+            - package.json
+            - client/package.json
+            - functions/package.json
             - package-lock.json
             - firebase.json
+            - functions/node_modules
+            - dist
+            - functions/lib
+            - firestore.indexes.json
+            - firestore.rules
+            - .firebaserc
   deploy:
     docker:
       - image: flauc/firebase
@@ -53,7 +67,7 @@ jobs:
           key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Deploy Master to Firebase
-          command: npm run deploy  -- -m "{{ .Environment.CIRCLE_SHA1 }}" --token {{ .Environment.GLOBAL.FIREBASE_CI_TOKEN }}
+          command: npm run deploy  -- -m $CIRCLE_SHA1 --token $FIREBASE_CI_TOKEN
 
 workflows:
   version: 2

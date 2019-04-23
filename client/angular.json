@@ -61,11 +61,12 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
+                  "maximumWarning": "3mb",
                   "maximumError": "5mb"
                 }
               ],
-              "serviceWorker": true
+              "serviceWorker": true,
+              "ngswConfigPath": "ngsw-config.json"
             }
           }
         },
@@ -236,7 +237,7 @@
                   "with": "apps/dashboard/src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
+              "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
               "extractCss": true,
@@ -252,7 +253,8 @@
                   "maximumError": "10mb"
                 }
               ],
-              "serviceWorker": true
+              "serviceWorker": true,
+              "ngswConfigPath": "ngsw-config.json"
             }
           }
         },
@@ -298,24 +300,6 @@
               "apps/dashboard/src/tsconfig.spec.json"
             ],
             "exclude": ["**/node_modules/**"]
-          }
-        },
-        "server": {
-          "builder": "@angular-devkit/build-angular:server",
-          "options": {
-            "outputPath": "../dist/server",
-            "main": "apps/dashboard/src/main-ssr.ts",
-            "tsConfig": "apps/dashboard/src/tsconfig.app-ssr.json"
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "apps/dashboard/src/environments/environment.ts",
-                  "with": "apps/dashboard/src/environments/environment.prod.ts"
-                }
-              ]
-            }
           }
         }
       }

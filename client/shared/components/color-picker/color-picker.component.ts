@@ -45,7 +45,7 @@ export class ColorPickerComponent implements OnInit {
     {
       label: 'Theme three',
       primary: '#673ab7',
-      accent: '#e91e63',
+      accent: '#ff4081',
       warn: '#fc2d14',
       class: 'three',
       active: false
@@ -53,7 +53,7 @@ export class ColorPickerComponent implements OnInit {
     {
       label: 'Theme four',
       primary: '#8d6e63',
-      accent: '#63828d',
+      accent: '#ff4081',
       warn: '#fc2d14',
       class: 'four',
       active: false

@@ -1,4 +1,6 @@
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
+import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {AngularFireAuthModule} from '@angular/fire/auth';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
@@ -41,14 +43,15 @@ import {
   StopPropagationModule
 } from '@jaspero/ng-helpers';
 import {ColorPickerComponent} from '@jf/components/color-picker/color-picker.component';
+import {ConfirmationComponent} from '@jf/components/confirmation/confirmation.component';
+import {ChipsComponent} from './components/chips/chips.component';
 import {ExportComponent} from './components/export/export.component';
 import {LangListComponent} from './components/lang-list/lang-list.component';
+import {LangSinglePageComponent} from './components/lang-single-page/lang-single-page.component';
 import {ListComponent} from './components/list/list.component';
+import {SinglePageComponent} from './components/single-page/single-page.component';
 import {WysiwygComponent} from './components/wysiwyg/wysiwyg.component';
-import {ConfirmationComponent} from '@jf/components/confirmation/confirmation.component';
-import {DragDropModule} from '@angular/cdk/drag-drop';
 import {FileUploadModule} from './modules/file-upload/file-upload.module';
-import {HttpClientModule} from '@angular/common/http';
 
 const IMPORTS = [
   CommonModule,
@@ -104,14 +107,16 @@ const IMPORTS = [
   FileUploadModule
 ];
 
-const COMPONENTS = [WysiwygComponent];
+const COMPONENTS = [WysiwygComponent, ChipsComponent];
 
 const ENTRY_COMPONENTS = [
   ConfirmationComponent,
   ExportComponent,
   ColorPickerComponent,
   ListComponent,
-  LangListComponent
+  LangListComponent,
+  SinglePageComponent,
+  LangSinglePageComponent
 ];
 
 @NgModule({
