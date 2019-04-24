@@ -13,6 +13,7 @@ import {LangSinglePageComponent} from '../../../../shared/components/lang-single
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
 import {Product} from '../../../../shared/interfaces/product.interface';
 import {FileUploadComponent} from '../../../../shared/modules/file-upload/component/file-upload.component';
+import {fromStripeFormat} from '@jf/utils/stripe-format.ts';
 
 @Component({
   selector: 'jfsc-single-page',
@@ -81,6 +82,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   }
 
   getSaveData(...args) {
+    args[1].price = fromStripeFormat(args[1].price);
     return this.fileUploadComponent
       .save()
       .pipe(switchMap(() => super.getSaveData(...args)));
@@ -94,7 +96,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       ],
       name: [data.name || '', Validators.required],
       active: data.active || false,
-      price: [data.price || 0, Validators.min(0)],
+      price: [data.price ? fromStripeFormat(data.price) : 0, Validators.min(0)],
       description: data.description || '',
       shortDescription: data.shortDescription || '',
       gallery: [data.gallery || []],

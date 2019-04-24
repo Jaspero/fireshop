@@ -21,8 +21,7 @@ import {
   shareReplay,
   switchMap,
   take,
-  takeUntil,
-  tap
+  takeUntil
 } from 'rxjs/operators';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {ENV_CONFIG} from '@jf/consts/env-config.const';

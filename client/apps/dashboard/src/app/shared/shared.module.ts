@@ -52,6 +52,7 @@ import {ListComponent} from './components/list/list.component';
 import {SinglePageComponent} from './components/single-page/single-page.component';
 import {WysiwygComponent} from './components/wysiwyg/wysiwyg.component';
 import {FileUploadModule} from './modules/file-upload/file-upload.module';
+import {StripePipe} from '@jf/pipes/stripe.pipe';
 
 const IMPORTS = [
   CommonModule,
@@ -119,10 +120,12 @@ const ENTRY_COMPONENTS = [
   LangSinglePageComponent
 ];
 
+const PIPES = [StripePipe];
+
 @NgModule({
-  declarations: [...ENTRY_COMPONENTS, ...COMPONENTS],
+  declarations: [...ENTRY_COMPONENTS, ...COMPONENTS, ...PIPES],
   imports: [...IMPORTS],
-  exports: [...IMPORTS, ...COMPONENTS],
+  exports: [...IMPORTS, ...COMPONENTS, ...PIPES],
   entryComponents: ENTRY_COMPONENTS,
   providers: [{provide: MAT_DATE_LOCALE, useValue: 'en-GB'}]
 })

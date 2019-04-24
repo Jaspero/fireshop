@@ -161,9 +161,9 @@
               <mat-card>
                 <h6 class="m-y-xs">Your purchase</h6>
                 <div>
-                  <p *ngFor="let products of prod">{{products.name}}: {{products.price | currency }} X{{products.quantity}}</p>
-                  <p>Subtotal: {{prices.totalPrice | currency}}</p>
-                  <p>Total: {{prices.totalPrice | currency}} </p>
+                  <p *ngFor="let products of prod">{{products.name}}: {{products.price | sp }} X{{products.quantity}}</p>
+                  <p>Subtotal: {{prices.totalPrice | sp}}</p>
+                  <p>Total: {{prices.totalPrice | sp}} </p>
                 </div>
                 <div class="p-y-s">
                   <mat-divider></mat-divider>

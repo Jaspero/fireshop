@@ -11,7 +11,7 @@
         >
           {{ product.name }}
         </h4>
-        <p mat-line>{{ product.price | currency }}</p>
+        <p mat-line>{{ product.price | sp }}</p>
         <p mat-line>
           <button
             id="btn-dec"
@@ -56,7 +56,7 @@
     <div class="flex jc-between ai-end p-x-xs">
       <div>
         <p class="fs-small">Total</p>
-        <h6>{{ cart.totalPrice$ | async | currency }}</h6>
+        <h6>{{ cart.totalPrice$ | async | sp }}</h6>
       </div>
       <button
         id="btn-chkOut"
