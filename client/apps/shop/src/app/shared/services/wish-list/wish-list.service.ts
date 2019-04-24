@@ -21,7 +21,7 @@ export class WishListService {
     this.wishList$ = this.state.user$.pipe(
       filter(user => !!(user && user.customerData)),
       map(user => {
-        return user.customerData.wishList;
+        return user.customerData.wishList || [];
       })
     );
   }

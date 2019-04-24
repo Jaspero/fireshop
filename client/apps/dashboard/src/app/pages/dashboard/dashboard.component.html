@@ -5,17 +5,50 @@
   </mat-toolbar>
 
   <div class="grid p-y-m">
-    <div class="col-8">
-      <mat-card><p class="p-b-xl">Get started</p></mat-card>
+    <div class="col-8 col-s-12">
+      <mat-card class="h-full">
+        <h6>Getting started</h6>
+        <div class="p-y-s">
+          <mat-divider></mat-divider>
+        </div>
+        <div class="jfsc-graph-placeholder"></div>
+      </mat-card>
     </div>
-    <div class="col-4">
-      <mat-card><p class="p-b-xl">&nbsp;</p></mat-card>
+
+    <div class="col-4 col-s-12">
+      <mat-card class="h-full">
+        <h6>Recent orders</h6>
+        <div class="p-y-s">
+          <mat-divider></mat-divider>
+        </div>
+        <mat-nav-list>
+          <mat-list-item *ngFor="let i of [].constructor(4)">
+            <mat-icon mat-list-icon>receipt</mat-icon>
+            <h4 mat-line>[OrderId]</h4>
+            <p mat-line>[OrderDate]</p>
+          </mat-list-item>
+        </mat-nav-list>
+      </mat-card>
     </div>
-    <div class="col-6">
-      <mat-card><p class="p-b-xl">&nbsp;</p></mat-card>
+
+    <div class="col-6 col-s-12">
+      <mat-card class="h-full">
+        <h6>Income</h6>
+        <div class="p-y-s">
+          <mat-divider></mat-divider>
+        </div>
+        <div class="jfsc-graph-placeholder"></div>
+      </mat-card>
     </div>
-    <div class="col-6">
-      <mat-card><p class="p-b-xl">&nbsp;</p></mat-card>
+
+    <div class="col-6 col-s-12">
+      <mat-card class="h-full">
+        <h6>New customers</h6>
+        <div class="p-y-s">
+          <mat-divider></mat-divider>
+        </div>
+        <div class="jfsc-graph-placeholder"></div>
+      </mat-card>
     </div>
   </div>
 
