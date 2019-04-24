@@ -20,12 +20,14 @@ import {
   shareReplay,
   switchMap,
   take,
-  takeUntil
+  takeUntil,
+  tap
 } from 'rxjs/operators';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {ENV_CONFIG} from '@jf/consts/env-config.const';
 import {environment} from '../../../environments/environment';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
+import {toStripeFormat} from '@jf/utils/stripe-format.ts';
 import * as nanoid from 'nanoid';
 
 @Component({
@@ -66,6 +68,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     this.cartService.totalPrice$.subscribe(val => {
       this.prices['totalPrice'] = val;
     });
+
     this.billingInfo$ = this.afAuth.user.pipe(
       switchMap(user =>
         this.afs
@@ -77,7 +80,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
               const group = this.fb.group({
                 billing: this.checkForm(value.billing ? value.billing : {}),
                 shippingInfo: value.shippingInfo || true,
-                saveInfo: false
+                saveInfo: true
               });
 
               if (this.shippingSubscription) {
@@ -124,11 +127,10 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   }
 
   toggleState() {
-    this.state.checkOutToggle = false;
+    this.state.checkOutToggle = true;
   }
 
   checkOut(data) {
-    console.log('data', data);
     if (data.saveInfo) {
       this.afs
         .doc(
@@ -160,23 +162,28 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
             return throwError(error);
           }
 
-          return (
-            this.afs
-              .collection(FirestoreCollections.Orders)
-              .doc(nanoid())
+          const prices = {};
+          for (let key in this.prices) {
+            prices[key] = toStripeFormat(this.prices[key]);
+          }
 
-              // TODO: Save other data
-              .set({
-                paymentIntentId: paymentIntent.id,
-                customerId: this.afAuth.auth.currentUser.uid,
-                customerName: this.afAuth.auth.currentUser.displayName,
-                billingAddress: data.billing.line1,
-                shippingAddress: data.shippingInfo ? data.shipping.line1 : '',
-                prices: this.prices,
-                orderItems: this.orderItems,
-                time: Date.now()
-              })
-          );
+          return this.afs
+            .collection(FirestoreCollections.Orders)
+            .doc(nanoid())
+            .set({
+              paymentIntentId: paymentIntent.id,
+              ...(this.afAuth.auth.currentUser
+                ? {customerId: this.afAuth.auth.currentUser.uid}
+                : {}),
+              ...(this.afAuth.auth.currentUser
+                ? {customerName: this.afAuth.auth.currentUser.displayName}
+                : {}),
+              billing: data.billing,
+              ...(data.shippingInfo ? {shipping: data.shipping} : {}),
+              prices,
+              orderItems: this.orderItems,
+              time: Date.now()
+            });
         }),
         finalize(() => this.loading$.next(false))
       )
@@ -195,7 +202,6 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     const elements = str.elements();
     const cardObj = elements.create('card', {style: {}});
 
-    console.log(11, this.cardEl);
     cardObj.mount(this.cardEl.nativeElement);
 
     const cardChanges$ = new Observable<stripe.elements.ElementChangeResponse>(

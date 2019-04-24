@@ -7,7 +7,8 @@ import {ENV_CONFIG} from '../consts/env-config.const';
 import {HttpStatus} from '../enums/http-status.enum';
 
 const app = express();
-const si = stripeLib(ENV_CONFIG.stripe.token);
+// const si = stripeLib(ENV_CONFIG.stripe.token);
+const si = stripeLib('sk_test_FJbKQgGuN4wRNFZkQLAKV1fn');
 
 app.use(cors());
 
