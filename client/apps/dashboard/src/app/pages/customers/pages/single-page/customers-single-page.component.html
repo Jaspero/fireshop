@@ -1,35 +1,73 @@
-<form class="grid" *ngIf="form" [formGroup]="form">
-  <div class="col-12">
-    <mat-form-field class="w-full">
-      <input matInput placeholder="Name" formControlName="name" />
-    </mat-form-field>
+<form *ngIf="form" [formGroup]="form">
+
+  <section>
+    <mat-toolbar color="primary">
+      <a mat-icon-button routerLink="/customers" aria-label="Back" matTooltip="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <span>Customers</span>
+    </mat-toolbar>
+  </section>
+
+  <section class="p-y-m">
+    <div class="grid">
+      <div class="col-8">
+        <h5>New customer</h5>
+      </div>
+    </div>
+  </section>
+
+  <div class="grid grid-no-gutter">
+    <div class="col-8 col-s-10 col-xs-12">
+      <div>
+        <div class="gird">
+          <div class="col-12">
+            <mat-card>
+              <h6 class="p-y-xs">Customer info</h6>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Name</mat-label>
+                  <input matInput formControlName="name" />
+                </mat-form-field>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Date of birth</mat-label>
+                  <input
+                    matInput
+                    [matDatepicker]="picker"
+                    formControlName="dateOfBirth"
+                  />
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Gender</mat-label>
+                  <mat-select formControlName="gender">
+                    <mat-option *ngFor="let gend of genders" [value]="gend">
+                      {{gend}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Brief</mat-label>
+                  <textarea matInput formControlName="brief"></textarea>
+                </mat-form-field>
+              </div>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="col-12">
-    <mat-form-field class="w-full">
-      <input
-        matInput
-        [matDatepicker]="picker"
-        placeholder="Date of birth"
-        formControlName="dateOfBirth"
-      />
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-  </div>
-  <div class="col-12">
-    <mat-form-field class="w-full">
-      <mat-select formControlName="gender" placeholder="Gender">
-        <mat-option *ngFor="let gend of genders" [value]="gend">
-          {{gend}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-  <div class="col-12">
-    <mat-form-field class="w-full">
-      <textarea matInput placeholder="Brief" formControlName="brief"></textarea>
-    </mat-form-field>
-  </div>
+
   <div class="jfsc-actions-header">
     <button
       mat-flat-button
