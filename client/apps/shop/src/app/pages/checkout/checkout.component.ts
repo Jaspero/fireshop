@@ -11,6 +11,7 @@ import {
   BehaviorSubject,
   from,
   Observable,
+  of,
   Subscription,
   throwError
 } from 'rxjs';
@@ -68,48 +69,50 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     this.cartService.totalPrice$.subscribe(val => {
       this.prices['totalPrice'] = val;
     });
-
     this.billingInfo$ = this.afAuth.user.pipe(
-      switchMap(user =>
-        this.afs
-          .doc(`${FirestoreCollections.Customers}/${user.uid}`)
-          .valueChanges()
-          .pipe(
-            take(1),
-            map((value: any) => {
-              const group = this.fb.group({
-                billing: this.checkForm(value.billing ? value.billing : {}),
-                shippingInfo: value.shippingInfo || true,
-                saveInfo: true
-              });
-
-              if (this.shippingSubscription) {
-                this.shippingSubscription.unsubscribe();
-              }
-
-              this.shippingSubscription = group
-                .get('shippingInfo')
-                .valueChanges.pipe(takeUntil(this.destroyed$))
-                .subscribe(value => {
-                  if (value) {
-                    group.removeControl('shipping');
-                  } else {
-                    group.addControl(
-                      'shipping',
-                      this.checkForm(value.shipping || {})
-                    );
-                  }
-                });
-
-              return group;
-            })
-          )
-      )
+      switchMap(user => {
+        if (user) {
+          return this.afs
+            .doc(`${FirestoreCollections.Customers}/${user.uid}`)
+            .valueChanges()
+            .pipe(
+              take(1),
+              map(value => this.filterData(value))
+            );
+        } else {
+          return of(this.filterData());
+        }
+      })
     );
 
     this.billingInfo$.pipe(take(1)).subscribe(() => {
       setTimeout(() => this.connectStripe());
     });
+  }
+
+  filterData(value: any = {}) {
+    const group = this.fb.group({
+      billing: this.checkForm(value.billing ? value.billing : {}),
+      shippingInfo: value.shippingInfo || true,
+      saveInfo: true
+    });
+
+    if (this.shippingSubscription) {
+      this.shippingSubscription.unsubscribe();
+    }
+
+    this.shippingSubscription = group
+      .get('shippingInfo')
+      .valueChanges.pipe(takeUntil(this.destroyed$))
+      .subscribe(value => {
+        if (value) {
+          group.removeControl('shipping');
+        } else {
+          group.addControl('shipping', this.checkForm(value.shipping || {}));
+        }
+      });
+
+    return group;
   }
 
   checkForm(data: any) {
