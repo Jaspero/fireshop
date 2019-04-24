@@ -160,10 +160,10 @@
             <div class="col-8 col-s-12" *ngIf="cartService.items$ | async as prod">
               <mat-card>
                 <h6 class="m-y-xs">Your purchase</h6>
-                <div *ngIf="cartService.totalPrice$ | async as price">
+                <div>
                   <p *ngFor="let products of prod">{{products.name}}: {{products.price | currency }} X{{products.quantity}}</p>
-                  <p>Subtotal: {{price | currency}}</p>
-                  <p>Total: {{price | currency}} </p>
+                  <p>Subtotal: {{prices.totalPrice | currency}}</p>
+                  <p>Total: {{prices.totalPrice | currency}} </p>
                 </div>
                 <div class="p-y-s">
                   <mat-divider></mat-divider>

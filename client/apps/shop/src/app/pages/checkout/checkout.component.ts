@@ -1,10 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {StateService} from '../../shared/services/state/state.service';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {CartService} from '../../shared/services/cart/cart.service';
@@ -32,14 +26,14 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {ENV_CONFIG} from '@jf/consts/env-config.const';
 import {environment} from '../../../environments/environment';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
+import * as nanoid from 'nanoid';
 
 @Component({
   selector: 'jfs-checkout',
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.scss']
 })
-export class CheckoutComponent extends RxDestroy
-  implements OnInit, AfterViewInit {
+export class CheckoutComponent extends RxDestroy implements OnInit {
   constructor(
     public cartService: CartService,
     private http: HttpClient,
@@ -54,6 +48,7 @@ export class CheckoutComponent extends RxDestroy
 
   @ViewChild('card')
   cardEl: ElementRef<HTMLElement>;
+
   stripe: {
     stripe: stripe.Stripe;
     cardObj: stripe.elements.Element;
@@ -62,10 +57,15 @@ export class CheckoutComponent extends RxDestroy
   };
   loading$ = new BehaviorSubject(false);
   billingInfo$: Observable<FormGroup>;
+  orderItems: any;
+  prices = {};
 
   private shippingSubscription: Subscription;
 
   ngOnInit() {
+    this.cartService.totalPrice$.subscribe(val => {
+      this.prices['totalPrice'] = val;
+    });
     this.billingInfo$ = this.afAuth.user.pipe(
       switchMap(user =>
         this.afs
@@ -73,10 +73,10 @@ export class CheckoutComponent extends RxDestroy
           .valueChanges()
           .pipe(
             take(1),
-            map(value => {
+            map((value: any) => {
               const group = this.fb.group({
                 billing: this.checkForm(value.billing ? value.billing : {}),
-                shippingInfo: [value.shippingInfo || true],
+                shippingInfo: value.shippingInfo || true,
                 saveInfo: false
               });
 
@@ -103,9 +103,13 @@ export class CheckoutComponent extends RxDestroy
           )
       )
     );
+
+    this.billingInfo$.pipe(take(1)).subscribe(() => {
+      setTimeout(() => this.connectStripe());
+    });
   }
 
-  checkForm(data) {
+  checkForm(data: any) {
     return this.fb.group({
       firstName: [data.firstName || '', Validators.required],
       lastName: [data.lastName || '', Validators.required],
@@ -119,11 +123,12 @@ export class CheckoutComponent extends RxDestroy
     });
   }
 
-  ngAfterViewInit() {
-    this.connectStripe();
+  toggleState() {
+    this.state.checkOutToggle = false;
   }
 
   checkOut(data) {
+    console.log('data', data);
     if (data.saveInfo) {
       this.afs
         .doc(
@@ -165,6 +170,10 @@ export class CheckoutComponent extends RxDestroy
                 paymentIntentId: paymentIntent.id,
                 customerId: this.afAuth.auth.currentUser.uid,
                 customerName: this.afAuth.auth.currentUser.displayName,
+                billingAddress: data.billing.line1,
+                shippingAddress: data.shippingInfo ? data.shipping.line1 : '',
+                prices: this.prices,
+                orderItems: this.orderItems,
                 time: Date.now()
               })
           );
@@ -186,6 +195,7 @@ export class CheckoutComponent extends RxDestroy
     const elements = str.elements();
     const cardObj = elements.create('card', {style: {}});
 
+    console.log(11, this.cardEl);
     cardObj.mount(this.cardEl.nativeElement);
 
     const cardChanges$ = new Observable<stripe.elements.ElementChangeResponse>(
@@ -207,7 +217,7 @@ export class CheckoutComponent extends RxDestroy
       .pipe(
         take(1),
         switchMap(items => {
-          const orderItems = items.map(val => ({
+          this.orderItems = items.map(val => ({
             id: val.productId,
             quantity: val.quantity
           }));
@@ -215,7 +225,7 @@ export class CheckoutComponent extends RxDestroy
           return this.http.post<{clientSecret: string}>(
             `${environment.restApi}/stripe/checkout`,
             {
-              orderItems,
+              orderItems: this.orderItems,
               lang: STATIC_CONFIG.lang
             }
           );
