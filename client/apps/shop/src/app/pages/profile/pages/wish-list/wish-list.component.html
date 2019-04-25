@@ -4,10 +4,19 @@
     <h6>Wishlist</h6>
   </div>
 
-  <div class="col-6 col-m-8 col-s-10 col-xs-12">
-    <div *ngFor="let item of (wishList$ | async)">
+  <div class="col-6 col-m-8 col-s-10 col-xs-12" *ngIf="wishList$ | async as list; else emptyState">
+    <div *ngFor="let item of list">
       <jfs-product-card [product]="item"></jfs-product-card>
     </div>
   </div>
 
+  <ng-template #emptyState>
+    <div class="col-6 col-m-8 col-s-10 col-xs-12">
+      <p>You haven't made any orders yet.<br>Visit our <a class="link c-primary" routerLink="/shop">shop</a> and get busy 🙂</p>
+    </div>
+  </ng-template>
+
+  <ng-container>
+    PUT LOADER HERE
+  </ng-container>
 </div>
