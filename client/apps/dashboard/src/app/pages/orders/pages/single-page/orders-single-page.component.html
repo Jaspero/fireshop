@@ -62,7 +62,7 @@
     <button
       mat-flat-button
       color="primary"
-      (click)="back()">
+      routerLink="/orders">
       {{isEdit ? 'Discard changes' : 'Cancel'}}
     </button> &nbsp;
 
@@ -70,8 +70,7 @@
       mat-flat-button
       type="submit"
       [disabled]="form.invalid"
-      [class.loading]="loading$ | async"
-      (click)="save()">
+      [jpLoadClick]="save()">
       {{isEdit ? 'Save changes' : 'Save'}}
     </button>
   </div>

@@ -39,11 +39,13 @@ import {
   EnumKeyFormatModule,
   EnumModule,
   FormTouchOnHoverModule,
+  LoadClickModule,
   SanitizeModule,
   StopPropagationModule
 } from '@jaspero/ng-helpers';
 import {ColorPickerComponent} from '@jf/components/color-picker/color-picker.component';
 import {ConfirmationComponent} from '@jf/components/confirmation/confirmation.component';
+import {StripePipe} from '@jf/pipes/stripe.pipe';
 import {ChipsComponent} from './components/chips/chips.component';
 import {ExportComponent} from './components/export/export.component';
 import {LangListComponent} from './components/lang-list/lang-list.component';
@@ -52,7 +54,6 @@ import {ListComponent} from './components/list/list.component';
 import {SinglePageComponent} from './components/single-page/single-page.component';
 import {WysiwygComponent} from './components/wysiwyg/wysiwyg.component';
 import {FileUploadModule} from './modules/file-upload/file-upload.module';
-import {StripePipe} from '@jf/pipes/stripe.pipe';
 
 const IMPORTS = [
   CommonModule,
@@ -99,6 +100,7 @@ const IMPORTS = [
 
   // https://github.com/Jaspero/ng-helpers
   FormTouchOnHoverModule,
+  LoadClickModule,
   StopPropagationModule,
   ClickOutsideModule,
   EnumModule,

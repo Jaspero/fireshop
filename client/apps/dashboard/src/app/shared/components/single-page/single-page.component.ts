@@ -5,11 +5,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {notify} from '@jf/utils/notify.operator';
+import * as nanoid from 'nanoid';
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
-import {finalize, map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {StateService} from '../../services/state/state.service';
 import {queue} from '../../utils/queue.operator';
-import * as nanoid from 'nanoid';
 
 @Component({
   selector: 'jfsc-single-page',
@@ -65,18 +65,12 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
   }
 
   save() {
-    this.loading$.next(true);
-
     const {id, ...item} = this.form.getRawValue();
 
-    this.getSaveData(id, item)
-      .pipe(
-        finalize(() => this.loading$.next(false)),
-        notify()
-      )
-      .subscribe(() => {
-        this.back();
-      });
+    return this.getSaveData(id, item).pipe(
+      notify(),
+      tap(() => this.back())
+    );
   }
 
   buildForm(data: any) {}
@@ -85,7 +79,7 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
     return nanoid();
   }
 
-  getSaveData(...args: any): Observable<any> {
+  getSaveData(...args: any[]): Observable<any> {
     const [id, item] = args;
 
     return from(
