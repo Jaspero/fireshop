@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   OnInit
 } from '@angular/core';
@@ -12,7 +11,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {map, switchMap, take, takeUntil} from 'rxjs/operators';
 import {RxDestroy} from '@jaspero/ng-helpers';
-import {Observable, of, Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 
 @Component({
   selector: 'jfs-settings',
@@ -25,13 +24,13 @@ export class SettingsComponent extends RxDestroy implements OnInit {
     private dialog: MatDialog,
     private fb: FormBuilder,
     private afAuth: AngularFireAuth,
-    private afs: AngularFirestore,
-    private cdr: ChangeDetectorRef
+    private afs: AngularFirestore
   ) {
     super();
   }
 
   form$: Observable<FormGroup>;
+
   private shippingSubscription: Subscription;
 
   ngOnInit() {
@@ -94,7 +93,6 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   }
 
   submitForm(data) {
-    console.log(data);
     this.afs
       .doc(
         `${FirestoreCollections.Customers}/${this.afAuth.auth.currentUser.uid}`
