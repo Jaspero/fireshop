@@ -1,7 +1,9 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {Validators} from '@angular/forms';
+import {FormGroup, Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
+import {takeUntil} from 'rxjs/operators';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'jfsc-single-page',
@@ -13,16 +15,44 @@ export class CustomersSinglePageComponent extends SinglePageComponent {
   value: string;
   genders = ['Male', 'Female'];
   collection = FirestoreCollections.Customers;
+  private shippingSubscription: Subscription;
 
   buildForm(data) {
-    this.form = this.fb.group({
-      name: [data ? data.name : '', Validators.required],
-      dateOfBirth: [
-        data && data.dateOfBirth ? new Date(data.dateOfBirth) : '',
-        Validators.required
-      ],
-      gender: [data ? data.gender : '', Validators.required],
-      brief: [data ? data.brief : '', Validators.required]
+    const group = this.fb.group({
+      billing: this.checkForm(data.billing ? data.billing : {}),
+      shippingInfo: data.shippingInfo || true,
+      gender: data.gender || '',
+      bio: data.bio || ''
+    });
+
+    if (this.shippingSubscription) {
+      this.shippingSubscription.unsubscribe();
+    }
+    this.shippingSubscription = group
+      .get('shippingInfo')
+      .valueChanges.pipe(takeUntil(this.destroyed$))
+      .subscribe(value => {
+        if (value) {
+          group.removeControl('shipping');
+        } else {
+          group.addControl('shipping', this.checkForm(value.shipping || {}));
+        }
+      });
+
+    this.form = group;
+  }
+
+  checkForm(data: any) {
+    return this.fb.group({
+      firstName: [data.firstName || '', Validators.required],
+      lastName: [data.lastName || '', Validators.required],
+      email: [data.email || '', Validators.required],
+      phone: [data.phone || '', Validators.required],
+      city: [data.city || '', Validators.required],
+      zip: [data.zip || '', Validators.required],
+      country: [data.country || '', Validators.required],
+      line1: [data.line1 || '', Validators.required],
+      line2: [data.line2 || '']
     });
   }
 }

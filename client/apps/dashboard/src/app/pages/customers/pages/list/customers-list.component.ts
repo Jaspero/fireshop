@@ -10,14 +10,6 @@ import {Customer} from '../../../../shared/interfaces/customer.interface';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomersListComponent extends ListComponent<Customer> {
-  displayedColumns = [
-    'checkBox',
-    'id',
-    'name',
-    'dateOfBirth',
-    'gender',
-    'brief',
-    'actions'
-  ];
+  displayedColumns = ['checkBox', 'name', 'gender', 'createdOn', 'actions'];
   collection = FirestoreCollections.Customers;
 }

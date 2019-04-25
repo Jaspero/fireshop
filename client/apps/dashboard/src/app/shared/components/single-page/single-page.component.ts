@@ -85,7 +85,7 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
     return nanoid();
   }
 
-  getSaveData(...args: any): Observable<any> {
+  getSaveData(...args): Observable<any> {
     const [id, item] = args;
 
     return from(
