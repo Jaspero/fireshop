@@ -173,7 +173,7 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
     );
   }
 
-  loadItems(...args: any): Observable<any>;
+  loadItems(...args): Observable<any>;
   loadItems(continues: boolean, reset = false) {
     if (reset) {
       this.cursor = null;

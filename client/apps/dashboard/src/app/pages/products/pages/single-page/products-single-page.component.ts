@@ -8,7 +8,7 @@ import {Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {Observable} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {map, switchMap, takeUntil} from 'rxjs/operators';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
 import {Product} from '../../../../shared/interfaces/product.interface';
@@ -28,6 +28,8 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   categories$: Observable<Category[]>;
   collection = FirestoreCollections.Products;
+  initialValue: any;
+  currentValue: any;
 
   ngOnInit() {
     super.ngOnInit();
@@ -102,6 +104,13 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       gallery: [data.gallery || []],
       quantity: [data.quantity || 0, Validators.min(0)],
       category: data.category
+    });
+
+    this.initialValue = this.form.getRawValue();
+    this.currentValue = this.form.getRawValue();
+
+    this.form.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+      this.currentValue = value;
     });
   }
 }
