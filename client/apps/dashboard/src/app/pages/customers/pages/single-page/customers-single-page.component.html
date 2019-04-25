@@ -27,6 +27,30 @@
               <div class="p-y-xs">
                 <mat-divider></mat-divider>
               </div>
+              <h6 class="p-y-s">Personal information</h6>
+              <div class="p-y-xs">
+                <mat-form-field class="w-full" appearance="outline">
+                  <mat-label>Name</mat-label>
+                  <input matInput type="tel" formControlName="fullName">
+                </mat-form-field>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field class="w-full" appearance="outline">
+                  <mat-label>Gender</mat-label>
+                  <mat-select formControlName="gender">
+                    <mat-option *ngFor="let gen of genders" [value]="gen">{{gen}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field class="w-full" appearance="outline">
+                  <mat-label>Tell us about yourself</mat-label>
+                  <textarea matInput formControlName="bio"></textarea>
+                </mat-form-field>
+              </div>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
               <h6 class="m-b-xs m-t-s">Billing info</h6>
               <ng-container formGroupName="billing">
                 <div class="p-y-xs">
