@@ -58,8 +58,9 @@
           matSortDisableClear
           [dataSource]="items$ | async"
           [matSortActive]="options.sort.active"
-          [matSortDirection]="options.sort.direction">
+          [matSortDirection]="options.sort.direction"
           class="w-full"
+        >
           <ng-container matColumnDef="checkBox">
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let row">
