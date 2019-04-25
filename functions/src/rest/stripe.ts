@@ -7,8 +7,7 @@ import {ENV_CONFIG} from '../consts/env-config.const';
 import {HttpStatus} from '../enums/http-status.enum';
 
 const app = express();
-// const si = stripeLib(ENV_CONFIG.stripe.token);
-const si = stripeLib('sk_test_FJbKQgGuN4wRNFZkQLAKV1fn');
+const si = stripeLib(ENV_CONFIG.stripe.token);
 
 app.use(cors());
 
@@ -57,7 +56,7 @@ app.post('/webhook', (req, res) => {
     event = si.webhooks.constructEvent(
       req.body,
       sig,
-      ENV_CONFIG.stripe.webhookSecret
+      ENV_CONFIG.stripe.webhook
     );
   } catch (err) {
     // invalid signature
