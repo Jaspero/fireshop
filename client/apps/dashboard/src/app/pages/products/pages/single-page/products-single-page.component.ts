@@ -104,4 +104,12 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       category: data.category
     });
   }
+
+  view(form) {
+    window.open('http://localhost:4200/product/' + form.controls.id.value);
+  }
+
+  duplicate(form) {
+    this.router.navigate(['/products/new']);
+  }
 }

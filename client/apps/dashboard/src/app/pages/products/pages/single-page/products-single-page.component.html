@@ -16,19 +16,19 @@
           <div class="flex ai-center jc-between">
             <h5>{{form.get('name').value}}</h5>
             <div>
-              <button mat-icon-button aria-label="Previous product" matTooltip="Previous product" (click)="move(false)">
+              <button mat-icon-button aria-label="Previous product" matTooltip="Previous product" (click)="move(false, form)">
                 <mat-icon>arrow_back</mat-icon>
               </button>
-              <button mat-icon-button aria-label="Next product" matTooltip="Next product" (click)="move(true)">
+              <button mat-icon-button aria-label="Next product" matTooltip="Next product" (click)="move(true, form)">
                 <mat-icon>arrow_forward</mat-icon>
               </button>
             </div>
           </div>
-          <button mat-button>
+          <button mat-button (click)="duplicate(form)">
             <mat-icon>filter_none</mat-icon>
             <span>&nbsp;Duplicate</span>
           </button>
-          <button mat-button>
+          <button mat-button (click)="view(form)">
             <mat-icon>visibility</mat-icon>
             <span>&nbsp;View</span>
           </button>
