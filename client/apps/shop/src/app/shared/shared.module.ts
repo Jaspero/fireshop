@@ -50,6 +50,7 @@ import {ReviewCardComponent} from './components/review-card/review-card.componen
 import {ReviewsDialogComponent} from './components/reviews/reviews-dialog.component';
 import {SearchComponent} from './components/search/search.component';
 import {LibraryImageDirective} from '@jf/directives/library-image.directive';
+import {StripePipe} from '@jf/pipes/stripe.pipe';
 
 const MODULES = [
   CommonModule,
@@ -113,7 +114,7 @@ const COMPONENTS = [
   ...ENTRY_COMPONENTS
 ];
 const DIRECTIVES = [LibraryImageDirective];
-const PIPES = [];
+const PIPES = [StripePipe];
 
 @NgModule({
   declarations: [...COMPONENTS, ...DIRECTIVES, ...PIPES],

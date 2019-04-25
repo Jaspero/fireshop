@@ -31,6 +31,8 @@ export class StateService {
     );
   }
 
+  checkOutToggle = true;
+
   logInValid$ = new BehaviorSubject<boolean>(true);
   user$: Observable<{authData: User; customerData: Customer}>;
 

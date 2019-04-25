@@ -41,7 +41,7 @@
           <div class="col-6 col-s-12">
             <h5 class="p-t-s p-b-xs">Description</h5>
             <div [innerHtml]="data.product.description"></div>
-            <h2 class="m-t-m m-b-xs">{{data.product.price | currency}}</h2>
+            <h2 class="m-t-m m-b-xs">{{data.product.price | sp}}</h2>
             <ng-container *ngIf="data.quantity; else notInCart">
               <button
                 mat-flat-button

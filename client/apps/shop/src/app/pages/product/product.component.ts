@@ -16,6 +16,7 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Review} from '@jf/interfaces/review.interface';
 import {combineLatest, Observable} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
+import {environment} from '../../../environments/environment';
 import {Product} from '../../shared/interfaces/product.interface';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {StateService} from '../../shared/services/state/state.service';
@@ -63,7 +64,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
           this.activatedRoute.data.pipe(
             tap(val => {
               this.similar$ = this.http.get(
-                'http://localhost:5000/jaspero-fireshop/us-central1/similarProducts',
+                `${environment.restApi}/similarProducts`,
                 {
                   params: {
                     category: val.product.category,
