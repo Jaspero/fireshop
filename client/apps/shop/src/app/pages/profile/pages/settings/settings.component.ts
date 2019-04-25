@@ -1,8 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material';
 import {DeleteUserComponent} from '../../components/delete-user/delete-user.component';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
@@ -55,7 +51,6 @@ export class SettingsComponent extends RxDestroy implements OnInit {
     const group = this.fb.group({
       billing: this.checkForm(data.billing ? data.billing : {}),
       shippingInfo: data.shippingInfo || true,
-      saveInfo: true,
       gender: data.gender || '',
       bio: data.bio || ''
     });
