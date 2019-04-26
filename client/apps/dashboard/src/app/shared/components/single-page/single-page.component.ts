@@ -6,7 +6,7 @@ import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {notify} from '@jf/utils/notify.operator';
 import * as nanoid from 'nanoid';
-import {BehaviorSubject, from, Observable, of} from 'rxjs';
+import {from, Observable, of} from 'rxjs';
 import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {StateService} from '../../services/state/state.service';
 import {queue} from '../../utils/queue.operator';
@@ -30,8 +30,6 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
   isEdit: string;
   collection: FirestoreCollections;
   form: FormGroup;
-
-  loading$ = new BehaviorSubject(false);
 
   ngOnInit() {
     this.activatedRoute.params
