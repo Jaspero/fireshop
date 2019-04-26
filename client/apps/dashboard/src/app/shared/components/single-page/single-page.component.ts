@@ -64,7 +64,6 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
 
   save() {
     const {id, ...item} = this.form.getRawValue();
-
     return this.getSaveData(id, item).pipe(
       notify(),
       tap(() => this.back())
@@ -77,16 +76,15 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
     return nanoid();
   }
 
-  getSaveData(...args: any[]): Observable<any> {
+  getSaveData(...args): Observable<any> {
     const [id, item] = args;
-
     return from(
       this.afs
         .collection(this.collection)
         .doc(id || this.createId())
         .set(
           {
-            item,
+            ...item,
             ...(this.isEdit ? {} : {createdOn: Date.now()})
           },
           {merge: true}

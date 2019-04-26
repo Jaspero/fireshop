@@ -72,31 +72,19 @@
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-            <td mat-cell *matCellDef="let element">{{ element.id }}</td>
-          </ng-container>
-
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>name</th>
-            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="dateOfBirth">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>dateOfBirth</th>
-            <td mat-cell *matCellDef="let element">
-              {{ element.dateOfBirth | date: 'yyyy/MM/dd' }}
-            </td>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+            <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
           </ng-container>
 
           <ng-container matColumnDef="gender">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>gender</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Gender</th>
             <td mat-cell *matCellDef="let element">{{ element.gender }}</td>
           </ng-container>
 
-          <ng-container matColumnDef="brief">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>brief</th>
-            <td mat-cell *matCellDef="let element">{{ element.brief }}</td>
+          <ng-container matColumnDef="createdOn">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Created on</th>
+            <td mat-cell *matCellDef="let element">{{element.createdOn | date: 'yyyy/MM/dd'}}</td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
