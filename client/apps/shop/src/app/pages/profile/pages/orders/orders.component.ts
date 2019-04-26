@@ -14,12 +14,7 @@ import {RxDestroy} from '@jaspero/ng-helpers';
 import {ReviewsDialogComponent} from '../../../../shared/components/reviews/reviews-dialog.component';
 import {Subject} from 'rxjs';
 import {Product} from '../../../../shared/interfaces/product.interface';
-
-enum State {
-  Loading,
-  Empty,
-  Loaded
-}
+import {State} from '@jf/enums/state.enum';
 
 @Component({
   selector: 'jfs-orders',
@@ -51,7 +46,7 @@ export class OrdersComponent extends RxDestroy implements OnInit {
       data: []
     });
     this.afs
-      .collection(`${FirestoreCollections.Orders}`, ref => {
+      .collection(FirestoreCollections.Orders, ref => {
         return ref.where(
           'customerId',
           FirebaseOperator.Equal,
