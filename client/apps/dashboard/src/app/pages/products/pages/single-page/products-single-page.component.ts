@@ -28,8 +28,6 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   categories$: Observable<Category[]>;
   collection = FirestoreCollections.Products;
-  initialValue: any;
-  currentValue: any;
 
   ngOnInit() {
     super.ngOnInit();

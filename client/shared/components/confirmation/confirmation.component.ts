@@ -22,7 +22,8 @@ export class ConfirmationComponent implements OnInit {
   defaultOptions: ConfirmationOptions = {
     header: 'Are you sure?',
     confirm: 'Remove',
-    negate: 'Cancel'
+    negate: 'Cancel',
+    color: 'warn'
   };
 
   options: ConfirmationOptions;

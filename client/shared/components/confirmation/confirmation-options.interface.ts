@@ -3,4 +3,5 @@ export interface ConfirmationOptions {
   negate: string;
   header: string;
   description?: string;
+  color?: string;
 }

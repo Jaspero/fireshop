@@ -3,6 +3,7 @@ import {Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {LangSinglePageComponent} from '../../../shared/components/lang-single-page/lang-single-page.component';
 import {URL_REGEX} from '../../../shared/const/url-regex.const';
+import {takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'jfsc-categories-single-page',
@@ -20,6 +21,13 @@ export class CategoriesSinglePageComponent extends LangSinglePageComponent {
       ],
       name: [data.name || '', Validators.required],
       description: [data.description || '']
+    });
+
+    this.initialValue = this.form.getRawValue();
+    this.currentValue = this.form.getRawValue();
+
+    this.form.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+      this.currentValue = value;
     });
   }
 }

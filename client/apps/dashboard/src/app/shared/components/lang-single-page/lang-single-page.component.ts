@@ -11,6 +11,9 @@ import {SinglePageComponent} from '../single-page/single-page.component';
 })
 export class LangSinglePageComponent extends SinglePageComponent
   implements OnInit {
+  initialValue: any;
+  currentValue: any;
+
   ngOnInit() {
     combineLatest(this.activatedRoute.params, this.state.language$)
       .pipe(
@@ -46,6 +49,7 @@ export class LangSinglePageComponent extends SinglePageComponent
     this.loading$.next(true);
 
     const {id, ...item} = this.form.getRawValue();
+    this.initialValue = this.form.getRawValue();
 
     this.state.language$
       .pipe(

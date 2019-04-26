@@ -30,14 +30,18 @@ export class CanDeactivateGuard implements CanDeactivate<any> {
             description:
               'You made changes on this page. What would you like to do with them before you leave?',
             confirm: 'Continue editing',
-            negate: 'Discard changes'
+            negate: 'Discard changes',
+            color: 'primary'
           }
         })
         .afterClosed()
         .pipe(
           map(res => {
-            console.log('res', res);
-            return !res;
+            if (res === undefined) {
+              return false;
+            } else {
+              return !res;
+            }
           })
         );
     }
