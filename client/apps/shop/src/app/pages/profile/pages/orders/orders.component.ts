@@ -12,6 +12,14 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {takeUntil} from 'rxjs/operators';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {ReviewsDialogComponent} from '../../../../shared/components/reviews/reviews-dialog.component';
+import {Subject} from 'rxjs';
+import {Product} from '../../../../shared/interfaces/product.interface';
+
+enum State {
+  Loading,
+  Empty,
+  Loaded
+}
 
 @Component({
   selector: 'jfs-orders',
@@ -29,9 +37,19 @@ export class OrdersComponent extends RxDestroy implements OnInit {
     super();
   }
 
+  dataState = State;
+  state$ = new Subject<{
+    state: State;
+    data: Product[];
+  }>();
+
   orders: any;
 
   ngOnInit() {
+    this.state$.next({
+      state: State.Loading,
+      data: []
+    });
     this.afs
       .collection(`${FirestoreCollections.Orders}`, ref => {
         return ref.where(
@@ -46,6 +64,13 @@ export class OrdersComponent extends RxDestroy implements OnInit {
         this.orders = value.map(x => {
           x['orderList'] = [];
           return x;
+        });
+        this.state$.next({
+          state: value.length ? State.Loaded : State.Empty,
+          data: value.map(x => {
+            x['orderList'] = [];
+            return x;
+          })
         });
         this.cdr.detectChanges();
       });
