@@ -10,8 +10,9 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
 import {AngularFireStorage} from '@angular/fire/storage';
 import {forkJoin, from} from 'rxjs';
-import {readFile} from '@jf/utils/read-file';
-import {map, switchMap, take} from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
+import {AngularFirestore} from '@angular/fire/firestore';
+import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 
 @Component({
   selector: 'jfs-profile',
@@ -24,6 +25,7 @@ export class ProfileComponent implements OnInit {
     public afAuth: AngularFireAuth,
     private router: Router,
     private afs: AngularFireStorage,
+    private angularFireStore: AngularFirestore,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -50,11 +52,24 @@ export class ProfileComponent implements OnInit {
   ];
 
   activeLink: any;
-  downloadURL: any;
+  downloadURL = 'assets/images/profile-placeholder.svg';
+  loadImg: boolean;
 
   ngOnInit() {
     const url = this.router.url.replace('/my-profile/', '');
     this.activeLink = this.links.find(val => val.route === url);
+    this.angularFireStore
+      .doc(
+        `${FirestoreCollections.Customers}/${this.afAuth.auth.currentUser.uid}`
+      )
+      .snapshotChanges()
+      .subscribe(rex => {
+        if (rex.payload.data().profileImage) {
+          this.downloadURL = rex.payload.data().profileImage;
+        }
+        this.loadImg = true;
+        this.cdr.detectChanges();
+      });
   }
 
   openFileUpload() {
@@ -63,16 +78,22 @@ export class ProfileComponent implements OnInit {
 
   filesImage(file) {
     const fileToUpload = Array.from(file)[0];
+    const userID = this.afAuth.auth.currentUser.uid;
     from(
-      this.afs.upload('my-profile-pic', fileToUpload, {
+      this.afs.upload(userID, fileToUpload, {
         contentType: fileToUpload.type
       })
     )
-      .pipe(switchMap(res => res.ref.getDownloadURL()))
-      .subscribe(res => {
-        console.log('res', res);
-        this.downloadURL = res;
-        this.cdr.detectChanges();
-      });
+      .pipe(
+        switchMap(res => res.ref.getDownloadURL()),
+        switchMap(res => {
+          this.downloadURL = res;
+          this.cdr.detectChanges();
+          return this.angularFireStore
+            .doc(`${FirestoreCollections.Customers}/${userID}`)
+            .update({profileImage: res});
+        })
+      )
+      .subscribe();
   }
 }

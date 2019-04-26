@@ -1,6 +1,6 @@
 <section class="p-y-m ta-center bg-primary">
-  <div class="profile-picture-container">
-    <img class="profile-picture" src="{{downloadURL ? downloadURL : 'assets/images/profile-placeholder.svg'}}" alt="Profile picture" width="100" height="100">
+  <div class="profile-picture-container" *ngIf="loadImg">
+    <img class="profile-picture" src="{{downloadURL}}" alt="Profile picture" width="100" height="100">
     <button class="profile-picture-edit" mat-icon-button color="accent" aria-label="edit" (click)="openFileUpload()">
       <mat-icon>edit</mat-icon>
     </button>
