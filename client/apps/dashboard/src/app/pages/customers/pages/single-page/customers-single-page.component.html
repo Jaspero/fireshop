@@ -185,8 +185,7 @@
       mat-flat-button
       type="submit"
       [disabled]="form.invalid"
-      [class.loading]="loading$ | async"
-      (click)="save()">
+      [jpLoadClick]="save()">
       {{isEdit ? 'Save changes' : 'Save'}}
     </button>
   </div>

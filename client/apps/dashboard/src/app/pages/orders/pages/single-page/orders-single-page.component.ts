@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import {Validators} from '@angular/forms';
 import {MatSort} from '@angular/material';
+import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
 
 @Component({
@@ -27,6 +28,8 @@ export class OrdersSinglePageComponent extends SinglePageComponent
     'quantity'
   ];
   order: any;
+
+  collection = FirestoreCollections.Orders;
 
   buildForm() {
     this.form = this.fb.group({
