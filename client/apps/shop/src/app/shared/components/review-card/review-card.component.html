@@ -1,33 +1,24 @@
 <mat-card>
   <div class="flex ai-center jc-between fw-wrap">
-    <h6>{{review.productId}}</h6>
+    <h6 class="m-b-s">{{review.productId}}</h6>
     <div>
-
       <ng-container>
         <mat-icon
+          color="primary"
           [class.active]="review.rating >= index + 1"
           *ngFor="let star of fiveStar; index as index"
           >
-          star
+          {{review.rating >= index + 1 ? 'star' : 'star_border'}}
         </mat-icon>
       </ng-container>
     </div>
   </div>
-  <div class="p-y-xs">
-    <mat-divider></mat-divider>
-  </div>
-  <div class="p-y-xs">
+  <blockquote>
     <p class="fs-small c-d-secondary">{{review.createdOn}}</p>
-    <p class="">{{review.comment}}</p>
-  </div>
-  <div *ngIf="review.customerId === afAuth.auth.currentUser.uid">
-    <button mat-button (click)="edit()">
-      <mat-icon color="primary">edit</mat-icon>
-      <span>Edit</span>
-    </button>
-    <button mat-button (click)="delete(review.id)">
-      <mat-icon color="warn">delete_forever</mat-icon>
-      <span>Delete</span>
-    </button>
+    <p>{{review.comment}}</p>
+  </blockquote>
+  <div class="ta-right" *ngIf="review.customerId === afAuth.auth.currentUser.uid">
+    <button mat-button (click)="delete(review.id)">Delete review</button>
+    <button mat-button (click)="edit()">Edit review</button>
   </div>
 </mat-card>

@@ -13,7 +13,7 @@
         <ng-template #reviewsDialog>
           <h6 mat-dialog-title="">Reviews</h6>
           <ng-container *ngIf="rec.length; else empty">
-            <div *ngFor="let review of rec">
+            <div class="m-b-s" *ngFor="let review of rec">
               <jfs-review-card [review]="review"></jfs-review-card>
             </div>
           </ng-container>
@@ -42,7 +42,7 @@
           <div class="col-6 col-s-12">
             <h5 class="p-t-s p-b-xs">Description</h5>
             <div [innerHtml]="data.product.description"></div>
-            <h2 class="m-t-m m-b-xs">{{data.product.price | sp}}</h2>
+            <h2 class="m-t-m m-b-xs">{{data.product.price | currency}}</h2>
             <ng-container *ngIf="data.quantity; else notInCart">
               <button
                 mat-flat-button

@@ -4,7 +4,7 @@
     <h6>Orders</h6>
   </div>
 
-  <ng-container *ngIf="orders; else emptyState">
+  <ng-container *ngIf="orders.length; else emptyState">
     <div class="col-6 col-m-8 col-s-10 col-xs-12">
       <mat-accordion [multi]="true">
         <mat-expansion-panel *ngFor="let order of orders; let i = index">
@@ -12,24 +12,28 @@
             <mat-panel-title>Order number {{ i + 1 }}</mat-panel-title>
             <mat-panel-description>Status: {{ order.status }}</mat-panel-description>
           </mat-expansion-panel-header>
-          <div class="flex ai-center p-y-xs" *ngFor="let item of order.orderList">
-            <img width="100" src="{{item.image}}"/>
-            <p class="m-l-xs">{{ item.productId }}, {{ item.quantity }}x (${{ item.price }})</p>
-
-            <div class="flex ai-center p-y-xs">
-              <button mat-button (click)="submitReview(item)">
-                Submit review
+          <mat-list>
+            <mat-list-item *ngFor="let item of order.orderList">
+              <img matListAvatar src="{{item.image}}" alt="{{item.productId}}">
+              <h3 matLine>{{item.productId}},</h3>
+              <p matLine>{{item.quantity}}x @ ${{item.price}}</p>
+              <button
+                mat-icon-button
+                aria-label="Review this product"
+                matTooltip="Review this product"
+                (click)="submitReview(item)"
+              >
+                <mat-icon>rate_review</mat-icon>
               </button>
-            </div>
-
-          </div>
+            </mat-list-item>
+          </mat-list>
         </mat-expansion-panel>
       </mat-accordion>
     </div>
   </ng-container>
 
   <ng-template #emptyState>
-    <div class="col-6 col-m-8 col-s-10 col-xs-12">
+    <div class="col-6 col-m-8 col-s-10 col-xs-12 ta-center">
       <p>You haven't made any orders yet.<br>Visit our <a class="link c-primary" routerLink="/shop">shop</a> and get busy 🙂</p>
     </div>
   </ng-template>
