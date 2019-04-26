@@ -81,4 +81,13 @@ export class LangSinglePageComponent extends SinglePageComponent
   }
 
   buildForm(data: any) {}
+
+  connectGuard() {
+    this.initialValue = this.form.getRawValue();
+    this.currentValue = this.form.getRawValue();
+
+    this.form.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+      this.currentValue = value;
+    });
+  }
 }

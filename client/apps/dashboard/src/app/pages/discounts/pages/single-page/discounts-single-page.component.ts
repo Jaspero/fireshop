@@ -23,11 +23,6 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
       description: [data.description || '']
     });
 
-    this.initialValue = this.form.getRawValue();
-    this.currentValue = this.form.getRawValue();
-
-    this.form.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-      this.currentValue = value;
-    });
+    this.connectGuard();
   }
 }
