@@ -30,8 +30,6 @@ export class ReviewCardComponent {
   edit() {
     this.isEdit = true;
 
-    console.log(this.review.id);
-
     this.dialog.open(ReviewsDialogComponent, {
       data: this.review
     });

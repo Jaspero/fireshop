@@ -8,20 +8,20 @@ import {
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
+import {MatDialog} from '@angular/material';
 import {ActivatedRoute} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Review} from '@jf/interfaces/review.interface';
-import {combineLatest, Observable, pipe} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {Product} from '../../shared/interfaces/product.interface';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {StateService} from '../../shared/services/state/state.service';
 import {WishListService} from '../../shared/services/wish-list/wish-list.service';
-import {MatDialog} from '@angular/material';
 
 @Component({
   selector: 'jfs-product',
@@ -43,7 +43,6 @@ export class ProductComponent extends RxDestroy implements OnInit {
     super();
   }
   rews$: Observable<Review[]>;
-  reviewsRating$: Observable<number>;
   data$: Observable<{
     product: Product;
     quantity: number;
@@ -54,6 +53,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
   }>;
   similar$: Observable<any>;
   imgIndex = 0;
+  averageRating$: Observable<any>;
 
   @ViewChild('reviewsDialog') reviewsDialog: TemplateRef<any>;
 
@@ -116,22 +116,37 @@ export class ProductComponent extends RxDestroy implements OnInit {
       .snapshotChanges()
       .pipe(
         map(actions =>
-          actions.map(action => {
-            const data = action.payload.doc.data();
-            return {
-              id: action.payload.doc.id,
-              ...data
-            };
-          })
+          actions
+            .map(action => {
+              const data = action.payload.doc.data();
+              return {
+                id: action.payload.doc.id,
+                ...data
+              };
+            })
+            .sort((a, b) => {
+              if (this.afAuth.auth.currentUser) {
+                return a.customerId === this.afAuth.auth.currentUser.uid
+                  ? -1
+                  : 1;
+              } else {
+                return 1;
+              }
+            })
         )
       );
 
-    this.reviewsRating$ = this.rews$.pipe(
+    this.averageRating$ = this.rews$.pipe(
       map(reviews => {
-        return reviews.length;
+        let num = 0;
+        reviews.forEach(x => {
+          num += x.rating;
+        });
+        return [num / reviews.length];
       })
     );
   }
+
   openReviews() {
     this.dialog.open(this.reviewsDialog, {
       width: '600px'

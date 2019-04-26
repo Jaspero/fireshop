@@ -14,8 +14,15 @@
   </mat-form-field>
 
   <div class="flex jc-end">
-    <button [disabled]="form.invalid" mat-flat-button color="primary" (click)="submit()">
-      Submit
-    </button>
+    <div class="m-r-s">
+      <button mat-flat-button [mat-dialog-close]="false">
+        Cancel
+      </button>
+    </div>
+    <div>
+      <button [disabled]="form.invalid" mat-flat-button color="primary" (click)="submit()">
+        Submit
+      </button>
+    </div>
   </div>
 </form>

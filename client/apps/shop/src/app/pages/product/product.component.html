@@ -18,7 +18,6 @@
             </div>
           </ng-container>
         </ng-template>
-
         <div class="col-6 col-xs-12 ws-nowrap ta-right">
           <mat-icon>star</mat-icon>
           <mat-icon>star</mat-icon>
@@ -29,7 +28,9 @@
         </div>
       </ng-container>
 
-
+      <ng-container *ngIf="averageRating$ | async as avg">
+        {{avg}}
+      </ng-container>
     </div>
   </section>
 
