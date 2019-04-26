@@ -1,14 +1,14 @@
 <section class="p-y-m ta-center bg-primary">
   <div class="profile-picture-container">
-    <img class="profile-picture" src="assets/images/profile-placeholder.svg" alt="Profile picture" width="100" height="100">
-    <button class="profile-picture-edit" mat-icon-button color="accent" aria-label="edit">
+    <img class="profile-picture" src="{{downloadURL ? downloadURL : 'assets/images/profile-placeholder.svg'}}" alt="Profile picture" width="100" height="100">
+    <button class="profile-picture-edit" mat-icon-button color="accent" aria-label="edit" (click)="openFileUpload()">
       <mat-icon>edit</mat-icon>
     </button>
   </div>
   <h6 class="c-l-primary p-y-xs">{{afAuth.auth.currentUser.displayName}}</h6>
   <p class="c-l-secondary">{{afAuth.auth.currentUser.email}}</p>
 </section>
-
+<input #file type="file" hidden (change)="filesImage($event.target.files)">
 <nav mat-tab-nav-bar backgroundColor="primary" mat-align-tabs="center">
   <a
     mat-tab-link
@@ -21,7 +21,6 @@
     {{ link.label }}
   </a>
 </nav>
-
 <section class="p-t-m p-b-l">
   <router-outlet></router-outlet>
 </section>
