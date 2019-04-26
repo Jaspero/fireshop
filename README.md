@@ -15,9 +15,9 @@ the [Angular](https://angular.io/) framework.
   - [ ] Browsing
   - [ ] Cart
   - [ ] Checkout
-- [ ] [Lazy Image Loading](https://github.com/Jaspero/ng-image-preload)
+- [x] [Lazy Image Loading](https://github.com/Jaspero/ng-image-preload)
 - [ ] Google Analytics
-- [ ] CI/CD (with Travis)
+- [x] CI/CD (with [CircleCi](https://circleci.com))
 - [ ] [Guess.js](https://github.com/guess-js)
 - [x] [Prettier](https://github.com/prettier/prettier)
 
@@ -36,9 +36,6 @@ Dashboard and shop represent the administrator dashboard and the client facing w
 respectively and the shared folder holds any code shared between the two.
 
 ## Firestore Structure
-
-Some collections have a `-lang` supersets. This is because in firebase its sometimes better to replicate
-data then create multiple requests.
 
 ### Authorization
 

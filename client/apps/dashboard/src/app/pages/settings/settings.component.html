@@ -3,6 +3,21 @@
   <section>
     <mat-toolbar color="primary">
       <span>Settings</span>
+      <div class="f1"></div>
+      <div>
+        <button mat-flat-button color="primary" [routerLink]="['/dashboard']">
+          Discard changes
+        </button>
+        &nbsp;
+        <button
+          mat-flat-button
+          type="submit"
+          [disabled]="form.invalid"
+          [class.loading]="loading$ | async"
+          (click)="save()">
+          Save
+        </button>
+      </div>
     </mat-toolbar>
   </section>
 
@@ -16,7 +31,7 @@
               <div class="p-y-xs">
                 <mat-divider></mat-divider>
               </div>
-<!--              TODO: Add info bubbles-->
+              <!--TODO: Add info bubbles-->
               <div class="p-y-xs flex jc-between">
                 <span>Real Time Data</span>
                 <mat-slide-toggle formControlName="realTimeData"></mat-slide-toggle>
@@ -85,21 +100,4 @@
       </div>
     </div>
   </section>
-
-<!--  TODO(Trt): global styl-->
-  <div class="jfsc-product-fixed-header flex jc-end ai-center">
-    <button mat-raised-button [routerLink]="['/dashboard']">
-      Discard changes
-    </button>
-    &nbsp;
-    <button
-      mat-raised-button
-      color="primary"
-      type="submit"
-      [disabled]="form.invalid"
-      [class.loading]="loading$ | async"
-      (click)="save()">
-      Save
-    </button>
-  </div>
 </form>

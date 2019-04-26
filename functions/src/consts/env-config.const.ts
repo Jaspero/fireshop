@@ -6,5 +6,6 @@ export const ENV_CONFIG = functions.config() as {
   };
   stripe: {
     token: string;
+    webhook: string;
   };
 };

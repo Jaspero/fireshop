@@ -21,17 +21,21 @@ app.get('/', (req, res) => {
       }));
 
       const index = docs.findIndex(it => it.id === id);
+
       if (index !== -1) {
         docs.splice(index, 1);
       }
-      let finalArr = [];
+
+      const finalArr = [];
+
       for (let i = 0; i < parseFloat(num); i++) {
         if (docs.length) {
-          let number = Math.floor(Math.random() * docs.length);
+          const number = Math.floor(Math.random() * docs.length);
           finalArr.push(docs[number]);
           docs.splice(number, 1);
         }
       }
+
       return res.json(finalArr);
     });
 });

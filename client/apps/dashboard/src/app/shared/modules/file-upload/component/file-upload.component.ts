@@ -189,7 +189,7 @@ export class FileUploadComponent extends RxDestroy
       return of([]);
     }
 
-    return forkJoin(
+    return forkJoin([
       ...this.toRemove.map(file =>
         from(this.afs.storage.refFromURL(file).delete()).pipe(
           /**
@@ -216,7 +216,7 @@ export class FileUploadComponent extends RxDestroy
 
         return acc;
       }, [])
-    ).pipe(
+    ]).pipe(
       tap(() => {
         this.onChange(this.values.map(val => val.data));
       })

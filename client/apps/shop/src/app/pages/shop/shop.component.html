@@ -23,14 +23,14 @@
               {{order.name}}
             </button>
           </mat-menu>
+          <!--Filters chips-->
+          <mat-chip-list class="col-12" *ngIf="chipArray.length">
+            <mat-chip *ngFor="let chip of chipArray">
+              <span>{{chip.filter}}: {{chip.value}}</span>
+              <mat-icon matChipRemove (click)="removeChip(chip)">cancel</mat-icon>
+            </mat-chip>
+          </mat-chip-list>
         </div>
-        <!--Filters chips-->
-        <mat-chip-list class="col-12" *ngIf="chipArray.length">
-          <mat-chip *ngFor="let chip of chipArray">
-            <span>{{chip.filter}}: {{chip.value}}</span>
-            <mat-icon matChipRemove (click)="removeChip(chip)">cancel</mat-icon>
-          </mat-chip>
-        </mat-chip-list>
       </div>
     </section>
 
@@ -89,7 +89,7 @@
 
     <div mat-dialog-actions>
       <div class="ta-right w-full">
-        <button mat-button>Reset all</button>&nbsp;
+        <button mat-button (click)="resetAll()">Reset all</button>&nbsp;
         <button id="btn-cntShp" mat-flat-button mat-dialog-close color="primary">
           Continue shopping
         </button>

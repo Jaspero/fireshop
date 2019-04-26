@@ -1,30 +1,92 @@
-<form class="grid fd-col ai-center" *ngIf="form" [formGroup]="form">
+<form class="grid fd-col ai-center" *ngIf="form$ | async as settingsForm" [formGroup]="settingsForm">
 
   <div class="col-6 col-m-8 col-s-10 col-xs-12">
     <mat-card>
-      <h6 class="p-y-s">Contact information</h6>
+      <h6 class="p-y-s">Billing information</h6>
       <p class="fs-small bg-l-secondary p-a-xs m-b-s flex ai-center">
         <mat-icon>info</mat-icon>
         <span>&nbsp;This information helps us speed up your check-out process.</span>
       </p>
-      <mat-form-field class="w-full" appearance="outline">
-        <mat-label>Phone number</mat-label>
-        <input matInput type="tel" />
-      </mat-form-field>
-      <mat-form-field class="w-full" appearance="outline">
-        <mat-label>City</mat-label>
-        <input matInput />
-      </mat-form-field>
-      <mat-form-field class="w-full" appearance="outline">
-        <mat-label>Zip or postal code</mat-label>
-        <input matInput />
-      </mat-form-field>
-      <mat-form-field class="w-full" appearance="outline">
-        <mat-label>Address</mat-label>
-        <input matInput />
-      </mat-form-field>
+      <ng-container formGroupName="billing">
+        <mat-form-field class="col-6 col-s-12 p-r-xs" appearance="outline">
+          <mat-label>First Name</mat-label>
+          <input matInput type="tel" formControlName="firstName">
+        </mat-form-field>
+        <mat-form-field class="col-6 col-s-12 p-r-xs" appearance="outline">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName">
+        </mat-form-field>
+        <mat-form-field class="col-6 col-s-12 p-r-xs" appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="tel" formControlName="email">
+        </mat-form-field>
+        <mat-form-field class="col-6 col-s-12 p-r-xs" appearance="outline">
+          <mat-label>Phone</mat-label>
+          <input matInput formControlName="phone">
+        </mat-form-field>
+        <mat-form-field class="col-4 col-s-12 p-r-xs" appearance="outline">
+          <mat-label>City</mat-label>
+          <input matInput type="tel" formControlName="city">
+        </mat-form-field>
+        <mat-form-field class="col-4 col-s-12 p-r-xs" appearance="outline">
+          <mat-label>Zip</mat-label>
+          <input matInput formControlName="zip">
+        </mat-form-field>
+        <mat-form-field class="col-4 col-s-12 p-r-xs" appearance="outline">
+          <mat-label>Country</mat-label>
+          <input matInput type="tel" formControlName="country">
+        </mat-form-field>
+        <mat-form-field class="col-12 p-r-xs" appearance="outline">
+          <mat-label>Billing Address</mat-label>
+          <input matInput formControlName="line1">
+        </mat-form-field>
+        <mat-form-field class="col-12 p-r-xs" appearance="outline">
+          <mat-label>Billing Address 2</mat-label>
+          <input matInput type="tel" formControlName="line2">
+        </mat-form-field>
+      </ng-container>
+      <h6 class="m-b-xs m-t-s">Shipping info</h6>
+      <ng-container formGroupName="shipping" *ngIf="settingsForm.get('shipping')">
+        <mat-form-field class="col-6 col-s-12 p-r-xs" appearance="outline">
+          <mat-label>First Name</mat-label>
+          <input matInput type="tel" formControlName="firstName">
+        </mat-form-field>
+        <mat-form-field class="col-6 col-s-12 p-r-xs" appearance="outline">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName">
+        </mat-form-field>
+        <mat-form-field class="col-6 col-xs-12 p-r-xs" appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="tel" formControlName="email">
+        </mat-form-field>
+        <mat-form-field class="col-6 col-xs-12 p-r-xs" appearance="outline">
+          <mat-label>Phone</mat-label>
+          <input matInput formControlName="phone">
+        </mat-form-field>
+        <mat-form-field class="col-4 col-s-12 p-r-xs" appearance="outline">
+          <mat-label>City</mat-label>
+          <input matInput type="tel" formControlName="city">
+        </mat-form-field>
+        <mat-form-field class="col-4 col-s-12 p-r-xs" appearance="outline">
+          <mat-label>Zip</mat-label>
+          <input matInput formControlName="zip">
+        </mat-form-field>
+        <mat-form-field class="col-4 col-s-12 p-r-xs" appearance="outline">
+          <mat-label>Country</mat-label>
+          <input matInput type="tel" formControlName="country">
+        </mat-form-field>
+        <mat-form-field class="col-12 p-r-xs" appearance="outline">
+          <mat-label>Billing Address</mat-label>
+          <input matInput formControlName="line1">
+        </mat-form-field>
+        <mat-form-field class="col-12 p-r-xs" appearance="outline">
+          <mat-label>Billing Address 2</mat-label>
+          <input matInput type="tel" formControlName="line2">
+        </mat-form-field>
+      </ng-container>
+      <mat-checkbox color="primary" formControlName="shippingInfo">My shipping address is same as my billing address</mat-checkbox>
       <div class="ta-right">
-        <button mat-flat-button color="primary" (click)="submitForm()">Submit</button>
+        <button mat-flat-button color="primary" (click)="submitForm(settingsForm.getRawValue())">Submit</button>
       </div>
     </mat-card>
   </div>
@@ -44,7 +106,7 @@
         <textarea matInput formControlName="bio"></textarea>
       </mat-form-field>
       <div class="ta-right">
-        <button mat-flat-button color="primary" (click)="submitForm()">Submit</button>
+        <button mat-flat-button color="primary" (click)="submitForm(settingsForm.getRawValue())">Submit</button>
       </div>
     </mat-card>
   </div>

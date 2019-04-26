@@ -22,17 +22,7 @@
           </div>
         </form>
 
-        <!--Actions toolbar-->
-        <ng-container *ngIf="chips$ | async as chips">
-          <div class="toolbar toolbar-inset" *ngIf="chips.length">
-            <mat-chip-list aria-label="Fish selection">
-              <mat-chip *ngFor="let chip of chips">
-                <span>{{chip.filter}}: {{chip.value}}</span>
-                <mat-icon matChipRemove (click)="removeChip()">cancel</mat-icon>
-              </mat-chip>
-            </mat-chip-list>
-          </div>
-        </ng-container>
+        <jfsc-chips [chips$]="filters.valueChanges" (filterValue)="changeFilters($event)"></jfsc-chips>
 
         <div class="toolbar toolbar-inset">
 
@@ -68,7 +58,9 @@
           matSortDisableClear
           [dataSource]="items$ | async"
           [matSortActive]="options.sort.active"
-          [matSortDirection]="options.sort.direction">
+          [matSortDirection]="options.sort.direction"
+          class="w-full"
+        >
           <ng-container matColumnDef="checkBox">
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let row">
@@ -113,13 +105,6 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
-
-
-        <!--Loading-->
-        <div class="p-y-m flex jc-center" *ngIf="dataLoading$ | async">
-          <mat-spinner [diameter]="40"></mat-spinner>
-        </div>
-
 
         <div class="flex jc-between p-y-s">
           <div class="p-x-m hide-xs"></div>

@@ -1,19 +1,13 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   OnInit,
   ViewChild
 } from '@angular/core';
-import {switchMap, takeUntil} from 'rxjs/operators';
-import {of} from 'rxjs';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {FormBuilder} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {RxDestroy} from '@jaspero/ng-helpers';
-import {MatSort, MatTableDataSource} from '@angular/material';
-import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
+import {Validators} from '@angular/forms';
+import {MatSort} from '@angular/material';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
 
 @Component({
   selector: 'jfsc-single-page',
@@ -21,16 +15,8 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
   styleUrls: ['./orders-single-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OrdersSinglePageComponent extends RxDestroy implements OnInit {
-  constructor(
-    private afs: AngularFirestore,
-    private fb: FormBuilder,
-    private activatedRoute: ActivatedRoute,
-    private cdr: ChangeDetectorRef
-  ) {
-    super();
-  }
-
+export class OrdersSinglePageComponent extends SinglePageComponent
+  implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   displayedColumns = [
     'name',
@@ -41,47 +27,16 @@ export class OrdersSinglePageComponent extends RxDestroy implements OnInit {
     'productId',
     'quantity'
   ];
-  dataSource = new MatTableDataSource();
   order: any;
 
-  ngOnInit() {
-    this.dataSource.sort = this.sort;
-    this.activatedRoute.params
-      .pipe(
-        switchMap(params => {
-          if (params.id !== 'new') {
-            return this.afs
-              .collection(`${FirestoreCollections.Orders}`)
-              .doc(params.id)
-              .valueChanges();
-          } else {
-            return of({});
-          }
-        }),
-        switchMap(res => {
-          if (res['orderId']) {
-            this.order = res;
-            return this.afs
-              .collection(`${FirestoreCollections.OrderedItems}`, ref => {
-                return ref.where(
-                  'orderId',
-                  FirebaseOperator.Equal,
-                  res['orderId']
-                );
-              })
-              .snapshotChanges();
-          } else {
-            return of({});
-          }
-        }),
-        takeUntil(this.destroyed$)
-      )
-      .subscribe((val: any) => {
-        this.dataSource.data = val.map(action => ({
-          id: action.payload.doc.id,
-          ...action.payload.doc.data()
-        }));
-        this.cdr.detectChanges();
-      });
+  collection = FirestoreCollections.Orders;
+
+  buildForm() {
+    this.form = this.fb.group({
+      product: ['', Validators.required],
+      name: ['', Validators.required],
+      quantity: ['', [Validators.required, Validators.min(0)]],
+      address: ['', Validators.required]
+    });
   }
 }

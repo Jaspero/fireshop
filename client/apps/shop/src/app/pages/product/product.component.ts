@@ -1,5 +1,11 @@
 import {HttpClient} from '@angular/common/http';
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {ActivatedRoute} from '@angular/router';
@@ -10,10 +16,12 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Review} from '@jf/interfaces/review.interface';
 import {combineLatest, Observable, pipe} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
+import {environment} from '../../../environments/environment';
 import {Product} from '../../shared/interfaces/product.interface';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {StateService} from '../../shared/services/state/state.service';
 import {WishListService} from '../../shared/services/wish-list/wish-list.service';
+import {MatDialog} from '@angular/material';
 
 @Component({
   selector: 'jfs-product',
@@ -26,6 +34,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
     public afAuth: AngularFireAuth,
     public cart: CartService,
     public wishList: WishListService,
+    public dialog: MatDialog,
     private afs: AngularFirestore,
     private state: StateService,
     private activatedRoute: ActivatedRoute,
@@ -44,6 +53,9 @@ export class ProductComponent extends RxDestroy implements OnInit {
     };
   }>;
   similar$: Observable<any>;
+  imgIndex = 0;
+
+  @ViewChild('reviewsDialog') reviewsDialog: TemplateRef<any>;
 
   ngOnInit() {
     this.data$ = this.activatedRoute.params.pipe(
@@ -52,7 +64,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
           this.activatedRoute.data.pipe(
             tap(val => {
               this.similar$ = this.http.get(
-                'http://localhost:5000/jaspero-fireshop/us-central1/similarProducts',
+                `${environment.restApi}/similarProducts`,
                 {
                   params: {
                     category: val.product.category,
@@ -78,11 +90,13 @@ export class ProductComponent extends RxDestroy implements OnInit {
               quantity: cart ? cart.quantity : 0,
               wishList: inWishList
                 ? {
-                    label: 'Remove from wishlist',
+                    label: 'Already on wishlist',
+                    tooltip: 'Remove from wishlist',
                     icon: 'favorite'
                   }
                 : {
                     label: 'Add to wishlist',
+                    tooltip: 'Add to wishlist',
                     icon: 'favorite_bordered'
                   }
             };
@@ -114,9 +128,17 @@ export class ProductComponent extends RxDestroy implements OnInit {
 
     this.reviewsRating$ = this.rews$.pipe(
       map(reviews => {
-        console.log(reviews, 'reviews');
         return reviews.length;
       })
     );
+  }
+  openReviews() {
+    this.dialog.open(this.reviewsDialog, {
+      width: '600px'
+    });
+  }
+
+  changePicture(index) {
+    this.imgIndex = index;
   }
 }
