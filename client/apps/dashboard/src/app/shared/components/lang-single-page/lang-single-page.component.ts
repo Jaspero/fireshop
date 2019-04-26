@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {notify} from '@jf/utils/notify.operator';
 import {combineLatest, from, of} from 'rxjs';
-import {finalize, map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {finalize, map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {queue} from '../../utils/queue.operator';
 import {SinglePageComponent} from '../single-page/single-page.component';
 
@@ -43,20 +43,14 @@ export class LangSinglePageComponent extends SinglePageComponent
   }
 
   save() {
-    this.loading$.next(true);
-
     const {id, ...item} = this.form.getRawValue();
 
-    this.state.language$
-      .pipe(
-        take(1),
-        switchMap(lang => this.getSaveData(id, item, lang)),
-        finalize(() => this.loading$.next(false)),
-        notify()
-      )
-      .subscribe(() => {
-        this.back();
-      });
+    return this.state.language$.pipe(
+      take(1),
+      switchMap(lang => this.getSaveData(id, item, lang)),
+      notify(),
+      tap(() => this.back())
+    );
   }
 
   getSaveData(...args) {
