@@ -31,34 +31,30 @@ export class CartService {
   totalPrice$: Observable<number>;
   numOfItems$: Observable<number>;
 
-  add(item, filters) {
+  add(item) {
     const current = this.items$.getValue();
-    let productId = item.id;
-    if (filters) {
-      productId = `${productId}-${filters.size}`;
-    }
-    const index = current.findIndex(val => val['productId'] === productId);
+
+    const index = current.findIndex(val => val['productId'] === item.id);
+
     if (index === -1) {
       current.push({
         identifier: item.id,
         name: item.name,
         price: item.price,
-        productId: productId,
-        quantity: 1,
+        productId: item.id,
         image: item.gallery[0],
-        size: filters ? filters.size : null
-      });
-      this.snackBar.open('Product added to cart', 'Dismiss', {
-        duration: 2000
+        quantity: 1
       });
     } else {
       current[index]['quantity'] += 1;
-      this.snackBar.open('Product added to cart', 'Dismiss', {
-        duration: 2000
-      });
     }
 
+    this.snackBar.open('Product added to cart', 'Dismiss', {
+      duration: 2000
+    });
+
     localStorage.setItem('cartItem', JSON.stringify(current));
+
     this.items$.next(current);
   }
 

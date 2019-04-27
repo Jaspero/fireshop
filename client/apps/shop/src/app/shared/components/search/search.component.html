@@ -1,31 +1,31 @@
-<mat-form-field class="w-full" appearance="outline">
-  <mat-label>Search</mat-label>
-  <input matInput type="text" />
-</mat-form-field>
+<form autocomplete="off">
+  <mat-form-field class="w-full" appearance="outline">
+    <mat-label>Search</mat-label>
+    <input matInput [formControl]="search" />
+
+    <!--Loading state-->
+    <mat-spinner matSuffix *ngIf="loading$ | async" aria-label="Loading" [diameter]="24"></mat-spinner>
+  </mat-form-field>
+</form>
 
 <!--Empty state-->
-<ng-container>
-  <div class="flex jc-center">
-    <mat-icon aria-label="No results">hourglass_empty</mat-icon>
-  </div>
-</ng-container>
+<div class="flex jc-center" *ngIf="!search.value">
+  <mat-icon aria-label="No results">hourglass_empty</mat-icon>
+</div>
 
-<!--No results state-->
-<ng-container> <p class="ta-center">No results.</p> </ng-container>
+<ng-container *ngIf="products$ | async as products">
 
-<!--Loading state-->
-<ng-container>
-  <div class="flex jc-center">
-    <mat-spinner aria-label="Loading" [diameter]="24"></mat-spinner>
-  </div>
-</ng-container>
-
-<!--Content state-->
-<ng-container>
-  <mat-nav-list>
-    <mat-list-item> <a matLine>link</a> </mat-list-item>
-    <mat-list-item> <a matLine>link</a> </mat-list-item>
-    <mat-list-item> <a matLine>link</a> </mat-list-item>
-    <mat-list-item> <a matLine>link</a> </mat-list-item>
+  <!--Content state-->
+  <mat-nav-list *ngIf="products.length; else noResults;">
+    <mat-list-item *ngFor="let product of products">
+      <a matLine (click)="openProduct(product)">
+        {{product.name}}
+      </a>
+    </mat-list-item>
   </mat-nav-list>
+
+  <!--No results state-->
+  <ng-template #noResults>
+    <p class="ta-center" *ngIf="search.value && ((loading$ | async) === false)">No results.</p>
+  </ng-template>
 </ng-container>
