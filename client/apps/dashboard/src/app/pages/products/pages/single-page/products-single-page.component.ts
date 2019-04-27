@@ -7,13 +7,13 @@ import {
 import {Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
+import {Product} from '@jf/interfaces/product.interface';
+import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
 import {Observable} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
-import {Product} from '@jf/interfaces/product.interface';
 import {FileUploadComponent} from '../../../../shared/modules/file-upload/component/file-upload.component';
-import {fromStripeFormat} from '@jf/utils/stripe-format.ts';
 
 @Component({
   selector: 'jfsc-single-page',
@@ -82,7 +82,11 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   }
 
   getSaveData(...args) {
-    args[1].price = fromStripeFormat(args[1].price);
+    args[1].price = toStripeFormat(args[1].price);
+    args[1].search = args[1].name
+      .split(' ')
+      .map(value => value.trim().toLowerCase());
+
     return this.fileUploadComponent
       .save()
       .pipe(switchMap(() => super.getSaveData(...args)));
