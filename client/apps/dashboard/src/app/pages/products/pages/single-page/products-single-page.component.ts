@@ -11,7 +11,7 @@ import {Observable} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
-import {Product} from '../../../../shared/interfaces/product.interface';
+import {Product} from '@jf/interfaces/product.interface';
 import {FileUploadComponent} from '../../../../shared/modules/file-upload/component/file-upload.component';
 import {fromStripeFormat} from '@jf/utils/stripe-format.ts';
 

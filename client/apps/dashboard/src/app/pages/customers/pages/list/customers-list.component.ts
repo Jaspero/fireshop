@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {ListComponent} from '../../../../shared/components/list/list.component';
-import {Customer} from '../../../../shared/interfaces/customer.interface';
+import {Customer} from '@jf/interfaces/customer.interface';
 
 @Component({
   selector: 'jfsc-customer-list',

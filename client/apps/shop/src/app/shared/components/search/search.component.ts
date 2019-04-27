@@ -3,7 +3,7 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {Product} from '../../interfaces/product.interface';
+import {Product} from '@jf/interfaces/product.interface';
 
 @Component({
   selector: 'jfs-search',
