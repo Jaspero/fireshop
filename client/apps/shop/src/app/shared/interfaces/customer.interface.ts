@@ -1,5 +1,5 @@
-import {Address} from './address.interface';
-import {Order} from './order.interface';
+import {Address} from '@jf/interfaces/address.interface';
+import {Order} from '@jf/interfaces/order.interface';
 
 export interface CustomerReview {
   productId: string;

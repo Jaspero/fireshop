@@ -7,12 +7,12 @@ the [Angular](https://angular.io/) framework.
 
 ## Supports
 
-- [ ] Multilingual
+- [x] Multilingual
 - [ ] Universal Rendering (SSR)
-- [ ] PWA
+- [x] PWA
 - [ ] [Stripe Checkout](https://stripe.com/docs)
-- [ ] Offline
-  - [ ] Browsing
+- [x] Offline
+  - [x] Browsing
   - [ ] Cart
   - [ ] Checkout
 - [x] [Lazy Image Loading](https://github.com/Jaspero/ng-image-preload)

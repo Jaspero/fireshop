@@ -1,4 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {OrderStatus} from '@jf/enums/order-status.enum';
+import {OrderItem, OrderPrice} from '@jf/interfaces/order.interface';
 import {StateService} from '../../shared/services/state/state.service';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {CartService} from '../../shared/services/cart/cart.service';
@@ -9,6 +11,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {
   BehaviorSubject,
+  combineLatest,
   from,
   Observable,
   of,
@@ -59,15 +62,21 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   };
   loading$ = new BehaviorSubject(false);
   billingInfo$: Observable<FormGroup>;
-  orderItems: any;
-  prices = {};
+  price$: Observable<OrderPrice>;
+  orderItems: OrderItem[];
 
   private shippingSubscription: Subscription;
 
   ngOnInit() {
-    this.cartService.totalPrice$.subscribe(val => {
-      this.prices['totalPrice'] = val;
-    });
+    this.price$ = this.cartService.totalPrice$.pipe(
+      map(total => {
+        return {
+          total,
+          subTotal: total
+        };
+      })
+    );
+
     this.billingInfo$ = this.afAuth.user.pipe(
       switchMap(user => {
         if (user) {
@@ -145,46 +154,51 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
 
     this.loading$.next(true);
 
-    from(
-      this.stripe['handleCardPayment'](
-        this.stripe.clientSecret,
-        this.stripe.cardObj,
-        {
-          payment_method_data: {
-            billing_details: {
-              name: `${data.billing.firstName} ${data.billing.lastName}`
+    combineLatest(
+      from(
+        this.stripe['handleCardPayment'](
+          this.stripe.clientSecret,
+          this.stripe.cardObj,
+          {
+            payment_method_data: {
+              billing_details: {
+                name: `${data.billing.firstName} ${data.billing.lastName}`
+              }
             }
           }
-        }
-      )
+        )
+      ),
+      this.price$
     )
       .pipe(
-        switchMap(({paymentIntent, error}) => {
+        switchMap(([{paymentIntent, error}, prices]: [any, OrderPrice]) => {
           if (error) {
             return throwError(error);
           }
 
-          const prices = {};
-          for (let key in this.prices) {
-            prices[key] = toStripeFormat(this.prices[key]);
+          const price = {...prices};
+
+          for (let key in prices) {
+            price[key] = toStripeFormat(price[key]);
           }
 
           return this.afs
             .collection(FirestoreCollections.Orders)
             .doc(nanoid())
             .set({
+              price,
+              status: OrderStatus.Ordered,
               paymentIntentId: paymentIntent.id,
-              ...(this.afAuth.auth.currentUser
-                ? {customerId: this.afAuth.auth.currentUser.uid}
-                : {}),
-              ...(this.afAuth.auth.currentUser
-                ? {customerName: this.afAuth.auth.currentUser.displayName}
-                : {}),
               billing: data.billing,
-              ...(data.shippingInfo ? {shipping: data.shipping} : {}),
-              prices,
               orderItems: this.orderItems,
-              time: Date.now()
+              createdOn: Date.now(),
+              ...(data.shippingInfo ? {shipping: data.shipping} : {}),
+              ...(this.afAuth.auth.currentUser
+                ? {
+                    customerId: this.afAuth.auth.currentUser.uid,
+                    customerName: this.afAuth.auth.currentUser.displayName
+                  }
+                : {})
             });
         }),
         finalize(() => this.loading$.next(false))
@@ -227,7 +241,12 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
         switchMap(items => {
           this.orderItems = items.map(val => ({
             id: val.productId,
-            quantity: val.quantity
+            quantity: val.quantity,
+
+            /**
+             * TODO: Connect attributes if necessary
+             */
+            attributes: {}
           }));
 
           return this.http.post<{clientSecret: string}>(

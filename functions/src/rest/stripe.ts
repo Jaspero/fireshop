@@ -6,33 +6,53 @@ import * as stripeLib from 'stripe';
 import {ENV_CONFIG} from '../consts/env-config.const';
 import {HttpStatus} from '../enums/http-status.enum';
 
+interface OrderItem {
+  id: string;
+  quantity: number;
+}
+
 const app = express();
-const si = stripeLib(ENV_CONFIG.stripe.token);
+const si = stripeLib('sk_test_FJbKQgGuN4wRNFZkQLAKV1fn');
 
 app.use(cors());
 
+async function getItems(orderItems: OrderItem[], lang: string) {
+  const snapshots: any[] = await Promise.all(
+    orderItems.map(item =>
+      admin
+        .firestore()
+        .collection(`products-${lang}`)
+        .doc(item.id)
+        .get()
+    )
+  );
+
+  for (let i = 0; i < snapshots.length; i++) {
+    snapshots[i] = {
+      id: snapshots[i].id,
+      ...snapshots[i].data()
+    };
+  }
+
+  return snapshots;
+}
+
 app.post('/checkout', (req, res) => {
   async function exec() {
-    const snapshots: any[] = await Promise.all(
-      req.body.orderItems.map(item =>
-        admin
-          .firestore()
-          .collection(`products-${req.body.lang}`)
-          .doc(item.id)
-          .get()
-      )
+    const items = await getItems(req.body.orderItems, req.body.lang);
+    const amount = items.reduce(
+      (acc, cur, curIndex) =>
+        req.body.orderItems[curIndex].quantity * cur.price,
+      0
     );
-
-    let amount = 0;
-
-    for (let i = 0; i < snapshots.length; i++) {
-      const data = snapshots[i].data();
-      amount += req.body.orderItems[i].quantity * data.price;
-    }
 
     const paymentIntent = await si.paymentIntents.create({
       amount,
-      currency: 'usd'
+      currency: 'usd',
+      metadata: {
+        lang: req.body.lang,
+        orderItems: req.body.orderItems
+      }
     });
 
     return {clientSecret: paymentIntent.client_secret};
@@ -45,9 +65,8 @@ app.post('/checkout', (req, res) => {
     );
 });
 
-app.post('/webhook', (req, res) => {
+app.post('/webhook', async (req, res) => {
   const sig = req.headers['stripe-signature'];
-  const body = req.body;
 
   let event = null;
 
@@ -63,17 +82,46 @@ app.post('/webhook', (req, res) => {
     return;
   }
 
-  let intent = null;
+  const intent = event.data.object;
+  const [order, settings, items] = await Promise.all([
+    admin
+      .firestore()
+      .collection('orders')
+      .where('paymentIntentId', '==', intent.id)
+      .get()
+      .then(snapshots => {
+        const docs = snapshots.docs.map(d => ({
+          ...d.data(),
+          id: d.id
+        }));
+
+        return docs[0];
+      }),
+
+    admin
+      .firestore()
+      .collection('settings')
+      .doc('general-settings')
+      .get()
+      .then(snapshot => ({
+        id: snapshot.id,
+        ...snapshot.data()
+      })),
+
+    await getItems(intent.metadata.orderItems, intent.metadata.lang)
+  ]);
+
+  console.log('intent', intent);
+  console.log('order', order);
+  console.log('settings', settings);
+  console.log('items', items);
 
   switch (event['type']) {
     case 'payment_intent.succeeded':
-      intent = event.data.object;
-      console.log('intent', intent);
       break;
 
     // TODO: Notify customer of failed payment
     case 'payment_intent.payment_failed':
-      intent = event.data.object;
       const message =
         intent.last_payment_error && intent.last_payment_error.message;
       console.error('Failed:', intent.id, message);
