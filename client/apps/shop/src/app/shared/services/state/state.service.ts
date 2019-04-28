@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
+import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {Customer} from '@jf/interfaces/customer.interface';
 import {User} from 'firebase/app';
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {distinctUntilChanged, map, switchMap} from 'rxjs/operators';
-import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {Customer} from '../../interfaces/customer.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -30,8 +30,6 @@ export class StateService {
       distinctUntilChanged()
     );
   }
-
-  checkOutToggle = true;
 
   logInValid$ = new BehaviorSubject<boolean>(true);
   user$: Observable<{authData: User; customerData: Customer}>;
