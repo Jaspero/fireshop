@@ -92,6 +92,7 @@ app.post('/webhook', async (req, res) => {
       .then(snapshots => {
         const docs = snapshots.docs.map(d => ({
           ...(d.data() as {
+            email: string;
             orderItems: OrderItem[];
           }),
           id: d.id
@@ -135,7 +136,11 @@ app.post('/webhook', async (req, res) => {
               status: 'payed'
             },
             {merge: true}
-          )
+          ),
+        parseEmail(order.email, 'Order Complete', 'order-complete', {
+          order,
+          items
+        })
       ];
 
       if (settings.autoReduceQuantity) {
@@ -198,8 +203,15 @@ app.post('/webhook', async (req, res) => {
           parseEmail(
             settings.errorNotificationEmail,
             'Error processing payment',
-            'error',
+            'admin-error.hbs',
             {message}
+          ),
+
+          parseEmail(
+            order.email,
+            'Error processing order',
+            'customer-error.hbs',
+            {}
           )
         );
       }

@@ -192,7 +192,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
               ...(this.afAuth.auth.currentUser
                 ? {
                     customerId: this.afAuth.auth.currentUser.uid,
-                    customerName: this.afAuth.auth.currentUser.displayName
+                    customerName: this.afAuth.auth.currentUser.displayName,
+                    email: this.afAuth.auth.currentUser.email
                   }
                 : {})
             });

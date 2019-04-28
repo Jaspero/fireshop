@@ -24,6 +24,7 @@ export interface Order {
   shipping?: Address;
   createdOn: number;
   orderItems: OrderItem[];
+  email: string;
   customerId?: string;
   customerName?: string;
   error?: string;
