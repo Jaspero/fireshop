@@ -13,7 +13,7 @@ interface OrderItem {
 }
 
 const app = express();
-const si = stripeLib('sk_test_FJbKQgGuN4wRNFZkQLAKV1fn');
+const si = stripeLib(ENV_CONFIG.stripe.token);
 
 app.use(cors());
 
@@ -51,8 +51,7 @@ app.post('/checkout', (req, res) => {
       amount,
       currency: 'usd',
       metadata: {
-        lang: req.body.lang,
-        orderItems: req.body.orderItems
+        lang: req.body.lang
       }
     });
 
@@ -84,7 +83,7 @@ app.post('/webhook', async (req, res) => {
   }
 
   const intent = event.data.object;
-  const [order, settings, items] = await Promise.all([
+  const [order, settings] = await Promise.all([
     admin
       .firestore()
       .collection('orders')
@@ -92,7 +91,9 @@ app.post('/webhook', async (req, res) => {
       .get()
       .then(snapshots => {
         const docs = snapshots.docs.map(d => ({
-          ...d.data(),
+          ...(d.data() as {
+            orderItems: OrderItem[];
+          }),
           id: d.id
         }));
 
@@ -111,10 +112,9 @@ app.post('/webhook', async (req, res) => {
           autoReduceQuantity: boolean;
           errorNotificationEmail: string;
         })
-      })),
-
-    await getItems(intent.metadata.orderItems, intent.metadata.lang)
+      }))
   ]);
+  const items = await getItems(order.orderItems, intent.metadata.lang);
 
   console.log('intent', intent);
   console.log('order', order);
