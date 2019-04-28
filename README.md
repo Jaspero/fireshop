@@ -52,3 +52,10 @@ To add an admin claim to an account add it to the `email` property of the `setti
 
 - **Human readable URL** - In order to get human readable URL-s the product ID should be the URL.
   This is because firebase only allows loading of a single document by ID.
+
+## Stripe Integration
+
+1. Create a webhook and point it at `[jour-domain]/stripe/webhook`.
+2. Connect `payment_intent.succeeded` and `payment_intent.payment_failed`
+   events for the webhook.
+3. Added the stripe webhook secret to your integrations environment variables.

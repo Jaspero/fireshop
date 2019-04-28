@@ -5,6 +5,7 @@ import * as functions from 'firebase-functions';
 import * as stripeLib from 'stripe';
 import {ENV_CONFIG} from '../consts/env-config.const';
 import {HttpStatus} from '../enums/http-status.enum';
+import {parseEmail} from '../utils/parse-email';
 
 interface OrderItem {
   id: string;
@@ -105,7 +106,11 @@ app.post('/webhook', async (req, res) => {
       .get()
       .then(snapshot => ({
         id: snapshot.id,
-        ...snapshot.data()
+        ...(snapshot.data() as {
+          inactiveForQuantity: boolean;
+          autoReduceQuantity: boolean;
+          errorNotificationEmail: string;
+        })
       })),
 
     await getItems(intent.metadata.orderItems, intent.metadata.lang)
@@ -116,8 +121,56 @@ app.post('/webhook', async (req, res) => {
   console.log('settings', settings);
   console.log('items', items);
 
+  let exec;
+
   switch (event['type']) {
     case 'payment_intent.succeeded':
+      exec = [
+        admin
+          .firestore()
+          .collection('order')
+          .doc(order.id)
+          .set(
+            {
+              status: 'payed'
+            },
+            {merge: true}
+          )
+      ];
+
+      if (settings.autoReduceQuantity) {
+        exec.push(
+          ...items.map((item, itemIndex) => {
+            const quantity =
+              item.quantity - intent.metadata.orderItems[itemIndex].quantity;
+
+            let active = item.active;
+
+            /**
+             * If the quantity drops to 0 and the shop is configured to set
+             * items to inactive when that happens, mark the product inactive
+             */
+            if (item.quantity <= 0 && settings.inactiveForQuantity) {
+              active = false;
+            }
+
+            return admin
+              .firestore()
+              .collection(`products-${intent.metadata.lang}`)
+              .doc(item.id)
+              .set(
+                {
+                  quantity,
+                  active
+                },
+                {merge: true}
+              );
+          })
+        );
+      }
+
+      await Promise.all(items);
+
       break;
 
     // TODO: Notify customer of failed payment
@@ -125,6 +178,34 @@ app.post('/webhook', async (req, res) => {
       const message =
         intent.last_payment_error && intent.last_payment_error.message;
       console.error('Failed:', intent.id, message);
+
+      exec = [
+        admin
+          .firestore()
+          .collection('order')
+          .doc(order.id)
+          .set(
+            {
+              status: 'failed',
+              error: message
+            },
+            {merge: true}
+          )
+      ];
+
+      if (settings.errorNotificationEmail) {
+        exec.push(
+          parseEmail(
+            settings.errorNotificationEmail,
+            'Error processing payment',
+            'error',
+            {message}
+          )
+        );
+      }
+
+      await Promise.all(exec);
+
       break;
   }
 

@@ -12,10 +12,10 @@ export interface CustomerReview {
 }
 
 export interface Customer {
+  id: string;
   createdOn: number;
   name?: string;
   profileImage?: string;
-  id?: string;
   billing?: Address;
   shippingInfo?: boolean;
   shipping?: Address;

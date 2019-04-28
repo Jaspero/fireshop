@@ -26,4 +26,5 @@ export interface Order {
   orderItems: OrderItem[];
   customerId?: string;
   customerName?: string;
+  error?: string;
 }
