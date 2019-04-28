@@ -11,7 +11,6 @@ const si = stripeLib(ENV_CONFIG.stripe.token);
 
 app.use(cors());
 
-// TODO: Send order
 app.post('/checkout', (req, res) => {
   async function exec() {
     const snapshots: any[] = await Promise.all(
@@ -69,6 +68,7 @@ app.post('/webhook', (req, res) => {
   switch (event['type']) {
     case 'payment_intent.succeeded':
       intent = event.data.object;
+      console.log('intent', intent);
       break;
 
     // TODO: Notify customer of failed payment

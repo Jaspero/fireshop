@@ -28,13 +28,22 @@ export class ProductsListComponent extends LangListComponent<Product>
     'actions'
   ];
   collection = FirestoreCollections.Products;
+  additionalRouteData = {
+    filters: {
+      search: '',
+      category: null,
+      active: null
+    }
+  };
   categories$: Observable<Category[]>;
 
   ngOnInit() {
     super.ngOnInit();
 
     this.categories$ = this.afs
-      .collection<Category>(`${this.collection}-${STATIC_CONFIG.lang}`)
+      .collection<Category>(
+        `${FirestoreCollections.Categories}-${STATIC_CONFIG.lang}`
+      )
       .snapshotChanges()
       .pipe(
         map(actions =>
@@ -47,6 +56,14 @@ export class ProductsListComponent extends LangListComponent<Product>
   }
 
   runFilters(ref) {
+    if (this.options.filters.active !== null) {
+      ref = ref.where(
+        'active',
+        FirebaseOperator.Equal,
+        this.options.filters.active
+      );
+    }
+
     if (this.options.filters.category) {
       ref = ref.where(
         'category',

@@ -73,8 +73,7 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
   filters: FormGroup;
   additionalRouteData = {
     filters: {
-      search: '',
-      category: ''
+      search: ''
     }
   };
 
@@ -104,18 +103,13 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
       }))
     );
 
-    // TODO: This follows product filters. It needs to be made reusable
     this.chips$ = this.filters.valueChanges.pipe(
       startWith(this.options.filters),
       map(values => {
         const final = [];
         for (const filter in values) {
-          if (values[filter]) {
-            if (filter === 'category') {
-              final.push({filter, value: values[filter].name});
-            } else {
-              final.push({filter, value: values[filter]});
-            }
+          if (values[filter] !== null && values[filter] !== '') {
+            final.push({filter, value: values[filter]});
           }
         }
         return final;
@@ -142,7 +136,7 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
       this.filters.valueChanges.pipe(
         debounceTime(400),
         tap(filters => {
-          this.options['filters'] = filters;
+          this.options.filters = filters;
           this.state.setRouteData(this.options);
         })
       )
@@ -156,7 +150,9 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
         return this.loadItems(this.realTime, true).pipe(
           switchMap(data => {
             items = data;
+
             this.dataLoading$.next(true);
+
             return this.loadMore$.pipe(startWith(false));
           }),
           switchMap(toDo => {
