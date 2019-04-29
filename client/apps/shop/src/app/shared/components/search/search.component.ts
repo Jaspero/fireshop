@@ -1,9 +1,14 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
+import {FormControl} from '@angular/forms';
+import {MatDialogRef} from '@angular/material';
+import {Router} from '@angular/router';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {Product} from '../../interfaces/product.interface';
+import {Product} from '@jf/interfaces/product.interface';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import {debounceTime, map, switchMap, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'jfs-search',
@@ -12,17 +17,55 @@ import {Product} from '../../interfaces/product.interface';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchComponent implements OnInit {
-  constructor(private afs: AngularFirestore) {}
+  constructor(
+    private afs: AngularFirestore,
+    private router: Router,
+    private dialogRef: MatDialogRef<SearchComponent>
+  ) {}
+
+  search: FormControl;
+  products$: Observable<Product[]>;
+  loading$ = new BehaviorSubject(false);
 
   ngOnInit() {
-    this.afs
-      .collection<Product>(
-        `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}`,
-        ref => {
-          return ref.where('name', FirebaseOperator.LargerThenOrEqual, 'b');
+    this.search = new FormControl('');
+
+    this.products$ = this.search.valueChanges.pipe(
+      debounceTime(300),
+      switchMap(value => {
+        if (value) {
+          this.loading$.next(true);
+
+          return this.afs
+            .collection<Product>(
+              `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}`,
+              ref => {
+                return ref.where(
+                  'search',
+                  FirebaseOperator.ArrayContains,
+                  value.toLowerCase()
+                );
+              }
+            )
+            .snapshotChanges()
+            .pipe(
+              map(actions =>
+                actions.map(action => ({
+                  id: action.payload.doc.id,
+                  ...action.payload.doc.data()
+                }))
+              ),
+              tap(() => this.loading$.next(false))
+            );
+        } else {
+          return of([]);
         }
-      )
-      .valueChanges()
-      .subscribe();
+      })
+    );
+  }
+
+  openProduct(product) {
+    this.router.navigate(['/product', product.id]);
+    this.dialogRef.close();
   }
 }

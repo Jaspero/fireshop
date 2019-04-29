@@ -6,11 +6,8 @@ import {CheckoutErrorComponent} from './checkout-error/checkout-error.component'
 import {CheckoutSuccessComponent} from './checkout-success/checkout-success.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: CheckoutComponent
-  },
-  {path: 'error', component: CheckoutErrorComponent},
+  {path: '', component: CheckoutComponent},
+  {path: 'admin-error.hbs', component: CheckoutErrorComponent},
   {path: 'success', component: CheckoutSuccessComponent}
 ];
 

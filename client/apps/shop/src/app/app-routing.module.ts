@@ -18,7 +18,10 @@ const routes: Routes = [
   {
     path: 'checkout',
     loadChildren: './pages/checkout/checkout.module#CheckoutModule',
-    canActivate: [CheckOutGuard]
+    canActivate: [CheckOutGuard],
+    data: {
+      hideLayout: true
+    }
   },
   {
     path: 'my-profile',

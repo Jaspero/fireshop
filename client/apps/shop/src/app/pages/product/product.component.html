@@ -54,7 +54,7 @@
               <button
                 mat-flat-button
                 color="accent"
-                (click)="cart.add(data.product, null)">
+                (click)="cart.add(data.product)">
                 <span class="iblock p-x-s">Add more to cart (currently {{data.quantity}})</span>
               </button>
             </ng-container>
@@ -62,7 +62,7 @@
               <button
                 mat-flat-button
                 color="accent"
-                (click)="cart.add(data.product, null)">
+                (click)="cart.add(data.product)">
                 <span class="iblock p-x-m">Add to cart</span>
               </button>
             </ng-template>

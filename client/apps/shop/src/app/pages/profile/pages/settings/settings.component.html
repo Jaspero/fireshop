@@ -2,6 +2,30 @@
 
   <div class="col-6 col-m-8 col-s-10 col-xs-12">
     <mat-card>
+      <h6 class="p-y-s">Personal information</h6>
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput type="tel" formControlName="fullName">
+      </mat-form-field>
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Gender</mat-label>
+        <mat-select formControlName="gender">
+          <mat-option [value]="'Male'">Male</mat-option>
+          <mat-option [value]="'Female'">Female</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Tell us about yourself</mat-label>
+        <textarea matInput formControlName="bio"></textarea>
+      </mat-form-field>
+      <div class="ta-right">
+        <button mat-flat-button color="primary" (click)="submitForm(settingsForm.getRawValue())">Submit</button>
+      </div>
+    </mat-card>
+  </div>
+
+  <div class="col-6 col-m-8 col-s-10 col-xs-12">
+    <mat-card>
       <h6 class="p-y-s">Billing information</h6>
       <p class="fs-small bg-l-secondary p-a-xs m-b-s flex ai-center">
         <mat-icon>info</mat-icon>
@@ -85,26 +109,6 @@
         </mat-form-field>
       </ng-container>
       <mat-checkbox color="primary" formControlName="shippingInfo">My shipping address is same as my billing address</mat-checkbox>
-      <div class="ta-right">
-        <button mat-flat-button color="primary" (click)="submitForm(settingsForm.getRawValue())">Submit</button>
-      </div>
-    </mat-card>
-  </div>
-
-  <div class="col-6 col-m-8 col-s-10 col-xs-12">
-    <mat-card>
-      <h6 class="p-y-s">Personal information</h6>
-      <mat-form-field class="w-full" appearance="outline">
-        <mat-label>Gender</mat-label>
-        <mat-select formControlName="gender">
-          <mat-option [value]="'Male'">Male</mat-option>
-          <mat-option [value]="'Female'">Female</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field class="w-full" appearance="outline">
-        <mat-label>Tell us about yourself</mat-label>
-        <textarea matInput formControlName="bio"></textarea>
-      </mat-form-field>
       <div class="ta-right">
         <button mat-flat-button color="primary" (click)="submitForm(settingsForm.getRawValue())">Submit</button>
       </div>

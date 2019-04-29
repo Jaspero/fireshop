@@ -8,4 +8,5 @@ export interface Product {
   shortDescription: string;
   description: string;
   gallery: string[];
+  search: string[];
 }

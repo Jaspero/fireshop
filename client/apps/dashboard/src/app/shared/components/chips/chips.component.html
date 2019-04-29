@@ -2,7 +2,7 @@
   <div class="toolbar toolbar-inset" *ngIf="haveLength(chips)">
     <mat-chip-list>
       <ng-container *ngFor="let chip of chips | keyvalue">
-        <mat-chip *ngIf="chip.value">
+        <mat-chip *ngIf="chip.value !== null && chip.value !== ''">
           <span>{{chip.key}}: {{chip.value}}</span>
           <mat-icon matChipRemove (click)="removeChip(chip)">cancel</mat-icon>
         </mat-chip>

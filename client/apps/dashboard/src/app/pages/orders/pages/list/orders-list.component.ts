@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {DeliveryStatusEnum} from '@jf/enums/delivery-status.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {ListComponent} from '../../../../shared/components/list/list.component';
-import {Order} from '../../../../shared/interfaces/orders.interface';
+import {Order} from '@jf/interfaces/order.interface';
 
 @Component({
   selector: 'jfsc-list',

@@ -1,14 +1,20 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {StateService} from '../../shared/services/state/state.service';
-import {RxDestroy} from '@jaspero/ng-helpers';
-import {CartService} from '../../shared/services/cart/cart.service';
 import {HttpClient} from '@angular/common/http';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
+import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
+import {RxDestroy} from '@jaspero/ng-helpers';
+import {ENV_CONFIG} from '@jf/consts/env-config.const';
+import {STATIC_CONFIG} from '@jf/consts/static-config.const';
+import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {OrderStatus} from '@jf/enums/order-status.enum';
+import {OrderItem, OrderPrice} from '@jf/interfaces/order.interface';
+import {toStripeFormat} from '@jf/utils/stripe-format.ts';
+import * as nanoid from 'nanoid';
 import {
   BehaviorSubject,
+  combineLatest,
   from,
   Observable,
   of,
@@ -23,12 +29,9 @@ import {
   take,
   takeUntil
 } from 'rxjs/operators';
-import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {ENV_CONFIG} from '@jf/consts/env-config.const';
 import {environment} from '../../../environments/environment';
-import {STATIC_CONFIG} from '@jf/consts/static-config.const';
-import {toStripeFormat} from '@jf/utils/stripe-format.ts';
-import * as nanoid from 'nanoid';
+import {CartService} from '../../shared/services/cart/cart.service';
+import {StateService} from '../../shared/services/state/state.service';
 
 @Component({
   selector: 'jfs-checkout',
@@ -59,15 +62,21 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   };
   loading$ = new BehaviorSubject(false);
   billingInfo$: Observable<FormGroup>;
-  orderItems: any;
-  prices = {};
+  price$: Observable<OrderPrice>;
+  orderItems: OrderItem[];
 
   private shippingSubscription: Subscription;
 
   ngOnInit() {
-    this.cartService.totalPrice$.subscribe(val => {
-      this.prices['totalPrice'] = val;
-    });
+    this.price$ = this.cartService.totalPrice$.pipe(
+      map(total => {
+        return {
+          total,
+          subTotal: total
+        };
+      })
+    );
+
     this.billingInfo$ = this.afAuth.user.pipe(
       switchMap(user => {
         if (user) {
@@ -76,10 +85,10 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
             .valueChanges()
             .pipe(
               take(1),
-              map(value => this.filterData(value))
+              map(value => this.buildForm(value))
             );
         } else {
-          return of(this.filterData());
+          return of(this.buildForm());
         }
       })
     );
@@ -89,9 +98,9 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     });
   }
 
-  filterData(value: any = {}) {
+  buildForm(value: any = {}) {
     const group = this.fb.group({
-      billing: this.checkForm(value.billing ? value.billing : {}),
+      billing: this.addressForm(value.billing ? value.billing : {}),
       shippingInfo: value.shippingInfo || true,
       saveInfo: true
     });
@@ -103,18 +112,18 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     this.shippingSubscription = group
       .get('shippingInfo')
       .valueChanges.pipe(takeUntil(this.destroyed$))
-      .subscribe(value => {
-        if (value) {
+      .subscribe(shippingInfo => {
+        if (shippingInfo) {
           group.removeControl('shipping');
         } else {
-          group.addControl('shipping', this.checkForm(value.shipping || {}));
+          group.addControl('shipping', this.addressForm(value.shipping || {}));
         }
       });
 
     return group;
   }
 
-  checkForm(data: any) {
+  addressForm(data: any) {
     return this.fb.group({
       firstName: [data.firstName || '', Validators.required],
       lastName: [data.lastName || '', Validators.required],
@@ -126,10 +135,6 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
       line1: [data.line1 || '', Validators.required],
       line2: [data.line2 || '']
     });
-  }
-
-  toggleState() {
-    this.state.checkOutToggle = true;
   }
 
   checkOut(data) {
@@ -145,46 +150,52 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
 
     this.loading$.next(true);
 
-    from(
-      this.stripe['handleCardPayment'](
-        this.stripe.clientSecret,
-        this.stripe.cardObj,
-        {
-          payment_method_data: {
-            billing_details: {
-              name: `${data.billing.firstName} ${data.billing.lastName}`
+    combineLatest(
+      from(
+        this.stripe['handleCardPayment'](
+          this.stripe.clientSecret,
+          this.stripe.cardObj,
+          {
+            payment_method_data: {
+              billing_details: {
+                name: `${data.billing.firstName} ${data.billing.lastName}`
+              }
             }
           }
-        }
-      )
+        )
+      ),
+      this.price$
     )
       .pipe(
-        switchMap(({paymentIntent, error}) => {
+        switchMap(([{paymentIntent, error}, prices]: [any, OrderPrice]) => {
           if (error) {
             return throwError(error);
           }
 
-          const prices = {};
-          for (let key in this.prices) {
-            prices[key] = toStripeFormat(this.prices[key]);
+          const price = {...prices};
+
+          for (let key in prices) {
+            price[key] = toStripeFormat(price[key]);
           }
 
           return this.afs
             .collection(FirestoreCollections.Orders)
             .doc(nanoid())
             .set({
+              price,
+              status: OrderStatus.Ordered,
               paymentIntentId: paymentIntent.id,
-              ...(this.afAuth.auth.currentUser
-                ? {customerId: this.afAuth.auth.currentUser.uid}
-                : {}),
-              ...(this.afAuth.auth.currentUser
-                ? {customerName: this.afAuth.auth.currentUser.displayName}
-                : {}),
               billing: data.billing,
-              ...(data.shippingInfo ? {shipping: data.shipping} : {}),
-              prices,
               orderItems: this.orderItems,
-              time: Date.now()
+              createdOn: Date.now(),
+              ...(data.shippingInfo ? {shipping: data.shipping} : {}),
+              ...(this.afAuth.auth.currentUser
+                ? {
+                    customerId: this.afAuth.auth.currentUser.uid,
+                    customerName: this.afAuth.auth.currentUser.displayName,
+                    email: this.afAuth.auth.currentUser.email
+                  }
+                : {})
             });
         }),
         finalize(() => this.loading$.next(false))
@@ -227,7 +238,12 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
         switchMap(items => {
           this.orderItems = items.map(val => ({
             id: val.productId,
-            quantity: val.quantity
+            quantity: val.quantity,
+
+            /**
+             * TODO: Connect attributes if necessary
+             */
+            attributes: {}
           }));
 
           return this.http.post<{clientSecret: string}>(

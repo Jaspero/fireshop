@@ -37,13 +37,18 @@
                 <mat-slide-toggle formControlName="realTimeData"></mat-slide-toggle>
               </div>
               <div class="p-y-xs flex jc-between">
-                <span>Shared Statuses</span>
-                <mat-slide-toggle formControlName="sharedStatuses"></mat-slide-toggle>
+                <span>Automatically reduce item quantity</span>
+                <mat-slide-toggle formControlName="autoReduceQuantity"></mat-slide-toggle>
               </div>
               <div class="p-y-xs flex jc-between">
                 <span>Inactive when out of stock</span>
                 <mat-slide-toggle formControlName="inactiveForQuantity"></mat-slide-toggle>
               </div>
+
+              <mat-form-field appearance="outline" class="w-full p-y-xs">
+                <mat-label>Error Notification Email</mat-label>
+                <input type="email" formControlName="errorNotificationEmail" matInput>
+              </mat-form-field>
             </mat-card>
           </div>
           <div class="col-12">
