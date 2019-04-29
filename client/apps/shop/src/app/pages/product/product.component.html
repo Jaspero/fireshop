@@ -29,7 +29,6 @@
         </div>
       </ng-container>
 
-
     </div>
   </section>
 
@@ -58,6 +57,12 @@
                 <span class="iblock p-x-m">Add to cart</span>
               </button>
             </ng-template>
+            <div class="m-y-m flex fd-col ai-start">
+              <p class="m-b-xs"><b>Share this product:</b></p>
+              <button (click)="facebookShare()" mat-button>Share on Facebook</button>
+              <button mat-button (click)="twitterShare()">Share on Twitter</button>
+              <a mat-button href="mailto:mail@address.com?subject={{data.product.name}}">Share via email</a>
+            </div>
           </div>
           <div class="col-6 col-s-12">
             <div class="jfs-gallery">
