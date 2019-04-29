@@ -1,10 +1,11 @@
 import {
-  Component,
   ChangeDetectionStrategy,
+  Component,
   Inject,
   OnInit
 } from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material';
+import {Color} from '../../../apps/shop/src/app/shared/enums/color.enum';
 import {ConfirmationOptions} from './confirmation-options.interface';
 
 @Component({
@@ -22,7 +23,8 @@ export class ConfirmationComponent implements OnInit {
   defaultOptions: ConfirmationOptions = {
     header: 'Are you sure?',
     confirm: 'Remove',
-    negate: 'Cancel'
+    negate: 'Cancel',
+    color: Color.Warn
   };
 
   options: ConfirmationOptions;

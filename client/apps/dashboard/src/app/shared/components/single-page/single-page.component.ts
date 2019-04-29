@@ -27,6 +27,8 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
     super();
   }
 
+  initialValue: any;
+  currentValue: any;
   isEdit: string;
   collection: FirestoreCollections;
   form: FormGroup;
@@ -93,6 +95,8 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
   }
 
   back() {
+    this.initialValue = '';
+    this.currentValue = '';
     this.router.navigate(['/', this.collection]);
   }
 }

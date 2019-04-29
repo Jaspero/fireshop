@@ -6,6 +6,7 @@ import {ProductsListComponent} from './pages/list/products-list.component';
 import {ProductsSinglePageComponent} from './pages/single-page/products-single-page.component';
 import {ProductsComponent} from './products.component';
 import {OverviewComponent} from './pages/overview/overview.component';
+import {CanDeactivateGuard} from '@jf/guards/can-deactivate.guard';
 
 const routes: Routes = [
   {
@@ -13,7 +14,11 @@ const routes: Routes = [
     component: ProductsComponent,
     children: [
       {path: '', component: ProductsListComponent},
-      {path: ':id', component: ProductsSinglePageComponent},
+      {
+        path: ':id',
+        component: ProductsSinglePageComponent,
+        canDeactivate: [CanDeactivateGuard]
+      },
       {path: 'single/:id', component: OverviewComponent}
     ]
   }
