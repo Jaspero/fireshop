@@ -2,11 +2,10 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {Product} from '@jf/interfaces/product.interface';
-import {forkJoin, of, Subject} from 'rxjs';
+import {LoadState} from '@jf/enums/load-state.enum';
+import {BehaviorSubject, forkJoin, of} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 import {StateService} from '../../../../shared/services/state/state.service';
-import {LoadState} from '@jf/enums/load-state.enum';
 
 @Component({
   selector: 'jfs-wish-list',
@@ -18,10 +17,13 @@ export class WishListComponent implements OnInit {
   constructor(private state: StateService, private afs: AngularFirestore) {}
 
   dataState = LoadState;
-  state$ = new Subject<{
+  state$ = new BehaviorSubject<{
     state: LoadState;
-    data: Product[];
-  }>();
+    data: any;
+  }>({
+    state: LoadState.Loading,
+    data: []
+  });
 
   ngOnInit() {
     this.state.user$

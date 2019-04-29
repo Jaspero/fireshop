@@ -9,10 +9,10 @@ import {MatDialog} from '@angular/material';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {takeUntil} from 'rxjs/operators';
+import {debounceTime, takeUntil} from 'rxjs/operators';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {ReviewsDialogComponent} from '../../../../shared/components/reviews/reviews-dialog.component';
-import {Subject} from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
 import {LoadState} from '@jf/enums/load-state.enum';
 
 @Component({
@@ -32,18 +32,17 @@ export class OrdersComponent extends RxDestroy implements OnInit {
   }
 
   dataState = LoadState;
-  state$ = new Subject<{
+  state$ = new BehaviorSubject<{
     state: LoadState;
     data: any;
-  }>();
+  }>({
+    state: LoadState.Loading,
+    data: []
+  });
 
   orders: any;
 
   ngOnInit() {
-    this.state$.next({
-      state: LoadState.Loading,
-      data: []
-    });
     this.afs
       .collection(FirestoreCollections.Orders, ref => {
         return ref.where(
