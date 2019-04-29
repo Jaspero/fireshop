@@ -39,3 +39,9 @@
   opacity: 0;
   transition: .2s;
 }
+
+.loading{
+  opacity: 1;
+  background-color: red;
+  pointer-events: none;
+}
