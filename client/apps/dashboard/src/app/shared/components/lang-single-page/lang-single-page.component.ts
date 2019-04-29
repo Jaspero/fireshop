@@ -38,12 +38,22 @@ export class LangSinglePageComponent extends SinglePageComponent
       )
       .subscribe(data => {
         this.buildForm(data);
+
+        this.initialValue = this.form.getRawValue();
+        this.currentValue = this.form.getRawValue();
+
+        this.form.valueChanges
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(value => {
+            this.currentValue = value;
+          });
         this.cdr.detectChanges();
       });
   }
 
   save() {
     const {id, ...item} = this.form.getRawValue();
+    this.initialValue = this.form.getRawValue();
 
     return this.state.language$.pipe(
       take(1),

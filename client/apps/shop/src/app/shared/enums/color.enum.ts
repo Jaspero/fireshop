@@ -1,4 +1,6 @@
-export enum Colors {
-  Green,
-  Blue
+export enum Color {
+  Warn = 'warn',
+  Primary = 'primary',
+  Accent = 'accent',
+  Default = 'default'
 }
