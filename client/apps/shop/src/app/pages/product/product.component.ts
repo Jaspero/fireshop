@@ -138,7 +138,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
             });
 
           avgRating = avgRating / res.length;
-          return [allReviews, avgRating];
+          return [allReviews, avgRating] as [Review[], number];
         })
       );
   }
