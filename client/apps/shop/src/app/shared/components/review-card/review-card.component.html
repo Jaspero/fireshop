@@ -5,8 +5,8 @@
       <ng-container>
         <mat-icon
           color="primary"
-          [class.active]="review.rating >= index + 1"
           *ngFor="let star of fiveStar; index as index"
+          [class.active]="review.rating >= index + 1"
           >
           {{review.rating >= index + 1 ? 'star' : 'star_border'}}
         </mat-icon>
@@ -17,7 +17,9 @@
     <p class="fs-small c-d-secondary">{{review.createdOn}}</p>
     <p>{{review.comment}}</p>
   </blockquote>
-  <div class="ta-right" *ngIf="review.customerId === afAuth.auth.currentUser.uid">
+
+  <div class="ta-right"
+       *ngIf="review.customerId === afAuth.auth.currentUser?.uid">
     <button mat-button (click)="delete(review.id)">Delete review</button>
     <button mat-button (click)="edit()">Edit review</button>
   </div>

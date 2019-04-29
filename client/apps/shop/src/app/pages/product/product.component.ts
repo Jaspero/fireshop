@@ -54,6 +54,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
   similar$: Observable<any>;
   imgIndex = 0;
   averageRating$: Observable<any>;
+  fiveStar = new Array(5);
 
   @ViewChild('reviewsDialog') reviewsDialog: TemplateRef<any>;
 
@@ -130,7 +131,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
                   ? -1
                   : 1;
               } else {
-                return 1;
+                return -1;
               }
             })
         )

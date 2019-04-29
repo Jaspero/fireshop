@@ -8,7 +8,7 @@
         <p>{{data.product.shortDescription}}</p>
       </div>
 
-      <ng-container *ngIf="(rews$ | async) as rec">
+      <ng-container *ngIf="rews$ | async as rec">
 
         <ng-template #reviewsDialog>
           <h6 mat-dialog-title="">Reviews</h6>
@@ -18,19 +18,26 @@
             </div>
           </ng-container>
         </ng-template>
+
         <div class="col-6 col-xs-12 ws-nowrap ta-right">
-          <mat-icon>star</mat-icon>
-          <mat-icon>star</mat-icon>
-          <mat-icon>star</mat-icon>
-          <mat-icon>star</mat-icon>
-          <mat-icon>star</mat-icon>
-          <p><a class="link" (click)="openReviews()">Number of reviews: {{rec.length}}</a></p>
+          <p>
+            <a class="link" (click)="openReviews()">Number of reviews: {{rec.length}}</a>
+          </p>
         </div>
       </ng-container>
 
+
       <ng-container *ngIf="averageRating$ | async as avg">
-        {{avg}}
+        <div class="m-r-xs">
+          <p>Average rating: </p>
+        </div>
+        <div *ngFor="let star of fiveStar; index as index">
+          <mat-icon>
+            {{avg >= index + 1 ? 'star' : 'star_border'}}
+          </mat-icon>
+        </div>
       </ng-container>
+
     </div>
   </section>
 
