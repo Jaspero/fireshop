@@ -5,11 +5,11 @@
   </div>
 
   <ng-container *ngIf="state$ | async as st;">
-    <div class="grid fd-col ai-center" [ngSwitch]="st.state">
+    <ng-container [ngSwitch]="st.state">
 
       <ng-container *ngSwitchCase="dataState.Loading">
-        <div class="flex jc-center">
-          <mat-spinner></mat-spinner>
+        <div class="flex jc-center p-y-m">
+          <mat-spinner [diameter]="40"></mat-spinner>
         </div>
       </ng-container>
 
@@ -36,11 +36,11 @@
       </ng-container>
 
       <ng-container *ngSwitchCase="dataState.Empty">
-        <div class="col-6 col-m-8 col-s-10 col-xs-12">
+        <div class="col-6 col-s-8 col-xs-12">
           <p>You haven't made any orders yet.<br>Visit our <a class="link c-primary" routerLink="/shop">shop</a> and get busy 🙂</p>
         </div>
       </ng-container>
-    </div>
+    </ng-container>
   </ng-container>
 
 
