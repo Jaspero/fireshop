@@ -60,12 +60,6 @@
             </ng-template>
           </div>
           <div class="col-6 col-s-12">
-            <img
-              class="w-full"
-              src="assets/images/loading.svg"
-              [jpPreload]="data.product.gallery[imgIndex]"/>
-
-
             <div class="jfs-gallery">
               <img
                 *ngFor="let img of data.product.gallery; index as i"
@@ -73,8 +67,13 @@
                 src="assets/images/loading.svg"
                 [jpPreload]="img"
                 (click)="changePicture(i)"
+                [class.active]="imgIndex === i"
               />
             </div>
+            <img
+              class="w-full"
+              src="assets/images/loading.svg"
+              [jpPreload]="data.product.gallery[imgIndex]"/>
           </div>
         </div>
         <button
