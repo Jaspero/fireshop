@@ -42,7 +42,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
   ) {
     super();
   }
-  rews$: Observable<Review[]>;
+  rews$: Observable<[Review[], number]>;
   data$: Observable<{
     product: Product;
     quantity: number;
@@ -53,7 +53,6 @@ export class ProductComponent extends RxDestroy implements OnInit {
   }>;
   similar$: Observable<any>;
   imgIndex = 0;
-  averageRating$: Observable<any>;
   fiveStar = new Array(5);
 
   @ViewChild('reviewsDialog') reviewsDialog: TemplateRef<any>;
@@ -116,16 +115,18 @@ export class ProductComponent extends RxDestroy implements OnInit {
       )
       .snapshotChanges()
       .pipe(
-        map(actions =>
-          actions
+        map(res => {
+          let avgRating = 0;
+          const allReviews = res
             .map(action => {
               const data = action.payload.doc.data();
+              avgRating += data.rating;
               return {
                 id: action.payload.doc.id,
                 ...data
               };
             })
-            .sort((a, b) => {
+            .sort(a => {
               if (this.afAuth.auth.currentUser) {
                 return a.customerId === this.afAuth.auth.currentUser.uid
                   ? -1
@@ -133,19 +134,12 @@ export class ProductComponent extends RxDestroy implements OnInit {
               } else {
                 return -1;
               }
-            })
-        )
-      );
+            });
 
-    this.averageRating$ = this.rews$.pipe(
-      map(reviews => {
-        let num = 0;
-        reviews.forEach(x => {
-          num += x.rating;
-        });
-        return [num / reviews.length];
-      })
-    );
+          avgRating = avgRating / res.length;
+          return [allReviews, avgRating];
+        })
+      );
   }
 
   openReviews() {

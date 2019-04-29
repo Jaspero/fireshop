@@ -12,8 +12,8 @@
 
         <ng-template #reviewsDialog>
           <h6 mat-dialog-title="">Reviews</h6>
-          <ng-container *ngIf="rec.length; else empty">
-            <div class="m-b-s" *ngFor="let review of rec">
+          <ng-container *ngIf="rec[0].length; else empty">
+            <div class="m-b-s" *ngFor="let review of rec[0]">
               <jfs-review-card [review]="review"></jfs-review-card>
             </div>
           </ng-container>
@@ -21,22 +21,20 @@
 
         <div class="col-6 col-xs-12 ws-nowrap ta-right">
           <p>
-            <a class="link" (click)="openReviews()">Number of reviews: {{rec.length}}</a>
+            <a class="link" (click)="openReviews()">Number of reviews: {{rec[0].length}}</a>
           </p>
         </div>
-      </ng-container>
 
-
-      <ng-container *ngIf="averageRating$ | async as avg">
         <div class="m-r-xs">
           <p>Average rating: </p>
         </div>
         <div *ngFor="let star of fiveStar; index as index">
           <mat-icon>
-            {{avg >= index + 1 ? 'star' : 'star_border'}}
+            {{rec[1] >= index + 1 ? 'star' : 'star_border'}}
           </mat-icon>
         </div>
       </ng-container>
+
 
     </div>
   </section>
