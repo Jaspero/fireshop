@@ -144,7 +144,15 @@ export class ProductComponent extends RxDestroy implements OnInit {
     this.imgIndex = index;
   }
 
-  facebookShare() {}
+  facebookShare() {
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u=' +
+        'http://localhost:4200/product/' +
+        this.activatedRoute.snapshot.data.product.id,
+      'facebook-popup',
+      'height=350,width=600'
+    );
+  }
 
   twitterShare() {
     window.open(
