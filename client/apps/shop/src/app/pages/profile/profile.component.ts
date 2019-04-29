@@ -1,3 +1,4 @@
+import {HttpClient} from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -10,7 +11,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
 import {AngularFireStorage} from '@angular/fire/storage';
 import {from} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {debounceTime, switchMap} from 'rxjs/operators';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 
@@ -26,7 +27,8 @@ export class ProfileComponent implements OnInit {
     private router: Router,
     private afs: AngularFireStorage,
     private angularFireStore: AngularFirestore,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private httpService: HttpClient
   ) {}
 
   @ViewChild('file')
@@ -79,9 +81,13 @@ export class ProfileComponent implements OnInit {
   filesImage(file) {
     const fileToUpload = Array.from(file)[0];
     const userID = this.afAuth.auth.currentUser.uid;
+
     from(
       this.afs.upload(userID, fileToUpload, {
-        contentType: fileToUpload['type']
+        contentType: fileToUpload['type'],
+        customMetadata: {
+          skipDelete: 'true'
+        }
       })
     )
       .pipe(
@@ -94,6 +100,13 @@ export class ProfileComponent implements OnInit {
             .update({profileImage: res});
         })
       )
-      .subscribe();
+      .subscribe(
+        res => {
+          console.log('res', res);
+        },
+        error => {
+          console.log('error', error);
+        }
+      );
   }
 }
