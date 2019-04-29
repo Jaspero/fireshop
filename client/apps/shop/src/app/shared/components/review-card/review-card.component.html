@@ -14,8 +14,10 @@
     </div>
   </div>
   <blockquote>
-    <p class="fs-small c-d-secondary">{{review.createdOn}}</p>
-    <p>{{review.comment}}</p>
+    <p class="fs-small c-d-secondary">{{review.createdOn | date: 'dd/MM/y - HH:mm'}}</p>
+    <p [class.c-d-secondary]="!review.comment">
+      {{review.comment ? review.comment : 'No comment'}}
+    </p>
   </blockquote>
 
   <div class="ta-right"

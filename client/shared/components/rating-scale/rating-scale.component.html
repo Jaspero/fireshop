@@ -1,0 +1,10 @@
+<div>
+  <button (click)="chooseRating(index + 1)"
+    mat-icon-button
+    *ngFor="let star of fiveStar;
+    index as index">
+    <mat-icon color="primary">
+      {{index - 2 ? 'star' : 'star_border'}}
+    </mat-icon>
+  </button>
+</div>

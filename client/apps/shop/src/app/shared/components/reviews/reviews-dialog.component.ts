@@ -58,7 +58,7 @@ export class ReviewsDialogComponent implements OnInit {
 
   private buildForm() {
     this.form = this.fb.group({
-      comment: [this.data.comment || '', Validators.required],
+      comment: [this.data.comment || ''],
       rating: [
         this.data.rating || '',
         [Validators.required, Validators.min(1), Validators.max(5)]
