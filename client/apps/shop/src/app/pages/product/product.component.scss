@@ -1,3 +1,8 @@
+:host {
+  display: block;
+  overflow: hidden;
+}
+
 .jfs-product-header {
   padding-top: 40px;
   padding-bottom: 80px;
@@ -7,7 +12,7 @@
 .jfs-gallery {
   display: flex;
   height: 160px;
-  margin-top: 10px;
+  margin-bottom: 10px;
   overflow-x: auto;
   overflow-y: hidden;
 }

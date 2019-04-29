@@ -4,33 +4,45 @@
     <h6>Orders</h6>
   </div>
 
-  <ng-container *ngIf="orders; else emptyState">
-    <div class="col-6 col-m-8 col-s-10 col-xs-12">
-      <mat-accordion [multi]="true">
-        <mat-expansion-panel *ngFor="let order of orders; let i = index">
-          <mat-expansion-panel-header (click)="getOrder(order.orderId, i)">
-            <mat-panel-title>Order number {{ i + 1 }}</mat-panel-title>
-            <mat-panel-description>Status: {{ order.status }}</mat-panel-description>
-          </mat-expansion-panel-header>
-          <div class="flex ai-center p-y-xs" *ngFor="let item of order.orderList">
-            <img width="100" src="{{item.image}}"/>
-            <p class="m-l-xs">{{ item.productId }}, {{ item.quantity }}x (${{ item.price }})</p>
-          </div>
-          <div class="flex ai-center p-y-xs">
-            <button mat-button (click)="submitReview(order.orderList[0].identifier, order)">
-              Submit review
-            </button>
-          </div>
-        </mat-expansion-panel>
-      </mat-accordion>
+  <ng-container *ngIf="state$ | async as st;">
+    <div class="grid fd-col ai-center" [ngSwitch]="st.state">
+
+      <ng-container *ngSwitchCase="dataState.Loading">
+        <div class="flex jc-center">
+          <mat-spinner></mat-spinner>
+        </div>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="dataState.Loaded">
+        <div class="col-6 col-m-8 col-s-10 col-xs-12">
+          <mat-accordion [multi]="true">
+            <mat-expansion-panel *ngFor="let order of st.data; let i = index">
+              <mat-expansion-panel-header (click)="getOrder(order.orderId, i)">
+                <mat-panel-title>Order number {{ i + 1 }}</mat-panel-title>
+                <mat-panel-description>Status: {{ order.status }}</mat-panel-description>
+              </mat-expansion-panel-header>
+              <div class="flex ai-center p-y-xs" *ngFor="let item of order.orderList">
+                <img width="100" src="{{item.image}}"/>
+                <p class="m-l-xs">{{ item.productId }}, {{ item.quantity }}x (${{ item.price }})</p>
+              </div>
+              <div class="flex ai-center p-y-xs">
+                <button mat-button (click)="submitReview(order.orderList[0].identifier, order)">
+                  Submit review
+                </button>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="dataState.Empty">
+        <div class="col-6 col-m-8 col-s-10 col-xs-12">
+          <p>You haven't made any orders yet.<br>Visit our <a class="link c-primary" routerLink="/shop">shop</a> and get busy 🙂</p>
+        </div>
+      </ng-container>
     </div>
   </ng-container>
 
-  <ng-template #emptyState>
-    <div class="col-6 col-m-8 col-s-10 col-xs-12">
-      <p>You haven't made any orders yet.<br>Visit our <a class="link c-primary" routerLink="/shop">shop</a> and get busy 🙂</p>
-    </div>
-  </ng-template>
 
 </section>
 

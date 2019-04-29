@@ -37,7 +37,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
           .valueChanges()
           .pipe(
             take(1),
-            map(value => this.buildForm(value))
+            map(value => this.buildForm(value || {}))
           )
       )
     );
