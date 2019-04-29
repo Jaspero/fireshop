@@ -13,13 +13,13 @@ import {
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialogRef, MatSnackBar} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
-import {notify} from '@jf/utils/notify.operator';
-import {auth, firestore} from 'firebase';
-import {from} from 'rxjs';
-import {filter, switchMap, take, takeUntil} from 'rxjs/operators';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {Customer} from '@jf/interfaces/customer.interface';
+import {notify} from '@jf/utils/notify.operator';
+import {auth, firestore, User} from 'firebase';
+import {from} from 'rxjs';
+import {filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
 import {RepeatPasswordValidator} from '../../helpers/compare-passwords';
-import {Customer} from '../../interfaces/customer.interface';
 import {StateService} from '../../services/state/state.service';
 
 enum View {
@@ -79,7 +79,8 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
     },
     [View.SignUp]: (
       docRef: AngularFirestoreDocument<Customer>,
-      doc: firestore.DocumentSnapshot
+      doc: firestore.DocumentSnapshot,
+      user: User
     ) => {
       this.state.logInValid$.next(true);
       if (doc.exists) {
@@ -87,11 +88,20 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
           duration: 2500
         });
       } else {
-        from(
-          docRef.set({
-            createdOn: Date.now()
-          })
-        )
+        // TODO: Map for different providers
+        const signUpData: any = {
+          createdOn: Date.now()
+        };
+
+        if (user.displayName) {
+          signUpData.name = user.displayName;
+        }
+
+        if (user.photoURL) {
+          signUpData.profileImage = user.photoURL;
+        }
+
+        from(docRef.set(signUpData))
           .pipe(
             notify({
               success: 'You are now logged in',
@@ -231,13 +241,13 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
           docRef = this.afs.doc(
             `${FirestoreCollections.Customers}/${user.uid}`
           );
-          return docRef.get({source: 'server'});
+          return docRef.get({source: 'server'}).pipe(map(doc => ({doc, user})));
         }),
         take(1),
         takeUntil(this.destroyed$)
       )
       .subscribe(res => {
-        this.validation[this.currentView](docRef, res);
+        this.validation[this.currentView](docRef, res.doc, res.user);
       });
   }
 }

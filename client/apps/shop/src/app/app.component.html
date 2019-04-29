@@ -1,4 +1,4 @@
-<ng-container *ngIf="state.checkOutToggle">
+<ng-container *ngIf="showLayout$ | async">
   <!--Header-->
   <header class="jfs-app-header bg-primary flex ai-center">
     <!--Main menu trigger-->
@@ -87,4 +87,4 @@
   <router-outlet></router-outlet>
 </main>
 
-<jfs-color-picker *ngIf="state.checkOutToggle"></jfs-color-picker>
+<jfs-color-picker *ngIf="showLayout$ | async"></jfs-color-picker>

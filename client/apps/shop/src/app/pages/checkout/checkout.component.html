@@ -1,5 +1,5 @@
 <h5 class="ta-center bg-primary c-l-primary p-y-s">
-  <a (click)="toggleState()" routerLink="/shop">Jaspero Fireshop</a>
+  <a routerLink="/shop">Jaspero Fireshop</a>
 </h5>
 
 <div class="grid grid-no-gutter">
@@ -162,8 +162,10 @@
                 <h6 class="m-y-xs">Your purchase</h6>
                 <div>
                   <p *ngFor="let products of prod">{{products.name}}: {{products.price | sp }} X{{products.quantity}}</p>
-                  <p>Subtotal: {{prices.totalPrice | sp}}</p>
-                  <p>Total: {{prices.totalPrice | sp}} </p>
+                  <ng-container *ngIf="price$ | async as price">
+                    <p>Subtotal: {{price.total | sp}}</p>
+                    <p>Total: {{price.subTotal | sp}} </p>
+                  </ng-container>
                 </div>
                 <div class="p-y-s">
                   <mat-divider></mat-divider>

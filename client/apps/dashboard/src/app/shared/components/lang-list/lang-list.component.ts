@@ -1,15 +1,15 @@
 import {Component} from '@angular/core';
-import {forkJoin, from, merge, Observable, of} from 'rxjs';
+import {from, merge, Observable, of} from 'rxjs';
 import {
   debounceTime,
   map,
   scan,
+  shareReplay,
   startWith,
   switchMap,
   take,
   tap
 } from 'rxjs/operators';
-import {FirebaseOperator} from 'shared/enums/firebase-operator.enum';
 import {Language} from 'shared/enums/language.enum';
 import {RouteData} from '../../interfaces/route-data.interface';
 import {ListComponent} from '../list/list.component';
@@ -54,11 +54,11 @@ export class LangListComponent<
         ).pipe(startWith(null));
       }),
       switchMap(() => {
-        this.dataLoading$.next(true);
-
         let items;
 
-        return this.loadItems(language, true, this.realTime).pipe(
+        this.dataLoading$.next(true);
+
+        return this.loadItems(language, this.realTime, true).pipe(
           switchMap(its => {
             items = its;
             this.dataLoading$.next(true);
@@ -74,7 +74,8 @@ export class LangListComponent<
           scan((acc, cur) => acc.concat(cur), []),
           tap(() => this.dataLoading$.next(false))
         );
-      })
+      }),
+      shareReplay(1)
     );
   }
 
@@ -87,7 +88,6 @@ export class LangListComponent<
       .collection<T>(`${this.collection}-${lang}`, ref => {
         let final = ref
           .limit(this.options.pageSize)
-          .where('active', FirebaseOperator.Equal, true)
           .orderBy(this.options.sort.active, this.options.sort.direction);
 
         final = this.runFilters(final);
@@ -129,26 +129,16 @@ export class LangListComponent<
     return changes;
   }
 
-  /**
-   * TODO:
-   * We might need to think this through
-   */
   delete(id: string): Observable<any> {
-    return forkJoin([
-      from(
-        this.afs
-          .collection(this.collection)
-          .doc(id)
-          .delete()
-      ),
-      ...Object.keys(Language).map(lang =>
+    return this.state.language$.pipe(
+      switchMap(lang =>
         from(
           this.afs
-            .collection(`${this.collection}-${lang.toLowerCase()}`)
+            .collection(`${this.collection}-${lang}`)
             .doc(id)
             .delete()
         )
       )
-    ]);
+    );
   }
 }

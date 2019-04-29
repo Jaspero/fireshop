@@ -14,6 +14,8 @@ import {RxDestroy} from '@jaspero/ng-helpers';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {Category} from '@jf/interfaces/category.interface';
+import {Product} from '@jf/interfaces/product.interface';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {
   debounceTime,
@@ -26,8 +28,6 @@ import {
   tap
 } from 'rxjs/operators';
 import {LoginSignupDialogComponent} from '../../shared/components/login-signup-dialog/login-signup-dialog.component';
-import {Category} from '../../shared/interfaces/category.interface';
-import {Product} from '../../shared/interfaces/product.interface';
 import {CartService} from '../../shared/services/cart/cart.service';
 
 @Component({

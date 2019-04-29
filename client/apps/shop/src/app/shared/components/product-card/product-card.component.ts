@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {Product} from '@jf/interfaces/product.interface';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {Product} from '../../interfaces/product.interface';
 import {CartService} from '../../services/cart/cart.service';
 import {WishListService} from '../../services/wish-list/wish-list.service';
 

@@ -27,7 +27,7 @@
         <button
           id="btn-addCart-0"
           mat-button
-          (jpStopPropagation)="cart.add(product, product.attributes)">
+          (jpStopPropagation)="cart.add(product)">
           Add to cart
         </button>
         <ng-container *ngIf="wishList$ | async as ws">
