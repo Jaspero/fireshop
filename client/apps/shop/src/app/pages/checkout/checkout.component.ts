@@ -213,7 +213,15 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   private connectStripe() {
     const str = Stripe(ENV_CONFIG.stripe.token);
     const elements = str.elements();
-    const cardObj = elements.create('card', {style: {}});
+    const cardObj = elements.create('card', {
+      style: {
+        base: {
+          fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+          fontSmoothing: 'antialiased',
+          fontSize: '16px'
+        }
+      }
+    });
 
     cardObj.mount(this.cardEl.nativeElement);
 
