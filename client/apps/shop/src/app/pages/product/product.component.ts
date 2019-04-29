@@ -2,6 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   OnInit,
   TemplateRef,
   ViewChild
@@ -141,5 +142,18 @@ export class ProductComponent extends RxDestroy implements OnInit {
 
   changePicture(index) {
     this.imgIndex = index;
+  }
+
+  facebookShare() {}
+
+  twitterShare() {
+    window.open(
+      `http://twitter.com/share?text=${
+        this.activatedRoute.snapshot.data.product.id
+      }&url=${`http://localhost:4200/product/` +
+        this.activatedRoute.snapshot.data.product.id}`,
+      '',
+      'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0'
+    );
   }
 }

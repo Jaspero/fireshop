@@ -29,6 +29,11 @@
         </div>
       </ng-container>
 
+      <div>
+        <button (click)="facebookShare()" mat-button>Share on Facebook</button>
+        <button mat-button (click)="twitterShare()">Share on Twitter</button>
+        <a href="mailto:mail@address.com?subject={{data.product.name}}">Share via email</a>
+      </div>
 
     </div>
   </section>
@@ -64,8 +69,6 @@
               class="w-full"
               src="assets/images/loading.svg"
               [jpPreload]="data.product.gallery[imgIndex]"/>
-
-
             <div class="jfs-gallery">
               <img
                 *ngFor="let img of data.product.gallery; index as i"
