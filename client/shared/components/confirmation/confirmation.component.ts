@@ -5,8 +5,8 @@ import {
   OnInit
 } from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material';
+import {Color} from '../../../apps/shop/src/app/shared/enums/color.enum';
 import {ConfirmationOptions} from './confirmation-options.interface';
-import {Color} from '@jf/enums/color.enum';
 
 @Component({
   selector: 'jfs-confrimation',
@@ -24,7 +24,7 @@ export class ConfirmationComponent implements OnInit {
     header: 'Are you sure?',
     confirm: 'Remove',
     negate: 'Cancel',
-    color: Color.Warm
+    color: Color.Warn
   };
 
   options: ConfirmationOptions;

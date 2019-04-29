@@ -4,7 +4,7 @@ import {MatDialog} from '@angular/material';
 import {ConfirmationComponent} from '@jf/components/confirmation/confirmation.component';
 import {map} from 'rxjs/operators';
 import {of} from 'rxjs';
-import {Color} from '@jf/enums/color.enum';
+import {Color} from '../../apps/shop/src/app/shared/enums/color.enum';
 
 @Injectable({
   providedIn: 'root'
