@@ -9,9 +9,11 @@ import {MatDialog} from '@angular/material';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {takeUntil} from 'rxjs/operators';
+import {debounceTime, takeUntil} from 'rxjs/operators';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {ReviewsDialogComponent} from '../../../../shared/components/reviews/reviews-dialog.component';
+import {BehaviorSubject, Subject} from 'rxjs';
+import {LoadState} from '@jf/enums/load-state.enum';
 
 @Component({
   selector: 'jfs-orders',
@@ -29,11 +31,20 @@ export class OrdersComponent extends RxDestroy implements OnInit {
     super();
   }
 
+  dataState = LoadState;
+  state$ = new BehaviorSubject<{
+    state: LoadState;
+    data: any;
+  }>({
+    state: LoadState.Loading,
+    data: []
+  });
+
   orders: any;
 
   ngOnInit() {
     this.afs
-      .collection(`${FirestoreCollections.Orders}`, ref => {
+      .collection(FirestoreCollections.Orders, ref => {
         return ref.where(
           'customerId',
           FirebaseOperator.Equal,
@@ -46,6 +57,13 @@ export class OrdersComponent extends RxDestroy implements OnInit {
         this.orders = value.map(x => {
           x['orderList'] = [];
           return x;
+        });
+        this.state$.next({
+          state: value.length ? LoadState.Loaded : LoadState.Empty,
+          data: value.map(x => {
+            x['orderList'] = [];
+            return x;
+          })
         });
         this.cdr.detectChanges();
       });
