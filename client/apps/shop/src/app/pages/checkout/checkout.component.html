@@ -213,7 +213,11 @@
                     <td class="w-half p-a-xs">Visa ending in 69</td>
                   </tr>
                   <tr>
-                    <td class="w-half p-a-xs">Email:</td>
+                    <td class="w-half p-a-xs">Billing email:</td>
+                    <td class="w-half p-a-xs">john.doe@gmail.com</td>
+                  </tr>
+                  <tr>
+                    <td class="w-half p-a-xs">Shipping email:</td>
                     <td class="w-half p-a-xs">john.doe@gmail.com</td>
                   </tr>
                 </table>
@@ -227,7 +231,7 @@
                   <button mat-flat-button color="primary" (click)="checkOut(infoForm.getRawValue())">Purchase</button>
                 </div>
               </mat-card>
-              <p class="p-y-xs">Confirmation will be emailed to your address at gmail.com</p>
+              <p class="p-y-xs">Confirmation will be emailed to your address at [billing@email.com]</p>
             </div>
             <div class="col-4 col-s-12">
               <mat-card>
