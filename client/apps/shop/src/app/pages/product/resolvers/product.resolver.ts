@@ -3,9 +3,9 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {ActivatedRouteSnapshot, Resolve, Router} from '@angular/router';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {Product} from '@jf/interfaces/product.interface';
 import {Observable, throwError} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
-import {Product} from '../../../shared/interfaces/product.interface';
 import {MetaResolver} from '../../../shared/resolvers/meta.resolver';
 
 @Injectable()

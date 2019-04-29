@@ -2,9 +2,9 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {Product} from '@jf/interfaces/product.interface';
 import {forkJoin, of, Subject} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
-import {Product} from '../../../../shared/interfaces/product.interface';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {State} from '@jf/enums/state.enum';
 

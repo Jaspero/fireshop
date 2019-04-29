@@ -7,10 +7,11 @@ import {
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MatSnackBar} from '@angular/material';
 import {Router} from '@angular/router';
 import {auth} from 'firebase';
 import {from} from 'rxjs';
-import {filter} from 'rxjs/operators';
+import {filter, switchMap} from 'rxjs/operators';
 import {notify} from '@jf/utils/notify.operator';
 
 @Component({
@@ -23,7 +24,8 @@ export class LoginComponent implements OnInit {
   constructor(
     public router: Router,
     public afAuth: AngularFireAuth,
-    public fb: FormBuilder
+    public fb: FormBuilder,
+    private snackBar: MatSnackBar
   ) {}
 
   @ViewChild('password') passwordField: ElementRef;
@@ -31,9 +33,23 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
 
   ngOnInit() {
-    this.afAuth.user.pipe(filter(user => !!user)).subscribe(user => {
-      this.router.navigate(['/dashboard']);
-    });
+    this.afAuth.user
+      .pipe(
+        filter(user => !!user),
+        switchMap(user => user.getIdTokenResult())
+      )
+      .subscribe(res => {
+        if (res.claims.admin) {
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.afAuth.auth.signOut();
+          this.snackBar.open(
+            'Access to platform denied. Please contact an administrator.',
+            'Dismiss',
+            {duration: 2000}
+          );
+        }
+      });
 
     this.buildForm();
   }

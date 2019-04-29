@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {Customer} from '@jf/interfaces/customer.interface';
 import {ListComponent} from '../../../../shared/components/list/list.component';
-import {Customer} from '../../../../shared/interfaces/customer.interface';
 
 @Component({
   selector: 'jfsc-customer-list',
@@ -10,14 +10,6 @@ import {Customer} from '../../../../shared/interfaces/customer.interface';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomersListComponent extends ListComponent<Customer> {
-  displayedColumns = [
-    'checkBox',
-    'id',
-    'name',
-    'dateOfBirth',
-    'gender',
-    'brief',
-    'actions'
-  ];
+  displayedColumns = ['checkBox', 'name', 'gender', 'createdOn', 'actions'];
   collection = FirestoreCollections.Customers;
 }

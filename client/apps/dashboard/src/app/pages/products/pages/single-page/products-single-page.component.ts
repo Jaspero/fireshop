@@ -7,13 +7,13 @@ import {
 import {Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
+import {Product} from '@jf/interfaces/product.interface';
+import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
 import {Observable} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {map, shareReplay, switchMap, take} from 'rxjs/operators';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
-import {Product} from '../../../../shared/interfaces/product.interface';
 import {FileUploadComponent} from '../../../../shared/modules/file-upload/component/file-upload.component';
-import {fromStripeFormat} from '@jf/utils/stripe-format.ts';
 
 @Component({
   selector: 'jfsc-single-page',
@@ -43,7 +43,8 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
           id: action.payload.doc.id,
           ...action.payload.doc.data()
         }));
-      })
+      }),
+      shareReplay(1)
     );
   }
 
@@ -82,10 +83,31 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   }
 
   getSaveData(...args) {
-    args[1].price = fromStripeFormat(args[1].price);
-    return this.fileUploadComponent
-      .save()
-      .pipe(switchMap(() => super.getSaveData(...args)));
+    return this.categories$.pipe(
+      take(1),
+      switchMap(categories => {
+        args[1].price = toStripeFormat(args[1].price);
+        args[1].search = args[1].name
+          .split(' ')
+          .map(value => value.trim().toLowerCase());
+
+        if (args[1].category) {
+          const category = categories.find(cat => cat.id === args[1].category);
+
+          if (category) {
+            args[1].search.push(
+              ...category.name
+                .split(' ')
+                .map(value => value.trim().toLowerCase())
+            );
+          }
+        }
+
+        return this.fileUploadComponent
+          .save()
+          .pipe(switchMap(() => super.getSaveData(...args)));
+      })
+    );
   }
 
   buildForm(data: any) {

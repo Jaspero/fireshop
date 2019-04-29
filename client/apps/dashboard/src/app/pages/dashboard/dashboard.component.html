@@ -11,7 +11,32 @@
         <div class="p-y-s">
           <mat-divider></mat-divider>
         </div>
-        <div class="jfsc-graph-placeholder"></div>
+        <mat-nav-list>
+          <mat-list-item>
+            <mat-icon mat-list-icon>label</mat-icon>
+            <button mat-icon-button color="primary" style="pointer-events: none;">
+              <mat-icon>check_box</mat-icon>
+            </button>
+            <h4 mat-line>Create a category</h4>
+            <p mat-line>This let's you place products in categories.</p>
+          </mat-list-item>
+          <mat-list-item>
+            <mat-icon mat-list-icon>shopping_basket</mat-icon>
+            <button mat-icon-button color="primary" style="pointer-events: none;">
+              <mat-icon>check_box</mat-icon>
+            </button>
+            <h4 mat-line>Create a product</h4>
+            <p mat-line>Create a product that you will sell!</p>
+          </mat-list-item>
+          <mat-list-item>
+            <mat-icon mat-list-icon>loyalty</mat-icon>
+            <button mat-icon-button style="pointer-events: none;">
+              <mat-icon>check_box_outline_blank</mat-icon>
+            </button>
+            <h4 mat-line>Create discounts</h4>
+            <p mat-line>Create discounts for product, or give away discount codes.</p>
+          </mat-list-item>
+        </mat-nav-list>
       </mat-card>
     </div>
 
@@ -22,7 +47,7 @@
           <mat-divider></mat-divider>
         </div>
         <mat-nav-list>
-          <mat-list-item *ngFor="let i of [].constructor(4)">
+          <mat-list-item *ngFor="let i of [].constructor(3)">
             <mat-icon mat-list-icon>receipt</mat-icon>
             <h4 mat-line>[OrderId]</h4>
             <p mat-line>[OrderDate]</p>
