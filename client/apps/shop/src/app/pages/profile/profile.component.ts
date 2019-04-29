@@ -9,7 +9,7 @@ import {
 import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
 import {AngularFireStorage} from '@angular/fire/storage';
-import {forkJoin, from} from 'rxjs';
+import {from} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
@@ -64,8 +64,8 @@ export class ProfileComponent implements OnInit {
       )
       .snapshotChanges()
       .subscribe(rex => {
-        if (rex.payload.data().profileImage) {
-          this.downloadURL = rex.payload.data().profileImage;
+        if (rex.payload.data() && rex.payload.data()['profileImage']) {
+          this.downloadURL = rex.payload.data()['profileImage'];
         }
         this.loadImg = true;
         this.cdr.detectChanges();
@@ -81,7 +81,7 @@ export class ProfileComponent implements OnInit {
     const userID = this.afAuth.auth.currentUser.uid;
     from(
       this.afs.upload(userID, fileToUpload, {
-        contentType: fileToUpload.type
+        contentType: fileToUpload['type']
       })
     )
       .pipe(

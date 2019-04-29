@@ -6,7 +6,7 @@ import {Product} from '@jf/interfaces/product.interface';
 import {forkJoin, of, Subject} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 import {StateService} from '../../../../shared/services/state/state.service';
-import {State} from '@jf/enums/state.enum';
+import {LoadState} from '@jf/enums/load-state.enum';
 
 @Component({
   selector: 'jfs-wish-list',
@@ -17,9 +17,9 @@ import {State} from '@jf/enums/state.enum';
 export class WishListComponent implements OnInit {
   constructor(private state: StateService, private afs: AngularFirestore) {}
 
-  dataState = State;
+  dataState = LoadState;
   state$ = new Subject<{
-    state: State;
+    state: LoadState;
     data: Product[];
   }>();
 
@@ -28,7 +28,7 @@ export class WishListComponent implements OnInit {
       .pipe(
         switchMap(user => {
           this.state$.next({
-            state: State.Loading,
+            state: LoadState.Loading,
             data: []
           });
 
@@ -61,7 +61,7 @@ export class WishListComponent implements OnInit {
       )
       .subscribe(res => {
         this.state$.next({
-          state: res.length ? State.Loaded : State.Empty,
+          state: res.length ? LoadState.Loaded : LoadState.Empty,
           data: res
         });
       });

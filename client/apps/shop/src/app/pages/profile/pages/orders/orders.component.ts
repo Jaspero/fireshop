@@ -13,8 +13,7 @@ import {takeUntil} from 'rxjs/operators';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {ReviewsDialogComponent} from '../../../../shared/components/reviews/reviews-dialog.component';
 import {Subject} from 'rxjs';
-import {Product} from '../../../../shared/interfaces/product.interface';
-import {State} from '@jf/enums/state.enum';
+import {LoadState} from '@jf/enums/load-state.enum';
 
 @Component({
   selector: 'jfs-orders',
@@ -32,17 +31,17 @@ export class OrdersComponent extends RxDestroy implements OnInit {
     super();
   }
 
-  dataState = State;
+  dataState = LoadState;
   state$ = new Subject<{
-    state: State;
-    data: Product[];
+    state: LoadState;
+    data: any;
   }>();
 
   orders: any;
 
   ngOnInit() {
     this.state$.next({
-      state: State.Loading,
+      state: LoadState.Loading,
       data: []
     });
     this.afs
@@ -61,7 +60,7 @@ export class OrdersComponent extends RxDestroy implements OnInit {
           return x;
         });
         this.state$.next({
-          state: value.length ? State.Loaded : State.Empty,
+          state: value.length ? LoadState.Loaded : LoadState.Empty,
           data: value.map(x => {
             x['orderList'] = [];
             return x;
