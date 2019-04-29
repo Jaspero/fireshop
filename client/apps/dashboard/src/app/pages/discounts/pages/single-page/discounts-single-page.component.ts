@@ -3,7 +3,6 @@ import {Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
-import {takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'jfsc-discounts-single-page',
@@ -22,7 +21,5 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
       name: [data.name || '', Validators.required],
       description: [data.description || '']
     });
-
-    this.connectGuard();
   }
 }

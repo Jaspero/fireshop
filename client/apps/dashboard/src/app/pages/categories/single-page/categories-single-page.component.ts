@@ -21,7 +21,5 @@ export class CategoriesSinglePageComponent extends LangSinglePageComponent {
       name: [data.name || '', Validators.required],
       description: [data.description || '']
     });
-
-    this.connectGuard();
   }
 }

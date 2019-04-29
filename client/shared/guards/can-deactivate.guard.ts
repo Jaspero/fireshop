@@ -4,20 +4,19 @@ import {MatDialog} from '@angular/material';
 import {ConfirmationComponent} from '@jf/components/confirmation/confirmation.component';
 import {map} from 'rxjs/operators';
 import {of} from 'rxjs';
+import {Color} from '@jf/enums/color.enum';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CanDeactivateGuard implements CanDeactivate<any> {
   constructor(private _dialog: MatDialog) {}
-  initialKey = 'initialValue';
-  currentKey = 'currentValue';
 
   canDeactivate(component: any) {
     if (
       this.shallowEqual(
-        component ? component[this.initialKey] : '',
-        component ? component[this.currentKey] : ''
+        component ? component.initialValue : '',
+        component ? component.currentValue : ''
       )
     ) {
       return of(true);
@@ -31,7 +30,7 @@ export class CanDeactivateGuard implements CanDeactivate<any> {
               'You made changes on this page. What would you like to do with them before you leave?',
             confirm: 'Continue editing',
             negate: 'Discard changes',
-            color: 'primary'
+            color: Color.Primary
           }
         })
         .afterClosed()

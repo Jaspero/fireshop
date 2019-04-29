@@ -1,11 +1,12 @@
 import {
-  Component,
   ChangeDetectionStrategy,
+  Component,
   Inject,
   OnInit
 } from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import {ConfirmationOptions} from './confirmation-options.interface';
+import {Color} from '@jf/enums/color.enum';
 
 @Component({
   selector: 'jfs-confrimation',
@@ -23,7 +24,7 @@ export class ConfirmationComponent implements OnInit {
     header: 'Are you sure?',
     confirm: 'Remove',
     negate: 'Cancel',
-    color: 'warn'
+    color: Color.Warm
   };
 
   options: ConfirmationOptions;

@@ -125,7 +125,5 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       quantity: [data.quantity || 0, Validators.min(0)],
       category: data.category
     });
-
-    this.connectGuard();
   }
 }

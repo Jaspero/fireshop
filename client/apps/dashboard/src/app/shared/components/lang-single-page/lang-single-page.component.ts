@@ -11,9 +11,6 @@ import {SinglePageComponent} from '../single-page/single-page.component';
 })
 export class LangSinglePageComponent extends SinglePageComponent
   implements OnInit {
-  initialValue: any;
-  currentValue: any;
-
   ngOnInit() {
     combineLatest(this.activatedRoute.params, this.state.language$)
       .pipe(
@@ -41,6 +38,15 @@ export class LangSinglePageComponent extends SinglePageComponent
       )
       .subscribe(data => {
         this.buildForm(data);
+
+        this.initialValue = this.form.getRawValue();
+        this.currentValue = this.form.getRawValue();
+
+        this.form.valueChanges
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(value => {
+            this.currentValue = value;
+          });
         this.cdr.detectChanges();
       });
   }
@@ -75,13 +81,4 @@ export class LangSinglePageComponent extends SinglePageComponent
   }
 
   buildForm(data: any) {}
-
-  connectGuard() {
-    this.initialValue = this.form.getRawValue();
-    this.currentValue = this.form.getRawValue();
-
-    this.form.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-      this.currentValue = value;
-    });
-  }
 }
