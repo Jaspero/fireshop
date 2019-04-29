@@ -41,7 +41,6 @@
     "firebase-functions": "^2.1.0",
     "hammerjs": "2.0.8",
     "handlebars": "^4.1.2",
-    "mjml": "4.4.0-beta.1",
     "reflect-metadata": "0.1.12",
     "rxjs": "~6.4.0",
     "sharp": "0.21.3",

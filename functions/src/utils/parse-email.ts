@@ -12,7 +12,7 @@ export async function parseEmail(
   context: any
 ) {
   const templateFile = await promisify(readFile)(
-    join('/email-templates', template + '.hbs')
+    join('../email-templates', template + '.hbs')
   );
   const html = compile(templateFile)(context);
 
