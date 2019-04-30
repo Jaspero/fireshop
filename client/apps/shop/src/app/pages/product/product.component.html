@@ -61,9 +61,9 @@
             </ng-template>
             <div class="m-y-m flex fd-col ai-start">
               <p class="m-b-xs"><b>Share this product:</b></p>
-              <button id="btn-shF" (click)="facebookShare()" mat-button>Share on Facebook</button>
-              <button mat-button  id="btn-shT" (click)="twitterShare()">Share on Twitter</button>
-              <a mat-button id="a-shE" href="mailto:mail@address.com?subject={{data.product.name}}">Share via email</a>
+              <button mat-button (click)="facebookShare(data)">Share on Facebook</button>
+              <button mat-button (click)="twitterShare(data)">Share on Twitter</button>
+              <button mat-button (click)="emailShare(data)">Share via email</button>
             </div>
           </div>
           <div class="col-6 col-s-12">

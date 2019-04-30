@@ -144,24 +144,29 @@ export class ProductComponent extends RxDestroy implements OnInit {
     this.imgIndex = index;
   }
 
-  facebookShare() {
+  facebookShare(data) {
     window.open(
-      'https://www.facebook.com/sharer/sharer.php?u=' +
-        'http://localhost:4200/product/' +
-        this.activatedRoute.snapshot.data.product.id,
+      `https://www.facebook.com/sharer/sharer.php?u=${
+        environment.websiteUrl
+      }/product/${data.product.id}`,
       'facebook-popup',
       'height=350,width=600'
     );
   }
 
-  twitterShare() {
+  twitterShare(data) {
     window.open(
-      `http://twitter.com/share?text=${
-        this.activatedRoute.snapshot.data.product.id
-      }&url=${`http://localhost:4200/product/` +
-        this.activatedRoute.snapshot.data.product.id}`,
+      `http://twitter.com/share?text=${data.product.name}&url=${
+        environment.websiteUrl
+      }/product/${data.product.id}`,
       '',
       'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0'
     );
+  }
+
+  emailShare(data) {
+    window.location.href = `mailto:test@example.com?subject=${
+      data.product.name
+    }&body=${environment.websiteUrl}/product/${data.product.id}`;
   }
 }
