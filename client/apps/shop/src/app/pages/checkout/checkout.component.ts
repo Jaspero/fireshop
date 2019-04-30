@@ -36,6 +36,7 @@ import {
   takeUntil
 } from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
+import {AppComponent} from '../../app.component';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {StateService} from '../../shared/services/state/state.service';
 
@@ -47,9 +48,10 @@ import {StateService} from '../../shared/services/state/state.service';
 export class CheckoutComponent extends RxDestroy implements OnInit {
   constructor(
     public cartService: CartService,
+    public afAuth: AngularFireAuth,
+    public appComp: AppComponent,
     private http: HttpClient,
     private afs: AngularFirestore,
-    private afAuth: AngularFireAuth,
     private fb: FormBuilder,
     private router: Router,
     private state: StateService,
@@ -71,9 +73,10 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   billingInfo$: Observable<FormGroup>;
   price$: Observable<OrderPrice>;
   orderItems: OrderItem[];
-  submitDisable = 'false';
   disableNext$: Observable<boolean>;
   terms = new FormControl(false);
+  showLogin: boolean;
+  brand: string;
 
   private shippingSubscription: Subscription;
 
@@ -98,6 +101,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
               map(value => this.buildForm(value))
             );
         } else {
+          this.showLogin = true;
           return of(this.buildForm());
         }
       }),
@@ -109,12 +113,12 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     });
   }
 
-  buildForm(value: any = {}) {
+  buildForm(value: any = {saveInfo: true}) {
     const group = this.fb.group(
       {
         billing: this.addressForm(value.billing ? value.billing : {}),
         shippingInfo: value.shippingInfo || true,
-        saveInfo: true
+        saveInfo: !value.saveInfo
       },
       {
         asyncValidators: [
@@ -246,6 +250,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     const cardChanges$ = new Observable<stripe.elements.ElementChangeResponse>(
       obs => {
         cardObj.on('change', event => {
+          this.brand = event.brand;
           obs.next(event);
         });
       }

@@ -18,8 +18,8 @@
                 <form [formGroup]="infoForm">
 
                   <div class="grid grid-no-gutter jc-start">
-                    <div class="col-12">
-                      <p class="bg-l-secondary p-y-s ta-center">You're doing checkout as a guest. You can <a class="link c-primary">login</a> or <a class="link c-primary">sign-up</a> now.<br>Your data or cart won't be lost.</p>
+                    <div class="col-12" *ngIf="showLogin">
+                      <p class="bg-l-secondary p-y-s ta-center">You're doing checkout as a guest. You can <a class="link c-primary" (click)="appComp.logIn()">login</a> or <a class="link c-primary" (click)="appComp.logIn()">sign-up</a> now.<br>Your data or cart won't be lost.</p>
                     </div>
                     <div class="col-12">
                       <h6 class="p-y-xs">Payment info</h6>
@@ -147,7 +147,7 @@
                       </div>
                     </div>
                     <div class="col-12">
-                      <div class="p-y-xs">
+                      <div class="p-y-xs" *ngIf="showLogin">
                         <mat-checkbox color="primary" formControlName="saveInfo">Save my payment so checkout is easy next time</mat-checkbox>
                       </div>
                     </div>
@@ -203,22 +203,22 @@
                 <div class="p-y-s">
                   <mat-divider></mat-divider>
                 </div>
-                <table class="w-full">
+                <table class="w-full" *ngIf="infoForm.getRawValue() as val">
                   <tr>
                     <td class="w-half p-a-xs">Checkout:</td>
-                    <td class="w-half p-a-xs">Guest checkout</td>
+                    <td class="w-half p-a-xs">{{val.billing.firstName}} {{val.billing.lastName}}</td>
                   </tr>
                   <tr>
                     <td class="w-half p-a-xs">Payment method:</td>
-                    <td class="w-half p-a-xs">Visa ending in 69</td>
+                    <td class="w-half p-a-xs">{{brand}}</td>
                   </tr>
                   <tr>
                     <td class="w-half p-a-xs">Billing email:</td>
-                    <td class="w-half p-a-xs">john.doe@gmail.com</td>
+                    <td class="w-half p-a-xs">{{val.billing.email}}</td>
                   </tr>
                   <tr>
                     <td class="w-half p-a-xs">Shipping email:</td>
-                    <td class="w-half p-a-xs">john.doe@gmail.com</td>
+                    <td class="w-half p-a-xs">{{val.shippingInfo ? val.billing.email : val.shipping.email}}</td>
                   </tr>
                 </table>
                 <div class="p-y-s">
@@ -228,7 +228,6 @@
                   <mat-checkbox color="primary" [formControl]="terms">I agree to the</mat-checkbox>&nbsp;<a class="c-primary" href="" target="_blank"><u>terms of service</u>.</a>
                 </div>
                 <div class="ta-right p-y-xs">
-                  {{terms.value}}
                   <button mat-flat-button color="primary" [disabled]="!terms.value" (click)="checkOut(infoForm.getRawValue())">Purchase</button>
                 </div>
               </mat-card>
