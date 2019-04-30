@@ -2,7 +2,6 @@ import {HttpClient} from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
   OnInit,
   TemplateRef,
   ViewChild

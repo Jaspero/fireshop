@@ -225,10 +225,11 @@
                   <mat-divider></mat-divider>
                 </div>
                 <div class="m-t-xs m-b-s">
-                  <mat-checkbox color="primary">I agree to the</mat-checkbox>&nbsp;<a class="c-primary" href="" target="_blank"><u>terms of service</u>.</a>
+                  <mat-checkbox color="primary" [formControl]="terms">I agree to the</mat-checkbox>&nbsp;<a class="c-primary" href="" target="_blank"><u>terms of service</u>.</a>
                 </div>
                 <div class="ta-right p-y-xs">
-                  <button mat-flat-button color="primary" (click)="checkOut(infoForm.getRawValue())">Purchase</button>
+                  {{terms.value}}
+                  <button mat-flat-button color="primary" [disabled]="!terms.value" (click)="checkOut(infoForm.getRawValue())">Purchase</button>
                 </div>
               </mat-card>
               <p class="p-y-xs">Confirmation will be emailed to your address at [billing@email.com]</p>

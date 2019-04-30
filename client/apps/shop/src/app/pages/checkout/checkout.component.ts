@@ -1,8 +1,14 @@
 import {HttpClient} from '@angular/common/http';
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {ENV_CONFIG} from '@jf/consts/env-config.const';
@@ -46,7 +52,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     private afAuth: AngularFireAuth,
     private fb: FormBuilder,
     private router: Router,
-    private state: StateService
+    private state: StateService,
+    private cdr: ChangeDetectorRef
   ) {
     super();
   }
@@ -64,6 +71,9 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   billingInfo$: Observable<FormGroup>;
   price$: Observable<OrderPrice>;
   orderItems: OrderItem[];
+  submitDisable = 'false';
+  disableNext$: Observable<boolean>;
+  terms = new FormControl(false);
 
   private shippingSubscription: Subscription;
 
@@ -90,7 +100,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
         } else {
           return of(this.buildForm());
         }
-      })
+      }),
+      shareReplay(1)
     );
 
     this.billingInfo$.pipe(take(1)).subscribe(() => {
@@ -99,11 +110,18 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   }
 
   buildForm(value: any = {}) {
-    const group = this.fb.group({
-      billing: this.addressForm(value.billing ? value.billing : {}),
-      shippingInfo: value.shippingInfo || true,
-      saveInfo: true
-    });
+    const group = this.fb.group(
+      {
+        billing: this.addressForm(value.billing ? value.billing : {}),
+        shippingInfo: value.shippingInfo || true,
+        saveInfo: true
+      },
+      {
+        asyncValidators: [
+          // this.disableNext$.pipe(x => x, {})
+        ]
+      }
+    );
 
     if (this.shippingSubscription) {
       this.shippingSubscription.unsubscribe();
@@ -232,6 +250,12 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
         });
       }
     ).pipe(shareReplay(1));
+
+    this.disableNext$ = combineLatest(cardChanges$, this.billingInfo$).pipe(
+      map(([card, form]) => {
+        return !!(card.complete && form.valid);
+      })
+    );
 
     this.stripe = {
       stripe: str,
