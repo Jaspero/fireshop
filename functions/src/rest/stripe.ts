@@ -178,7 +178,6 @@ app.post('/webhook', async (req, res) => {
 
       break;
 
-    // TODO: Notify customer of failed payment
     case 'payment_intent.payment_failed':
       const message =
         intent.last_payment_error && intent.last_payment_error.message;
@@ -204,14 +203,24 @@ app.post('/webhook', async (req, res) => {
             settings.errorNotificationEmail,
             'Error processing payment',
             'admin-error.hbs',
-            {message}
+            {
+              title: 'Checkout Error',
+              description: 'There was an error during checkout',
+              additionalProperties: [{key: 'OrderId', value: order.id}],
+              message,
+              firebaseDashboard:
+                'https://console.firebase.google.com/u/2/project/jaspero-site/overview',
+              adminDashboard: 'https://fireshop.admin.jaspero.co/'
+            }
           ),
 
           parseEmail(
             order.email,
             'Error processing order',
             'customer-error.hbs',
-            {}
+            {
+              website: 'https://fireshop.jaspero.co'
+            }
           )
         );
       }

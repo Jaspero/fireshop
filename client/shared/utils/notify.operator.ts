@@ -30,7 +30,8 @@ export function notify(
       catchError(err => {
         if (finalOptions.error) {
           snackBar.open(finalOptions.error, 'Dismiss', {
-            panelClass: 'snack-bar-error'
+            panelClass: 'snack-bar-error',
+            duration: 5000
           });
         }
 
