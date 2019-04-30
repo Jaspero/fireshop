@@ -1,16 +1,13 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material';
-import {notify} from '@jf/utils/notify.operator';
-import * as firebase from 'firebase';
-import {RepeatPasswordValidator} from '../../../../shared/helpers/compare-passwords';
-import {DeleteUserComponent} from '../../components/delete-user/delete-user.component';
-import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {AngularFirestore} from '@angular/fire/firestore';
 import {AngularFireAuth} from '@angular/fire/auth';
+import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {MatDialog} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
-import {from, Observable, Subscription} from 'rxjs';
+import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {Observable, Subscription} from 'rxjs';
+import {map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {DeleteUserComponent} from '../../components/delete-user/delete-user.component';
 
 @Component({
   selector: 'jfs-settings',
@@ -29,7 +26,6 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   }
 
   form$: Observable<FormGroup>;
-  passwordForm: FormGroup;
 
   private shippingSubscription: Subscription;
 
@@ -52,23 +48,6 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   }
 
   buildForm(data) {
-    this.passwordForm = this.fb.group({
-      email: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(this.afAuth.auth.currentUser.email)
-        ]
-      ],
-      pg: this.fb.group(
-        {
-          password: ['', [Validators.required, Validators.minLength(6)]],
-          repeatPassword: ['', [Validators.required, Validators.minLength(6)]]
-        },
-        {validator: RepeatPasswordValidator('Passwords not matching')}
-      )
-    });
-
     const group = this.fb.group({
       fullName: data.fullName || '',
       gender: data.gender || '',
@@ -115,13 +94,5 @@ export class SettingsComponent extends RxDestroy implements OnInit {
         `${FirestoreCollections.Customers}/${this.afAuth.auth.currentUser.uid}`
       )
       .update(data);
-  }
-
-  changePassword() {
-    const pass = this.passwordForm.getRawValue();
-
-    from(this.afAuth.auth.currentUser.updatePassword(pass.pg.password))
-      .pipe(notify())
-      .subscribe();
   }
 }
