@@ -25,7 +25,7 @@
           <mat-icon>star</mat-icon>
           <mat-icon>star</mat-icon>
           <mat-icon>star</mat-icon>
-          <p><a class="link" id="a-opRew" (click)="openReviews()">Number of reviews: {{rec.length}}</a></p>
+          <p><a class="link" id="a-open-rev" (click)="openReviews()">Number of reviews: {{rec.length}}</a></p>
         </div>
       </ng-container>
 
@@ -43,7 +43,7 @@
             <h2 class="m-t-m m-b-xs">{{data.product.price | sp}}</h2>
             <ng-container *ngIf="data.quantity; else notInCart">
               <button
-                id="btn-add-more-0"
+                id="btn-add-more-prod-0"
                 mat-flat-button
                 color="accent"
                 (click)="cart.add(data.product)">
@@ -52,7 +52,7 @@
             </ng-container>
             <ng-template #notInCart>
               <button
-                id="btn-add-cart-1"
+                id="btn-add-cart-prod-1"
                 mat-flat-button
                 color="accent"
                 (click)="cart.add(data.product)">
