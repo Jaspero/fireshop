@@ -157,7 +157,7 @@
               </div>
               <div class="p-y-xs">
                 <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>address</mat-label>
+                  <mat-label>Price</mat-label>
                   <textarea matInput formControlName="price"></textarea>
                 </mat-form-field>
               </div>
@@ -173,6 +173,31 @@
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
+              </div>
+
+              <div formArrayName="orders">
+
+                <h6 class="p-y-xs">Items:</h6>
+                <div *ngFor="let order of ordersForms.controls; let i=index"
+                     [formGroupName]="i">
+
+                  <div class="p-y-xs">
+                    <mat-form-field appearance="outline" class="w-full">
+                      <mat-label>Name</mat-label>
+                      <input matInput formControlName="name">
+                    </mat-form-field>
+                  </div>
+                  <div class="p-y-xs">
+                    <mat-form-field appearance="outline" class="w-full">
+                      <mat-label>Quantity</mat-label>
+                      <input matInput formControlName="quantity">
+                    </mat-form-field>
+                  </div>
+
+                  <button mat-flat-button (click)="deleteOrder(i)">Delete</button>
+
+                </div>
+                <button  mat-flat-button (click)="addOrder()">Add item in order</button>
               </div>
             </mat-card>
           </div>

@@ -4,10 +4,12 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {Validators} from '@angular/forms';
+import {FormArray, Validators} from '@angular/forms';
 import {MatSort} from '@angular/material';
+import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
+import {Product} from '@jf/interfaces/product.interface';
 import {takeUntil} from 'rxjs/operators';
 import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
 
@@ -34,8 +36,11 @@ export class OrdersSinglePageComponent extends SinglePageComponent
   collection = FirestoreCollections.Orders;
   deliveryStatus = OrderStatus;
 
+  get ordersForms() {
+    return this.form.get('orders') as FormArray;
+  }
+
   buildForm(data: any) {
-    console.log(data);
     this.form = this.fb.group({
       billing: this.checkForm(data.billing ? data.billing : {}),
       shippingInfo: data.shippingInfo || true,
@@ -46,7 +51,10 @@ export class OrdersSinglePageComponent extends SinglePageComponent
       id: data.id || '',
       paymentIntentId: data.paymentIntentId || '',
       price: data.price || '',
-      status: data.status || ''
+      status: data.status || '',
+      orders: this.fb.array(
+        data.orderItems ? data.orderItems.map(x => this.fb.group(x)) : []
+      )
     });
 
     this.form
@@ -76,5 +84,17 @@ export class OrdersSinglePageComponent extends SinglePageComponent
       line1: data.line1 || '',
       line2: data.line2 || ''
     });
+  }
+
+  addOrder() {
+    const order = this.fb.group({
+      name: '',
+      quantity: 0
+    });
+    this.ordersForms.push(order);
+  }
+
+  deleteOrder(i) {
+    this.ordersForms.removeAt(i);
   }
 }
