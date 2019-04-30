@@ -25,7 +25,7 @@
           <mat-icon>star</mat-icon>
           <mat-icon>star</mat-icon>
           <mat-icon>star</mat-icon>
-          <p><a class="link" (click)="openReviews()">Number of reviews: {{rec.length}}</a></p>
+          <p><a class="link" id="a-opRew" (click)="openReviews()">Number of reviews: {{rec.length}}</a></p>
         </div>
       </ng-container>
 
@@ -43,6 +43,7 @@
             <h2 class="m-t-m m-b-xs">{{data.product.price | sp}}</h2>
             <ng-container *ngIf="data.quantity; else notInCart">
               <button
+                id="btn-add-more-0"
                 mat-flat-button
                 color="accent"
                 (click)="cart.add(data.product)">
@@ -51,6 +52,7 @@
             </ng-container>
             <ng-template #notInCart>
               <button
+                id="btn-add-cart-1"
                 mat-flat-button
                 color="accent"
                 (click)="cart.add(data.product)">
@@ -59,9 +61,9 @@
             </ng-template>
             <div class="m-y-m flex fd-col ai-start">
               <p class="m-b-xs"><b>Share this product:</b></p>
-              <button (click)="facebookShare()" mat-button>Share on Facebook</button>
-              <button mat-button (click)="twitterShare()">Share on Twitter</button>
-              <a mat-button href="mailto:mail@address.com?subject={{data.product.name}}">Share via email</a>
+              <button id="btn-shF" (click)="facebookShare()" mat-button>Share on Facebook</button>
+              <button mat-button  id="btn-shT" (click)="twitterShare()">Share on Twitter</button>
+              <a mat-button id="a-shE" href="mailto:mail@address.com?subject={{data.product.name}}">Share via email</a>
             </div>
           </div>
           <div class="col-6 col-s-12">
@@ -82,6 +84,7 @@
           </div>
         </div>
         <button
+          id="btn-wish-list-1"
           class="jfs-wishlist-button"
           mat-mini-fab
           color="accent"

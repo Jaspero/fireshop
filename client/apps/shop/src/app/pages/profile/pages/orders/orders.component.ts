@@ -2,27 +2,32 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   OnInit
 } from '@angular/core';
+import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {MatDialog} from '@angular/material';
-import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
-import {AngularFireAuth} from '@angular/fire/auth';
-import {debounceTime, takeUntil} from 'rxjs/operators';
 import {RxDestroy} from '@jaspero/ng-helpers';
-import {ReviewsDialogComponent} from '../../../../shared/components/reviews/reviews-dialog.component';
-import {BehaviorSubject, Subject} from 'rxjs';
+import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
+import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {LoadState} from '@jf/enums/load-state.enum';
+import {UNIQUE_ID, UNIQUE_ID_PROVIDER} from '@jf/utils/id.provider';
+import {BehaviorSubject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {ReviewsDialogComponent} from '../../../../shared/components/reviews/reviews-dialog.component';
 
 @Component({
   selector: 'jfs-orders',
   templateUrl: './orders.component.html',
   styleUrls: ['./orders.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [UNIQUE_ID_PROVIDER]
 })
 export class OrdersComponent extends RxDestroy implements OnInit {
   constructor(
+    @Inject(UNIQUE_ID)
+    public uniqueId: string,
     private afs: AngularFirestore,
     private afAuth: AngularFireAuth,
     private cdr: ChangeDetectorRef,
