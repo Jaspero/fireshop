@@ -164,4 +164,12 @@ export class ProductComponent extends RxDestroy implements OnInit {
       'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0'
     );
   }
+
+  emailShare(data) {
+    window.location.href =
+      'mailto:test@example.com?subject=subject&body=' +
+      data.product.name +
+      ' http://localhost:4200/product/' +
+      data.product.id;
+  }
 }
