@@ -29,12 +29,18 @@
                 <h4 mat-line>[Product]</h4>
                 <p mat-line>Added on [date]</p>
               </mat-list-item>
+              <mat-list-item>
+                <h4 mat-line>No products on wishlist yet.</h4>
+              </mat-list-item>
               <mat-divider></mat-divider>
               <h3 mat-subheader>Orders</h3>
               <mat-list-item *ngFor="let i of [].constructor(3)">
                 <mat-icon mat-list-icon>shopping_cart</mat-icon>
                 <h4 mat-line>[OrderID]</h4>
                 <p mat-line>[date]</p>
+              </mat-list-item>
+              <mat-list-item>
+                <h4 mat-line>No orders yet.</h4>
               </mat-list-item>
               <mat-divider></mat-divider>
               <h3 mat-subheader>Reviews</h3>
@@ -43,6 +49,9 @@
                 <h4 mat-line><mat-icon *ngFor="let i of [].constructor(5)">star</mat-icon></h4>
                 <p mat-line>[comment]</p>
                 <p mat-line>[date]</p>
+              </mat-list-item>
+              <mat-list-item>
+                <h4 mat-line>No reviews yet.</h4>
               </mat-list-item>
             </mat-nav-list>
           </mat-card>
