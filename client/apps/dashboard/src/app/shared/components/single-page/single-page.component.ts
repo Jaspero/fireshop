@@ -68,7 +68,9 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
     const {id, ...item} = this.form.getRawValue();
     return this.getSaveData(id, item).pipe(
       notify(),
-      tap(() => this.back())
+      tap(() => {
+        this.back();
+      })
     );
   }
 
