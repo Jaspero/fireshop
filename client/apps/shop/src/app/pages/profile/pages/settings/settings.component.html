@@ -19,7 +19,7 @@
         <textarea matInput formControlName="bio"></textarea>
       </mat-form-field>
       <div class="ta-right">
-        <button mat-flat-button color="primary" (click)="submitForm(settingsForm.getRawValue())">Submit</button>
+        <button id="btn-info-sub" mat-flat-button color="primary" (click)="submitForm(settingsForm.getRawValue())">Submit</button>
       </div>
     </mat-card>
   </div>
@@ -110,7 +110,7 @@
       </ng-container>
       <mat-checkbox color="primary" formControlName="shippingInfo">My shipping address is same as my billing address</mat-checkbox>
       <div class="ta-right">
-        <button mat-flat-button color="primary" (click)="submitForm(settingsForm.getRawValue())">Submit</button>
+        <button id="btn-address-sub" mat-flat-button color="primary" (click)="submitForm(settingsForm.getRawValue())">Submit</button>
       </div>
     </mat-card>
   </div>
@@ -119,7 +119,7 @@
     <mat-card>
       <h6 class="p-y-s">Account</h6>
       <p class="m-b-xs">Do you wish to remove your account? You will be asked to type your email address before your account gets removed.</p>
-      <button mat-button color="warn" (click)="deleteUser()">Remove account</button>
+      <button id="btn-user-del" mat-button color="warn" (click)="deleteUser()">Remove account</button>
     </mat-card>
   </div>
 

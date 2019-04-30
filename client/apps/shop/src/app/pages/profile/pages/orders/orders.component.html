@@ -28,7 +28,7 @@
                 <p class="m-l-xs">{{ item.productId }}, {{ item.quantity }}x (${{ item.price }})</p>
               </div>
               <div class="flex ai-center p-y-xs">
-                <button mat-button (click)="submitReview(order.orderList[0].identifier, order)">
+                <button [id]="'btn-sub-rev-' + uniqueId" mat-button (click)="submitReview(order.orderList[0].identifier, order)">
                   Submit review
                 </button>
               </div>
@@ -39,7 +39,7 @@
 
       <ng-container *ngSwitchCase="dataState.Empty">
         <div class="col-6 col-s-8 col-xs-12">
-          <p>You haven't made any orders yet.<br>Visit our <a class="link c-primary" routerLink="/shop">shop</a> and get busy 🙂</p>
+          <p>You haven't made any orders yet.<br>Visit our <a id="a-browse-shop-2" class="link c-primary" routerLink="/shop">shop</a> and get busy 🙂</p>
         </div>
       </ng-container>
     </ng-container>
