@@ -25,6 +25,7 @@ import {
   MatPaginatorModule,
   MatProgressBarModule,
   MatProgressSpinnerModule,
+  MatRadioModule,
   MatSelectModule,
   MatSlideToggleModule,
   MatSnackBarModule,
@@ -93,6 +94,7 @@ const IMPORTS = [
   MatChipsModule,
   MatToolbarModule,
   MatProgressBarModule,
+  MatRadioModule,
 
   // AngularFire
   AngularFirestoreModule,
