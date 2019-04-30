@@ -1,3 +1,53 @@
-<p>
-  overview works!
-</p>
+<section>
+  <mat-toolbar color="primary">
+    <a mat-icon-button routerLink="/customers" aria-label="Back" matTooltip="Back">
+      <mat-icon>arrow_back</mat-icon>
+    </a>
+    <span>Customers</span>
+  </mat-toolbar>
+</section>
+
+<section class="p-y-m">
+  <div class="grid">
+    <div class="col-8 col-s-10 col-xs-12 flex ai-center jc-between">
+      <h5>Customer stats</h5>
+      <a mat-button>Customer info</a>
+    </div>
+  </div>
+</section>
+
+<div class="grid grid-no-gutter p-b-m">
+  <div class="col-8 col-s-10 col-xs-12">
+    <div>
+      <div class="grid">
+        <div class="col-12">
+          <mat-card>
+            <mat-nav-list>
+              <h3 mat-subheader>Wishlist</h3>
+              <mat-list-item *ngFor="let i of [].constructor(4)">
+                <mat-icon mat-list-icon>favorite</mat-icon>
+                <h4 mat-line>[Product]</h4>
+                <p mat-line>Added on [date]</p>
+              </mat-list-item>
+              <mat-divider></mat-divider>
+              <h3 mat-subheader>Orders</h3>
+              <mat-list-item *ngFor="let i of [].constructor(3)">
+                <mat-icon mat-list-icon>shopping_cart</mat-icon>
+                <h4 mat-line>[OrderID]</h4>
+                <p mat-line>[date]</p>
+              </mat-list-item>
+              <mat-divider></mat-divider>
+              <h3 mat-subheader>Reviews</h3>
+              <mat-list-item *ngFor="let i of [].constructor(4)">
+                <mat-icon mat-list-icon>rate_review</mat-icon>
+                <h4 mat-line><mat-icon *ngFor="let i of [].constructor(5)">star</mat-icon></h4>
+                <p mat-line>[comment]</p>
+                <p mat-line>[date]</p>
+              </mat-list-item>
+            </mat-nav-list>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

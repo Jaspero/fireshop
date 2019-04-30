@@ -19,7 +19,7 @@ const routes: Routes = [
         canDeactivate: [CanDeactivateGuard]
       },
       {
-        path: 'single/:id',
+        path: 'overview/:id',
         component: CustomersOverviewComponent
       }
     ]
