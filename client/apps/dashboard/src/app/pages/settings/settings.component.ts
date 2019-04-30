@@ -47,6 +47,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
         autoReduceQuantity: true,
         inactiveForQuantity: true,
         realTimeData: true,
+        statusUpdates: true,
         errorNotificationEmail: ''
       }
     },
