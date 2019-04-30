@@ -118,7 +118,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
       {
         billing: this.addressForm(value.billing ? value.billing : {}),
         shippingInfo: value.shippingInfo || true,
-        saveInfo: !value.saveInfo
+        saveInfo: value.saveInfo !== undefined
       },
       {
         asyncValidators: [
@@ -204,13 +204,14 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
             .collection(FirestoreCollections.Orders)
             .doc(nanoid())
             .set({
-              price,
+              price: 200,
               status: OrderStatus.Ordered,
-              paymentIntentId: paymentIntent.id,
+              paymentIntentId: 'paymentIntent.id',
               billing: data.billing,
               orderItems: this.orderItems,
               createdOn: Date.now(),
-              ...(data.shippingInfo ? {shipping: data.shipping} : {}),
+
+              ...(data.shippingInfo ? {} : {shipping: data.shipping}),
               ...(this.afAuth.auth.currentUser
                 ? {
                     customerId: this.afAuth.auth.currentUser.uid,
@@ -276,6 +277,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
           this.orderItems = items.map(val => ({
             id: val.productId,
             quantity: val.quantity,
+            price: val.price,
+            name: val.name,
 
             /**
              * TODO: Connect attributes if necessary

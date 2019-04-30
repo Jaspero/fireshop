@@ -69,20 +69,6 @@ export class OrdersComponent extends RxDestroy implements OnInit {
       });
   }
 
-  getOrder(id, ind) {
-    if (!this.orders[ind].orderList.length) {
-      this.afs
-        .collection(`${FirestoreCollections.OrderedItems}`, ref => {
-          return ref.where('orderId', FirebaseOperator.Equal, id);
-        })
-        .valueChanges()
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe(value => {
-          this.orders[ind].orderList.push(...value);
-        });
-    }
-  }
-
   submitReview(productId, order) {
     this.dialog.open(ReviewsDialogComponent, {
       width: '500px',

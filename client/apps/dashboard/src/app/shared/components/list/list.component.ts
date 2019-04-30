@@ -149,6 +149,7 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
 
         return this.loadItems(this.realTime, true).pipe(
           switchMap(data => {
+            console.log('data', data);
             items = data;
 
             this.dataLoading$.next(true);
