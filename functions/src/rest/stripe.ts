@@ -13,7 +13,7 @@ interface OrderItem {
 }
 
 const app = express();
-const si = stripeLib('sk_test_FJbKQgGuN4wRNFZkQLAKV1fn');
+const si = stripeLib(ENV_CONFIG.stripe.token);
 
 app.use(cors());
 
