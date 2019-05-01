@@ -6,7 +6,7 @@ import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {notify} from '@jf/utils/notify.operator';
 import * as nanoid from 'nanoid';
-import {from, Observable, of} from 'rxjs';
+import {defer, from, Observable, of} from 'rxjs';
 import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {StateService} from '../../services/state/state.service';
 import {queue} from '../../utils/queue.operator';
@@ -66,6 +66,8 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
 
   save() {
     const {id, ...item} = this.form.getRawValue();
+    this.initialValue = this.form.getRawValue();
+
     return this.getSaveData(id, item).pipe(
       notify(),
       tap(() => {
@@ -81,19 +83,22 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
   }
 
   getSaveData(...args): Observable<any> {
-    const [id, item] = args;
-    return from(
-      this.afs
-        .collection(this.collection)
-        .doc(id || this.createId())
-        .set(
-          {
-            ...item,
-            ...(this.isEdit ? {} : {createdOn: Date.now()})
-          },
-          {merge: true}
-        )
-    );
+    return defer(() => {
+      const [id, item] = args;
+
+      return from(
+        this.afs
+          .collection(this.collection)
+          .doc(id || this.createId())
+          .set(
+            {
+              ...item,
+              ...(this.isEdit ? {} : {createdOn: Date.now()})
+            },
+            {merge: true}
+          )
+      );
+    });
   }
 
   back() {

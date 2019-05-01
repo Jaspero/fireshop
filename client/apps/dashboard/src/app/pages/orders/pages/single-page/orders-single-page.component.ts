@@ -1,15 +1,7 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import {FormArray, Validators} from '@angular/forms';
-import {MatSort} from '@angular/material';
-import {STATIC_CONFIG} from '@jf/consts/static-config.const';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {FormArray} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
-import {Product} from '@jf/interfaces/product.interface';
 import {takeUntil} from 'rxjs/operators';
 import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
 
@@ -21,18 +13,6 @@ import {SinglePageComponent} from '../../../../shared/components/single-page/sin
 })
 export class OrdersSinglePageComponent extends SinglePageComponent
   implements OnInit {
-  @ViewChild(MatSort) sort: MatSort;
-  displayedColumns = [
-    'name',
-    'customerId',
-    'identifier',
-    'orderId',
-    'price',
-    'productId',
-    'quantity'
-  ];
-  order: any;
-
   collection = FirestoreCollections.Orders;
   deliveryStatus = OrderStatus;
 
