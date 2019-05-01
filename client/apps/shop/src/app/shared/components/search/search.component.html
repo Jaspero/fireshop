@@ -9,7 +9,7 @@
     <mat-nav-list *ngIf="products.length; else noResults;">
       <h3 mat-subheader>Results:</h3>
       <mat-list-item *ngFor="let product of products">
-        <a matLine (click)="openProduct(product)">
+        <a matLine id="a-opnPdct" (click)="openProduct(product)">
           {{product.name}}
         </a>
       </mat-list-item>

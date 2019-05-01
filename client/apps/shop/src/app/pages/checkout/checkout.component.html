@@ -155,7 +155,7 @@
                       <p class="bg-l-secondary p-y-s ta-center">You will have a chance to review your order before it's placed</p>
                     </div>
                     <div class="col-12 ta-right">
-                      <button mat-flat-button color="primary" matStepperNext [disabled]="infoForm.invalid">Continue</button>
+                      <button id="btn-nxt-step-0" mat-flat-button color="primary" matStepperNext [disabled]="infoForm.invalid">Continue</button>
                     </div>
                   </div>
 
@@ -174,7 +174,7 @@
         </mat-step>
 
         <!--Review and purchase content-->
-        <mat-step label="Review & Purchase">
+        <mat-step id="btn-nxt-step-1" label="Review & Purchase">
           <div class="grid fw-rev">
             <div class="col-8 col-s-12" *ngIf="cartService.items$ | async as prod">
               <mat-card>
@@ -228,7 +228,7 @@
                   <mat-checkbox color="primary" [formControl]="terms">I agree to the</mat-checkbox>&nbsp;<a class="c-primary" href="" target="_blank"><u>terms of service</u>.</a>
                 </div>
                 <div class="ta-right p-y-xs">
-                  <button mat-flat-button color="primary" [disabled]="!terms.value" (click)="checkOut(infoForm.getRawValue())">Purchase</button>
+                  <button mat-flat-button color="primary" id="btn-purchase" [disabled]="!terms.value"(click)="checkOut(infoForm.getRawValue())">Purchase</button>
                 </div>
               </mat-card>
               <p class="p-y-xs">Confirmation will be emailed to your address at [billing@email.com]</p>

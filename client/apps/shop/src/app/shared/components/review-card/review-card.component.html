@@ -15,11 +15,11 @@
     <p class="">{{review.comment}}</p>
   </div>
   <div *ngIf="review.customerId === afAuth.auth.currentUser.uid">
-    <button mat-button (click)="edit(review.id)">
+    <button [id]="'btn-edit-rev-' + uniqueId" mat-button (click)="edit(review.id)">
       <mat-icon color="primary">edit</mat-icon>
       <span>Edit</span>
     </button>
-    <button mat-button (click)="delete(review.id)">
+    <button [id]="'btn-del-rev-' + uniqueId" mat-button (click)="delete(review.id)">
       <mat-icon color="warn">delete_forever</mat-icon>
       <span>Delete</span>
     </button>
