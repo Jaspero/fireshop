@@ -8,24 +8,22 @@
         <p>{{data.product.shortDescription}}</p>
       </div>
 
-      <ng-container *ngIf="(rews$ | async) as rec">
+      <ng-container *ngIf="rews$ | async as rec">
 
         <ng-template #reviewsDialog>
           <h6 mat-dialog-title="">Reviews</h6>
-          <ng-container *ngIf="rec.length; else empty">
-            <div *ngFor="let review of rec">
+          <ng-container *ngIf="rec[0].length; else empty">
+            <div class="m-b-s" *ngFor="let review of rec[0]">
               <jfs-review-card [review]="review"></jfs-review-card>
             </div>
           </ng-container>
         </ng-template>
 
         <div class="col-6 col-xs-12 ws-nowrap ta-right">
-          <mat-icon>star</mat-icon>
-          <mat-icon>star</mat-icon>
-          <mat-icon>star</mat-icon>
-          <mat-icon>star</mat-icon>
-          <mat-icon>star</mat-icon>
-          <p><a class="link" id="a-open-rev" (click)="openReviews()">Number of reviews: {{rec.length}}</a></p>
+          <p>
+            <a class="link" (click)="openReviews()">{{rec[0].length}} reviews</a>
+          </p>
+          <jfs-rating-scale [value]="rec[1]" color="default"></jfs-rating-scale>
         </div>
       </ng-container>
 

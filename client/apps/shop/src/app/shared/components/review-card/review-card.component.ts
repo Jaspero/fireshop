@@ -28,11 +28,14 @@ export class ReviewCardComponent {
 
   @Input()
   review: Review;
-  fiveStar = new Array(5);
+  isEdit: boolean;
 
   edit() {
+    this.isEdit = true;
+
     this.dialog.open(ReviewsDialogComponent, {
-      width: '500px'
+      width: '500px',
+      data: this.review
     });
   }
 

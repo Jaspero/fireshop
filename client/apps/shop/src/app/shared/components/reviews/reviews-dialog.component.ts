@@ -7,16 +7,12 @@ import {
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogRef,
-  MatSnackBar
-} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {Review} from '@jf/interfaces/review.interface';
+import {notify} from '@jf/utils/notify.operator';
 import * as nanoid from 'nanoid';
 import {from} from 'rxjs';
-import {notify} from '@jf/utils/notify.operator';
 
 @Component({
   selector: 'jfs-reviews',
@@ -28,18 +24,12 @@ export class ReviewsDialogComponent implements OnInit {
   form: FormGroup;
 
   constructor(
+    @Inject(MAT_DIALOG_DATA)
+    public data: Review,
     private dialog: MatDialogRef<any>,
     private afs: AngularFirestore,
     private afAuth: AngularFireAuth,
-    private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA)
-    public data: {
-      productId: string;
-      createdOn: number;
-      customerId: string;
-      customerName: string;
-      orderId?: string;
-    }
+    private fb: FormBuilder
   ) {}
 
   ngOnInit() {
@@ -52,11 +42,12 @@ export class ReviewsDialogComponent implements OnInit {
     from(
       this.afs
         .collection(FirestoreCollections.Reviews)
-        .doc(nanoid())
+        .doc(this.data.id ? this.data.id : nanoid())
         .set({
           ...this.data,
           comment,
-          rating
+          rating,
+          ...(this.data.createdOn ? {} : {createdOn: Date.now()})
         })
     )
       .pipe(notify())
@@ -67,12 +58,11 @@ export class ReviewsDialogComponent implements OnInit {
 
   private buildForm() {
     this.form = this.fb.group({
-      dataProduct: [
-        {value: this.data.productId, disabled: true},
-        Validators.required
-      ],
-      comment: ['', Validators.required],
-      rating: ['', [Validators.required, Validators.min(1), Validators.max(5)]]
+      comment: [this.data.comment || ''],
+      rating: [
+        this.data.rating || '',
+        [Validators.required, Validators.min(1), Validators.max(5)]
+      ]
     });
   }
 }

@@ -74,14 +74,14 @@ export class OrdersComponent extends RxDestroy implements OnInit {
       });
   }
 
-  submitReview(productId, order) {
+  submitReview(item) {
     this.dialog.open(ReviewsDialogComponent, {
       width: '500px',
       data: {
-        customerName: order.name,
-        customerId: order.customerId,
-        orderId: order.orderId,
-        productId: productId,
+        customerName: item.name,
+        customerId: item.customerId,
+        orderId: item.orderId,
+        productId: item.identifier,
         createdOn: Date.now()
       }
     });
