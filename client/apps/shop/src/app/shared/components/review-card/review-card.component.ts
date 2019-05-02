@@ -34,6 +34,7 @@ export class ReviewCardComponent {
     this.isEdit = true;
 
     this.dialog.open(ReviewsDialogComponent, {
+      width: '500px',
       data: this.review
     });
   }
