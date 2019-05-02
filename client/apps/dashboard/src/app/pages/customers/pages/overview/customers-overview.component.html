@@ -11,7 +11,7 @@
   <div class="grid">
     <div class="col-8 col-s-10 col-xs-12 flex ai-center jc-between">
       <h5>Customer stats</h5>
-      <a mat-button>Customer info</a>
+      <button mat-button [routerLink]="['/customers/', acr.params.value.id]">Customer info</button>
     </div>
   </div>
 </section>
@@ -34,9 +34,9 @@
               </mat-list-item>
               <mat-divider></mat-divider>
               <h3 mat-subheader>Orders</h3>
-              <mat-list-item *ngFor="let i of [].constructor(3)">
+              <mat-list-item *ngFor="let rev of reviews">
                 <mat-icon mat-list-icon>shopping_cart</mat-icon>
-                <h4 mat-line>[OrderID]</h4>
+                <h4 mat-line>{{rev}}</h4>
                 <p mat-line>[date]</p>
               </mat-list-item>
               <mat-list-item>
