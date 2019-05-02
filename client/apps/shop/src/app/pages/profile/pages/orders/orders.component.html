@@ -24,9 +24,7 @@
               </mat-expansion-panel-header>
               <div class="flex ai-center p-y-xs" *ngFor="let item of order.orderItems">
                 <p class="m-l-xs">{{ item.name }}, {{ item.quantity }}x (${{ item.price }})</p>
-              </div>
-              <div class="flex ai-center p-y-xs">
-                <button [id]="'btn-sub-rev-' + uniqueId" mat-button (click)="submitReview(order.orderList[0].identifier, order)">
+                <button [id]="'btn-sub-rev-' + uniqueId" mat-button (click)="submitReview(item)">
                   Submit review
                 </button>
               </div>
