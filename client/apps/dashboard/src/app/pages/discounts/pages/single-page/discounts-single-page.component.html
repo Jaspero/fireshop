@@ -44,34 +44,40 @@
                 <textarea matInput  formControlName="description"></textarea>
               </mat-form-field>
               <label class="block" id="discount-value">Discount value</label>
-              <mat-radio-group
-                aria-labelledby="discount-value"
-                class="jfsc-radio-group">
-                <mat-radio-button class="jfsc-radio-button">Fixed amount</mat-radio-button>
-                <mat-radio-button class="jfsc-radio-button">Percentage</mat-radio-button>
-              </mat-radio-group>
-              <mat-form-field class="w-full" appearance="outline">
-                <mat-label>Discount value</mat-label>
-                <input matInput>
-              </mat-form-field>
-              <label class="block" id="discount-amount">Amount of discounts</label>
-              <mat-radio-group
-                aria-labelledby="discount-amount"
-                class="jfsc-radio-group">
-                <mat-radio-button class="jfsc-radio-button">Limited</mat-radio-button>
-                <mat-radio-button class="jfsc-radio-button">Unlimited</mat-radio-button>
-              </mat-radio-group>
-              <mat-form-field class="w-full" appearance="outline">
-                <mat-label>Amount of discounts</mat-label>
-                <input matInput>
-              </mat-form-field>
               <mat-form-field class="col-6 p-r-xs" appearance="outline">
-                <input matInput [matDatepicker]="startDate" placeholder="Starting date">
+                <mat-select formControlName="discountValue">
+                  <mat-option value="fixedAmount">Fixed amount</mat-option>
+                  <mat-option value="percentage">Percentage</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <ng-container *ngIf="form.get('discountValue').value === 'percentage'" class="w-full" appearance="outline">
+                <mat-label>Discount value</mat-label>
+                <mat-form-field class="col-6 p-r-xs" appearance="outline">
+                  <input matInput>
+                </mat-form-field>
+              </ng-container>
+              <ng-container *ngIf="form.get('discountValue').value === 'fixedAmount'" class="w-full" appearance="outline">
+                <mat-label>Fixed amount</mat-label>
+                <mat-form-field class="col-6 p-r-xs" appearance="outline">
+                  <input matInput>
+                </mat-form-field>
+              </ng-container>
+              <label class="block" id="discount-amount">Amount of discounts</label>
+
+              <mat-form-field class="col-6 p-r-xs" appearance="outline">
+                <mat-select formControlName="amountDiscount">
+                  <mat-option value="limited">Limited</mat-option>
+                  <mat-option value="unlimited">Unlimited</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="col-6 p-r-xs" appearance="outline">
+                <input matInput [matDatepicker]="startDate" placeholder="Starting date" formControlName="startingDate">
                 <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
                 <mat-datepicker #startDate></mat-datepicker>
               </mat-form-field>
               <mat-form-field class="col-6" appearance="outline">
-                <input matInput [matDatepicker]="endDate" placeholder="Ending date">
+                <input matInput [matDatepicker]="endDate" placeholder="Ending date" formControlName="startingDate">
                 <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
                 <mat-datepicker #endDate></mat-datepicker>
               </mat-form-field>
