@@ -5,9 +5,10 @@ import {
   ViewChild,
   ElementRef
 } from '@angular/core';
-import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {from} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {AngularFireStorage} from '@angular/fire/storage';
+import {readFile} from '@jf/utils/read-file';
+import {forkJoin, from} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'jfsc-image-upload',
@@ -16,10 +17,12 @@ import {switchMap} from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageUploadComponent implements OnInit {
-  constructor() {}
+  constructor(private afs: AngularFireStorage) {}
 
   @ViewChild('file')
   fileEl: ElementRef<HTMLInputElement>;
+
+  value = '';
 
   ngOnInit() {}
 
@@ -29,25 +32,14 @@ export class ImageUploadComponent implements OnInit {
 
   filesImage(file) {
     const fileToUpload = Array.from(file)[0];
-    console.log('fileToUpload', fileToUpload);
-
-    // const userID = this.afAuth.auth.currentUser.uid;
-    // from(
-    //   this.afs.upload(userID, fileToUpload, {
-    //     contentType: fileToUpload['type']
-    //   })
-    // )
-    //   .pipe(
-    //     switchMap(res => res.ref.getDownloadURL()),
-    //     switchMap(res => {
-    //       console.log('res', res);
-    //       this.downloadURL = res;
-    //       this.cdr.detectChanges();
-    //       return this.angularFireStore
-    //         .doc(`${FirestoreCollections.Customers}/${userID}`)
-    //         .update({profileImage: res});
-    //     })
-    //   )
-    //   .subscribe();
+    console.log('fileToUpload1111', fileToUpload);
+    const mama = from(
+      this.afs.upload('userID', fileToUpload, {
+        contentType: fileToUpload['type']
+      })
+    );
+    console.log('mama', mama);
   }
+
+  save() {}
 }
