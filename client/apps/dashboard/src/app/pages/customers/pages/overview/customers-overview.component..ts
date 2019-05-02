@@ -13,17 +13,15 @@ export class CustomersOverviewComponent implements OnInit {
   constructor(public acr: ActivatedRoute, private afs: AngularFirestore) {}
 
   ngOnInit() {
-    this.afs
-      .collection(FirestoreCollections.Reviews, ref => {
-        return ref.where(
-          'customerId',
-          FirebaseOperator.Equal,
-          this.acr.params.value.id
-        );
-      })
-      .get()
-      .subscribe(val => {
-        console.log(val);
-      });
+    // this.afs
+    //   .collection(FirestoreCollections.Reviews, ref => {
+    //     return ref.where(
+    //       'customerId',
+    //       FirebaseOperator.Equal,
+    //       this.acr.params.value.id
+    //     );
+    //   })
+    //   .get()
+    //   .subscribe(val => {});
   }
 }
