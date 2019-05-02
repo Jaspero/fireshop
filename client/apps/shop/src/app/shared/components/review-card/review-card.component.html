@@ -2,15 +2,7 @@
   <div class="flex ai-center jc-between fw-wrap">
     <h6 class="m-b-s">{{review.productId}}</h6>
     <div>
-      <ng-container>
-        <mat-icon
-          color="primary"
-          *ngFor="let star of fiveStar; index as index"
-          [class.active]="review.rating >= index + 1"
-          >
-          {{review.rating >= index + 1 ? 'star' : 'star_border'}}
-        </mat-icon>
-      </ng-container>
+      <jfs-rating-scale [value]="review.rating"></jfs-rating-scale>
     </div>
   </div>
   <blockquote>

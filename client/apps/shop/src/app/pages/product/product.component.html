@@ -23,9 +23,7 @@
           <p>
             <a class="link" (click)="openReviews()">{{rec[0].length}} reviews</a>
           </p>
-          <mat-icon *ngFor="let star of fiveStar; index as index">
-            {{rec[1] >= index + 1 ? 'star' : 'star_border'}}
-          </mat-icon>
+          <jfs-rating-scale [value]="rec[1]" color="default"></jfs-rating-scale>
         </div>
       </ng-container>
 

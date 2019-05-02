@@ -28,7 +28,6 @@ export class ReviewCardComponent {
 
   @Input()
   review: Review;
-  fiveStar = new Array(5);
   isEdit: boolean;
 
   edit() {

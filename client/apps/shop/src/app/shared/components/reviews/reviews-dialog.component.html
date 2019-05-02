@@ -5,12 +5,11 @@
     <mat-label>Comment</mat-label>
     <textarea formControlName="comment" matInput></textarea>
   </mat-form-field>
-  <mat-form-field class="w-full" appearance="outline">
-    <jfs-rating-scale formControlName="rating"></jfs-rating-scale>
+
+  <ng-container class="w-full">
     <mat-label>Rating</mat-label>
-    <input type="number" formControlName="rating" matInput>
-    <span matSuffix>/5</span>
-  </mat-form-field>
+    <jfs-rating-scale formControlName="rating"></jfs-rating-scale>
+  </ng-container>
 
   <div class="flex jc-end">
     <div class="m-r-s">

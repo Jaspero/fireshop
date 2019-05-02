@@ -24,12 +24,12 @@ export class ReviewsDialogComponent implements OnInit {
   form: FormGroup;
 
   constructor(
+    @Inject(MAT_DIALOG_DATA)
+    public data: Review,
     private dialog: MatDialogRef<any>,
     private afs: AngularFirestore,
     private afAuth: AngularFireAuth,
-    private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA)
-    public data: Review
+    private fb: FormBuilder
   ) {}
 
   ngOnInit() {

@@ -1,4 +1,4 @@
-import {Component, forwardRef, OnInit} from '@angular/core';
+import {Component, forwardRef, Input} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 @Component({
@@ -13,22 +13,42 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
     }
   ]
 })
-export class RatingScaleComponent implements OnInit, ControlValueAccessor {
+export class RatingScaleComponent implements ControlValueAccessor {
   constructor() {}
 
+  @Input()
+  value: number;
+
+  @Input()
+  color: string;
+
   fiveStar = new Array(5);
+  onTouch: Function;
+  onModelChange: Function;
+  isDisabled: boolean;
+  isFormControl: boolean;
 
-  ngOnInit() {}
+  registerOnTouched(fn: any) {
+    this.onTouch = fn;
+  }
 
-  registerOnChange(fn: any) {}
+  registerOnChange(fn: any) {
+    this.onModelChange = fn;
+  }
 
-  registerOnTouched(fn: any) {}
+  setDisabledState(isDisabled: boolean) {
+    this.isDisabled = isDisabled;
+    this.isFormControl = isDisabled;
+  }
 
-  setDisabledState(isDisabled: boolean) {}
-
-  writeValue(value: number) {}
+  writeValue(value: number) {
+    this.value = value;
+    this.isFormControl = true;
+    console.log(this.isFormControl);
+  }
 
   chooseRating(index) {
-    console.log(index);
+    this.value = index + 1;
+    this.onModelChange(this.value);
   }
 }

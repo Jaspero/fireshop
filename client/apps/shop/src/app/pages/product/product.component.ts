@@ -53,7 +53,6 @@ export class ProductComponent extends RxDestroy implements OnInit {
   }>;
   similar$: Observable<any>;
   imgIndex = 0;
-  fiveStar = new Array(5);
 
   @ViewChild('reviewsDialog') reviewsDialog: TemplateRef<any>;
 
