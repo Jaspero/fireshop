@@ -20,9 +20,14 @@
     </p>
   </blockquote>
 
-  <div class="ta-right"
-       *ngIf="review.customerId === afAuth.auth.currentUser?.uid">
-    <button mat-button (click)="delete(review.id)">Delete review</button>
-    <button mat-button (click)="edit()">Edit review</button>
+  <div *ngIf="review.customerId === afAuth.auth.currentUser.uid">
+    <button [id]="'btn-edit-rev-' + uniqueId" mat-button (click)="edit(review.id)">
+      <mat-icon color="primary">edit</mat-icon>
+      <span>Edit</span>
+    </button>
+    <button [id]="'btn-del-rev-' + uniqueId" mat-button (click)="delete(review.id)">
+      <mat-icon color="warn">delete_forever</mat-icon>
+      <span>Delete</span>
+    </button>
   </div>
 </mat-card>
