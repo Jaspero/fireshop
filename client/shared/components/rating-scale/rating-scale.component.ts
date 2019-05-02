@@ -44,7 +44,6 @@ export class RatingScaleComponent implements ControlValueAccessor {
   writeValue(value: number) {
     this.value = value;
     this.isFormControl = true;
-    console.log(this.isFormControl);
   }
 
   chooseRating(index) {
