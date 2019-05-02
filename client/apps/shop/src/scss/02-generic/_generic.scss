@@ -67,3 +67,11 @@ h6 {
     text-decoration: underline;
   }
 }
+
+/* Blockquote
+ *============================================================================*/
+
+blockquote {
+  border-left: 4px solid var(--primary);
+  padding: 10px;
+}

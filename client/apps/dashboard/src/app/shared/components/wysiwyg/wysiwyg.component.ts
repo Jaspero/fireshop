@@ -10,7 +10,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {UNIQUE_ID, UNIQUE_ID_PROVIDER} from '../../utils/id.provider';
+import {UNIQUE_ID, UNIQUE_ID_PROVIDER} from '@jf/utils/id.provider';
 
 declare const tinymce: any;
 

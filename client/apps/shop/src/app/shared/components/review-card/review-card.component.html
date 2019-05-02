@@ -1,27 +1,23 @@
 <mat-card>
   <div class="flex ai-center jc-between fw-wrap">
-    <h6>{{review.productId}}</h6>
+    <h6 class="m-b-s">{{review.productId}}</h6>
     <div>
-      <ng-container>
-        <mat-icon *ngFor="let star of fiveStar">star</mat-icon>
-      </ng-container>
+      <jfs-rating-scale [value]="review.rating"></jfs-rating-scale>
     </div>
   </div>
-  <div class="p-y-xs">
-    <mat-divider></mat-divider>
-  </div>
-  <div class="p-y-xs">
-    <p class="fs-small c-d-secondary">{{review.createdOn}}</p>
-    <p class="">{{review.comment}}</p>
-  </div>
-  <div *ngIf="review.customerId === afAuth.auth.currentUser.uid">
-    <button mat-button (click)="edit(review.id)">
-      <mat-icon color="primary">edit</mat-icon>
-      <span>Edit</span>
-    </button>
-    <button mat-button (click)="delete(review.id)">
-      <mat-icon color="warn">delete_forever</mat-icon>
-      <span>Delete</span>
+  <blockquote>
+    <p class="fs-small c-d-secondary">{{review.createdOn | date: 'dd/MM/y - HH:mm'}}</p>
+    <p [class.c-d-secondary]="!review.comment">
+      {{review.comment ? review.comment : 'No comment'}}
+    </p>
+  </blockquote>
+
+  <div class="ta-right" *ngIf="review.customerId === afAuth.auth.currentUser.uid">
+    <button [id]="'btn-del-rev-' + uniqueId" mat-button (click)="delete(review.id)" tabindex="-1">
+      Delete
+    </button>&nbsp;
+    <button [id]="'btn-edit-rev-' + uniqueId" mat-flat-button color="primary" (click)="edit(review.id)">
+      Edit
     </button>
   </div>
 </mat-card>
