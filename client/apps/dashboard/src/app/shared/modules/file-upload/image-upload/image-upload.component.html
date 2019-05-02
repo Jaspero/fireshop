@@ -6,6 +6,6 @@
   </div>
 </div>
 <button mat-icon-button><i class="material-icons" (click)="openFileUpload()">perm_media</i></button>
-<button mat-icon-button><i class="material-icons">highlight_off</i></button>
+<button mat-icon-button><i class="material-icons" (click)="remove()">highlight_off</i></button>
 
 <input #file type="file" multiple hidden (change)="filesImage($event.target.files)">

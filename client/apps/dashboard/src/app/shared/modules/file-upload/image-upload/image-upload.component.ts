@@ -1,14 +1,14 @@
 import {
-  Component,
-  OnInit,
   ChangeDetectionStrategy,
-  ViewChild,
-  ElementRef
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild
 } from '@angular/core';
 import {AngularFireStorage} from '@angular/fire/storage';
-import {readFile} from '@jf/utils/read-file';
-import {forkJoin, from} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {from} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'jfsc-image-upload',
@@ -17,12 +17,15 @@ import {map, switchMap} from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageUploadComponent implements OnInit {
-  constructor(private afs: AngularFireStorage) {}
+  constructor(
+    private afs: AngularFireStorage,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   @ViewChild('file')
   fileEl: ElementRef<HTMLInputElement>;
 
-  value = '';
+  value = {};
 
   ngOnInit() {}
 
@@ -31,15 +34,28 @@ export class ImageUploadComponent implements OnInit {
   }
 
   filesImage(file) {
-    const fileToUpload = Array.from(file)[0];
-    console.log('fileToUpload1111', fileToUpload);
-    const mama = from(
-      this.afs.upload('userID', fileToUpload, {
-        contentType: fileToUpload['type']
-      })
-    );
-    console.log('mama', mama);
+    this.value = Array.from(file)[0];
   }
 
-  save() {}
+  remove() {
+    this.value = {};
+    this.cdr.detectChanges();
+  }
+
+  save() {
+    from(
+      this.afs.upload('userID', this.value, {
+        contentType: this.value['type']
+      })
+    )
+      .pipe(
+        switchMap(res => res.ref.getDownloadURL()),
+        switchMap(res => {
+          return res;
+        })
+      )
+      .subscribe(val => {
+        console.log('val', val);
+      });
+  }
 }
