@@ -25,14 +25,14 @@
     <mat-card-actions>
       <div class="flex fd-row-rev">
         <button
-          id="btn-addCart-0"
+          [id]="'btn-add-c-' + uniqueId"
           mat-button
           (jpStopPropagation)="cart.add(product)">
           Add to cart
         </button>
         <ng-container *ngIf="wishList$ | async as ws">
           <button
-            id="btn-wshLst-0"
+            [id]="'btn-wish-list-' + uniqueId"
             mat-icon-button
             color="primary"
             [matTooltip]="ws.label"

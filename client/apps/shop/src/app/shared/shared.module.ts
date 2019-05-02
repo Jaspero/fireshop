@@ -41,6 +41,7 @@ import {
 import {JpImagePreloadModule} from '@jaspero/ng-image-preload';
 import {ColorPickerComponent} from '@jf/components/color-picker/color-picker.component';
 import {ConfirmationComponent} from '@jf/components/confirmation/confirmation.component';
+import {RatingScaleComponent} from '@jf/components/rating-scale/rating-scale.component';
 import {LoginSignupDialogComponent} from './components/login-signup-dialog/login-signup-dialog.component';
 import {NetworkWidgetComponent} from './components/network-widget/network-widget.component';
 import {ProductCardComponent} from './components/product-card/product-card.component';
@@ -105,7 +106,8 @@ const ENTRY_COMPONENTS = [
   LoginSignupDialogComponent,
   CartComponent,
   SearchComponent,
-  ReviewsDialogComponent
+  ReviewsDialogComponent,
+  RatingScaleComponent
 ];
 const COMPONENTS = [
   NetworkWidgetComponent,

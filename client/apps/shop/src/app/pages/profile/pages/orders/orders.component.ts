@@ -2,27 +2,32 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   OnInit
 } from '@angular/core';
+import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {MatDialog} from '@angular/material';
-import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
-import {AngularFireAuth} from '@angular/fire/auth';
-import {debounceTime, takeUntil} from 'rxjs/operators';
 import {RxDestroy} from '@jaspero/ng-helpers';
-import {ReviewsDialogComponent} from '../../../../shared/components/reviews/reviews-dialog.component';
-import {BehaviorSubject, Subject} from 'rxjs';
+import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
+import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {LoadState} from '@jf/enums/load-state.enum';
+import {UNIQUE_ID, UNIQUE_ID_PROVIDER} from '@jf/utils/id.provider';
+import {BehaviorSubject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {ReviewsDialogComponent} from '../../../../shared/components/reviews/reviews-dialog.component';
 
 @Component({
   selector: 'jfs-orders',
   templateUrl: './orders.component.html',
   styleUrls: ['./orders.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [UNIQUE_ID_PROVIDER]
 })
 export class OrdersComponent extends RxDestroy implements OnInit {
   constructor(
+    @Inject(UNIQUE_ID)
+    public uniqueId: string,
     private afs: AngularFirestore,
     private afAuth: AngularFireAuth,
     private cdr: ChangeDetectorRef,
@@ -69,28 +74,14 @@ export class OrdersComponent extends RxDestroy implements OnInit {
       });
   }
 
-  getOrder(id, ind) {
-    if (!this.orders[ind].orderList.length) {
-      this.afs
-        .collection(`${FirestoreCollections.OrderedItems}`, ref => {
-          return ref.where('orderId', FirebaseOperator.Equal, id);
-        })
-        .valueChanges()
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe(value => {
-          this.orders[ind].orderList.push(...value);
-        });
-    }
-  }
-
-  submitReview(productId, order) {
+  submitReview(item) {
     this.dialog.open(ReviewsDialogComponent, {
       width: '500px',
       data: {
-        customerName: order.name,
-        customerId: order.customerId,
-        orderId: order.orderId,
-        productId: productId,
+        customerName: item.name,
+        customerId: item.customerId,
+        orderId: item.orderId,
+        productId: item.identifier,
         createdOn: Date.now()
       }
     });
