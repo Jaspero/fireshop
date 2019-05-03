@@ -28,6 +28,7 @@ import {
   take,
   tap
 } from 'rxjs/operators';
+import {ImageUploadComponent} from '../../modules/file-upload/image-upload/image-upload.component';
 import {ExportComponent} from '../export/export.component';
 import {PAGE_SIZES} from '../../consts/page-sizes.const';
 import {RouteData} from '../../interfaces/route-data.interface';
