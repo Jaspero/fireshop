@@ -10,8 +10,9 @@ import {
 } from '@angular/material';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {ReactiveFormsModule} from '@angular/forms';
+import {ImageUploadComponent} from './image-upload/image-upload.component';
 
-const COMPONENTS = [FileUploadComponent];
+const COMPONENTS = [FileUploadComponent, ImageUploadComponent];
 
 @NgModule({
   declarations: [...COMPONENTS],
