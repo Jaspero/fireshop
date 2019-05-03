@@ -4,14 +4,14 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {notify} from '@jf/utils/notify.operator';
-import {from} from 'rxjs';
-import {LoginSignupDialogComponent} from '../../../../shared/components/login-signup-dialog/login-signup-dialog.component';
+import {from, throwError} from 'rxjs';
+import {catchError} from 'rxjs/operators';
 import {RepeatPasswordValidator} from '../../../../shared/helpers/compare-passwords';
 
 @Component({
   selector: 'jfs-change-password',
   templateUrl: './change-password.component.html',
-  styleUrls: ['./change-password.component.css'],
+  styleUrls: ['./change-password.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChangePasswordComponent implements OnInit {
@@ -55,6 +55,11 @@ export class ChangePasswordComponent implements OnInit {
         notify({
           error:
             'You must relogin to update you password because of the security reasons'
+        }),
+
+        // TODO: If the error for invalid password shows up open a dialog here
+        catchError(err => {
+          return throwError(err);
         })
       )
       .subscribe();
