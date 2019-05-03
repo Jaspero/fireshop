@@ -57,6 +57,7 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
   @ViewChild('filterDialog')
   filterDialog: TemplateRef<any>;
 
+  frmControl: FormControl;
   items$: Observable<T[]>;
   allChecked$: Observable<{checked: boolean}>;
   loadMore$ = new Subject<boolean>();
