@@ -1,5 +1,5 @@
 export interface Review {
-  id: any;
+  id: string;
   productId?: string;
   customerId?: string;
   customerName?: string;
