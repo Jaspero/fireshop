@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
 import {Order} from '@jf/interfaces/order.interface';
+import {merge} from 'rxjs';
 import {ListComponent} from '../../../../shared/components/list/list.component';
 
 @Component({
@@ -28,8 +29,13 @@ export class OrdersListComponent extends ListComponent<Order> {
     this.afs
       .collection(FirestoreCollections.Orders)
       .doc(element)
-      .update({
-        status: val
-      });
+      .set(
+        {
+          status: val
+        },
+        {
+          merge: true
+        }
+      );
   }
 }
