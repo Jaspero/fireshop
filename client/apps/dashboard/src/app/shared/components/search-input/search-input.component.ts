@@ -10,9 +10,6 @@ import {ControlValueAccessor, FormControl} from '@angular/forms';
 export class SearchInputComponent implements OnInit, ControlValueAccessor {
   constructor() {}
 
-  @Input()
-  value: FormControl;
-
   search: FormControl;
   onTouch: Function;
   onModelChange: Function;
@@ -37,7 +34,7 @@ export class SearchInputComponent implements OnInit, ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean) {}
 
-  writeValue(value: any) {
-    this.value = value;
+  writeValue(value: string) {
+    this.search.setValue(value);
   }
 }

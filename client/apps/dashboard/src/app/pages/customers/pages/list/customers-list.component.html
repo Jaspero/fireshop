@@ -11,7 +11,7 @@
     <div class="col-12">
       <mat-card>
         <form [formGroup]="filters" class="toolbar toolbar-inset p-t-0">
-          <jfsc-search-list [formControl]="frmControl"></jfsc-search-list>
+          <jfsc-search-list formControlName="search"></jfsc-search-list>
           <div class="f1"></div>
         </form>
         <jfsc-chips [chips$]="filters.valueChanges" (filterValue)="changeFilters($event)"></jfsc-chips>
