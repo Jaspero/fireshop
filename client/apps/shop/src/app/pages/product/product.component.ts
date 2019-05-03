@@ -42,8 +42,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
   ) {
     super();
   }
-  rews$: Observable<Review[]>;
-  reviewsRating$: Observable<number>;
+  rews$: Observable<[Review[], number]>;
   data$: Observable<{
     product: Product;
     quantity: number;
@@ -115,24 +114,33 @@ export class ProductComponent extends RxDestroy implements OnInit {
       )
       .snapshotChanges()
       .pipe(
-        map(actions =>
-          actions.map(action => {
-            const data = action.payload.doc.data();
+        map(res => {
+          let avgRating = 0;
+          const allReviews = res
+            .map(action => {
+              const data = action.payload.doc.data();
+              avgRating += data.rating;
+              return {
+                id: action.payload.doc.id,
+                ...data
+              };
+            })
+            .sort(a => {
+              if (this.afAuth.auth.currentUser) {
+                return a.customerId === this.afAuth.auth.currentUser.uid
+                  ? -1
+                  : 1;
+              } else {
+                return -1;
+              }
+            });
 
-            return {
-              id: action.payload.doc.id,
-              ...data
-            };
-          })
-        )
+          avgRating = avgRating / res.length;
+          return [allReviews, avgRating] as [Review[], number];
+        })
       );
-
-    this.reviewsRating$ = this.rews$.pipe(
-      map(reviews => {
-        return reviews.length;
-      })
-    );
   }
+
   openReviews() {
     this.dialog.open(this.reviewsDialog, {
       width: '600px'
