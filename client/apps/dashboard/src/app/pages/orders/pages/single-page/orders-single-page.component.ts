@@ -21,7 +21,6 @@ export class OrdersSinglePageComponent extends SinglePageComponent
   }
 
   buildForm(data: any) {
-    console.log(data);
     this.form = this.fb.group({
       billing: this.checkForm(data.billing ? data.billing : {}),
       shippingInfo: data.shippingInfo || true,
@@ -35,14 +34,7 @@ export class OrdersSinglePageComponent extends SinglePageComponent
       status: data.status || '',
       ordersItems: this.fb.array(
         data.orderItems
-          ? data.orderItems.map(x =>
-              this.fb.group({
-                id: x.productId || '',
-                quantity: x.quantity || '',
-                price: x.price || '',
-                name: x.name || ''
-              })
-            )
+          ? data.orderItems.map(x => this.fb.group(this.itemGroup(x)))
           : []
       )
     });
@@ -77,11 +69,17 @@ export class OrdersSinglePageComponent extends SinglePageComponent
   }
 
   addItem() {
-    const order = this.fb.group({
-      name: '',
-      quantity: 0
-    });
+    const order = this.fb.group(this.itemGroup({}));
     this.ordersItemForms.push(order);
+  }
+
+  itemGroup(data) {
+    return {
+      id: data.productId || '',
+      quantity: data.quantity || '',
+      price: data.price || '',
+      name: data.name || ''
+    };
   }
 
   deleteItem(i) {
