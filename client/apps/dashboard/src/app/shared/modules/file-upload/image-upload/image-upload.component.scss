@@ -22,3 +22,24 @@
   pointer-events: none;
   opacity: 0.5;
 }
+
+.preview-image {
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  max-width: unset;
+  object-fit: contain;
+  background: white;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,.4);
+  visibility: hidden;
+  opacity: 0;
+  transition: .2s;
+}
+
+.preview-button:hover + .preview-image {
+  visibility: visible;
+  opacity: 1;
+}
