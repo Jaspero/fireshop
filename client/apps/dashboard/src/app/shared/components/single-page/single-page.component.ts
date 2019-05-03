@@ -5,11 +5,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {notify} from '@jf/utils/notify.operator';
-import {BehaviorSubject, from, Observable, of} from 'rxjs';
-import {finalize, map, switchMap, take, takeUntil} from 'rxjs/operators';
+import * as nanoid from 'nanoid';
+import {defer, from, Observable, of} from 'rxjs';
+import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {StateService} from '../../services/state/state.service';
 import {queue} from '../../utils/queue.operator';
-import * as nanoid from 'nanoid';
 
 @Component({
   selector: 'jfsc-single-page',
@@ -27,11 +27,11 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
     super();
   }
 
+  initialValue: any;
+  currentValue: any;
   isEdit: string;
   collection: FirestoreCollections;
   form: FormGroup;
-
-  loading$ = new BehaviorSubject(false);
 
   ngOnInit() {
     this.activatedRoute.params
@@ -65,18 +65,15 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
   }
 
   save() {
-    this.loading$.next(true);
-
     const {id, ...item} = this.form.getRawValue();
+    this.initialValue = this.form.getRawValue();
 
-    this.getSaveData(id, item)
-      .pipe(
-        finalize(() => this.loading$.next(false)),
-        notify()
-      )
-      .subscribe(() => {
+    return this.getSaveData(id, item).pipe(
+      notify(),
+      tap(() => {
         this.back();
-      });
+      })
+    );
   }
 
   buildForm(data: any) {}
@@ -85,24 +82,28 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
     return nanoid();
   }
 
-  getSaveData(...args: any): Observable<any> {
-    const [id, item] = args;
+  getSaveData(...args): Observable<any> {
+    return defer(() => {
+      const [id, item] = args;
 
-    return from(
-      this.afs
-        .collection(this.collection)
-        .doc(id || this.createId())
-        .set(
-          {
-            item,
-            ...(this.isEdit ? {} : {createdOn: Date.now()})
-          },
-          {merge: true}
-        )
-    );
+      return from(
+        this.afs
+          .collection(this.collection)
+          .doc(id || this.createId())
+          .set(
+            {
+              ...item,
+              ...(this.isEdit ? {} : {createdOn: Date.now()})
+            },
+            {merge: true}
+          )
+      );
+    });
   }
 
   back() {
+    this.initialValue = '';
+    this.currentValue = '';
     this.router.navigate(['/', this.collection]);
   }
 }

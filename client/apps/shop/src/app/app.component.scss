@@ -18,3 +18,8 @@
   position: relative;
   z-index: 1;
 }
+
+.mat-menu-item.active {
+  font-weight: bold;
+  color: var(--primary);
+}

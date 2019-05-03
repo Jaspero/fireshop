@@ -1,8 +1,6 @@
 import * as sgMail from '@sendgrid/mail';
 import {readFile} from 'fs';
 import {compile} from 'handlebars';
-import mjml2html from 'mjml';
-import {join} from 'path';
 import {promisify} from 'util';
 import {ENV_CONFIG} from '../consts/env-config.const';
 
@@ -13,9 +11,9 @@ export async function parseEmail(
   context: any
 ) {
   const templateFile = await promisify(readFile)(
-    join(process.cwd(), 'email-templates', template + '.hbs')
+    `./email-templates/${template}.hbs`
   );
-  const html = compile(mjml2html(templateFile))(context);
+  const html = compile(templateFile)(context);
 
   sgMail.setApiKey(ENV_CONFIG.sendgrid.token);
 
@@ -31,8 +29,7 @@ export async function parseEmail(
       html
     })
     .then()
-    // TODO: Notify admin on error
-    .catch();
+    .catch(error => console.error(error));
 
   return true;
 }

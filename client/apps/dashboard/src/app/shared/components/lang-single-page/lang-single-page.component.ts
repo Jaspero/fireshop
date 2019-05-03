@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {notify} from '@jf/utils/notify.operator';
-import {combineLatest, from, of} from 'rxjs';
-import {finalize, map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {combineLatest, defer, from, of} from 'rxjs';
+import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {queue} from '../../utils/queue.operator';
 import {SinglePageComponent} from '../single-page/single-page.component';
 
@@ -38,42 +38,50 @@ export class LangSinglePageComponent extends SinglePageComponent
       )
       .subscribe(data => {
         this.buildForm(data);
+
+        this.initialValue = this.form.getRawValue();
+        this.currentValue = this.form.getRawValue();
+
+        this.form.valueChanges
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(value => {
+            this.currentValue = value;
+          });
         this.cdr.detectChanges();
       });
   }
 
   save() {
-    this.loading$.next(true);
-
     const {id, ...item} = this.form.getRawValue();
+    this.initialValue = this.form.getRawValue();
 
-    this.state.language$
-      .pipe(
-        take(1),
-        switchMap(lang => this.getSaveData(id, item, lang)),
-        finalize(() => this.loading$.next(false)),
-        notify()
-      )
-      .subscribe(() => {
+    return this.state.language$.pipe(
+      take(1),
+      switchMap(lang => this.getSaveData(id, item, lang)),
+      notify(),
+      tap(() => {
         this.back();
-      });
+      })
+    );
   }
 
   getSaveData(...args) {
-    const [id, item, lang] = args;
+    return defer(() => {
+      const [id, item, lang] = args;
 
-    return from(
-      this.afs
-        .collection(`${this.collection}-${lang}`)
-        .doc(id || this.createId())
-        .set(
-          {
-            item,
-            ...(this.isEdit ? {} : {createdOn: Date.now()})
-          },
-          {merge: true}
-        )
-    );
+      return from(
+        this.afs
+          .collection(`${this.collection}-${lang}`)
+          .doc(id || this.createId())
+          .set(
+            {
+              ...item,
+              ...(this.isEdit ? {} : {createdOn: Date.now()})
+            },
+            {merge: true}
+          )
+      );
+    });
   }
 
   buildForm(data: any) {}

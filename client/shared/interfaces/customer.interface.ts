@@ -1,5 +1,5 @@
-import {Address} from './address.interface';
-import {Order} from './order.interface';
+import {Address} from '@jf/interfaces/address.interface';
+import {Order} from '@jf/interfaces/order.interface';
 
 export interface CustomerReview {
   productId: string;
@@ -11,15 +11,15 @@ export interface CustomerReview {
   createdOn: number;
 }
 
-export interface CustomerAddress extends Address {
-  primary: boolean;
-}
-
 export interface Customer {
+  id: string;
+  createdOn: number;
+  name?: string;
+  profileImage?: string;
+  billing?: Address;
+  shippingInfo?: boolean;
+  shipping?: Address;
   wishList?: string[];
   orders?: Order[];
   reviews?: CustomerReview[];
-  addresses?: CustomerAddress[];
-  stripeId?: string;
-  createdOn?: number;
 }

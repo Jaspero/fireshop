@@ -37,7 +37,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
           .valueChanges()
           .pipe(
             take(1),
-            map(value => this.buildForm(value))
+            map(value => this.buildForm(value || {}))
           )
       )
     );
@@ -49,10 +49,11 @@ export class SettingsComponent extends RxDestroy implements OnInit {
 
   buildForm(data) {
     const group = this.fb.group({
-      billing: this.checkForm(data.billing ? data.billing : {}),
-      shippingInfo: data.shippingInfo || true,
+      fullName: data.fullName || '',
       gender: data.gender || '',
-      bio: data.bio || ''
+      bio: data.bio || '',
+      billing: this.checkForm(data.billing ? data.billing : {}),
+      shippingInfo: data.shippingInfo || true
     });
 
     if (this.shippingSubscription) {

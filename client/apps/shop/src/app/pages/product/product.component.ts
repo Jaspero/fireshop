@@ -8,20 +8,20 @@ import {
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
+import {MatDialog} from '@angular/material';
 import {ActivatedRoute} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {Product} from '@jf/interfaces/product.interface';
 import {Review} from '@jf/interfaces/review.interface';
 import {combineLatest, Observable} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
-import {Product} from '../../shared/interfaces/product.interface';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {StateService} from '../../shared/services/state/state.service';
 import {WishListService} from '../../shared/services/wish-list/wish-list.service';
-import {MatDialog} from '@angular/material';
 
 @Component({
   selector: 'jfs-product',
@@ -42,8 +42,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
   ) {
     super();
   }
-  rews$: Observable<Review[]>;
-  reviewsRating$: Observable<number>;
+  rews$: Observable<[Review[], number]>;
   data$: Observable<{
     product: Product;
     quantity: number;
@@ -115,24 +114,33 @@ export class ProductComponent extends RxDestroy implements OnInit {
       )
       .snapshotChanges()
       .pipe(
-        map(actions =>
-          actions.map(action => {
-            const data = action.payload.doc.data();
+        map(res => {
+          let avgRating = 0;
+          const allReviews = res
+            .map(action => {
+              const data = action.payload.doc.data();
+              avgRating += data.rating;
+              return {
+                id: action.payload.doc.id,
+                ...data
+              };
+            })
+            .sort(a => {
+              if (this.afAuth.auth.currentUser) {
+                return a.customerId === this.afAuth.auth.currentUser.uid
+                  ? -1
+                  : 1;
+              } else {
+                return -1;
+              }
+            });
 
-            return {
-              id: action.payload.doc.id,
-              ...data
-            };
-          })
-        )
+          avgRating = avgRating / res.length;
+          return [allReviews, avgRating] as [Review[], number];
+        })
       );
-
-    this.reviewsRating$ = this.rews$.pipe(
-      map(reviews => {
-        return reviews.length;
-      })
-    );
   }
+
   openReviews() {
     this.dialog.open(this.reviewsDialog, {
       width: '600px'
@@ -141,5 +149,31 @@ export class ProductComponent extends RxDestroy implements OnInit {
 
   changePicture(index) {
     this.imgIndex = index;
+  }
+
+  facebookShare(data) {
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${
+        environment.websiteUrl
+      }/product/${data.product.id}`,
+      'facebook-popup',
+      'height=350,width=600'
+    );
+  }
+
+  twitterShare(data) {
+    window.open(
+      `http://twitter.com/share?text=${data.product.name}&url=${
+        environment.websiteUrl
+      }/product/${data.product.id}`,
+      '',
+      'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0'
+    );
+  }
+
+  emailShare(data) {
+    window.location.href = `mailto:test@example.com?subject=${
+      data.product.name
+    }&body=${environment.websiteUrl}/product/${data.product.id}`;
   }
 }

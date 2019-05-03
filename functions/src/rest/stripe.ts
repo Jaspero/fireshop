@@ -5,35 +5,54 @@ import * as functions from 'firebase-functions';
 import * as stripeLib from 'stripe';
 import {ENV_CONFIG} from '../consts/env-config.const';
 import {HttpStatus} from '../enums/http-status.enum';
+import {parseEmail} from '../utils/parse-email';
+
+interface OrderItem {
+  id: string;
+  quantity: number;
+}
 
 const app = express();
 const si = stripeLib(ENV_CONFIG.stripe.token);
 
 app.use(cors());
 
-// TODO: Send order
+async function getItems(orderItems: OrderItem[], lang: string) {
+  const snapshots: any[] = await Promise.all(
+    orderItems.map(item =>
+      admin
+        .firestore()
+        .collection(`products-${lang}`)
+        .doc(item.id)
+        .get()
+    )
+  );
+
+  for (let i = 0; i < snapshots.length; i++) {
+    snapshots[i] = {
+      id: snapshots[i].id,
+      ...snapshots[i].data()
+    };
+  }
+
+  return snapshots;
+}
+
 app.post('/checkout', (req, res) => {
   async function exec() {
-    const snapshots: any[] = await Promise.all(
-      req.body.orderItems.map(item =>
-        admin
-          .firestore()
-          .collection(`products-${req.body.lang}`)
-          .doc(item.id)
-          .get()
-      )
+    const items = await getItems(req.body.orderItems, req.body.lang);
+    const amount = items.reduce(
+      (acc, cur, curIndex) =>
+        req.body.orderItems[curIndex].quantity * cur.price,
+      0
     );
-
-    let amount = 0;
-
-    for (let i = 0; i < snapshots.length; i++) {
-      const data = snapshots[i].data();
-      amount += req.body.orderItems[i].quantity * data.price;
-    }
 
     const paymentIntent = await si.paymentIntents.create({
       amount,
-      currency: 'usd'
+      currency: 'usd',
+      metadata: {
+        lang: req.body.lang
+      }
     });
 
     return {clientSecret: paymentIntent.client_secret};
@@ -46,9 +65,8 @@ app.post('/checkout', (req, res) => {
     );
 });
 
-app.post('/webhook', (req, res) => {
+app.post('/webhook', async (req, res) => {
   const sig = req.headers['stripe-signature'];
-  const body = req.body;
 
   let event = null;
 
@@ -64,19 +82,151 @@ app.post('/webhook', (req, res) => {
     return;
   }
 
-  let intent = null;
+  const intent = event.data.object;
+  const [order, settings] = await Promise.all([
+    admin
+      .firestore()
+      .collection('orders')
+      .where('paymentIntentId', '==', intent.id)
+      .get()
+      .then(snapshots => {
+        const docs = snapshots.docs.map(d => ({
+          ...(d.data() as {
+            email: string;
+            orderItems: OrderItem[];
+          }),
+          id: d.id
+        }));
+
+        return docs[0];
+      }),
+
+    admin
+      .firestore()
+      .collection('settings')
+      .doc('general-settings')
+      .get()
+      .then(snapshot => ({
+        id: snapshot.id,
+        ...(snapshot.data() as {
+          inactiveForQuantity: boolean;
+          autoReduceQuantity: boolean;
+          errorNotificationEmail: string;
+        })
+      }))
+  ]);
+  const items = await getItems(order.orderItems, intent.metadata.lang);
+
+  console.log('intent', intent);
+  console.log('order', order);
+  console.log('settings', settings);
+  console.log('items', items);
+
+  let exec;
 
   switch (event['type']) {
     case 'payment_intent.succeeded':
-      intent = event.data.object;
+      exec = [
+        admin
+          .firestore()
+          .collection('order')
+          .doc(order.id)
+          .set(
+            {
+              status: 'payed'
+            },
+            {merge: true}
+          ),
+        parseEmail(order.email, 'Order Complete', 'order-complete', {
+          order,
+          items
+        })
+      ];
+
+      if (settings.autoReduceQuantity) {
+        exec.push(
+          ...items.map((item, itemIndex) => {
+            const quantity =
+              item.quantity - intent.metadata.orderItems[itemIndex].quantity;
+
+            let active = item.active;
+
+            /**
+             * If the quantity drops to 0 and the shop is configured to set
+             * items to inactive when that happens, mark the product inactive
+             */
+            if (item.quantity <= 0 && settings.inactiveForQuantity) {
+              active = false;
+            }
+
+            return admin
+              .firestore()
+              .collection(`products-${intent.metadata.lang}`)
+              .doc(item.id)
+              .set(
+                {
+                  quantity,
+                  active
+                },
+                {merge: true}
+              );
+          })
+        );
+      }
+
+      await Promise.all(items);
+
       break;
 
-    // TODO: Notify customer of failed payment
     case 'payment_intent.payment_failed':
-      intent = event.data.object;
       const message =
         intent.last_payment_error && intent.last_payment_error.message;
       console.error('Failed:', intent.id, message);
+
+      exec = [
+        admin
+          .firestore()
+          .collection('order')
+          .doc(order.id)
+          .set(
+            {
+              status: 'failed',
+              error: message
+            },
+            {merge: true}
+          )
+      ];
+
+      if (settings.errorNotificationEmail) {
+        exec.push(
+          parseEmail(
+            settings.errorNotificationEmail,
+            'Error processing payment',
+            'admin-error.hbs',
+            {
+              title: 'Checkout Error',
+              description: 'There was an error during checkout',
+              additionalProperties: [{key: 'OrderId', value: order.id}],
+              message,
+              firebaseDashboard:
+                'https://console.firebase.google.com/u/2/project/jaspero-site/overview',
+              adminDashboard: 'https://fireshop.admin.jaspero.co/'
+            }
+          ),
+
+          parseEmail(
+            order.email,
+            'Error processing order',
+            'customer-error.hbs',
+            {
+              website: 'https://fireshop.jaspero.co'
+            }
+          )
+        );
+      }
+
+      await Promise.all(exec);
+
       break;
   }
 

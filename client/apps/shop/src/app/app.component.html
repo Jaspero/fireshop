@@ -1,4 +1,4 @@
-<ng-container *ngIf="state.checkOutToggle">
+<ng-container *ngIf="showLayout$ | async">
   <!--Header-->
   <header class="jfs-app-header bg-primary flex ai-center">
     <!--Main menu trigger-->
@@ -15,7 +15,7 @@
     <mat-menu #mainMenu="matMenu">
       <!--Profile-->
       <ng-container *ngIf="(state.user$ | async) as user; else anonymous">
-        <a mat-menu-item routerLink="my-profile">
+        <a mat-menu-item routerLink="my-profile" routerLinkActive="active">
           <mat-icon>account_circle</mat-icon>
           <span>{{ user.authData.displayName }}</span>
         </a>
@@ -32,11 +32,11 @@
       <mat-divider></mat-divider>
 
       <!--Navigation items-->
-      <a id="a-home" mat-menu-item routerLink="">
+      <a id="a-home" mat-menu-item routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
         <mat-icon></mat-icon>
         <span>Home</span>
       </a>
-      <a id="a-shop" mat-menu-item routerLink="/shop">
+      <a id="a-shop" mat-menu-item routerLink="/shop" routerLinkActive="active">
         <mat-icon></mat-icon>
         <span>Shop</span>
       </a>
@@ -56,7 +56,7 @@
 
     <!--Search button-->
     <button
-      id="btn-srch"
+      id="btn-search"
       mat-flat-button
       color="primary"
       matTooltip="Search"
@@ -67,7 +67,7 @@
 
     <!--Cart button-->
     <button
-      id="btn-opnChck"
+      id="btn-open-chck"
       mat-flat-button
       color="primary"
       matTooltip="Cart"
@@ -87,4 +87,4 @@
   <router-outlet></router-outlet>
 </main>
 
-<jfs-color-picker *ngIf="state.checkOutToggle"></jfs-color-picker>
+<jfs-color-picker *ngIf="showLayout$ | async"></jfs-color-picker>

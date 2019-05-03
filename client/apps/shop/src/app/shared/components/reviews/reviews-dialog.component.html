@@ -1,23 +1,26 @@
 <form [formGroup]="form">
-  <h6 class="m-b-s">Rate this product</h6>
+  <h6 class="m-b-s">{{data.id ? 'Edit this review': 'Rate this product'}}: {{this.data.productId}}</h6>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Product ID</mat-label>
-    <input matInput formControlName="dataProduct" [disabled]="true">
-  </mat-form-field>
   <mat-form-field class="w-full" appearance="outline">
     <mat-label>Comment</mat-label>
-    <textarea formControlName="comment" matInput></textarea>
-  </mat-form-field>
-  <mat-form-field class="w-full" appearance="outline">
-    <mat-label>Rating</mat-label>
-    <input type="number" formControlName="rating" matInput>
-    <span matSuffix>/5</span>
+    <textarea rows="8" formControlName="comment" matInput></textarea>
   </mat-form-field>
 
+  <ng-container class="w-full">
+    <mat-label>Rating</mat-label>
+    <jfs-rating-scale formControlName="rating"></jfs-rating-scale>
+  </ng-container>
+
   <div class="flex jc-end">
-    <button [disabled]="form.invalid" mat-flat-button color="primary" (click)="submit()">
-      Submit
-    </button>
+    <div class="m-r-s">
+      <button mat-flat-button [mat-dialog-close]="false">
+        Cancel
+      </button>
+    </div>
+    <div>
+      <button [disabled]="form.invalid" mat-flat-button color="primary" (click)="submit()">
+        Submit
+      </button>
+    </div>
   </div>
 </form>

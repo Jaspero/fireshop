@@ -30,7 +30,6 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   }
 
   currencies = CURRENCIES;
-  admins = [];
   form: FormGroup;
   emailControl = new FormControl('', [Validators.required, Validators.email]);
   alreadyAdmin = false;
@@ -45,9 +44,10 @@ export class SettingsComponent extends RxDestroy implements OnInit {
     {
       collection: 'general-settings',
       defaultValues: {
+        autoReduceQuantity: true,
         inactiveForQuantity: true,
         realTimeData: true,
-        sharedStatuses: true
+        errorNotificationEmail: ''
       }
     },
     {

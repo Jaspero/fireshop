@@ -1,5 +1,6 @@
 export const environment = {
   serviceWorker: true,
-  restApi: 'https://firstore.jaspero.co/api',
+  websiteUrl: 'https://fireshop.jaspero.co',
+  restApi: 'https://us-central1-jaspero-site.cloudfunctions.net',
   production: true
 };

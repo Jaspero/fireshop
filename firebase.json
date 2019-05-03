@@ -10,14 +10,6 @@
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [
         {
-          "source": "/api/similarProducts",
-          "function": "similarProducts"
-        },
-        {
-          "source": "/api/stripe",
-          "function": "stripe"
-        },
-        {
           "source": "**",
           "destination": "/index.html"
         }
@@ -28,14 +20,6 @@
       "public": "dist/public/dashboard",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [
-        {
-          "source": "/api/importData",
-          "function": "importData"
-        },
-        {
-          "source": "/api/exportData",
-          "function": "exportData"
-        },
         {
           "source": "**",
           "destination": "/index.html"

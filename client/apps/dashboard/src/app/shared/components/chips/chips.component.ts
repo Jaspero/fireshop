@@ -19,13 +19,16 @@ export class ChipsComponent {
   @Input()
   chips$: Observable<{key: string; value: string}>;
 
-  @Output() filterValue = new EventEmitter<string>();
+  @Output()
+  filterValue = new EventEmitter<string>();
 
   removeChip(chip) {
     this.filterValue.emit(chip.key);
   }
 
   haveLength(chips) {
-    return Object.entries(chips).some(item => !!item[1]);
+    return Object.entries(chips).some(
+      item => item[1] !== null && item[1] !== ''
+    );
   }
 }

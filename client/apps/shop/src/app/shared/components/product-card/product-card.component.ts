@@ -1,7 +1,14 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  OnInit
+} from '@angular/core';
+import {Product} from '@jf/interfaces/product.interface';
+import {UNIQUE_ID, UNIQUE_ID_PROVIDER} from '@jf/utils/id.provider';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {Product} from '../../interfaces/product.interface';
 import {CartService} from '../../services/cart/cart.service';
 import {WishListService} from '../../services/wish-list/wish-list.service';
 
@@ -9,10 +16,16 @@ import {WishListService} from '../../services/wish-list/wish-list.service';
   selector: 'jfs-product-card',
   templateUrl: './product-card.component.html',
   styleUrls: ['./product-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [UNIQUE_ID_PROVIDER]
 })
 export class ProductCardComponent implements OnInit {
-  constructor(public cart: CartService, public wishList: WishListService) {}
+  constructor(
+    @Inject(UNIQUE_ID)
+    public uniqueId: string,
+    public cart: CartService,
+    public wishList: WishListService
+  ) {}
 
   @Input()
   product: Product;

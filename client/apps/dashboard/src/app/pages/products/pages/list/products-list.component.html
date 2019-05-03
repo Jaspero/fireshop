@@ -10,7 +10,6 @@
   <div class="grid">
     <div class="col-12">
       <mat-card>
-
         <form [formGroup]="filters" autocomplete="off">
           <div class="toolbar toolbar-inset p-t-0">
             <mat-form-field appearance="outline">
@@ -40,9 +39,18 @@
             </div>
 
             <div mat-dialog-content>
+
+              <mat-form-field class="w-full m-b-xs">
+                <mat-select placeholder="Active" formControlName="active">
+                  <mat-option [value]="null">Any</mat-option>
+                  <mat-option [value]="true">Active</mat-option>
+                  <mat-option [value]="false">Inactive</mat-option>
+                </mat-select>
+              </mat-form-field>
+
               <mat-form-field class="w-full m-b-xs">
                 <mat-select placeholder="Category" formControlName="category">
-                  <mat-option [value]="null"> All </mat-option>
+                  <mat-option [value]="null">All</mat-option>
                   <mat-option
                     *ngFor="let category of categories$ | async"
                     [value]="category.id">
@@ -189,7 +197,7 @@
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
-                <button mat-menu-item [routerLink]="[element.id]">
+                <button mat-menu-item [routerLink]="['single/' + element.id]">
                   <mat-icon>info</mat-icon>
                   <span>Product statistics</span>
                 </button>

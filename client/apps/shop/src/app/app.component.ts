@@ -8,16 +8,16 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {SwUpdate} from '@angular/service-worker';
-import {interval} from 'rxjs';
+import {BROWSER_CONFIG} from '@jf/consts/browser-config.const';
+import {interval, Observable} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
 import {environment} from '../environments/environment';
+import {CartComponent} from './shared/components/cart/cart.component';
 import {LoginSignupDialogComponent} from './shared/components/login-signup-dialog/login-signup-dialog.component';
+import {SearchComponent} from './shared/components/search/search.component';
 import {UpdateAvailableComponent} from './shared/components/update-available/update-available.component';
-import {BROWSER_CONFIG} from '@jf/consts/browser-config.const';
 import {CartService} from './shared/services/cart/cart.service';
 import {StateService} from './shared/services/state/state.service';
-import {CartComponent} from './shared/components/cart/cart.component';
-import {SearchComponent} from './shared/components/search/search.component';
 
 @Component({
   selector: 'jfs-root',
@@ -43,8 +43,14 @@ export class AppComponent implements OnInit {
   @HostBinding('class')
   webpClass: string;
 
+  showLayout$: Observable<boolean>;
+
   ngOnInit() {
     this.webpClass = BROWSER_CONFIG.webpSupported ? 'webp' : 'no-webp';
+
+    this.showLayout$ = this.state.currentRoute$.pipe(
+      map(res => !res.data.hideLayout)
+    );
 
     this.router.events
       .pipe(

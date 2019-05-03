@@ -1,0 +1,55 @@
+<style>
+    .jfs-mail {
+        margin: 0 auto;
+        width: 100%;
+        max-width: 600px;
+        font-family: sans-serif;
+        border-collapse: collapse;
+    }
+    .jfs-mail > thead > tr > th {
+        padding: 20px;
+        text-align: left;
+        background: #3f51b5;
+        color: white;
+        font-weight: normal;
+    }
+    .jfs-mail > tbody > tr > td {
+        padding: 20px 20px 0;
+        vertical-align: top;
+        line-height: 1.35;
+    }
+    hr {
+        margin: 0;
+        border: none;
+        border-top: 2px solid #3f51b5;
+    }
+</style>
+
+<table class="jfs-mail">
+    <thead>
+    <tr>
+        <th>Jaspero Fireshop - {{title}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>{{description}}</td>
+    </tr>
+    {{#each additionalProperties}}
+        <tr>
+            <td>{{key}}: {{value}}</td>
+        </tr>
+    {{/each}}
+    <tr>
+        <td>Error: {{message}}</td>
+    </tr>
+    <tr>
+        <td><hr></td>
+    </tr>
+    <tr>
+        <td>Useful links: </td>
+        <td><a href="{{firebaseDashboard}}">Firebase Dashboard</a>.</td>
+        <td><a href="{{adminDashboard}}">Admin Dashboard</a>.</td>
+    </tr>
+    </tbody>
+</table>

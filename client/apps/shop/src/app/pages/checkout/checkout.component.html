@@ -1,198 +1,254 @@
 <h5 class="ta-center bg-primary c-l-primary p-y-s">
-  <a (click)="toggleState()" routerLink="/shop">Jaspero Fireshop</a>
+  <a routerLink="/shop" class="flex ai-center jc-center">
+    <mat-icon>arrow_back</mat-icon>
+    <span>&nbsp;Jaspero Fireshop</span>
+  </a>
 </h5>
 
-<div class="grid grid-no-gutter">
+<div class="grid grid-no-gutter" *ngIf="data$ | async as data">
   <div class="col-12">
-    <ng-container *ngIf="billingInfo$ | async as infoForm">
-      <mat-horizontal-stepper linear class="bg-l-primary">
+    <mat-horizontal-stepper linear class="bg-l-primary">
 
-        <!--Payment content-->
-        <mat-step label="Payment" [stepControl]="infoForm">
-          <div class="grid fw-rev">
-            <div class="col-8 col-s-12">
-              <mat-card>
-                <form [formGroup]="infoForm">
-                  <p class="bg-l-secondary p-a-s ta-center" *ngIf="0">
-                    You're doing checkout as a guest. You can <a class="link c-primary">login</a> or <a class="link c-primary">sign-up</a> now.<br>Your data or cart won't be lost.
-                  </p>
-                  <div class="grid grid-no-gutter jc-start">
-                    <div class="col-12">
-                      <h6 class="m-y-xs">Payment info</h6>
-                    </div>
-                    <div class="col-12">
-                      <div #card></div>
-                      <p class="error" *ngIf="(stripe?.cardChanges$ | async)?.error as cardError">
-                        {{cardError.message}}
-                      </p>
-                    </div>
-                    <div class="col-12">
-                      <h6 class="m-b-xs m-t-s">Billing info</h6>
-                    </div>
-                    <ng-container formGroupName="billing">
-                      <div class="col-6 col-xs-12">
-                        <mat-form-field class="mat-hint w-full">
-                          <input matInput type="text" placeholder="First name" formControlName="firstName">
-                        </mat-form-field>
-                      </div>
-                      <div class="col-6 col-xs-12">
-                        <mat-form-field class="mat-hint w-full">
-                          <input matInput type="text" placeholder="Last name" formControlName="lastName">
-                        </mat-form-field>
-                      </div>
-                      <div class="col-6 col-xs-12">
-                        <mat-form-field class="mat-hint w-full">
-                          <input matInput type="text" placeholder="Email" formControlName="email">
-                        </mat-form-field>
-                      </div>
-                      <div class="col-6 col-xs-12">
-                        <mat-form-field class="mat-hint w-full">
-                          <input matInput type="text" placeholder="Phone" formControlName="phone">
-                        </mat-form-field>
-                      </div>
-                      <div class="col-4 col-xs-7">
-                        <mat-form-field class="mat-hint w-full">
-                          <input matInput type="text" placeholder="City" formControlName="city">
-                        </mat-form-field>
-                      </div>
-                      <div class="col-4 col-xs-5">
-                        <mat-form-field class="mat-hint w-full">
-                          <input matInput type="text" placeholder="ZIP code" formControlName="zip">
-                        </mat-form-field>
-                      </div>
-                      <div class="col-4 col-xs-12">
-                        <mat-form-field class="mat-hint w-full">
-                          <input matInput type="text" placeholder="Country" formControlName="country">
-                        </mat-form-field>
-                      </div>
-                      <div class="col-8 col-xs-12">
-                        <mat-form-field class="mat-hint w-full">
-                          <input matInput type="text" placeholder="Billing address" formControlName="line1">
-                        </mat-form-field>
-                      </div>
-                      <div class="col-8 col-xs-12">
-                        <mat-form-field class="mat-hint w-full">
-                          <input matInput type="text" placeholder="Billing address, line 2" formControlName="line2">
-                        </mat-form-field>
-                      </div>
-                    </ng-container>
-                    <div class="col-12">
-                      <h6 class="m-b-xs m-t-s">Shipping info</h6>
-                      <ng-container formGroupName="shipping" *ngIf="infoForm.get('shipping')">
-                        <div class="col-6 col-xs-12">
-                          <mat-form-field class="mat-hint w-full">
-                            <input matInput type="text" placeholder="First name" formControlName="firstName">
-                          </mat-form-field>
-                        </div>
-                        <div class="col-6 col-xs-12">
-                          <mat-form-field class="mat-hint w-full">
-                            <input matInput type="text" placeholder="Last name" formControlName="lastName">
-                          </mat-form-field>
-                        </div>
-                        <div class="col-6 col-xs-12">
-                          <mat-form-field class="mat-hint w-full">
-                            <input matInput type="text" placeholder="Email" formControlName="email">
-                          </mat-form-field>
-                        </div>
-                        <div class="col-6 col-xs-12">
-                          <mat-form-field class="mat-hint w-full">
-                            <input matInput type="text" placeholder="Phone" formControlName="phone">
-                          </mat-form-field>
-                        </div>
-                        <div class="col-4 col-xs-7">
-                          <mat-form-field class="mat-hint w-full">
-                            <input matInput type="text" placeholder="City" formControlName="city">
-                          </mat-form-field>
-                        </div>
-                        <div class="col-4 col-xs-5">
-                          <mat-form-field class="mat-hint w-full">
-                            <input matInput type="text" placeholder="ZIP code" formControlName="zip">
-                          </mat-form-field>
-                        </div>
-                        <div class="col-4 col-xs-12">
-                          <mat-form-field class="mat-hint w-full">
-                            <input matInput type="text" placeholder="Country" formControlName="country">
-                          </mat-form-field>
-                        </div>
-                        <div class="col-8 col-xs-12">
-                          <mat-form-field class="mat-hint w-full">
-                            <input matInput type="text" placeholder="Billing address" formControlName="line1">
-                          </mat-form-field>
-                        </div>
-                        <div class="col-8 col-xs-12">
-                          <mat-form-field class="mat-hint w-full">
-                            <input matInput type="text" placeholder="Billing address, line 2" formControlName="line2">
-                          </mat-form-field>
-                        </div>
-                      </ng-container>
-                      <div class="m-y-xs">
-                        <mat-checkbox color="primary" formControlName="shippingInfo">My shipping address is same as my billing address</mat-checkbox>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="p-y-s">
-                    <mat-divider></mat-divider>
-                  </div>
-                  <div class="m-t-xs m-b-s">
-                    <mat-checkbox color="primary" formControlName="saveInfo">Save my payment so checkout is easy next time</mat-checkbox>
-                  </div>
-                  <p class="bg-l-secondary p-a-s m-y-xs">You will have a chance to review your order before it's placed</p>
-                  <div class="ta-right p-y-xs">
-                    <button mat-flat-button color="primary" matStepperNext [disabled]="infoForm.invalid">Continue</button>
-                  </div>
-                </form>
-              </mat-card>
-            </div>
-            <div class="col-4 col-s-12">
-              <mat-card>
-                <h6 class="m-b-xs">Payment methods</h6>
-                <p>We accept the following secure payment methods:</p>
-                <p class="m-y-xs">...</p>
-                <p>When you submit your payment information your data is protected by Secure Socket Layer (SSL) technology certified by a digital certificate.</p>
-              </mat-card>
-            </div>
-          </div>
-        </mat-step>
+      <!--Payment content-->
+      <mat-step label="Payment" [stepControl]="data.form">
+        <div class="grid fw-rev">
+          <div class="col-8 col-s-12">
+            <mat-card>
+              <form [formGroup]="data.form">
 
-        <!--Review and purchase content-->
-        <mat-step label="Review & Purchase">
-          <div class="grid fw-rev">
-            <div class="col-8 col-s-12" *ngIf="cartService.items$ | async as prod">
-              <mat-card>
-                <h6 class="m-y-xs">Your purchase</h6>
-                <div>
-                  <p *ngFor="let products of prod">{{products.name}}: {{products.price | sp }} X{{products.quantity}}</p>
-                  <p>Subtotal: {{prices.totalPrice | sp}}</p>
-                  <p>Total: {{prices.totalPrice | sp}} </p>
+                <div class="grid grid-no-gutter jc-start">
+                  <div class="col-12" *ngIf="!data.user">
+                    <p class="bg-l-secondary p-y-s ta-center">
+                      You're doing checkout as a guest. You can <a class="link c-primary" (click)="logInSignUp()">login</a> or <a class="link c-primary" (click)="logInSignUp(true)">sign-up</a> now.<br>Your data or cart won't be lost.
+                    </p>
+                  </div>
+                  <div class="col-12">
+                    <h6 class="p-y-xs">Payment info</h6>
+                    <div #card></div>
+                    <p class="c-warm m-t-xs" *ngIf="(data.stripe.cardChanges$ | async)?.error as cardError">
+                      {{cardError.message}}
+                    </p>
+                  </div>
+                  <div class="col-12">
+                    <div class="p-y-xs">
+                      <mat-divider></mat-divider>
+                    </div>
+                  </div>
+                  <ng-container formGroupName="billing">
+                    <div class="col-12">
+                      <h6 class="p-y-xs">Billing info</h6>
+                    </div>
+                    <div class="col-6 col-xs-12">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="First name" formControlName="firstName">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-6 col-xs-12">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="Last name" formControlName="lastName">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-6 col-xs-12">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="Email" formControlName="email">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-6 col-xs-12">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="Phone" formControlName="phone">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-4 col-xs-7">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="City" formControlName="city">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-4 col-xs-5">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="ZIP code" formControlName="zip">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-4 col-xs-12">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="Country" formControlName="country">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-8 col-xs-12">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="Billing address" formControlName="line1">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-8 col-xs-12">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="Billing address, line 2" formControlName="line2">
+                      </mat-form-field>
+                    </div>
+                  </ng-container>
+                  <div class="col-12">
+                    <div class="p-y-xs">
+                      <mat-divider></mat-divider>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <h6 class="p-y-xs">Shipping info</h6>
+                    <div class="p-y-xs">
+                      <mat-checkbox color="primary" formControlName="shippingInfo">My shipping address is same as my billing address</mat-checkbox>
+                    </div>
+                  </div>
+                  <ng-container formGroupName="shipping" *ngIf="data.form.get('shipping')">
+                    <div class="col-6 col-xs-12">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="First name" formControlName="firstName">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-6 col-xs-12">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="Last name" formControlName="lastName">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-6 col-xs-12">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="Email" formControlName="email">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-6 col-xs-12">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="Phone" formControlName="phone">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-4 col-xs-7">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="City" formControlName="city">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-4 col-xs-5">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="ZIP code" formControlName="zip">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-4 col-xs-12">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="Country" formControlName="country">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-8 col-xs-12">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="Billing address" formControlName="line1">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-8 col-xs-12">
+                      <mat-form-field class="w-full" appearance="outline">
+                        <input matInput type="text" placeholder="Billing address, line 2" formControlName="line2">
+                      </mat-form-field>
+                    </div>
+                  </ng-container>
+                  <div class="col-12">
+                    <div class="p-y-xs">
+                      <mat-divider></mat-divider>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="p-y-xs" *ngIf="data.user">
+                      <mat-checkbox color="primary" formControlName="saveInfo">Save my payment so checkout is easy next time</mat-checkbox>
+                    </div>
+                  </div>
+                  <div class="col-12 m-y-xs">
+                    <p class="bg-l-secondary p-y-s ta-center">You will have a chance to review your order before it's placed</p>
+                  </div>
+                  <div class="col-12 ta-right">
+                    <button id="btn-nxt-step-0" mat-flat-button color="primary" matStepperNext [disabled]="!data.form.valid">Continue</button>
+                  </div>
                 </div>
-                <div class="p-y-s">
-                  <mat-divider></mat-divider>
-                </div>
-                <p>Checkout: out as guest</p>
-                <p>Payment method: visa ending in 69</p>
-                <p>email: pero@pero.com</p>
-                <div class="p-y-s">
-                  <mat-divider></mat-divider>
-                </div>
-                <div class="m-t-xs m-b-s">
-                  <mat-checkbox color="primary">I agree to the terms of service</mat-checkbox>
-                </div>
-                <div class="ta-right p-y-xs">
-                  <button mat-flat-button color="primary" (click)="checkOut(infoForm.getRawValue())">Purchase</button>
-                </div>
-              </mat-card>
-              <p>Confirmation will be emailed to your address at gmail.com</p>
-            </div>
-            <div class="col-4 col-s-12">
-              <mat-card>
-                <h6 class="m-b-xs">Secure purchase</h6>
-                <p class="m-b-xs">When you submit your payment information your data is protected by Secure Socket Layer (SSL) technology certified by a digital certificate.</p>
-                <p>Once you've completed this transaction, you'll receive an email message confirming receipt of your purchase.</p>
-              </mat-card>
-            </div>
+
+              </form>
+            </mat-card>
           </div>
-        </mat-step>
-      </mat-horizontal-stepper>
-    </ng-container>
+          <div class="col-4 col-s-12">
+            <mat-card>
+              <h6 class="m-b-xs">Payment methods</h6>
+              <p>We accept the following secure payment methods:</p>
+              <p class="m-y-xs">...</p>
+              <p>When you submit your payment information your data is protected by Secure Socket Layer (SSL) technology certified by a digital certificate.</p>
+            </mat-card>
+          </div>
+        </div>
+      </mat-step>
+
+      <!--Review and purchase content-->
+      <mat-step id="btn-nxt-step-1" label="Review & Purchase">
+        <div class="grid fw-rev" *ngIf="data.form.getRawValue() as val">
+          <div class="col-8 col-s-12">
+            <mat-card>
+              <h6 class="m-y-xs">Your purchase</h6>
+              <div class="bg-l-secondary p-a-s">
+                <table class="w-full">
+                  <tr *ngFor="let product of data.orderItems">
+                    <td class="w-half p-a-xs">{{product.name}}:</td>
+                    <td class="w-half p-a-xs">{{product.price | sp }} x{{product.quantity}}</td>
+                  </tr>
+                  <tr>
+                    <td class="w-half p-a-xs">Subtotal:</td>
+                    <td class="w-half p-a-xs">{{data.price.subTotal | sp}}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"><hr></td>
+                  </tr>
+                  <tr class="fw-bold">
+                    <td class="w-half p-a-xs">Total:</td>
+                    <td class="w-half p-a-xs">{{data.price.total | sp}}</td>
+                  </tr>
+                </table>
+              </div>
+              <div class="p-y-s">
+                <mat-divider></mat-divider>
+              </div>
+              <table class="w-full">
+                <tr>
+                  <td class="w-half p-a-xs">Checkout:</td>
+                  <td class="w-half p-a-xs">{{val.billing.firstName}} {{val.billing.lastName}}</td>
+                </tr>
+                <tr>
+                  <td class="w-half p-a-xs">Payment method:</td>
+                  <td class="w-half p-a-xs">{{(data.stripe.cardChanges$ | async)?.brand}}</td>
+                </tr>
+                <tr>
+                  <td class="w-half p-a-xs">Billing email:</td>
+                  <td class="w-half p-a-xs">{{val.billing.email}}</td>
+                </tr>
+                <tr>
+                  <td class="w-half p-a-xs">Shipping email:</td>
+                  <td class="w-half p-a-xs">{{val.shippingInfo ? val.billing.email : val.shipping.email}}</td>
+                </tr>
+              </table>
+              <div class="p-y-s">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="m-t-xs m-b-s">
+                <mat-checkbox color="primary" [formControl]="data.termsControl">I agree to the</mat-checkbox>&nbsp;<a class="c-primary" href="" target="_blank"><u>terms of service</u>.</a>
+              </div>
+              <div class="ta-right p-y-xs">
+                <button
+                  mat-flat-button
+                  color="primary"
+                  id="btn-purchase"
+                  [class.loading]="loading$ | async"
+                  [disabled]="!data.termsControl.value"
+                  (click)="checkOut(data, val)">
+                  Purchase
+                </button>
+              </div>
+            </mat-card>
+            <p class="p-y-xs">Confirmation will be emailed to your address at {{val.billing.email}}</p>
+          </div>
+          <div class="col-4 col-s-12">
+            <mat-card>
+              <h6 class="m-b-xs">Secure purchase</h6>
+              <p class="m-b-xs">When you submit your payment information your data is protected by Secure Socket Layer (SSL) technology certified by a digital certificate.</p>
+              <p>Once you've completed this transaction, you'll receive an email message confirming receipt of your purchase.</p>
+            </mat-card>
+          </div>
+        </div>
+      </mat-step>
+    </mat-horizontal-stepper>
   </div>
 </div>
