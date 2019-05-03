@@ -26,7 +26,7 @@ export class ImageUploadComponent implements OnInit {
   @ViewChild('file')
   fileEl: ElementRef<HTMLInputElement>;
 
-  value = {};
+  value: File;
   imageUrl = new FormControl('');
   disInput = false;
 
@@ -44,18 +44,18 @@ export class ImageUploadComponent implements OnInit {
 
   remove() {
     this.imageUrl.setValue('');
-    this.value = {};
+    this.value = null;
     this.disInput = false;
     this.cdr.detectChanges();
   }
 
   save() {
-    if (this.imageUrl.value && this.imageUrl.value !== this.value['name']) {
+    if (this.imageUrl.value && this.imageUrl.value !== this.value.name) {
       return of(this.imageUrl.value);
     } else {
       return from(
-        this.afs.upload(this.value['name'], this.value, {
-          contentType: this.value['type']
+        this.afs.upload(this.value.name, this.value, {
+          contentType: this.value.type
         })
       ).pipe(switchMap(res => res.ref.getDownloadURL()));
     }
