@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  Inject,
   OnInit,
   ViewChild
 } from '@angular/core';
@@ -11,18 +12,18 @@ import {
   AngularFirestoreDocument
 } from '@angular/fire/firestore';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {MatDialogRef, MatSnackBar} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef, MatSnackBar} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Customer} from '@jf/interfaces/customer.interface';
 import {notify} from '@jf/utils/notify.operator';
 import {auth, firestore, User} from 'firebase';
 import {from} from 'rxjs';
-import {filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {filter, map, skip, switchMap, take, takeUntil} from 'rxjs/operators';
 import {RepeatPasswordValidator} from '../../helpers/compare-passwords';
 import {StateService} from '../../services/state/state.service';
 
-enum View {
+export enum LoginSignUpView {
   LogIn,
   SignUp,
   Reset
@@ -41,7 +42,9 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
     public dialogRef: MatDialogRef<LoginSignupDialogComponent>,
     private afs: AngularFirestore,
     private fb: FormBuilder,
-    private state: StateService
+    private state: StateService,
+    @Inject(MAT_DIALOG_DATA)
+    private options: {view: LoginSignUpView}
   ) {
     super();
   }
@@ -51,11 +54,11 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
   logInForm: FormGroup;
   resetPasswordControl: FormControl;
   signUpForm: FormGroup;
-  view = View;
-  currentView: View = View.LogIn;
+  view = LoginSignUpView;
+  currentView: LoginSignUpView = LoginSignUpView.LogIn;
 
   validation = {
-    [View.LogIn]: (
+    [LoginSignUpView.LogIn]: (
       docRef: AngularFirestoreDocument<Customer>,
       doc: firestore.DocumentSnapshot
     ) => {
@@ -77,7 +80,7 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
         this.connectListener();
       }
     },
-    [View.SignUp]: (
+    [LoginSignUpView.SignUp]: (
       docRef: AngularFirestoreDocument<Customer>,
       doc: firestore.DocumentSnapshot,
       user: User
@@ -121,6 +124,10 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
      * know he isn't logged in
      */
     this.state.logInValid$.next(false);
+
+    if (this.options && this.options.hasOwnProperty('view')) {
+      this.currentView = this.options.view;
+    }
 
     this.buildForms();
     this.connectListener();
@@ -204,7 +211,7 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
       );
   }
 
-  toggleState(newView: View) {
+  toggleState(newView: LoginSignUpView) {
     this.currentView = newView;
   }
 
@@ -236,6 +243,7 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
 
     this.afAuth.user
       .pipe(
+        skip(1),
         filter(user => !!user),
         switchMap(user => {
           docRef = this.afs.doc(

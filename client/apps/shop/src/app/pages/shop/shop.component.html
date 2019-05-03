@@ -7,19 +7,19 @@
       <div class="grid">
         <div class="col-12 flex">
           <!--Filters trigger-->
-          <button id="btn-flt" mat-flat-button color="primary" (click)="openFilter()">
+          <button id="btn-filter" mat-flat-button color="primary" (click)="openFilter()">
             <mat-icon>filter_list</mat-icon>
             <span>&nbsp;Filters&nbsp;</span>
           </button>
           <!--Divider-->
           <div class="f1"></div>
           <!--Sort by-->
-          <button id="btn-srt" mat-flat-button color="primary" [matMenuTriggerFor]="sortByMenu">
+          <button id="btn-sort" mat-flat-button color="primary" [matMenuTriggerFor]="sortByMenu">
             <span>Sort by:</span> <span>&nbsp;{{orderName}}&nbsp;</span>
             <mat-icon>arrow_drop_down</mat-icon>
           </button>
           <mat-menu #sortByMenu="matMenu">
-            <button id="btn-upOrd" *ngFor="let order of orderList" (click)="updateOrder(order)" mat-menu-item>
+            <button id="btn-update-order" *ngFor="let order of orderList" (click)="updateOrder(order)" mat-menu-item>
               {{order.name}}
             </button>
           </mat-menu>
@@ -90,7 +90,7 @@
     <div mat-dialog-actions>
       <div class="ta-right w-full">
         <button mat-button (click)="resetAll()">Reset all</button>&nbsp;
-        <button id="btn-cntShp" mat-flat-button mat-dialog-close color="primary">
+        <button id="btn-cont-shop" mat-flat-button mat-dialog-close color="primary">
           Continue shopping
         </button>
       </div>
