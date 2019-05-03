@@ -1,11 +1,11 @@
 <div class="flex ai-end">
-  <input matInput type="url" placeholder="Image URL">
+  <input matInput type="url" placeholder="Image URL" [class.disabled]="disInput" [formControl]="imageUrl">
   <div class="preview">
     <button mat-icon-button><i class="material-icons">visibility</i></button>
     <!--<img [attr.src]="value" alt="Image Preview">-->
   </div>
 </div>
-<button mat-icon-button><i class="material-icons" (click)="openFileUpload()">perm_media</i></button>
-<button mat-icon-button><i class="material-icons" (click)="remove()">highlight_off</i></button>
+<button mat-icon-button *ngIf="!imageUrl.value"><i class="material-icons" (click)="openFileUpload()">perm_media</i></button>
+<button mat-icon-button *ngIf="imageUrl.value"><i class="material-icons" (click)="remove()">highlight_off</i></button>
 
 <input #file type="file" multiple hidden (change)="filesImage($event.target.files)">

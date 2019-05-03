@@ -14,6 +14,7 @@ import {map, shareReplay, switchMap, take} from 'rxjs/operators';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
 import {FileUploadComponent} from '../../../../shared/modules/file-upload/component/file-upload.component';
+import {ImageUploadComponent} from '../../../../shared/modules/file-upload/image-upload/image-upload.component';
 
 @Component({
   selector: 'jfsc-single-page',
@@ -25,6 +26,9 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   implements OnInit {
   @ViewChild(FileUploadComponent)
   fileUploadComponent: FileUploadComponent;
+
+  @ViewChild(ImageUploadComponent)
+  imageUploadComponent: ImageUploadComponent;
 
   categories$: Observable<Category[]>;
   collection = FirestoreCollections.Products;
@@ -46,6 +50,13 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       }),
       shareReplay(1)
     );
+  }
+
+  saveTest() {
+    const mama = this.imageUploadComponent.save();
+    mama.subscribe(res => {
+      console.log('res', res);
+    });
   }
 
   // TODO: I think this can be done in a better way
