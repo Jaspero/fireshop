@@ -175,10 +175,10 @@
                 </mat-form-field>
               </div>
 
-              <div formArrayName="orders">
+              <div formArrayName="ordersItems">
 
                 <h6 class="p-y-xs">Items:</h6>
-                <div *ngFor="let order of ordersForms.controls; let i=index"
+                <div *ngFor="let order of ordersItemForms.controls; let i=index"
                      [formGroupName]="i">
 
                   <div class="p-y-xs">
@@ -194,10 +194,10 @@
                     </mat-form-field>
                   </div>
 
-                  <button mat-flat-button (click)="deleteOrder(i)">Delete</button>
+                  <button mat-flat-button (click)="deleteItem(i)">Delete</button>
 
                 </div>
-                <button  mat-flat-button (click)="addOrder()">Add item in order</button>
+                <button  mat-flat-button (click)="addItem()">Add item in order</button>
               </div>
             </mat-card>
           </div>
