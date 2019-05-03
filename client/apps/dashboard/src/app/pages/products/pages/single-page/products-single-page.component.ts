@@ -4,9 +4,12 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
+import {CollectionReference} from '@angular/fire/firestore';
 import {Validators} from '@angular/forms';
+import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
+import {Discount} from '@jf/interfaces/discount.interface';
 import {Product} from '@jf/interfaces/product.interface';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
 import {Observable} from 'rxjs';
@@ -27,6 +30,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   fileUploadComponent: FileUploadComponent;
 
   categories$: Observable<Category[]>;
+  discounts$: Observable<Discount[]>;
   collection = FirestoreCollections.Products;
 
   ngOnInit() {
@@ -45,6 +49,27 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
         }));
       }),
       shareReplay(1)
+    );
+
+    this.discounts$ = this.state.language$.pipe(
+      switchMap(lang => {
+        return this.afs
+          .collection(`${FirestoreCollections.Discounts}-${lang}`, ref => {
+            ref = <CollectionReference>(
+              ref.where('active', FirebaseOperator.Equal, true)
+            );
+            return ref;
+          })
+          .snapshotChanges()
+          .pipe(
+            map(actions => {
+              return actions.map(action => ({
+                id: action.payload.doc.id,
+                ...(action.payload.doc.data() as Discount)
+              }));
+            })
+          );
+      })
     );
   }
 
@@ -123,7 +148,8 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       shortDescription: data.shortDescription || '',
       gallery: [data.gallery || []],
       quantity: [data.quantity || 0, Validators.min(0)],
-      category: data.category
+      category: data.category,
+      activeDiscount: data.activeDiscount || ''
     });
   }
 }

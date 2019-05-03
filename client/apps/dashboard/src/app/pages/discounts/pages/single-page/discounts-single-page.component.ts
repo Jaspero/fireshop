@@ -20,10 +20,13 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
       ],
       name: [data.name || '', Validators.required],
       description: [data.description || ''],
-      discountValue: '',
-      startingDate: '',
-      startingDate: '',
-      amountDiscount: ''
+      discountValue: ['', Validators.required],
+      startingDate: [data.startingDate || ''],
+      endingDate: [data.endingDate || ''],
+      type: [data.type || ''],
+      active: [true, Validators.required],
+      ribbonProduct: [data.ribbonProduct || true],
+      limitedNumber: [data.limitedNumber || '']
     });
   }
 }
