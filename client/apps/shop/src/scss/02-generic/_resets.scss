@@ -26,13 +26,13 @@ html {
 }
 
 body {
+  margin: 0;
   overflow-x: hidden;
 }
 
 /* Margin resets
  *============================================================================*/
 
-body,
 h1,
 h2,
 h3,
@@ -45,7 +45,8 @@ ul,
 figure,
 hr,
 fieldset,
-legend {
+legend,
+blockquote {
   margin: 0;
 }
 
