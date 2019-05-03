@@ -52,13 +52,6 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
     );
   }
 
-  saveTest() {
-    const mama = this.imageUploadComponent.save();
-    mama.subscribe(res => {
-      console.log('res', res);
-    });
-  }
-
   // TODO: I think this can be done in a better way
   move(next = true) {
     this.state.language$
