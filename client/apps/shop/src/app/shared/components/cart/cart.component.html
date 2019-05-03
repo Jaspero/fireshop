@@ -3,15 +3,14 @@
   <ng-container *ngIf="prod.length; else emptyCart">
     <mat-list>
       <mat-list-item *ngFor="let product of prod">
-        <img matListAvatar src="{{ product.image }}" alt="{{ product.name }}" />
+        <img matListAvatar [src]="product.image" [alt]="product.name" />
         <h4
           class="link"
           mat-line
-          (click)="navigate(product.productId); closeDialog()"
-        >
-          {{ product.name }}
+          (click)="navigate(product.productId); closeDialog()">
+          {{product.name}}
         </h4>
-        <p mat-line>{{ product.price | sp }}</p>
+        <p mat-line>{{product.price | sp}}</p>
         <p mat-line>
           <button
             id="btn-dec"
@@ -19,20 +18,16 @@
             class="jfs-cart-quantity-button"
             matTooltip="Decrease"
             [disabled]="product.quantity === 1"
-            (click)="cart.changeNumber(product.productId, -1)"
-          >
+            (click)="cart.changeNumber(product.productId, -1)">
             -
           </button>
-          <span>&nbsp;{{ product.quantity }}&nbsp;</span>
+          <span>&nbsp;{{product.quantity}}&nbsp;</span>
           <button
             id="btn-inc"
             tabindex="-1"
             class="jfs-cart-quantity-button"
             matTooltip="Increase"
-            (click)="cart.changeNumber(product.productId, 1)"
-            (mousedown)="disabled = false"
-            (mouseup)="disabled = false"
-          >
+            (click)="cart.changeNumber(product.productId, 1)">
             +
           </button>
         </p>
@@ -56,15 +51,13 @@
     <div class="flex jc-between ai-end p-x-xs">
       <div>
         <p class="fs-small">Total</p>
-        <h6>{{ cart.totalPrice$ | async | sp }}</h6>
+        <h6>{{cart.totalPrice$ | async | sp}}</h6>
       </div>
       <button
         id="btn-checkout"
         mat-flat-button
         color="primary"
-        [disabled]="loader"
-        (click)="checkOut()"
-      >
+        (click)="checkOut()">
         Checkout
       </button>
     </div>
