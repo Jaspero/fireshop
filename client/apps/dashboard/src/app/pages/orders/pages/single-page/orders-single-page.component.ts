@@ -34,7 +34,16 @@ export class OrdersSinglePageComponent extends SinglePageComponent
       price: data.price || '',
       status: data.status || '',
       ordersItems: this.fb.array(
-        data.orderItems ? data.orderItems.map(x => this.fb.group(x)) : []
+        data.orderItems
+          ? data.orderItems.map(x =>
+              this.fb.group({
+                id: x.productId || '',
+                quantity: x.quantity || '',
+                price: x.price || '',
+                name: x.name || ''
+              })
+            )
+          : []
       )
     });
 
