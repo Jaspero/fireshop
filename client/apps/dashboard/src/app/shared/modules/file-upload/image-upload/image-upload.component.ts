@@ -37,7 +37,7 @@ export class ImageUploadComponent implements OnInit {
   }
 
   filesImage(file) {
-    this.value = Array.from(file)[0];
+    this.value = Array.from(file)[0] as File;
     this.disInput = true;
     this.imageUrl.setValue(this.value['name']);
   }
