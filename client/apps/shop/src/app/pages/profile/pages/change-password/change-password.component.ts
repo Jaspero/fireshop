@@ -6,6 +6,7 @@ import {MatDialog} from '@angular/material';
 import {notify} from '@jf/utils/notify.operator';
 import {from, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
+import {LoginSignupDialogComponent} from '../../../../shared/components/login-signup-dialog/login-signup-dialog.component';
 import {RepeatPasswordValidator} from '../../../../shared/helpers/compare-passwords';
 
 @Component({
@@ -25,6 +26,8 @@ export class ChangePasswordComponent implements OnInit {
   passwordForm: FormGroup;
 
   ngOnInit() {
+    console.log(this.afAuth.auth.currentUser.providerData[0].providerId);
+
     this.buildForm();
   }
 
@@ -59,9 +62,12 @@ export class ChangePasswordComponent implements OnInit {
 
         // TODO: If the error for invalid password shows up open a dialog here
         catchError(err => {
+          this.dialog.open(LoginSignupDialogComponent);
           return throwError(err);
         })
       )
-      .subscribe();
+      .subscribe(() => {
+        this.passwordForm.reset();
+      });
   }
 }

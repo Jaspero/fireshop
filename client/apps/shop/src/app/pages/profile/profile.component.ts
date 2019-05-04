@@ -48,10 +48,6 @@ export class ProfileComponent implements OnInit {
     {
       label: 'Reviews',
       route: 'reviews'
-    },
-    {
-      label: 'Change password',
-      route: 'change-password'
     }
   ];
 
