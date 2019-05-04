@@ -20,10 +20,10 @@ export class ProductsListComponent extends LangListComponent<Product>
   displayedColumns = [
     'checkBox',
     'id',
+    'createdOn',
     'name',
     'price',
     'active',
-    'createdOn',
     'quantity',
     'actions'
   ];

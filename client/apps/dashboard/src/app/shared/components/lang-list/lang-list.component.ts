@@ -7,7 +7,6 @@ import {
   shareReplay,
   startWith,
   switchMap,
-  take,
   tap
 } from 'rxjs/operators';
 import {Language} from 'shared/enums/language.enum';
@@ -58,7 +57,7 @@ export class LangListComponent<
 
         this.dataLoading$.next(true);
 
-        return this.loadItems(language, this.realTime, true).pipe(
+        return this.loadItems(language, true).pipe(
           switchMap(its => {
             items = its;
             this.dataLoading$.next(true);
@@ -66,7 +65,7 @@ export class LangListComponent<
           }),
           switchMap(toDo => {
             if (toDo) {
-              return this.loadItems(language, false);
+              return this.loadItems(language);
             } else {
               return of(items);
             }
@@ -79,12 +78,12 @@ export class LangListComponent<
     );
   }
 
-  loadItems(lang: Language, continues: boolean, reset = false) {
+  loadItems(lang: Language, reset = false) {
     if (reset) {
       this.cursor = null;
     }
 
-    const changes = this.afs
+    return this.afs
       .collection<T>(`${this.collection}-${lang}`, ref => {
         let final = ref
           .limit(this.options.pageSize)
@@ -98,17 +97,17 @@ export class LangListComponent<
 
         return final;
       })
-      .snapshotChanges()
+      .get()
       .pipe(
         map(actions => {
-          if (actions.length) {
-            this.cursor = actions[actions.length - 1].payload.doc;
+          if (actions.docs.length) {
+            this.cursor = actions.docs[actions.docs.length - 1];
 
             this.hasMore$.next(true);
 
-            return actions.map(action => ({
-              id: action.payload.doc.id,
-              ...(action.payload.doc.data() as any)
+            return actions.docs.map(action => ({
+              id: action.id,
+              ...(action.data() as any)
             }));
           }
 
@@ -117,16 +116,6 @@ export class LangListComponent<
           return [];
         })
       );
-
-    /**
-     * If data shouldn't be streamed continually
-     * we only take one emit from the stream
-     */
-    if (!continues) {
-      changes.pipe(take(1));
-    }
-
-    return changes;
   }
 
   delete(id: string): Observable<any> {

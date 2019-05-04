@@ -93,7 +93,8 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
       } else {
         // TODO: Map for different providers
         const signUpData: any = {
-          createdOn: Date.now()
+          createdOn: Date.now(),
+          email: user.email
         };
 
         if (user.displayName) {

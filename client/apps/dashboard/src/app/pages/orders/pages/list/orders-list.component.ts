@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
 import {Order} from '@jf/interfaces/order.interface';
-import {merge} from 'rxjs';
 import {ListComponent} from '../../../../shared/components/list/list.component';
 
 @Component({
@@ -14,10 +13,10 @@ import {ListComponent} from '../../../../shared/components/list/list.component';
 export class OrdersListComponent extends ListComponent<Order> {
   displayedColumns = [
     'checkBox',
+    'id',
+    'createdOn',
     'customer',
-    'email',
     'price',
-    'time',
     'statusChange',
     'actions'
   ];
@@ -25,17 +24,10 @@ export class OrdersListComponent extends ListComponent<Order> {
   collection = FirestoreCollections.Orders;
   deliveryStatus = OrderStatus;
 
-  changeClient(val, element) {
+  changeClient(status: OrderStatus, id: string) {
     this.afs
       .collection(FirestoreCollections.Orders)
-      .doc(element)
-      .set(
-        {
-          status: val
-        },
-        {
-          merge: true
-        }
-      );
+      .doc(id)
+      .set({status}, {merge: true});
   }
 }
