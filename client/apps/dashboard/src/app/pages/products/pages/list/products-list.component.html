@@ -179,9 +179,9 @@
           </ng-container>
 
           <ng-container matColumnDef="active">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Active status</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Active</th>
             <td mat-cell *matCellDef="let element">
-              <button mat-button color="primary" (click)="toggleActive(element)">{{element.active}}</button>
+              <mat-checkbox [checked]="element.active" (change)="toggleActive($event, element.id)"></mat-checkbox>
             </td>
           </ng-container>
 
