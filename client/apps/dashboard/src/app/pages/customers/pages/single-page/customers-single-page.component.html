@@ -9,11 +9,19 @@
     </mat-toolbar>
   </section>
 
-  <section class="p-y-m" *ngIf="isEdit">
+  <section class="p-y-m">
     <div class="grid">
       <div class="col-8 col-s-10 col-xs-12 flex ai-center jc-between">
-        <h5>New customer</h5>
-        <a mat-button [routerLink]="['/customers/overview', form.get('id').value]">Customer stats</a>
+
+        <ng-container *ngIf="isEdit; else newCustomer;">
+          <h5>{{form.get('name').value || form.get('email').value}}</h5>
+          <a mat-button [routerLink]="['/customers/overview', form.get('id').value]">View stats</a>
+        </ng-container>
+
+        <ng-template #newCustomer>
+          <h5>New customer</h5>
+        </ng-template>
+
       </div>
     </div>
   </section>
@@ -27,7 +35,7 @@
               <h6 class="p-y-s">Personal information</h6>
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Name</mat-label>
-                <input matInput type="tel" formControlName="fullName">
+                <input matInput type="tel" formControlName="name">
               </mat-form-field>
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Gender</mat-label>

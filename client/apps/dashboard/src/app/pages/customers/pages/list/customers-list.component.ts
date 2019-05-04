@@ -14,8 +14,8 @@ export class CustomersListComponent extends ListComponent<Customer> {
     'checkBox',
     'createdOn',
     'name',
-    'gender',
     'email',
+    'gender',
     'actions'
   ];
   collection = FirestoreCollections.Customers;
