@@ -60,6 +60,8 @@ export class ProfileComponent implements OnInit {
   loadImg: boolean;
 
   ngOnInit() {
+    // showing change password tab only for user who are sign in with email and password
+
     if (
       this.afAuth.auth.currentUser.providerData[0].providerId !== 'password'
     ) {
