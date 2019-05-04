@@ -48,6 +48,10 @@ export class ProfileComponent implements OnInit {
     {
       label: 'Reviews',
       route: 'reviews'
+    },
+    {
+      label: 'Change password',
+      route: 'change-password'
     }
   ];
 
@@ -56,6 +60,12 @@ export class ProfileComponent implements OnInit {
   loadImg: boolean;
 
   ngOnInit() {
+    if (
+      this.afAuth.auth.currentUser.providerData[0].providerId !== 'password'
+    ) {
+      this.links.splice(4, 1);
+    }
+
     const url = this.router.url.replace('/my-profile/', '');
     this.activeLink = this.links.find(val => val.route === url);
     this.angularFireStore

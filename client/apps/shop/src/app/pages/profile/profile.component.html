@@ -20,15 +20,6 @@
   >
     {{ link.label }}
   </a>
-  <a
-    *ngIf="afAuth.auth.currentUser.providerData[0].providerId === 'password'"
-    routerLink="change-password"
-    mat-tab-link
-    routerLinkActive="active"
-    (click)="activeLink = 'change-password'"
-    >
-    Change password
-  </a>
 </nav>
 <section class="p-t-m p-b-l">
   <router-outlet></router-outlet>
