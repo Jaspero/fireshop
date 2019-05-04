@@ -7,56 +7,58 @@
   </mat-toolbar>
 </section>
 
-<section class="p-y-m">
-  <div class="grid">
-    <div class="col-8 col-s-10 col-xs-12 flex ai-center jc-between">
-      <h5>Customer stats</h5>
-      <button mat-button [routerLink]="['/customers/', acr.params.value.id]">Customer info</button>
+<ng-container *ngIf="data$ | async as data">
+  <section class="p-y-m">
+    <div class="grid">
+      <div class="col-8 col-s-10 col-xs-12 flex ai-center jc-between">
+        <h5>Customer stats</h5>
+        <button mat-button [routerLink]="['/customers/', data.id]">Customer info</button>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<div class="grid grid-no-gutter p-b-m">
-  <div class="col-8 col-s-10 col-xs-12">
-    <div>
-      <div class="grid">
-        <div class="col-12">
-          <mat-card>
-            <mat-nav-list>
-              <h3 mat-subheader>Wishlist</h3>
-              <mat-list-item *ngFor="let i of [].constructor(4)">
-                <mat-icon mat-list-icon>favorite</mat-icon>
-                <h4 mat-line>[Product]</h4>
-                <p mat-line>Added on [date]</p>
-              </mat-list-item>
-              <mat-list-item>
-                <h4 mat-line>No products on wishlist yet.</h4>
-              </mat-list-item>
-              <mat-divider></mat-divider>
-              <h3 mat-subheader>Orders</h3>
-              <mat-list-item *ngFor="let rev of reviews">
-                <mat-icon mat-list-icon>shopping_cart</mat-icon>
-                <h4 mat-line>{{rev}}</h4>
-                <p mat-line>[date]</p>
-              </mat-list-item>
-              <mat-list-item>
-                <h4 mat-line>No orders yet.</h4>
-              </mat-list-item>
-              <mat-divider></mat-divider>
-              <h3 mat-subheader>Reviews</h3>
-              <mat-list-item *ngFor="let i of [].constructor(4)">
-                <mat-icon mat-list-icon>rate_review</mat-icon>
-                <h4 mat-line><mat-icon *ngFor="let i of [].constructor(5)">star</mat-icon></h4>
-                <p mat-line>[comment]</p>
-                <p mat-line>[date]</p>
-              </mat-list-item>
-              <mat-list-item>
-                <h4 mat-line>No reviews yet.</h4>
-              </mat-list-item>
-            </mat-nav-list>
-          </mat-card>
+  <div class="grid grid-no-gutter p-b-m">
+    <div class="col-8 col-s-10 col-xs-12">
+      <div>
+        <div class="grid">
+          <div class="col-12">
+            <mat-card>
+              <mat-nav-list>
+                <h3 mat-subheader>Wishlist</h3>
+                <mat-list-item *ngFor="let i of [].constructor(4)">
+                  <mat-icon mat-list-icon>favorite</mat-icon>
+                  <h4 mat-line>[Product]</h4>
+                  <p mat-line>Added on [date]</p>
+                </mat-list-item>
+                <mat-list-item>
+                  <h4 mat-line>No products on wishlist yet.</h4>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+                <h3 mat-subheader>Orders</h3>
+                <mat-list-item *ngFor="let rev of [].constructor(4)">
+                  <mat-icon mat-list-icon>shopping_cart</mat-icon>
+                  <h4 mat-line>{{rev}}</h4>
+                  <p mat-line>[date]</p>
+                </mat-list-item>
+                <mat-list-item>
+                  <h4 mat-line>No orders yet.</h4>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+                <h3 mat-subheader>Reviews</h3>
+                <mat-list-item *ngFor="let i of [].constructor(4)">
+                  <mat-icon mat-list-icon>rate_review</mat-icon>
+                  <h4 mat-line><mat-icon *ngFor="let i of [].constructor(5)">star</mat-icon></h4>
+                  <p mat-line>[comment]</p>
+                  <p mat-line>[date]</p>
+                </mat-list-item>
+                <mat-list-item>
+                  <h4 mat-line>No reviews yet.</h4>
+                </mat-list-item>
+              </mat-nav-list>
+            </mat-card>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</ng-container>

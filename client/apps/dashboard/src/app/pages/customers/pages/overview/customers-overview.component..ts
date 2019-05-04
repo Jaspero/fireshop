@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {ActivatedRoute} from '@angular/router';
-import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
-import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'jfsc-overview',
@@ -10,9 +10,22 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
   styleUrls: ['./customers-overview.component.css']
 })
 export class CustomersOverviewComponent implements OnInit {
-  constructor(public acr: ActivatedRoute, private afs: AngularFirestore) {}
+  constructor(
+    public activatedRoute: ActivatedRoute,
+    private afs: AngularFirestore
+  ) {}
+
+  data$: Observable<{
+    id: string
+  }>;
 
   ngOnInit() {
+
+    this.data$ = this.activatedRoute.params
+      .pipe(
+        map(params => ({id: params.id}))
+      )
+
     // this.afs
     //   .collection(FirestoreCollections.Reviews, ref => {
     //     return ref.where(
