@@ -26,8 +26,6 @@ export class ChangePasswordComponent implements OnInit {
   passwordForm: FormGroup;
 
   ngOnInit() {
-    console.log(this.afAuth.auth.currentUser.providerData[0].providerId);
-
     this.buildForm();
   }
 
