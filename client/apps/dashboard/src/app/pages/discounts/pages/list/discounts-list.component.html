@@ -150,6 +150,26 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
+
+        <div class="flex jc-between p-y-s">
+          <div class="p-x-m hide-xs"></div>
+          <button
+            mat-button
+            color="primary"
+            [disabled]="(hasMore$ | async) === false"
+            [class.loading]="dataLoading$ | async"
+            (click)="loadMore$.next(true)">
+            Load More
+          </button>
+          <mat-form-field class="fs-small">
+            <mat-select placeholder="Page size" [formControl]="pageSize">
+              <mat-option *ngFor="let size of pageSizes" [value]="size">
+                {{size}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
       </mat-card>
     </div>
   </div>
