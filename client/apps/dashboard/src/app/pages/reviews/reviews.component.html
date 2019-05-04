@@ -76,6 +76,11 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="createdOn">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Created on</th>
+            <td mat-cell *matCellDef="let element">{{element.createdOn | date: 'yyyy/MM/dd'}}</td>
+          </ng-container>
+
           <ng-container matColumnDef="productId">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Product Id</th>
             <td mat-cell *matCellDef="let element">{{element.productId}}</td>
@@ -87,19 +92,15 @@
           </ng-container>
 
           <ng-container matColumnDef="comment">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>comment</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Comment</th>
             <td mat-cell *matCellDef="let element">{{element.comment}}</td>
           </ng-container>
 
           <ng-container matColumnDef="rating">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>rating</th>
-          <td mat-cell *matCellDef="let element">{{element.rating}}</td>
-        </ng-container>
-
-          <ng-container matColumnDef="createdOn">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Created on</th>
-            <td mat-cell *matCellDef="let element">{{ element.createdOn }}</td>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Rating</th>
+            <td mat-cell *matCellDef="let element">{{element.rating}}</td>
           </ng-container>
+
 
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef mat-sort-header></th>

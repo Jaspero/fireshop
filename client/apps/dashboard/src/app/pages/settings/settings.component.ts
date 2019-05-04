@@ -9,10 +9,10 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatChipInputEvent} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {notify} from '@jf/utils/notify.operator';
 import {BehaviorSubject, forkJoin, from} from 'rxjs';
 import {finalize, takeUntil} from 'rxjs/operators';
 import {CURRENCIES} from '../../shared/const/currency.const';
-import {notify} from '@jf/utils/notify.operator';
 
 @Component({
   selector: 'jfsc-settings',
@@ -46,7 +46,6 @@ export class SettingsComponent extends RxDestroy implements OnInit {
       defaultValues: {
         autoReduceQuantity: true,
         inactiveForQuantity: true,
-        realTimeData: true,
         errorNotificationEmail: ''
       }
     },

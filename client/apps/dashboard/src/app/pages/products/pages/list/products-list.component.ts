@@ -5,8 +5,8 @@ import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {Product} from '@jf/interfaces/product.interface';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {from, Observable} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
 import {LangListComponent} from '../../../../shared/components/lang-list/lang-list.component';
 
 @Component({
@@ -20,10 +20,10 @@ export class ProductsListComponent extends LangListComponent<Product>
   displayedColumns = [
     'checkBox',
     'id',
+    'createdOn',
     'name',
     'price',
     'active',
-    'createdOn',
     'quantity',
     'actions'
   ];
@@ -83,6 +83,18 @@ export class ProductsListComponent extends LangListComponent<Product>
     return ref;
   }
 
-  // TODO: Finish
-  toggleActive(event: MatCheckboxChange) {}
+  toggleActive(event: MatCheckboxChange, id: string) {
+    this.state.language$
+      .pipe(
+        switchMap(lang =>
+          from(
+            this.afs
+              .collection(`${FirestoreCollections.Products}-${lang}`)
+              .doc(id)
+              .set({active: event.checked}, {merge: true})
+          )
+        )
+      )
+      .subscribe();
+  }
 }

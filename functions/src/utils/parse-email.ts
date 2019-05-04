@@ -1,7 +1,6 @@
 import * as sgMail from '@sendgrid/mail';
 import {readFile} from 'fs';
 import {compile} from 'handlebars';
-import {join} from 'path';
 import {promisify} from 'util';
 import {ENV_CONFIG} from '../consts/env-config.const';
 

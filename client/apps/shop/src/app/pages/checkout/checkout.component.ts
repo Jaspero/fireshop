@@ -37,7 +37,10 @@ import {
   takeUntil
 } from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
-import {LoginSignupDialogComponent} from '../../shared/components/login-signup-dialog/login-signup-dialog.component';
+import {
+  LoginSignupDialogComponent,
+  LoginSignUpView
+} from '../../shared/components/login-signup-dialog/login-signup-dialog.component';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {
   LoggedInUser,
@@ -315,7 +318,10 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
 
   logInSignUp(logIn = true) {
     this.dialog.open(LoginSignupDialogComponent, {
-      width: '400px'
+      width: '400px',
+      data: {
+        view: logIn ? LoginSignUpView.LogIn : LoginSignUpView.SignUp
+      }
     });
   }
 }
