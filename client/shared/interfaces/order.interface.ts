@@ -9,6 +9,8 @@ export interface OrderPrice {
 export interface OrderItem {
   id: string;
   quantity: number;
+  name: string;
+  price: number;
   /**
    * Any attributes that can differ
    */

@@ -4,6 +4,7 @@ import {IsLoggedInGuard} from '../../shared/guards/is-logged-in.guard';
 import {MetaResolver} from '../../shared/resolvers/meta.resolver';
 import {SharedModule} from '../../shared/shared.module';
 import {DeleteUserComponent} from './components/delete-user/delete-user.component';
+import {ChangePasswordComponent} from './pages/change-password/change-password.component';
 import {OrdersComponent} from './pages/orders/orders.component';
 import {ReviewsComponent} from './pages/reviews/reviews.component';
 import {SettingsComponent} from './pages/settings/settings.component';
@@ -19,6 +20,7 @@ const ENTRY_COMPONENTS = [DeleteUserComponent];
     SettingsComponent,
     WishListComponent,
     OrdersComponent,
+    ChangePasswordComponent,
     ReviewsComponent,
     ...ENTRY_COMPONENTS
   ],
@@ -81,6 +83,19 @@ const ENTRY_COMPONENTS = [DeleteUserComponent];
               meta: {
                 title: 'Reviews',
                 description: 'ListComponent of your reviews'
+              }
+            },
+            resolve: {
+              meta: MetaResolver
+            }
+          },
+          {
+            path: 'change-password',
+            component: ChangePasswordComponent,
+            data: {
+              meta: {
+                title: 'Password',
+                description: 'Change your password'
               }
             },
             resolve: {

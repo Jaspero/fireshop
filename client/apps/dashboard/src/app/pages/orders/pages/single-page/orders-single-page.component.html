@@ -17,39 +17,187 @@
     </div>
   </section>
 
-  <div class="grid grid-no-gutter">
+  <div class="grid grid-no-gutter p-b-m">
     <div class="col-8 col-s-10 col-xs-12">
       <div>
         <div class="gird">
           <div class="col-12">
             <mat-card>
               <h6 class="p-y-xs">Order info</h6>
+
+              <ng-container formGroupName="billing">
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>First Name</mat-label>
+                    <input matInput type="tel" formControlName="firstName">
+                  </mat-form-field>
+                </div>
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput formControlName="lastName">
+                  </mat-form-field>
+                </div>
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input matInput type="tel" formControlName="email">
+                  </mat-form-field>
+                </div>
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>Phone</mat-label>
+                    <input matInput formControlName="phone">
+                  </mat-form-field>
+                </div>
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>City</mat-label>
+                    <input matInput type="tel" formControlName="city">
+                  </mat-form-field>
+                </div>
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>Zip</mat-label>
+                    <input matInput formControlName="zip">
+                  </mat-form-field>
+                </div>
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>Country</mat-label>
+                    <input matInput type="tel" formControlName="country">
+                  </mat-form-field>
+                </div>
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>Billing Address</mat-label>
+                    <input matInput formControlName="line1">
+                  </mat-form-field>
+                </div>
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>Billing Address</mat-label>
+                    <input matInput type="tel" formControlName="line2">
+                  </mat-form-field>
+                </div>
+              </ng-container>
+              <h6 class="m-b-xs m-t-s">Shipping info</h6>
+              <ng-container formGroupName="shipping" *ngIf="form.get('shipping')">
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>First Name</mat-label>
+                    <input matInput type="tel" formControlName="firstName">
+                  </mat-form-field>
+                </div>
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput formControlName="lastName">
+                  </mat-form-field>
+                </div>
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input matInput type="tel" formControlName="email">
+                  </mat-form-field>
+                </div>
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>Phone</mat-label>
+                    <input matInput formControlName="phone">
+                  </mat-form-field>
+                </div>
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>City</mat-label>
+                    <input matInput type="tel" formControlName="city">
+                  </mat-form-field>
+                </div>
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>Zip</mat-label>
+                    <input matInput formControlName="zip">
+                  </mat-form-field>
+                </div>
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>Country</mat-label>
+                    <input matInput type="tel" formControlName="country">
+                  </mat-form-field>
+                </div>
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>Billing Address</mat-label>
+                    <input matInput formControlName="line1">
+                  </mat-form-field>
+                </div>
+                <div class="p-y-xs">
+                  <mat-form-field class="w-full" appearance="outline">
+                    <mat-label>Billing Address</mat-label>
+                    <input matInput type="tel" formControlName="line2">
+                  </mat-form-field>
+                </div>
+              </ng-container>
+              <mat-checkbox color="primary" formControlName="shippingInfo">My shipping address is same as my billing address</mat-checkbox>
+
               <div class="p-y-xs">
                 <mat-divider></mat-divider>
               </div>
               <div class="p-y-xs">
                 <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Product</mat-label>
-                  <input matInput formControlName="product">
+                  <mat-label>Customer Name</mat-label>
+                  <input matInput formControlName="customerName">
                 </mat-form-field>
               </div>
               <div class="p-y-xs">
                 <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Name</mat-label>
-                  <input matInput formControlName="name">
+                  <mat-label>Email</mat-label>
+                  <textarea matInput formControlName="email"></textarea>
                 </mat-form-field>
               </div>
               <div class="p-y-xs">
                 <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Quantity</mat-label>
-                  <input matInput type="number" formControlName="quantity">
+                  <mat-label>Price</mat-label>
+                  <textarea matInput formControlName="price"></textarea>
                 </mat-form-field>
               </div>
               <div class="p-y-xs">
+
                 <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>address</mat-label>
-                  <textarea matInput formControlName="address"></textarea>
+                  <mat-label>Status</mat-label>
+                  <mat-select formControlName="status">
+                    <mat-option
+                      *ngFor="let stat of (deliveryStatus | keyvalue)"
+                      [value]="stat.value">
+                      {{stat.value}}
+                    </mat-option>
+                  </mat-select>
                 </mat-form-field>
+              </div>
+
+              <div formArrayName="ordersItems">
+
+                <h6 class="p-y-xs">Items:</h6>
+                <div *ngFor="let order of ordersItemForms.controls; let i=index"
+                     [formGroupName]="i">
+
+                  <div class="p-y-xs">
+                    <mat-form-field appearance="outline" class="w-full">
+                      <mat-label>Name</mat-label>
+                      <input matInput formControlName="name">
+                    </mat-form-field>
+                  </div>
+                  <div class="p-y-xs">
+                    <mat-form-field appearance="outline" class="w-full">
+                      <mat-label>Quantity</mat-label>
+                      <input matInput formControlName="quantity">
+                    </mat-form-field>
+                  </div>
+
+                  <button mat-flat-button (click)="deleteItem(i)">Delete</button>
+
+                </div>
+                <button  mat-flat-button (click)="addItem()">Add item in order</button>
               </div>
             </mat-card>
           </div>
