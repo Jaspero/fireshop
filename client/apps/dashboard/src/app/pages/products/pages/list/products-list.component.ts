@@ -6,7 +6,7 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {Product} from '@jf/interfaces/product.interface';
 import {from, Observable} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {map, switchMap, take} from 'rxjs/operators';
 import {LangListComponent} from '../../../../shared/components/lang-list/lang-list.component';
 
 @Component({

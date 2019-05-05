@@ -7,10 +7,12 @@ import {
   shareReplay,
   startWith,
   switchMap,
+  take,
   tap
 } from 'rxjs/operators';
 import {Language} from 'shared/enums/language.enum';
 import {RouteData} from '../../interfaces/route-data.interface';
+import {ExportComponent} from '../export/export.component';
 import {ListComponent} from '../list/list.component';
 
 @Component({
@@ -129,5 +131,23 @@ export class LangListComponent<
         )
       )
     );
+  }
+
+  export() {
+    this.state.language$
+      .pipe(
+        take(1),
+        switchMap(lang =>
+          this.bottomSheet
+            .open(ExportComponent, {
+              data: {
+                collection: `${this.collection}-${lang}`,
+                ids: this.selection.selected
+              }
+            })
+            .afterOpened()
+        )
+      )
+      .subscribe();
   }
 }

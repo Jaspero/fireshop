@@ -257,9 +257,13 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
     this.router.navigate(['/', this.collection, item]);
   }
 
-  // TODO: Implement
   export() {
-    this.bottomSheet.open(ExportComponent);
+    this.bottomSheet.open(ExportComponent, {
+      data: {
+        collection: this.collection,
+        ids: this.selection.selected
+      }
+    });
   }
 
   // TODO: Implement
