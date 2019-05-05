@@ -110,9 +110,12 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
           }
         }
 
-        return this.galleryUploadComponent
-          .save()
-          .pipe(switchMap(() => super.getSaveData(...args)));
+        return this.galleryUploadComponent.save().pipe(
+          switchMap(() => {
+            args[1].gallery = this.form.get('gallery').value;
+            return super.getSaveData(...args);
+          })
+        );
       })
     );
   }

@@ -3,18 +3,26 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  forwardRef,
   Input,
   ViewChild
 } from '@angular/core';
 import {AngularFireStorage} from '@angular/fire/storage';
-import {FormControl} from '@angular/forms';
+import {FormControl, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {from, of} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'jfsc-image-upload',
   templateUrl: './image-upload.component.html',
   styleUrls: ['./image-upload.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => ImageUploadComponent),
+      multi: true
+    }
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageUploadComponent {
@@ -32,6 +40,23 @@ export class ImageUploadComponent {
   value: File;
   imageUrl = new FormControl('');
   disInput = false;
+
+  onChange: any = () => {};
+  onTouched: any = () => {};
+
+  registerOnChange(fn) {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn) {
+    this.onTouched = fn;
+  }
+
+  writeValue(value: string) {
+    if (value) {
+      this.imageUrl.setValue(value);
+    }
+  }
 
   openFileUpload() {
     this.fileEl.nativeElement.click();
@@ -52,13 +77,18 @@ export class ImageUploadComponent {
 
   save() {
     if (this.imageUrl.value && this.imageUrl.value !== this.value.name) {
-      return of(this.imageUrl.value);
+      return of(this.imageUrl.value).pipe(
+        tap(() => this.onChange(this.imageUrl.value))
+      );
     } else {
       return from(
         this.afs.upload(this.value.name, this.value, {
           contentType: this.value.type
         })
-      ).pipe(switchMap(res => res.ref.getDownloadURL()));
+      ).pipe(
+        switchMap(res => res.ref.getDownloadURL()),
+        tap(url => this.onChange(url))
+      );
     }
   }
 }
