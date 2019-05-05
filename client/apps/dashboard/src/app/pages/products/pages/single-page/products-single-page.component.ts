@@ -5,6 +5,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {Validators} from '@angular/forms';
+import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {Product} from '@jf/interfaces/product.interface';
@@ -12,6 +13,7 @@ import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
 import {Observable} from 'rxjs';
 import {map, shareReplay, switchMap, take} from 'rxjs/operators';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
+import {CURRENCIES} from '../../../../shared/const/currency.const';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
 import {FileUploadComponent} from '../../../../shared/modules/file-upload/component/file-upload.component';
 import {ImageUploadComponent} from '../../../../shared/modules/file-upload/image-upload/image-upload.component';
@@ -32,9 +34,14 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   categories$: Observable<Category[]>;
   collection = FirestoreCollections.Products;
+  currency: string;
 
   ngOnInit() {
     super.ngOnInit();
+
+    this.currency = CURRENCIES.find(
+      cur => cur.value === DYNAMIC_CONFIG.currency.primary
+    ).symbol;
 
     this.categories$ = this.state.language$.pipe(
       switchMap(lang =>
