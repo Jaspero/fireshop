@@ -1,4 +1,5 @@
 import {Component} from '@angular/core';
+import {CollectionReference} from '@angular/fire/firestore';
 import {from, merge, Observable, of} from 'rxjs';
 import {
   debounceTime,
@@ -26,33 +27,47 @@ export class LangListComponent<
   setItems() {
     let language: Language;
 
+    const listeners = [];
+
+    if (this.options.sort) {
+      listeners.push(
+        this.sort.sortChange.pipe(
+          tap((sort: any) => {
+            this.options.sort = sort;
+            this.state.setRouteData(this.options);
+          })
+        )
+      );
+    }
+
+    if (this.options.pageSize) {
+      listeners.push(
+        this.pageSize.valueChanges.pipe(
+          tap(pageSize => {
+            this.options.pageSize = pageSize;
+            this.state.setRouteData(this.options);
+          })
+        )
+      );
+    }
+
+    if (this.options.filters) {
+      listeners.push(
+        this.filters.valueChanges.pipe(
+          debounceTime(400),
+          tap(filters => {
+            this.options.filters = filters;
+            this.state.setRouteData(this.options);
+          })
+        )
+      );
+    }
+
     this.items$ = this.state.language$.pipe(
       switchMap(lang => {
         language = lang;
 
-        return merge(
-          this.sort.sortChange.pipe(
-            tap((sort: any) => {
-              this.options.sort = sort;
-              this.state.setRouteData(this.options);
-            })
-          ),
-
-          this.pageSize.valueChanges.pipe(
-            tap(pageSize => {
-              this.options.pageSize = pageSize;
-              this.state.setRouteData(this.options);
-            })
-          ),
-
-          this.filters.valueChanges.pipe(
-            debounceTime(400),
-            tap(filters => {
-              this.options.filters = filters;
-              this.state.setRouteData(this.options);
-            })
-          )
-        ).pipe(startWith(null));
+        return merge(...listeners).pipe(startWith(null));
       }),
       switchMap(() => {
         let items;
@@ -87,14 +102,23 @@ export class LangListComponent<
 
     return this.afs
       .collection<T>(`${this.collection}-${lang}`, ref => {
-        let final = ref
-          .limit(this.options.pageSize)
-          .orderBy(this.options.sort.active, this.options.sort.direction);
+        let final = ref;
+
+        if (this.options.pageSize) {
+          final = final.limit(this.options.pageSize) as CollectionReference;
+        }
+
+        if (this.options.sort) {
+          final = final.orderBy(
+            this.options.sort.active,
+            this.options.sort.direction
+          ) as CollectionReference;
+        }
 
         final = this.runFilters(final);
 
         if (this.cursor) {
-          final = final.startAfter(this.cursor);
+          final = final.startAfter(this.cursor) as CollectionReference;
         }
 
         return final;
