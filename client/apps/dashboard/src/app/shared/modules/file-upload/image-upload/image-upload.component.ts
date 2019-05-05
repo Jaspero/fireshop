@@ -3,7 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  OnInit,
+  Input,
   ViewChild
 } from '@angular/core';
 import {AngularFireStorage} from '@angular/fire/storage';
@@ -17,7 +17,7 @@ import {switchMap} from 'rxjs/operators';
   styleUrls: ['./image-upload.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImageUploadComponent implements OnInit {
+export class ImageUploadComponent {
   constructor(
     private afs: AngularFireStorage,
     private cdr: ChangeDetectorRef
@@ -26,11 +26,12 @@ export class ImageUploadComponent implements OnInit {
   @ViewChild('file')
   fileEl: ElementRef<HTMLInputElement>;
 
+  @Input()
+  placeholder = 'Image URL';
+
   value: File;
   imageUrl = new FormControl('');
   disInput = false;
-
-  ngOnInit() {}
 
   openFileUpload() {
     this.fileEl.nativeElement.click();

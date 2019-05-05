@@ -15,8 +15,7 @@ import {map, shareReplay, switchMap, take} from 'rxjs/operators';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {CURRENCIES} from '../../../../shared/const/currency.const';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
-import {FileUploadComponent} from '../../../../shared/modules/file-upload/component/file-upload.component';
-import {ImageUploadComponent} from '../../../../shared/modules/file-upload/image-upload/image-upload.component';
+import {GalleryUploadComponent} from '../../../../shared/modules/file-upload/gallery-upload/gallery-upload.component';
 
 @Component({
   selector: 'jfsc-single-page',
@@ -26,11 +25,8 @@ import {ImageUploadComponent} from '../../../../shared/modules/file-upload/image
 })
 export class ProductsSinglePageComponent extends LangSinglePageComponent
   implements OnInit {
-  @ViewChild(FileUploadComponent)
-  fileUploadComponent: FileUploadComponent;
-
-  @ViewChild(ImageUploadComponent)
-  imageUploadComponent: ImageUploadComponent;
+  @ViewChild(GalleryUploadComponent)
+  galleryUploadComponent: GalleryUploadComponent;
 
   categories$: Observable<Category[]>;
   collection = FirestoreCollections.Products;
@@ -114,7 +110,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
           }
         }
 
-        return this.fileUploadComponent
+        return this.galleryUploadComponent
           .save()
           .pipe(switchMap(() => super.getSaveData(...args)));
       })
