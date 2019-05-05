@@ -49,8 +49,6 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.webpClass = BROWSER_CONFIG.webpSupported ? 'webp' : 'no-webp';
 
-    console.log('dynamic', DYNAMIC_CONFIG);
-
     this.showLayout$ = this.state.currentRoute$.pipe(
       map(res => !res.data.hideLayout)
     );

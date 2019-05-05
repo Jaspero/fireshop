@@ -193,6 +193,13 @@
                   <tr>
                     <td colspan="2"><hr></td>
                   </tr>
+                  <tr>
+                    <td class="w-half p-a-xs">Shipping:</td>
+                    <td class="w-half p-a-xs">{{data.price.shipping ? (data.price.shipping | sp) : 'Free'}}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"><hr></td>
+                  </tr>
                   <tr class="fw-bold">
                     <td class="w-half p-a-xs">Total:</td>
                     <td class="w-half p-a-xs">{{data.price.total | sp}}</td>

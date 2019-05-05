@@ -3,6 +3,7 @@ import {Address} from './address.interface';
 
 export interface OrderPrice {
   total: number;
+  shipping?: number;
   subTotal: number;
 }
 

@@ -40,11 +40,19 @@ async function getItems(orderItems: OrderItem[], lang: string) {
 
 app.post('/checkout', (req, res) => {
   async function exec() {
-    const items = await getItems(req.body.orderItems, req.body.lang);
+    const [currency, items] = await Promise.all([
+      admin
+        .firestore()
+        .collection('settings')
+        .doc('currency')
+        .get(),
+      getItems(req.body.orderItems, req.body.lang)
+    ]);
+
     const amount = items.reduce(
       (acc, cur, curIndex) =>
         req.body.orderItems[curIndex].quantity * cur.price,
-      0
+      currency.data().shippingCost || 0
     );
 
     const paymentIntent = await si.paymentIntents.create({
