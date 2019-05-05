@@ -47,13 +47,16 @@ export class SettingsComponent extends RxDestroy implements OnInit {
         autoReduceQuantity: true,
         inactiveForQuantity: true,
         statusUpdates: true,
-        errorNotificationEmail: ''
+        errorNotificationEmail: '',
+        notifyOnShipped: true,
+        notifyOnDelivered: true
       }
     },
     {
       collection: 'currency',
       defaultValues: {
-        primary: 'USD'
+        primary: 'USD',
+        shippingCost: 0
       }
     }
   ];
