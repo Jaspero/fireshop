@@ -36,6 +36,7 @@ export class OverviewComponent extends RxDestroy implements OnInit {
   ngOnInit() {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+
     this.activatedRoute.params
       .pipe(
         switchMap(params => {
