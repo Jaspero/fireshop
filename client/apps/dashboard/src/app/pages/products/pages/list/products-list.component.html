@@ -217,14 +217,14 @@
             </td>
           </ng-container>
 
-          <ng-container mat-footer-row *matFooterRowDef>
-            <tr *ngIf="emptyState$ | async">
-              There are no products on the list
-            </tr>
-          </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
+
+        <div class="ta-center p-y-m bg-l-secondary" *ngIf="emptyState$ | async">
+          <span class="iblock m-b-s">No products yet. Let's create one</span><br>
+          <button mat-flat-button color="primary" routerLink="/products/new">Add product</button>
+        </div>
 
         <div class="flex jc-between p-y-s">
           <div class="p-x-m hide-xs"></div>
