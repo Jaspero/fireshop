@@ -60,6 +60,7 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
   items$: Observable<T[]>;
   allChecked$: Observable<{checked: boolean}>;
   loadMore$ = new Subject<boolean>();
+  emptyState$ = new BehaviorSubject(false);
   dataLoading$ = new BehaviorSubject(true);
   hasMore$ = new BehaviorSubject(true);
   chips$: Observable<Array<{filter: string; value: string}>>;
@@ -216,15 +217,17 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
             this.cursor = actions.docs[actions.docs.length - 1];
 
             this.hasMore$.next(true);
+            this.emptyState$.next(false);
+            console.log('no');
 
             return actions.docs.map(action => ({
               id: action.id,
               ...(action.data() as any)
             }));
           }
-
+          console.log('yes');
           this.hasMore$.next(false);
-
+          this.emptyState$.next(true);
           return [];
         })
       );

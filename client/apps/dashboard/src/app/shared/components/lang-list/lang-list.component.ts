@@ -77,10 +77,12 @@ export class LangListComponent<
         return this.loadItems(language, true).pipe(
           switchMap(its => {
             items = its;
+            console.log(items);
             this.dataLoading$.next(true);
             return this.loadMore$.pipe(startWith(false));
           }),
           switchMap(toDo => {
+            console.log('toDo', toDo);
             if (toDo) {
               return this.loadItems(language);
             } else {
@@ -130,15 +132,17 @@ export class LangListComponent<
             this.cursor = actions.docs[actions.docs.length - 1];
 
             this.hasMore$.next(true);
+            console.log('no');
+            this.emptyState$.next(false);
 
             return actions.docs.map(action => ({
               id: action.id,
               ...(action.data() as any)
             }));
           }
-
+          console.log('yes');
           this.hasMore$.next(false);
-
+          this.emptyState$.next(true);
           return [];
         })
       );
