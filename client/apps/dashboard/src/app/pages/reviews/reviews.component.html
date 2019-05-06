@@ -125,6 +125,10 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
 
+        <div class="ta-center p-y-m bg-l-secondary" *ngIf="emptyState$ | async">
+          <span class="iblock">No reviews yet.</span>
+        </div>
+
         <div class="flex jc-between p-y-s">
           <div class="p-x-m hide-xs"></div>
           <button

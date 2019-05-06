@@ -130,15 +130,15 @@ export class LangListComponent<
             this.cursor = actions.docs[actions.docs.length - 1];
 
             this.hasMore$.next(true);
+            this.emptyState$.next(false);
 
             return actions.docs.map(action => ({
               id: action.id,
               ...(action.data() as any)
             }));
           }
-
           this.hasMore$.next(false);
-
+          this.emptyState$.next(true);
           return [];
         })
       );
