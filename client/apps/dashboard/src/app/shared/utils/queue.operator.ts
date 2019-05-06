@@ -1,4 +1,3 @@
-import {MatSnackBar} from '@angular/material';
 import {Observable, throwError} from 'rxjs';
 import {catchError, finalize, tap} from 'rxjs/operators';
 import {StateService} from '../services/state/state.service';

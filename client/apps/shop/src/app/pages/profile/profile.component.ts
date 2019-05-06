@@ -1,3 +1,4 @@
+import {HttpClient} from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -9,8 +10,9 @@ import {
 import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
 import {AngularFireStorage} from '@angular/fire/storage';
-import {from} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {RxDestroy} from '@jaspero/ng-helpers';
+import {BehaviorSubject, from} from 'rxjs';
+import {debounceTime, switchMap, takeUntil} from 'rxjs/operators';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 
@@ -20,14 +22,17 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
   styleUrls: ['./profile.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent extends RxDestroy implements OnInit {
   constructor(
     public afAuth: AngularFireAuth,
     private router: Router,
     private afs: AngularFireStorage,
     private angularFireStore: AngularFirestore,
-    private cdr: ChangeDetectorRef
-  ) {}
+    private cdr: ChangeDetectorRef,
+    private httpService: HttpClient
+  ) {
+    super();
+  }
 
   @ViewChild('file')
   fileEl: ElementRef<HTMLInputElement>;
@@ -58,6 +63,7 @@ export class ProfileComponent implements OnInit {
   activeLink: any;
   downloadURL = 'assets/images/profile-placeholder.svg';
   loadImg: boolean;
+  loading$ = new BehaviorSubject(false);
 
   ngOnInit() {
     // showing change password tab only for user who are sign in with email and password
@@ -89,23 +95,32 @@ export class ProfileComponent implements OnInit {
   }
 
   filesImage(file) {
+    this.loading$.next(true);
     const fileToUpload = Array.from(file)[0];
     const userID = this.afAuth.auth.currentUser.uid;
-    from(
-      this.afs.upload(userID, fileToUpload, {
-        contentType: fileToUpload['type']
-      })
-    )
-      .pipe(
-        switchMap(res => res.ref.getDownloadURL()),
-        switchMap(res => {
-          this.downloadURL = res;
-          this.cdr.detectChanges();
-          return this.angularFireStore
-            .doc(`${FirestoreCollections.Customers}/${userID}`)
-            .update({profileImage: res});
+    if (fileToUpload) {
+      from(
+        this.afs.upload(userID, fileToUpload, {
+          contentType: fileToUpload['type'],
+          customMetadata: {
+            skipDelete: 'true'
+          }
         })
       )
-      .subscribe();
+        .pipe(
+          switchMap(res => res.ref.getDownloadURL()),
+          switchMap(res => {
+            this.downloadURL = res;
+            this.cdr.detectChanges();
+            return this.angularFireStore
+              .doc(`${FirestoreCollections.Customers}/${userID}`)
+              .update({profileImage: res});
+          }),
+          takeUntil(this.destroyed$)
+        )
+        .subscribe(() => {
+          this.loading$.next(false);
+        });
+    }
   }
 }
