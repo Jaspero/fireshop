@@ -1,6 +1,10 @@
 import {SelectionModel} from '@angular/cdk/collections';
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {AngularFirestore, CollectionReference} from '@angular/fire/firestore';
+import {
+  AngularFirestore,
+  CollectionReference,
+  QueryDocumentSnapshot
+} from '@angular/fire/firestore';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {MatBottomSheet, MatDialog, MatSort} from '@angular/material';
 import {Router} from '@angular/router';
@@ -20,7 +24,8 @@ import {
 import {
   debounceTime,
   map,
-  scan,
+  shareReplay,
+  skip,
   startWith,
   switchMap,
   take,
@@ -78,19 +83,26 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
     }
   };
 
+  get collectionRef() {
+    return of(this.collection as string);
+  }
+
   ngOnInit() {
     this.options = this.state.getRouterData({
       sort: {
         direction: 'desc',
         active: 'createdOn'
       },
-      pageSize: 10,
+      pageSize: 5,
       ...this.additionalRouteData
     });
     this.pageSize = new FormControl(this.options.pageSize);
     this.filters = this.fb.group(this.options.filters);
 
-    this.setItems();
+    this.items$ = this.collectionRef.pipe(
+      switchMap(collection => this.setItems(collection)),
+      shareReplay(1)
+    );
 
     this.allChecked$ = combineLatest(
       this.items$,
@@ -115,7 +127,7 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
     );
   }
 
-  setItems() {
+  setItems(collection: string) {
     const listeners = [];
 
     if (this.options.sort) {
@@ -152,83 +164,139 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
       );
     }
 
-    this.items$ = merge(...listeners).pipe(
+    return merge(...listeners).pipe(
       startWith(null),
       switchMap(() => {
         this.dataLoading$.next(true);
 
-        let items;
+        return this.getCollection(collection, null, this.options.pageSize)
+          .snapshotChanges(['added'])
+          .pipe(take(1));
+      }),
+      switchMap(snapshots => {
+        let cursor;
 
-        return this.loadItems(true).pipe(
-          switchMap(data => {
-            items = data;
+        if (snapshots.length < this.options.pageSize) {
+          this.hasMore$.next(false);
+        }
 
-            this.dataLoading$.next(true);
+        if (snapshots.length) {
+          cursor = snapshots[snapshots.length - 1].payload.doc;
+        } else {
+          this.emptyState$.next(true);
+        }
 
-            return this.loadMore$.pipe(startWith(false));
-          }),
-          switchMap(toDo => {
-            if (toDo) {
-              return this.loadItems();
-            } else {
-              return of(items);
-            }
-          }),
-          scan((acc, cur) => acc.concat(cur), []),
-          tap(() => this.dataLoading$.next(false))
+        const docs = snapshots.map(item => ({
+          id: item.payload.doc.id,
+          ...item.payload.doc.data()
+        }));
+
+        return merge(
+          this.loadMore$.pipe(
+            switchMap(() => {
+              this.dataLoading$.next(true);
+              return this.getCollection(
+                collection,
+                cursor,
+                this.options.pageSize
+              )
+                .snapshotChanges(['added'])
+                .pipe(
+                  take(1),
+                  tap(snaps => {
+                    if (snaps.length < this.options.pageSize) {
+                      this.hasMore$.next(false);
+                    }
+
+                    if (snaps.length) {
+                      cursor = snaps[snaps.length - 1].payload.doc;
+
+                      docs.push(
+                        ...snaps.map(item => ({
+                          id: item.payload.doc.id,
+                          ...item.payload.doc.data()
+                        }))
+                      );
+                    }
+                  })
+                );
+            })
+          ),
+
+          this.getCollection(collection, null, null)
+            .stateChanges()
+            .pipe(
+              skip(1),
+              tap(snaps => {
+                snaps.forEach(snap => {
+                  const index = docs.findIndex(
+                    doc => doc.id === snap.payload.doc.id
+                  );
+
+                  switch (snap.type) {
+                    case 'added':
+                      if (index === -1) {
+                        docs.push({
+                          id: snap.payload.doc.id,
+                          ...snap.payload.doc.data()
+                        });
+                      }
+                      break;
+                    case 'modified':
+                      if (index !== -1) {
+                        docs[index] = {
+                          id: snap.payload.doc.id,
+                          ...snap.payload.doc.data()
+                        };
+                      }
+                      break;
+                    case 'removed':
+                      if (index !== -1) {
+                        docs.splice(index, 1);
+                      }
+                      break;
+                  }
+                });
+              })
+            )
+        ).pipe(
+          startWith(null),
+          map(() => {
+            this.dataLoading$.next(false);
+            return [...docs];
+          })
         );
       })
     );
   }
 
-  loadItems(...args): Observable<any>;
-  loadItems(reset = false) {
-    if (reset) {
-      this.cursor = null;
-    }
+  getCollection(
+    collection: string,
+    cursor?: QueryDocumentSnapshot<T>,
+    pageSize?: number
+  ) {
+    return this.afs.collection<T>(collection, ref => {
+      let final = ref;
 
-    return this.afs
-      .collection<T>(this.collection, ref => {
-        let final = ref;
+      if (pageSize) {
+        final = final.limit(pageSize) as CollectionReference;
+      }
 
-        if (this.options.pageSize) {
-          final = final.limit(this.options.pageSize) as CollectionReference;
-        }
+      if (this.options.sort) {
+        final = final.orderBy(
+          this.options.sort.active,
+          this.options.sort.direction
+        ) as CollectionReference;
+      }
 
-        if (this.options.sort) {
-          final = final.orderBy(
-            this.options.sort.active,
-            this.options.sort.direction
-          ) as CollectionReference;
-        }
+      final = this.runFilters(final);
 
-        final = this.runFilters(final);
+      if (cursor) {
+        final = final.startAfter(cursor) as CollectionReference;
+      }
 
-        if (this.cursor) {
-          final = final.startAfter(this.cursor) as CollectionReference;
-        }
-
-        return final;
-      })
-      .get()
-      .pipe(
-        map(actions => {
-          if (actions.docs.length) {
-            this.cursor = actions.docs[actions.docs.length - 1];
-
-            this.hasMore$.next(true);
-            this.emptyState$.next(false);
-
-            return actions.docs.map(action => ({
-              id: action.id,
-              ...(action.data() as any)
-            }));
-          }
-          this.hasMore$.next(false);
-          this.emptyState$.next(true);
-          return [];
-        })
-      );
+      return final;
+    });
   }
 
   runFilters(ref) {
