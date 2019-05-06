@@ -16,15 +16,13 @@ export class CustomersOverviewComponent implements OnInit {
   ) {}
 
   data$: Observable<{
-    id: string
+    id: string;
   }>;
 
   ngOnInit() {
-
-    this.data$ = this.activatedRoute.params
-      .pipe(
-        map(params => ({id: params.id}))
-      )
+    this.data$ = this.activatedRoute.params.pipe(
+      map(params => ({id: params.id}))
+    );
 
     // this.afs
     //   .collection(FirestoreCollections.Reviews, ref => {

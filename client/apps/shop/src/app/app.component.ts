@@ -9,6 +9,7 @@ import {MatDialog, MatSnackBar} from '@angular/material';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {SwUpdate} from '@angular/service-worker';
 import {BROWSER_CONFIG} from '@jf/consts/browser-config.const';
+import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {interval, Observable} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
 import {environment} from '../environments/environment';

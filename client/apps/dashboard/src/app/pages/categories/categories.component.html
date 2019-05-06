@@ -45,8 +45,12 @@
           <!--Divider-->
           <div class="f1"></div>
 
-          <!--Import-->
-          <button mat-button>
+          <button mat-button (click)="export()">
+            <mat-icon>vertical_align_top</mat-icon>
+            <span>Export</span>
+          </button>
+
+          <button mat-button (click)="import()">
             <mat-icon>vertical_align_bottom</mat-icon>
             <span>Import</span>
           </button>

@@ -12,7 +12,7 @@
   <section class="p-y-m">
     <div class="grid">
       <div class="col-8">
-        <h5>New Discount</h5>
+        <h5> <h5>{{isEdit ? form.get('name').value  : 'New Discount'}}</h5></h5>
       </div>
     </div>
   </section>
@@ -54,6 +54,8 @@
 
   <div class="jfsc-actions-header">
     <button
+      type="button"
+      tabindex="-1"
       mat-flat-button
       color="primary"
       (click)="back()">

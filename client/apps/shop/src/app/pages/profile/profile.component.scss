@@ -44,3 +44,26 @@
   opacity: 0;
   transition: .2s;
 }
+
+.loading{
+  opacity: 1;
+  background-color: white;
+  color: transparent;
+  pointer-events: none;
+  &:after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    border-bottom-color: transparent;
+    animation: loading .8s infinite;
+    @keyframes loading {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+  }
+}

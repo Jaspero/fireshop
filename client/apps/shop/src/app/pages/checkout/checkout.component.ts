@@ -1,5 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   OnInit,
@@ -12,6 +13,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
+import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {ENV_CONFIG} from '@jf/consts/env-config.const';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
@@ -47,7 +49,7 @@ import {
   StateService
 } from '../../shared/services/state/state.service';
 
-interface CheckoutSate {
+interface CheckoutState {
   price: OrderPrice;
   form: FormGroup;
   termsControl: FormControl;
@@ -61,7 +63,7 @@ interface CheckoutSate {
   user?: LoggedInUser;
 }
 
-function cardValidator(cardChanges$: CheckoutSate['stripe']['cardChanges$']) {
+function cardValidator(cardChanges$: CheckoutState['stripe']['cardChanges$']) {
   return () =>
     cardChanges$.pipe(
       take(1),
@@ -74,7 +76,8 @@ function cardValidator(cardChanges$: CheckoutSate['stripe']['cardChanges$']) {
 @Component({
   selector: 'jfs-checkout',
   templateUrl: './checkout.component.html',
-  styleUrls: ['./checkout.component.scss']
+  styleUrls: ['./checkout.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CheckoutComponent extends RxDestroy implements OnInit {
   constructor(
@@ -99,7 +102,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   cardHostEl: QueryList<ElementRef<HTMLElement>>;
 
   loading$ = new BehaviorSubject(false);
-  data$: Observable<CheckoutSate>;
+  data$: Observable<CheckoutState>;
 
   private shippingSubscription: Subscription;
 
@@ -183,11 +186,12 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
 
         return {
           /**
-           * TODO: Incorporate tax and shipping
+           * TODO: Incorporate tax
            */
           price: {
             total,
-            subTotal: total
+            shipping: DYNAMIC_CONFIG.currency.shippingCost,
+            subTotal: total - (DYNAMIC_CONFIG.currency.shippingCost || 0)
           },
 
           stripe: {
@@ -251,7 +255,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     });
   }
 
-  checkOut(state: CheckoutSate, data: any) {
+  checkOut(state: CheckoutState, data: any) {
     if (data.saveInfo) {
       this.afs
         .doc(

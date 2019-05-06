@@ -1,14 +1,12 @@
 import {SelectionModel} from '@angular/cdk/collections';
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore, CollectionReference} from '@angular/fire/firestore';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {MatBottomSheet, MatDialog, MatSort} from '@angular/material';
 import {Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {confirmation} from '@jf/utils/confirmation';
 import {notify} from '@jf/utils/notify.operator';
-import {FirebaseOperator} from 'shared/enums/firebase-operator.enum';
-import {FirestoreCollections} from 'shared/enums/firestore-collections.enum';
 import {
   BehaviorSubject,
   combineLatest,
@@ -28,10 +26,12 @@ import {
   take,
   tap
 } from 'rxjs/operators';
-import {ExportComponent} from '../export/export.component';
+import {FirebaseOperator} from 'shared/enums/firebase-operator.enum';
+import {FirestoreCollections} from 'shared/enums/firestore-collections.enum';
 import {PAGE_SIZES} from '../../consts/page-sizes.const';
 import {RouteData} from '../../interfaces/route-data.interface';
 import {StateService} from '../../services/state/state.service';
+import {ExportComponent} from '../export/export.component';
 
 @Component({
   selector: 'jfsc-list',
@@ -115,29 +115,43 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
   }
 
   setItems() {
-    this.items$ = merge(
-      this.sort.sortChange.pipe(
-        tap((sort: any) => {
-          this.options.sort = sort;
-          this.state.setRouteData(this.options);
-        })
-      ),
+    const listeners = [];
 
-      this.pageSize.valueChanges.pipe(
-        tap(pageSize => {
-          this.options.pageSize = pageSize;
-          this.state.setRouteData(this.options);
-        })
-      ),
+    if (this.options.sort) {
+      listeners.push(
+        this.sort.sortChange.pipe(
+          tap((sort: any) => {
+            this.options.sort = sort;
+            this.state.setRouteData(this.options);
+          })
+        )
+      );
+    }
 
-      this.filters.valueChanges.pipe(
-        debounceTime(400),
-        tap(filters => {
-          this.options.filters = filters;
-          this.state.setRouteData(this.options);
-        })
-      )
-    ).pipe(
+    if (this.options.pageSize) {
+      listeners.push(
+        this.pageSize.valueChanges.pipe(
+          tap(pageSize => {
+            this.options.pageSize = pageSize;
+            this.state.setRouteData(this.options);
+          })
+        )
+      );
+    }
+
+    if (this.options.filters) {
+      listeners.push(
+        this.filters.valueChanges.pipe(
+          debounceTime(400),
+          tap(filters => {
+            this.options.filters = filters;
+            this.state.setRouteData(this.options);
+          })
+        )
+      );
+    }
+
+    this.items$ = merge(...listeners).pipe(
       startWith(null),
       switchMap(() => {
         this.dataLoading$.next(true);
@@ -174,14 +188,23 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
 
     return this.afs
       .collection<T>(this.collection, ref => {
-        let final = ref
-          .limit(this.options.pageSize)
-          .orderBy(this.options.sort.active, this.options.sort.direction);
+        let final = ref;
+
+        if (this.options.pageSize) {
+          final = final.limit(this.options.pageSize) as CollectionReference;
+        }
+
+        if (this.options.sort) {
+          final = final.orderBy(
+            this.options.sort.active,
+            this.options.sort.direction
+          ) as CollectionReference;
+        }
 
         final = this.runFilters(final);
 
         if (this.cursor) {
-          final = final.startAfter(this.cursor);
+          final = final.startAfter(this.cursor) as CollectionReference;
         }
 
         return final;
@@ -257,9 +280,13 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
     this.router.navigate(['/', this.collection, item]);
   }
 
-  // TODO: Implement
   export() {
-    this.bottomSheet.open(ExportComponent);
+    this.bottomSheet.open(ExportComponent, {
+      data: {
+        collection: this.collection,
+        ids: this.selection.selected
+      }
+    });
   }
 
   // TODO: Implement

@@ -25,19 +25,19 @@ import {forkJoin, from, Observable, of} from 'rxjs';
 import {catchError, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 
 @Component({
-  selector: 'jfsc-file-upload',
-  templateUrl: './file-upload.component.html',
-  styleUrls: ['./file-upload.component.scss'],
+  selector: 'jfsc-gallery-upload',
+  templateUrl: './gallery-upload.component.html',
+  styleUrls: ['./gallery-upload.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => FileUploadComponent),
+      useExisting: forwardRef(() => GalleryUploadComponent),
       multi: true
     }
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FileUploadComponent extends RxDestroy
+export class GalleryUploadComponent extends RxDestroy
   implements OnInit, ControlValueAccessor {
   static STORAGE_URL =
     'https://firebasestorage.googleapis.com/v0/b/' +
@@ -124,7 +124,7 @@ export class FileUploadComponent extends RxDestroy
   }
 
   removeImage(index: number, item) {
-    if (item.live && item.data.includes(FileUploadComponent.STORAGE_URL)) {
+    if (item.live && item.data.includes(GalleryUploadComponent.STORAGE_URL)) {
       this.toRemove.push(item.data);
     }
 
