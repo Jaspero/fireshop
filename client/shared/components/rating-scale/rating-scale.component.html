@@ -1,0 +1,11 @@
+<div>
+  <mat-icon
+    class="cs-pointer"
+    [class.disabled]="isDisabled || !isFormControl"
+    *ngFor="let star of fiveStar;
+    index as index"
+    [color]="color || isDisabled ? 'default' : 'primary'"
+    (click)="chooseRating(index)">
+      {{value > index ? 'star' : 'star_border'}}
+  </mat-icon>
+</div>

@@ -16,8 +16,8 @@ export class OrdersSinglePageComponent extends SinglePageComponent
   collection = FirestoreCollections.Orders;
   deliveryStatus = OrderStatus;
 
-  get ordersForms() {
-    return this.form.get('orders') as FormArray;
+  get ordersItemForms() {
+    return this.form.get('ordersItems') as FormArray;
   }
 
   buildForm(data: any) {
@@ -32,8 +32,10 @@ export class OrdersSinglePageComponent extends SinglePageComponent
       paymentIntentId: data.paymentIntentId || '',
       price: data.price || '',
       status: data.status || '',
-      orders: this.fb.array(
-        data.orderItems ? data.orderItems.map(x => this.fb.group(x)) : []
+      ordersItems: this.fb.array(
+        data.orderItems
+          ? data.orderItems.map(x => this.fb.group(this.itemGroup(x)))
+          : []
       )
     });
 
@@ -66,15 +68,21 @@ export class OrdersSinglePageComponent extends SinglePageComponent
     });
   }
 
-  addOrder() {
-    const order = this.fb.group({
-      name: '',
-      quantity: 0
-    });
-    this.ordersForms.push(order);
+  addItem() {
+    const order = this.fb.group(this.itemGroup({}));
+    this.ordersItemForms.push(order);
   }
 
-  deleteOrder(i) {
-    this.ordersForms.removeAt(i);
+  itemGroup(data) {
+    return {
+      id: data.productId || '',
+      quantity: data.quantity || '',
+      price: data.price || '',
+      name: data.name || ''
+    };
+  }
+
+  deleteItem(i) {
+    this.ordersItemForms.removeAt(i);
   }
 }

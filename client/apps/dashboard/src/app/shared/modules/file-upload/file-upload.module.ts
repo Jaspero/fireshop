@@ -1,6 +1,5 @@
 import {ModuleWithProviders, NgModule} from '@angular/core';
 import {AngularFireStorageModule} from '@angular/fire/storage';
-import {FileUploadComponent} from './component/file-upload.component';
 import {CommonModule} from '@angular/common';
 import {
   MatButtonModule,
@@ -10,8 +9,10 @@ import {
 } from '@angular/material';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {ReactiveFormsModule} from '@angular/forms';
+import {GalleryUploadComponent} from './gallery-upload/gallery-upload.component';
+import {ImageUploadComponent} from './image-upload/image-upload.component';
 
-const COMPONENTS = [FileUploadComponent];
+const COMPONENTS = [GalleryUploadComponent, ImageUploadComponent];
 
 @NgModule({
   declarations: [...COMPONENTS],

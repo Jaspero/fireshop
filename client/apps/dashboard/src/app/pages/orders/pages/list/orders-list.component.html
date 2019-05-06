@@ -87,8 +87,12 @@
           <!--Divider-->
           <div class="f1"></div>
 
-          <!--Import-->
-          <button mat-button>
+          <button mat-button (click)="export()">
+            <mat-icon>vertical_align_top</mat-icon>
+            <span>Export</span>
+          </button>
+
+          <button mat-button (click)="import()">
             <mat-icon>vertical_align_bottom</mat-icon>
             <span>Import</span>
           </button>
@@ -108,25 +112,24 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+            <td mat-cell *matCellDef="let element">{{element.id}}</td>
+          </ng-container>
 
           <ng-container matColumnDef="customer">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer name</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
             <td mat-cell *matCellDef="let element">{{element.customerName}}</td>
           </ng-container>
 
-          <ng-container matColumnDef="email">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Order ID</th>
-            <td mat-cell *matCellDef="let element">{{element.email}}</td>
+          <ng-container matColumnDef="createdOn">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Created On</th>
+            <td mat-cell *matCellDef="let element">{{element.createdOn | date}}</td>
           </ng-container>
 
           <ng-container matColumnDef="price">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Order ID</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
             <td mat-cell *matCellDef="let element">{{element.price}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="time">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Time</th>
-            <td mat-cell *matCellDef="let element">{{element.createdOn | date}}</td>
           </ng-container>
 
           <ng-container matColumnDef="statusChange">
@@ -134,10 +137,10 @@
             <td mat-cell *matCellDef="let element">
               <mat-form-field>
                 <mat-select
-                  (selectionChange)="changeClient($event.value, element.id)"
-                  [(ngModel)]="element.status">
+                  [value]="element.status"
+                  (selectionChange)="changeClient($event.value, element.id)">
                   <mat-option
-                    *ngFor="let stat of (deliveryStatus | keyvalue)"
+                    *ngFor="let stat of deliveryStatus | keyvalue"
                     [value]="stat.value">
                     {{stat.value}}
                   </mat-option>

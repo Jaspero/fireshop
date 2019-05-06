@@ -13,10 +13,10 @@ import {ListComponent} from '../../../../shared/components/list/list.component';
 export class OrdersListComponent extends ListComponent<Order> {
   displayedColumns = [
     'checkBox',
+    'id',
+    'createdOn',
     'customer',
-    'email',
     'price',
-    'time',
     'statusChange',
     'actions'
   ];
@@ -24,12 +24,10 @@ export class OrdersListComponent extends ListComponent<Order> {
   collection = FirestoreCollections.Orders;
   deliveryStatus = OrderStatus;
 
-  changeClient(val, element) {
+  changeClient(status: OrderStatus, id: string) {
     this.afs
       .collection(FirestoreCollections.Orders)
-      .doc(element)
-      .update({
-        status: val
-      });
+      .doc(id)
+      .set({status}, {merge: true});
   }
 }

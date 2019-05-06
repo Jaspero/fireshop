@@ -17,10 +17,10 @@ export class CustomersSinglePageComponent extends SinglePageComponent {
   buildForm(data) {
     this.form = this.fb.group({
       id: data.id || '',
-      fullName: data.fullName || '',
+      name: data.name || '',
       gender: data.gender || '',
       bio: data.bio || '',
-      billing: this.checkForm(data.billing ? data.billing : {}),
+      billing: this.addressForm(data.billing ? data.billing : {}),
       shippingInfo: data.shippingInfo || true
     });
 
@@ -33,13 +33,13 @@ export class CustomersSinglePageComponent extends SinglePageComponent {
         } else {
           this.form.addControl(
             'shipping',
-            this.checkForm(value.shipping || {})
+            this.addressForm(value.shipping || {})
           );
         }
       });
   }
 
-  checkForm(data: any) {
+  addressForm(data: any) {
     return this.fb.group({
       firstName: data.firstName || '',
       lastName: data.lastName || '',

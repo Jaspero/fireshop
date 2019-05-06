@@ -69,7 +69,10 @@
           <input matInput type="tel" formControlName="line2">
         </mat-form-field>
       </ng-container>
-      <h6 class="m-b-xs m-t-s">Shipping info</h6>
+      <h6 class="p-t-s">Shipping info</h6>
+      <div class="p-y-s">
+        <mat-checkbox color="primary" formControlName="shippingInfo">My shipping address is same as my billing address</mat-checkbox>
+      </div>
       <ng-container formGroupName="shipping" *ngIf="settingsForm.get('shipping')">
         <mat-form-field class="col-6 col-s-12 p-r-xs" appearance="outline">
           <mat-label>First Name</mat-label>
@@ -108,12 +111,12 @@
           <input matInput type="tel" formControlName="line2">
         </mat-form-field>
       </ng-container>
-      <mat-checkbox color="primary" formControlName="shippingInfo">My shipping address is same as my billing address</mat-checkbox>
       <div class="ta-right">
         <button id="btn-address-sub" mat-flat-button color="primary" (click)="submitForm(settingsForm.getRawValue())">Submit</button>
       </div>
     </mat-card>
   </div>
+
 
   <div class="col-6 col-m-8 col-s-10 col-xs-12">
     <mat-card>
