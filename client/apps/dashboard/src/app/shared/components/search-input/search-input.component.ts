@@ -1,10 +1,26 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {ControlValueAccessor, FormControl} from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  forwardRef,
+  OnInit
+} from '@angular/core';
+import {
+  ControlValueAccessor,
+  FormControl,
+  NG_VALUE_ACCESSOR
+} from '@angular/forms';
 
 @Component({
-  selector: 'jfsc-search-list',
+  selector: 'jfsc-search-input',
   templateUrl: './search-input.component.html',
   styleUrls: ['./search-input.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SearchInputComponent),
+      multi: true
+    }
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchInputComponent implements OnInit, ControlValueAccessor {
@@ -16,12 +32,6 @@ export class SearchInputComponent implements OnInit, ControlValueAccessor {
 
   ngOnInit() {
     this.search = new FormControl('');
-  }
-
-  clearInput() {
-    if (this.search.value !== '') {
-      this.search.setValue('');
-    }
   }
 
   registerOnTouched(fn: any) {
@@ -36,5 +46,11 @@ export class SearchInputComponent implements OnInit, ControlValueAccessor {
 
   writeValue(value: string) {
     this.search.setValue(value);
+  }
+
+  clearInput() {
+    if (this.search.value !== '') {
+      this.search.setValue('');
+    }
   }
 }
