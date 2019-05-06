@@ -40,18 +40,18 @@ export class WishListComponent implements OnInit {
            */
           if (user.customerData.wishList) {
             return forkJoin(
-              user.customerData.wishList.map(id =>
+              user.customerData.wishList.map(product =>
                 this.afs
                   .doc(
-                    `${FirestoreCollections.Products}-${
-                      STATIC_CONFIG.lang
-                    }/${id}`
+                    `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}/${
+                      product.productId
+                    }`
                   )
                   .get()
                   .pipe(
-                    map(product => ({
-                      id,
-                      ...product.data()
+                    map(doc => ({
+                      id: doc.id,
+                      ...doc.data()
                     }))
                   )
               )
