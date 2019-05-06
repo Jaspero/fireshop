@@ -217,6 +217,11 @@
             </td>
           </ng-container>
 
+          <ng-container mat-footer-row *matFooterRowDef>
+            <tr *ngIf="emptyState$ | async">
+              There are no products on the list
+            </tr>
+          </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>

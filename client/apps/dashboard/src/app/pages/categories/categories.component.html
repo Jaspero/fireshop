@@ -55,7 +55,6 @@
             <span>Import</span>
           </button>
         </div>
-        {{emptyState$ | async}}
         <table
           mat-table
           matSort
@@ -110,6 +109,11 @@
             </td>
           </ng-container>
 
+          <ng-container mat-footer-row *matFooterRowDef>
+            <tr *ngIf="emptyState$ | async">
+              There are no categories on the list
+            </tr>
+          </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>

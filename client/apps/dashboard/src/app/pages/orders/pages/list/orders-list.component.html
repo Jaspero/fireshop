@@ -168,15 +168,11 @@
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="emptyList">
-            <td mat-footer-cell *matFooterCellDef colspan="5">
-              There are no orders to list
-            </td>
+          <ng-container mat-footer-row *matFooterRowDef>
+            <tr *ngIf="emptyState$ | async">
+              There are no orders on the list
+            </tr>
           </ng-container>
-
-          <ng-template [ngIf]="emptyState$ | async">
-            <tr mat-footer-row *matFooterRowDef="['emptyList']"></tr>
-          </ng-template>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
