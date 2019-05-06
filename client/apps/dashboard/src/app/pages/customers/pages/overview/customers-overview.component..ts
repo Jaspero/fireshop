@@ -5,7 +5,7 @@ import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {forkJoin, Observable} from 'rxjs';
-import {map, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'jfsc-overview',
@@ -64,9 +64,5 @@ export class CustomersOverviewComponent extends RxDestroy implements OnInit {
         )
       )
     );
-
-    this.data$.subscribe(val => {
-      console.log('v', val);
-    });
   }
 }
