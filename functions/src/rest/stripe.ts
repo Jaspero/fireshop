@@ -19,13 +19,16 @@ app.use(cors());
 
 async function getItems(orderItems: OrderItem[], lang: string) {
   const snapshots: any[] = await Promise.all(
-    orderItems.map(item =>
-      admin
+    orderItems.map(item => {
+      const doc = admin
         .firestore()
         .collection(`products-${lang}`)
-        .doc(item.id)
-        .get()
-    )
+        .doc(item.id);
+
+      console.log('doc', doc);
+
+      return doc.get();
+    })
   );
 
   for (let i = 0; i < snapshots.length; i++) {
@@ -48,6 +51,9 @@ app.post('/checkout', (req, res) => {
         .get(),
       getItems(req.body.orderItems, req.body.lang)
     ]);
+
+    console.log(2, req.body.orderItems);
+    console.log('bad', items);
 
     const amount = items.reduce(
       (acc, cur, curIndex) =>

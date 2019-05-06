@@ -101,7 +101,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   @ViewChildren('card')
   cardHostEl: QueryList<ElementRef<HTMLElement>>;
 
-  loading$ = new BehaviorSubject(false);
+  pageLoading$ = new BehaviorSubject(true);
+  checkoutLoading$ = new BehaviorSubject(false);
   data$: Observable<CheckoutState>;
 
   private shippingSubscription: Subscription;
@@ -184,6 +185,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
           .pipe(takeUntil(this.destroyed$))
           .subscribe(() => form.updateValueAndValidity());
 
+        this.pageLoading$.next(false);
+
         return {
           /**
            * TODO: Incorporate tax
@@ -256,7 +259,9 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   }
 
   checkOut(state: CheckoutState, data: any) {
-    if (data.saveInfo) {
+    this.checkoutLoading$.next(true);
+
+    if (this.afAuth.auth.currentUser && data.saveInfo) {
       this.afs
         .doc(
           `${FirestoreCollections.Customers}/${
@@ -266,10 +271,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
         .update(data);
     }
 
-    this.loading$.next(true);
-
     from(
-      state.stripe['handleCardPayment'](
+      state.stripe.stripe['handleCardPayment'](
         state.stripe.clientSecret,
         state.stripe.cardObj,
         {
@@ -308,7 +311,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
                 : {})
             });
         }),
-        finalize(() => this.loading$.next(false))
+        finalize(() => this.checkoutLoading$.next(false))
       )
       .subscribe(
         () => {

@@ -5,6 +5,10 @@
   </a>
 </h5>
 
+<div *ngIf="pageLoading$ | async" class="flex jc-center m-t-l">
+  <mat-spinner [diameter]="40"></mat-spinner>
+</div>
+
 <div class="grid grid-no-gutter" *ngIf="data$ | async as data">
   <div class="col-12">
     <mat-horizontal-stepper linear class="bg-l-primary">
@@ -238,7 +242,7 @@
                   mat-flat-button
                   color="primary"
                   id="btn-purchase"
-                  [class.loading]="loading$ | async"
+                  [class.loading]="checkoutLoading$ | async"
                   [disabled]="!data.termsControl.value"
                   (click)="checkOut(data, val)">
                   Purchase
