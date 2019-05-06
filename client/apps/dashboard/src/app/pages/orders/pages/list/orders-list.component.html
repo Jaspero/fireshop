@@ -174,7 +174,7 @@
             </td>
           </ng-container>
 
-          <ng-template [ngIf]="(emptyState$ | async) === true">
+          <ng-template [ngIf]="emptyState$ | async">
             <tr mat-footer-row *matFooterRowDef="['emptyList']"></tr>
           </ng-template>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

@@ -218,14 +218,12 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
 
             this.hasMore$.next(true);
             this.emptyState$.next(false);
-            console.log('no');
 
             return actions.docs.map(action => ({
               id: action.id,
               ...(action.data() as any)
             }));
           }
-          console.log('yes');
           this.hasMore$.next(false);
           this.emptyState$.next(true);
           return [];
