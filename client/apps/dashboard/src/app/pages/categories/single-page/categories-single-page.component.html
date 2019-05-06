@@ -12,12 +12,12 @@
   <section class="p-y-m">
     <div class="grid">
       <div class="col-8">
-        <h5>New Category</h5>
+        <h5>{{isEdit ? form.get('name').value  : 'New Category'}}</h5>
       </div>
     </div>
   </section>
 
-  <div class="grid grid-no-gutter">
+  <div class="grid grid-no-gutter p-b-m">
     <div class="col-8 col-s-10 col-xs-12">
       <div>
         <div class="gird">
@@ -55,6 +55,8 @@
   <div class="jfsc-actions-header">
     <button
       mat-flat-button
+      type="button"
+      tabindex="-1"
       color="primary"
       (click)="back()">
       {{isEdit ? 'Discard changes' : 'Cancel'}}

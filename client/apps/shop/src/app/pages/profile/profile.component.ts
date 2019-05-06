@@ -53,6 +53,10 @@ export class ProfileComponent extends RxDestroy implements OnInit {
     {
       label: 'Reviews',
       route: 'reviews'
+    },
+    {
+      label: 'Change password',
+      route: 'change-password'
     }
   ];
 
@@ -62,6 +66,14 @@ export class ProfileComponent extends RxDestroy implements OnInit {
   loading$ = new BehaviorSubject(false);
 
   ngOnInit() {
+    // showing change password tab only for user who are sign in with email and password
+
+    if (
+      this.afAuth.auth.currentUser.providerData[0].providerId !== 'password'
+    ) {
+      this.links.splice(4, 1);
+    }
+
     const url = this.router.url.replace('/my-profile/', '');
     this.activeLink = this.links.find(val => val.route === url);
     this.angularFireStore

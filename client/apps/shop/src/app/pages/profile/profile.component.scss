@@ -28,6 +28,11 @@
 .profile-picture {
   border-radius: 50%;
   transition: .2s;
+  width: 100px;
+  min-width: 100px;
+  height: 100px;
+  min-height: 100px;
+  object-fit: cover;
 }
 
 .profile-picture-edit {

@@ -8,11 +8,13 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatChipInputEvent} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
+import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {notify} from '@jf/utils/notify.operator';
+import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format';
 import {BehaviorSubject, forkJoin, from} from 'rxjs';
 import {finalize, takeUntil} from 'rxjs/operators';
 import {CURRENCIES} from '../../shared/const/currency.const';
-import {notify} from '@jf/utils/notify.operator';
 
 @Component({
   selector: 'jfsc-settings',
@@ -46,20 +48,47 @@ export class SettingsComponent extends RxDestroy implements OnInit {
       defaultValues: {
         autoReduceQuantity: true,
         inactiveForQuantity: true,
-        realTimeData: true,
-        errorNotificationEmail: ''
+        statusUpdates: true,
+        errorNotificationEmail: '',
+        notifyOnShipped: true,
+        notifyOnDelivered: true
       }
     },
     {
       collection: 'currency',
       defaultValues: {
-        primary: 'USD'
+        primary: 'USD',
+        shippingCost: 0
+      },
+      transform: {
+        shippingCost: value => (value ? fromStripeFormat(value) : 0)
+      },
+      compile: {
+        shippingCost: value => (value ? toStripeFormat(value) : 0)
       }
     }
   ];
 
+  static setFieldValue(group: any, key: string, value: any) {
+    return group.transform && group.transform[key]
+      ? group.transform[key](value)
+      : value;
+  }
+
+  static getFieldValue(group: any, key: string, value: any) {
+    return group.compile && group.compile[key]
+      ? group.compile[key](value)
+      : value;
+  }
+
   get adminEmails() {
     return this.form.get('allowed-admins.emails');
+  }
+
+  get currencySymbol() {
+    return CURRENCIES.find(
+      cur => cur.value === this.form.get('currency.primary').value
+    ).symbol;
   }
 
   ngOnInit() {
@@ -76,7 +105,12 @@ export class SettingsComponent extends RxDestroy implements OnInit {
             const entryDate = document ? document.data() : {};
 
             for (const key in cur.defaultValues) {
-              const value = entryDate[key] || cur.defaultValues[key];
+              const value = SettingsComponent.setFieldValue(
+                cur,
+                key,
+                entryDate[key] || cur.defaultValues[key]
+              );
+
               finalData[key] = Array.isArray(value) ? [value] : value;
             }
 
@@ -110,13 +144,26 @@ export class SettingsComponent extends RxDestroy implements OnInit {
 
   save() {
     this.loading$.next(true);
+
+    const updated: any = {};
+
     forkJoin(
       this.groups.map(group => {
+        const data = (this.form.get(
+          group.collection
+        ) as FormGroup).getRawValue();
+
+        Object.keys(data).forEach(key => {
+          data[key] = SettingsComponent.getFieldValue(group, key, data[key]);
+        });
+
+        updated[group.collection] = data;
+
         return from(
           this.afs
             .collection(FirestoreCollections.Settings)
             .doc(group.collection)
-            .set((this.form.get(group.collection) as FormGroup).getRawValue(), {
+            .set(data, {
               merge: true
             })
         );
@@ -127,6 +174,8 @@ export class SettingsComponent extends RxDestroy implements OnInit {
         finalize(() => this.loading$.next(false)),
         takeUntil(this.destroyed$)
       )
-      .subscribe();
+      .subscribe(() => {
+        DYNAMIC_CONFIG.currency = updated['currency'];
+      });
   }
 }

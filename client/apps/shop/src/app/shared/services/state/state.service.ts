@@ -5,7 +5,17 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Customer} from '@jf/interfaces/customer.interface';
 import {User} from 'firebase/app';
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
-import {distinctUntilChanged, map, switchMap} from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  map,
+  shareReplay,
+  switchMap
+} from 'rxjs/operators';
+
+export interface LoggedInUser {
+  authData: User;
+  customerData: Customer;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -27,12 +37,13 @@ export class StateService {
           return of(null);
         }
       }),
-      distinctUntilChanged()
+      distinctUntilChanged(),
+      shareReplay(1)
     );
   }
 
   logInValid$ = new BehaviorSubject<boolean>(true);
-  user$: Observable<{authData: User; customerData: Customer}>;
+  user$: Observable<LoggedInUser>;
 
   currentRoute$ = new BehaviorSubject<{data: any; url: string}>({
     data: {},

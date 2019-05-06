@@ -40,11 +40,19 @@ async function getItems(orderItems: OrderItem[], lang: string) {
 
 app.post('/checkout', (req, res) => {
   async function exec() {
-    const items = await getItems(req.body.orderItems, req.body.lang);
+    const [currency, items] = await Promise.all([
+      admin
+        .firestore()
+        .collection('settings')
+        .doc('currency')
+        .get(),
+      getItems(req.body.orderItems, req.body.lang)
+    ]);
+
     const amount = items.reduce(
       (acc, cur, curIndex) =>
         req.body.orderItems[curIndex].quantity * cur.price,
-      0
+      currency.data().shippingCost || 0
     );
 
     const paymentIntent = await si.paymentIntents.create({
@@ -178,7 +186,6 @@ app.post('/webhook', async (req, res) => {
 
       break;
 
-    // TODO: Notify customer of failed payment
     case 'payment_intent.payment_failed':
       const message =
         intent.last_payment_error && intent.last_payment_error.message;
@@ -204,14 +211,24 @@ app.post('/webhook', async (req, res) => {
             settings.errorNotificationEmail,
             'Error processing payment',
             'admin-error.hbs',
-            {message}
+            {
+              title: 'Checkout Error',
+              description: 'There was an error during checkout',
+              additionalProperties: [{key: 'OrderId', value: order.id}],
+              message,
+              firebaseDashboard:
+                'https://console.firebase.google.com/u/2/project/jaspero-site/overview',
+              adminDashboard: 'https://fireshop.admin.jaspero.co/'
+            }
           ),
 
           parseEmail(
             order.email,
             'Error processing order',
             'customer-error.hbs',
-            {}
+            {
+              website: 'https://fireshop.jaspero.co'
+            }
           )
         );
       }

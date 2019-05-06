@@ -1,12 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import {Validators} from '@angular/forms';
-import {MatSort} from '@angular/material';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {FormArray} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {OrderStatus} from '@jf/enums/order-status.enum';
+import {takeUntil} from 'rxjs/operators';
 import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
 
 @Component({
@@ -17,26 +13,76 @@ import {SinglePageComponent} from '../../../../shared/components/single-page/sin
 })
 export class OrdersSinglePageComponent extends SinglePageComponent
   implements OnInit {
-  @ViewChild(MatSort) sort: MatSort;
-  displayedColumns = [
-    'name',
-    'customerId',
-    'identifier',
-    'orderId',
-    'price',
-    'productId',
-    'quantity'
-  ];
-  order: any;
-
   collection = FirestoreCollections.Orders;
+  deliveryStatus = OrderStatus;
 
-  buildForm() {
+  get ordersItemForms() {
+    return this.form.get('ordersItems') as FormArray;
+  }
+
+  buildForm(data: any) {
     this.form = this.fb.group({
-      product: ['', Validators.required],
-      name: ['', Validators.required],
-      quantity: ['', [Validators.required, Validators.min(0)]],
-      address: ['', Validators.required]
+      billing: this.checkForm(data.billing ? data.billing : {}),
+      shippingInfo: data.shippingInfo || true,
+      createdOn: data.createdOn || '',
+      customerId: data.customerId || '',
+      customerName: data.customerName || '',
+      email: data.email || '',
+      id: data.id || '',
+      paymentIntentId: data.paymentIntentId || '',
+      price: data.price || '',
+      status: data.status || '',
+      ordersItems: this.fb.array(
+        data.orderItems
+          ? data.orderItems.map(x => this.fb.group(this.itemGroup(x)))
+          : []
+      )
     });
+
+    this.form
+      .get('shippingInfo')
+      .valueChanges.pipe(takeUntil(this.destroyed$))
+      .subscribe(value => {
+        if (value) {
+          this.form.removeControl('shipping');
+        } else {
+          this.form.addControl(
+            'shipping',
+            this.checkForm(value.shipping || {})
+          );
+        }
+      });
+  }
+
+  checkForm(data: any) {
+    return this.fb.group({
+      firstName: data.firstName || '',
+      lastName: data.lastName || '',
+      email: data.email || '',
+      phone: data.phone || '',
+      city: data.city || '',
+      zip: data.zip || '',
+      country: data.country || '',
+      line1: data.line1 || '',
+      line2: data.line2 || ''
+    });
+  }
+
+  addItem() {
+    const order = this.fb.group(this.itemGroup({}));
+    this.ordersItemForms.push(order);
+  }
+
+  itemGroup(data) {
+    return {
+      id: data.productId || '',
+      quantity: data.quantity || '',
+      price: data.price || '',
+      name: data.name || ''
+    };
+  }
+
+  deleteItem(i) {
+    this.ordersItemForms.removeAt(i);
   }
 }

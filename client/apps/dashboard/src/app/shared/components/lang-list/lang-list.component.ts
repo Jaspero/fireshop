@@ -1,4 +1,5 @@
 import {Component} from '@angular/core';
+import {CollectionReference} from '@angular/fire/firestore';
 import {from, merge, Observable, of} from 'rxjs';
 import {
   debounceTime,
@@ -12,6 +13,7 @@ import {
 } from 'rxjs/operators';
 import {Language} from 'shared/enums/language.enum';
 import {RouteData} from '../../interfaces/route-data.interface';
+import {ExportComponent} from '../export/export.component';
 import {ListComponent} from '../list/list.component';
 
 @Component({
@@ -25,40 +27,54 @@ export class LangListComponent<
   setItems() {
     let language: Language;
 
+    const listeners = [];
+
+    if (this.options.sort) {
+      listeners.push(
+        this.sort.sortChange.pipe(
+          tap((sort: any) => {
+            this.options.sort = sort;
+            this.state.setRouteData(this.options);
+          })
+        )
+      );
+    }
+
+    if (this.options.pageSize) {
+      listeners.push(
+        this.pageSize.valueChanges.pipe(
+          tap(pageSize => {
+            this.options.pageSize = pageSize;
+            this.state.setRouteData(this.options);
+          })
+        )
+      );
+    }
+
+    if (this.options.filters) {
+      listeners.push(
+        this.filters.valueChanges.pipe(
+          debounceTime(400),
+          tap(filters => {
+            this.options.filters = filters;
+            this.state.setRouteData(this.options);
+          })
+        )
+      );
+    }
+
     this.items$ = this.state.language$.pipe(
       switchMap(lang => {
         language = lang;
 
-        return merge(
-          this.sort.sortChange.pipe(
-            tap((sort: any) => {
-              this.options.sort = sort;
-              this.state.setRouteData(this.options);
-            })
-          ),
-
-          this.pageSize.valueChanges.pipe(
-            tap(pageSize => {
-              this.options.pageSize = pageSize;
-              this.state.setRouteData(this.options);
-            })
-          ),
-
-          this.filters.valueChanges.pipe(
-            debounceTime(400),
-            tap(filters => {
-              this.options.filters = filters;
-              this.state.setRouteData(this.options);
-            })
-          )
-        ).pipe(startWith(null));
+        return merge(...listeners).pipe(startWith(null));
       }),
       switchMap(() => {
         let items;
 
         this.dataLoading$.next(true);
 
-        return this.loadItems(language, this.realTime, true).pipe(
+        return this.loadItems(language, true).pipe(
           switchMap(its => {
             items = its;
             this.dataLoading$.next(true);
@@ -66,7 +82,7 @@ export class LangListComponent<
           }),
           switchMap(toDo => {
             if (toDo) {
-              return this.loadItems(language, false);
+              return this.loadItems(language);
             } else {
               return of(items);
             }
@@ -79,36 +95,45 @@ export class LangListComponent<
     );
   }
 
-  loadItems(lang: Language, continues: boolean, reset = false) {
+  loadItems(lang: Language, reset = false) {
     if (reset) {
       this.cursor = null;
     }
 
-    const changes = this.afs
+    return this.afs
       .collection<T>(`${this.collection}-${lang}`, ref => {
-        let final = ref
-          .limit(this.options.pageSize)
-          .orderBy(this.options.sort.active, this.options.sort.direction);
+        let final = ref;
+
+        if (this.options.pageSize) {
+          final = final.limit(this.options.pageSize) as CollectionReference;
+        }
+
+        if (this.options.sort) {
+          final = final.orderBy(
+            this.options.sort.active,
+            this.options.sort.direction
+          ) as CollectionReference;
+        }
 
         final = this.runFilters(final);
 
         if (this.cursor) {
-          final = final.startAfter(this.cursor);
+          final = final.startAfter(this.cursor) as CollectionReference;
         }
 
         return final;
       })
-      .snapshotChanges()
+      .get()
       .pipe(
         map(actions => {
-          if (actions.length) {
-            this.cursor = actions[actions.length - 1].payload.doc;
+          if (actions.docs.length) {
+            this.cursor = actions.docs[actions.docs.length - 1];
 
             this.hasMore$.next(true);
 
-            return actions.map(action => ({
-              id: action.payload.doc.id,
-              ...(action.payload.doc.data() as any)
+            return actions.docs.map(action => ({
+              id: action.id,
+              ...(action.data() as any)
             }));
           }
 
@@ -117,16 +142,6 @@ export class LangListComponent<
           return [];
         })
       );
-
-    /**
-     * If data shouldn't be streamed continually
-     * we only take one emit from the stream
-     */
-    if (!continues) {
-      changes.pipe(take(1));
-    }
-
-    return changes;
   }
 
   delete(id: string): Observable<any> {
@@ -140,5 +155,23 @@ export class LangListComponent<
         )
       )
     );
+  }
+
+  export() {
+    this.state.language$
+      .pipe(
+        take(1),
+        switchMap(lang =>
+          this.bottomSheet
+            .open(ExportComponent, {
+              data: {
+                collection: `${this.collection}-${lang}`,
+                ids: this.selection.selected
+              }
+            })
+            .afterOpened()
+        )
+      )
+      .subscribe();
   }
 }

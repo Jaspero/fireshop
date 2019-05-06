@@ -25,16 +25,12 @@
     <div class="grid grid-no-gutter">
       <div class="col-8 col-s-10 col-xs-12">
         <div class="grid">
+
           <div class="col-12">
             <mat-card formGroupName="general-settings">
               <h6 class="p-y-xs">General</h6>
               <div class="p-y-xs">
                 <mat-divider></mat-divider>
-              </div>
-              <!--TODO: Add info bubbles-->
-              <div class="p-y-xs flex jc-between">
-                <span>Real Time Data</span>
-                <mat-slide-toggle formControlName="realTimeData"></mat-slide-toggle>
               </div>
               <div class="p-y-xs flex jc-between">
                 <span>Automatically reduce item quantity</span>
@@ -44,13 +40,32 @@
                 <span>Inactive when out of stock</span>
                 <mat-slide-toggle formControlName="inactiveForQuantity"></mat-slide-toggle>
               </div>
-
-              <mat-form-field appearance="outline" class="w-full p-y-xs">
-                <mat-label>Error Notification Email</mat-label>
-                <input type="email" formControlName="errorNotificationEmail" matInput>
-              </mat-form-field>
             </mat-card>
           </div>
+
+          <div class="col-12">
+            <mat-card formGroupName="general-settings">
+              <h6 class="p-y-xs">Notifications</h6>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="p-y-xs flex jc-between">
+                <span>Notify customers when an order is <b>shipped</b></span>
+                <mat-slide-toggle formControlName="notifyOnShipped"></mat-slide-toggle>
+              </div>
+              <div class="p-y-xs flex jc-between">
+                <span>Notify customers when an order is <b>delivered</b></span>
+                <mat-slide-toggle formControlName="notifyOnDelivered"></mat-slide-toggle>
+              </div>
+              <div class="p-y-xs flex jc-between">
+                <mat-form-field appearance="outline" class="w-full p-y-xs">
+                  <mat-label>Error Notification Email</mat-label>
+                  <input type="email" formControlName="errorNotificationEmail" matInput>
+                </mat-form-field>
+              </div>
+            </mat-card>
+          </div>
+
           <div class="col-12">
             <mat-card>
               <h6 class="p-y-xs">Admin</h6>
@@ -97,6 +112,13 @@
                       {{cur.value}} ({{cur.symbol}})
                     </mat-option>
                   </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Shipping cost</mat-label>
+                  <input type="number" matInput formControlName="shippingCost">
+                  <span matPrefix>{{currencySymbol}}&nbsp;</span>
                 </mat-form-field>
               </div>
             </mat-card>

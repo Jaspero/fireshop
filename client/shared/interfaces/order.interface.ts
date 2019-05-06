@@ -3,12 +3,15 @@ import {Address} from './address.interface';
 
 export interface OrderPrice {
   total: number;
+  shipping?: number;
   subTotal: number;
 }
 
 export interface OrderItem {
   id: string;
   quantity: number;
+  name: string;
+  price: number;
   /**
    * Any attributes that can differ
    */

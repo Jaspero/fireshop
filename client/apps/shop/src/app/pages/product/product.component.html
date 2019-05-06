@@ -2,34 +2,28 @@
 
   <!--Product name-->
   <section class="bg-primary c-l-primary jfs-product-header">
-    <div class="grid">
+    <div class="grid jc-start">
       <div class="col-6 col-xs-12">
         <h3 class="fw-reg c-l-primary m-b-xs">{{data.product.name}}</h3>
         <p>{{data.product.shortDescription}}</p>
       </div>
 
-      <ng-container *ngIf="(rews$ | async) as rec">
+      <ng-container *ngIf="rews$ | async as rec;">
 
         <ng-template #reviewsDialog>
           <h6 mat-dialog-title="">Reviews</h6>
-          <ng-container *ngIf="rec.length; else empty">
-            <div *ngFor="let review of rec">
-              <jfs-review-card [review]="review"></jfs-review-card>
-            </div>
-          </ng-container>
+          <div class="m-b-s" *ngFor="let review of rec[0]">
+            <jfs-review-card [review]="review"></jfs-review-card>
+          </div>
         </ng-template>
 
-        <div class="col-6 col-xs-12 ws-nowrap ta-right">
-          <mat-icon>star</mat-icon>
-          <mat-icon>star</mat-icon>
-          <mat-icon>star</mat-icon>
-          <mat-icon>star</mat-icon>
-          <mat-icon>star</mat-icon>
-          <p><a class="link" (click)="openReviews()">Number of reviews: {{rec.length}}</a></p>
+        <div *ngIf="rec[0].length" class="col-6 col-xs-12 ws-nowrap ta-right">
+          <p>
+            <a class="link" (click)="openReviews()">{{rec[0].length}} reviews</a>
+          </p>
+          <jfs-rating-scale [value]="rec[1]" color="default"></jfs-rating-scale>
         </div>
       </ng-container>
-
-
     </div>
   </section>
 
@@ -44,6 +38,7 @@
             <h2 class="m-t-m m-b-xs">{{data.product.price | sp}}</h2>
             <ng-container *ngIf="data.quantity; else notInCart">
               <button
+                id="btn-add-more-prod-0"
                 mat-flat-button
                 color="accent"
                 (click)="cart.add(data.product)">
@@ -52,12 +47,19 @@
             </ng-container>
             <ng-template #notInCart>
               <button
+                id="btn-add-cart-prod-1"
                 mat-flat-button
                 color="accent"
                 (click)="cart.add(data.product)">
                 <span class="iblock p-x-m">Add to cart</span>
               </button>
             </ng-template>
+            <div class="m-y-m flex fd-col ai-start">
+              <p class="m-b-xs"><b>Share this product:</b></p>
+              <button mat-button (click)="facebookShare(data)">Share on Facebook</button>
+              <button mat-button (click)="twitterShare(data)">Share on Twitter</button>
+              <button mat-button (click)="emailShare(data)">Share via email</button>
+            </div>
           </div>
           <div class="col-6 col-s-12">
             <div class="jfs-gallery">
@@ -77,6 +79,7 @@
           </div>
         </div>
         <button
+          id="btn-wish-list-1"
           class="jfs-wishlist-button"
           mat-mini-fab
           color="accent"

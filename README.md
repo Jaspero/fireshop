@@ -59,3 +59,10 @@ To add an admin claim to an account add it to the `email` property of the `setti
 2. Connect `payment_intent.succeeded` and `payment_intent.payment_failed`
    events for the webhook.
 3. Added the stripe webhook secret to your integrations environment variables.
+
+## Feature Branches
+
+### feature/mail-chimp
+
+Creates a MailChimp account for every new user if the users
+email isn't listed already.

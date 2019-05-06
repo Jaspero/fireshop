@@ -262,7 +262,7 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "dashboard:build",
-            "port": 5000
+            "port": 5500
           },
           "configurations": {
             "production": {

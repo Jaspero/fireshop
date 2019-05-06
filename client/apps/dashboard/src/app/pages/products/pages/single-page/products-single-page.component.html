@@ -72,7 +72,7 @@
                 <mat-divider></mat-divider>
               </div>
               <div class="p-y-xs">
-                <jfsc-file-upload formControlName="gallery"></jfsc-file-upload>
+                <jfsc-gallery-upload formControlName="gallery"></jfsc-gallery-upload>
               </div>
             </mat-card>
           </div>
@@ -89,7 +89,7 @@
               <div class="p-y-xs">
                 <mat-form-field appearance="outline" class="w-full">
                   <mat-label>Price</mat-label>
-                  <span matPrefix>$&nbsp;</span>
+                  <span matPrefix>{{currency}}&nbsp;</span>
                   <input formControlName="price" matInput type="number">
                 </mat-form-field>
               </div>
@@ -144,6 +144,8 @@
 
   <div class="jfsc-actions-header">
     <button
+      type="button"
+      tabindex="-1"
       mat-flat-button
       color="primary"
       (click)="back()">
