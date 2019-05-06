@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {MatDialog} from '@angular/material';
+import {CustomerWishList} from '@jf/interfaces/customer.interface';
 import {Observable} from 'rxjs';
 import {filter, map, startWith, take} from 'rxjs/operators';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
@@ -20,20 +21,16 @@ export class WishListService {
   ) {
     this.wishList$ = this.state.user$.pipe(
       filter(user => !!(user && user.customerData)),
-      map(user => {
-        return user.customerData.wishList || [];
-      })
+      map(user => user.customerData.wishList || [])
     );
   }
 
-  wishList$: Observable<string[]>;
+  wishList$: Observable<CustomerWishList[]>;
 
-  includes(productId: string): Observable<boolean> {
+  includes(productId): Observable<boolean> {
     return this.wishList$.pipe(
       startWith([]),
-      map(wishList => {
-        return wishList ? wishList.includes(productId) : undefined;
-      })
+      map(wishList => wishList.some(x => x.productId === productId))
     );
   }
 
@@ -41,17 +38,20 @@ export class WishListService {
    * Adds the product to the customers wish list
    * or removes it if it's currently on it
    */
-  toggle(productId: string) {
+  toggle(data) {
     if (this.afAuth.auth.currentUser) {
       this.wishList$.pipe(take(1)).subscribe(wishList => {
-        const index = wishList.indexOf(productId);
+        const index = wishList.findIndex(x => x.productId === data.id);
 
         if (index !== -1) {
           wishList.splice(index, 1);
         } else {
-          wishList.push(productId);
+          wishList.push({
+            productId: data.id,
+            addedOn: Date.now(),
+            name: data.name
+          });
         }
-
         this.afs
           .doc(
             `${FirestoreCollections.Customers}/${
