@@ -11,16 +11,10 @@ service cloud.firestore {
     }
 
     match /products-en/{product} {
-  	  allow read: if resource.data.active == true
-      allow read: if admin()
+  	  allow read: if resource.data.active == true || admin()
+  	  allow write, delete: if admin()
     }
 
-    // Add for other languages
-    match /products-en/{product} {
-      allow write, delete: if admin()
-    }
-
-    // Add for other languages
     match /categories-en/{category} {
       allow read: if true
       allow write, delete: if admin()

@@ -10,7 +10,14 @@ import {ListComponent} from '../../../../shared/components/list/list.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomersListComponent extends ListComponent<Customer> {
-  displayedColumns = ['checkBox', 'name', 'gender', 'createdOn', 'actions'];
+  displayedColumns = [
+    'checkBox',
+    'createdOn',
+    'name',
+    'email',
+    'gender',
+    'actions'
+  ];
   collection = FirestoreCollections.Customers;
 
   ngOnInit() {

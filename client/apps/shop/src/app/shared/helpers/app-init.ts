@@ -1,18 +1,34 @@
 import {isPlatformBrowser} from '@angular/common';
+import {AngularFirestore} from '@angular/fire/firestore';
 import {JpPreloadService} from '@jaspero/ng-image-preload';
 import {BROWSER_CONFIG} from '@jf/consts/browser-config.const';
+import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
+import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {FirestoreStaticDocuments} from '@jf/enums/firestore-static-documents.enum';
+import {CurrencySettings} from '@jf/interfaces/currency-settings.interface';
+import {take} from 'rxjs/operators';
 import {NetworkService} from '../services/network/network.service';
 
 export async function appInit(
   pId,
   networkService: NetworkService,
-  jpPreloadService: JpPreloadService
+  jpPreloadService: JpPreloadService,
+  afs: AngularFirestore
 ) {
   if (isPlatformBrowser(pId)) {
     networkService.init();
     jpPreloadService.initialize();
 
     BROWSER_CONFIG.isBrowser = true;
+
+    try {
+      DYNAMIC_CONFIG.currency = await afs
+        .collection(FirestoreCollections.Settings)
+        .doc<CurrencySettings>(FirestoreStaticDocuments.CurrencySettings)
+        .valueChanges()
+        .pipe(take(1))
+        .toPromise();
+    } catch (e) {}
 
     if (!self.createImageBitmap) {
       BROWSER_CONFIG.webpSupported = false;

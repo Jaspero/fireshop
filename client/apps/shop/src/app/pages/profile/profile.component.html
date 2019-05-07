@@ -1,7 +1,7 @@
 <section class="p-y-m ta-center bg-primary">
   <div class="profile-picture-container" *ngIf="loadImg">
-    <img class="profile-picture" src="{{downloadURL}}" alt="Profile picture" width="100" height="100">
-    <button id="btn-file-upload" class="profile-picture-edit" mat-icon-button color="accent" aria-label="edit" (click)="openFileUpload()">
+    <img class="profile-picture" [src]="downloadURL" alt="Profile picture" width="100" height="100">
+    <button id="btn-file-upload" class="profile-picture-edit" [class.loading]="loading$ | async" mat-icon-button color="accent" aria-label="edit" (click)="openFileUpload()">
       <mat-icon>edit</mat-icon>
     </button>
   </div>
@@ -16,8 +16,7 @@
     [routerLink]="link.route"
     routerLinkActive="active"
     (click)="activeLink = link"
-    [active]="activeLink.route === link.route"
-  >
+    [active]="activeLink.route === link.route">
     {{ link.label }}
   </a>
 </nav>
