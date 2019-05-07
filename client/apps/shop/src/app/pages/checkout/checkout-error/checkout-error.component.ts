@@ -21,7 +21,7 @@ export class CheckoutErrorComponent implements OnInit, OnDestroy {
     private router: Router
   ) {}
 
-  error: Array<object>;
+  error: Array<any>;
 
   ngOnInit() {
     this.error = JSON.parse(localStorage.getItem('error'));

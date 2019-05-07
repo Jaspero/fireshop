@@ -77,28 +77,66 @@ async function getItems(orderItems: OrderItem[], lang: string) {
 
 app.post('/checkout', (req, res) => {
   async function exec() {
-    const [currency, items] = await Promise.all([
+    let [currency, items, stripeCustomer]: any = await Promise.all([
       admin
         .firestore()
         .collection('settings')
         .doc('currency')
         .get(),
-      getItems(req.body.orderItems, req.body.lang)
+      getItems(req.body.orderItems, req.body.lang),
+
+      /**
+       * Try to retrieve a customer if the
+       * checkout is from a logged in user
+       */
+      ...(req.body.customer
+        ? [
+            si.customers.list({
+              email: req.body.customer.email,
+              limit: 1
+            })
+          ]
+        : [])
     ]);
+
+    /**
+     * Create the customer if it doesn't exist
+     */
+    if (!stripeCustomer && req.body.customer) {
+      stripeCustomer = await si.customers.create({
+        email: req.body.customer.email,
+        name: req.body.customer.name,
+        metadata: {
+          id: req.body.customer.id
+        }
+      });
+    }
+
+    currency = currency.data();
 
     const amount = items.reduce(
       (acc, cur, curIndex) =>
         req.body.orderItems[curIndex].quantity * cur.price,
-      currency.data().shippingCost || 0
+      currency.shippingCost || 0
     );
 
     const paymentIntent = await si.paymentIntents.create({
       amount,
-      currency: 'usd',
+      currency: currency.primary,
       metadata: {
         lang: req.body.lang
       },
-      description: 'Purchase from fireShop website'
+      description: 'Purchase from fireShop website',
+      statement_descriptor: 'Fireshop purchase',
+
+      /**
+       * Attach customer if it was created
+       */
+      ...(stripeCustomer
+        ? {
+            customer: stripeCustomer.id
+          }
+        : {})
     });
 
     return {clientSecret: paymentIntent.client_secret};
@@ -124,11 +162,12 @@ app.post('/webhook', async (req, res) => {
 
   try {
     event = si.webhooks.constructEvent(
-      req.body,
+      req['rawBody'],
       sig,
       ENV_CONFIG.stripe.webhook
     );
   } catch (err) {
+    console.error(err);
     // invalid signature
     res.status(HttpStatus.BadRequest).end();
     return;
@@ -169,11 +208,6 @@ app.post('/webhook', async (req, res) => {
   ]);
   const items = await getItems(order.orderItems, intent.metadata.lang);
 
-  console.log('intent', intent);
-  console.log('order', order);
-  console.log('settings', settings);
-  console.log('items', items);
-
   let exec;
 
   switch (event['type']) {
@@ -199,7 +233,7 @@ app.post('/webhook', async (req, res) => {
         exec.push(
           ...items.map((item, itemIndex) => {
             const quantity =
-              item.quantity - intent.metadata.orderItems[itemIndex].quantity;
+              item.quantity - order.orderItems[itemIndex].quantity;
 
             let active = item.active;
 
