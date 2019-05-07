@@ -5,7 +5,12 @@ import {
   CollectionReference,
   QueryDocumentSnapshot
 } from '@angular/fire/firestore';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  NG_VALUE_ACCESSOR
+} from '@angular/forms';
 import {MatBottomSheet, MatDialog, MatSort} from '@angular/material';
 import {Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
@@ -155,7 +160,6 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
     if (this.options.filters) {
       listeners.push(
         this.filters.valueChanges.pipe(
-          debounceTime(400),
           tap(filters => {
             this.options.filters = filters;
             this.state.setRouteData(this.options);

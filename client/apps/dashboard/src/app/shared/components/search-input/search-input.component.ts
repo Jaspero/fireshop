@@ -1,7 +1,9 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   forwardRef,
+  Input,
   OnInit
 } from '@angular/core';
 import {
@@ -9,6 +11,7 @@ import {
   FormControl,
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
+import {debounceTime} from 'rxjs/operators';
 
 @Component({
   selector: 'jfsc-search-input',
@@ -23,15 +26,26 @@ import {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchInputComponent implements OnInit, ControlValueAccessor {
+export class SearchInputComponent
+  implements OnInit, AfterViewInit, ControlValueAccessor {
   constructor() {}
+
+  @Input()
+  debounceTime: number;
 
   search: FormControl;
   onTouch: Function;
   onModelChange: Function;
+  isDisabled: boolean;
 
   ngOnInit() {
     this.search = new FormControl('');
+  }
+
+  ngAfterViewInit() {
+    this.search.valueChanges.pipe(debounceTime(400)).subscribe(value => {
+      this.onModelChange(value);
+    });
   }
 
   registerOnTouched(fn: any) {
@@ -42,7 +56,9 @@ export class SearchInputComponent implements OnInit, ControlValueAccessor {
     this.onModelChange = fn;
   }
 
-  setDisabledState(isDisabled: boolean) {}
+  setDisabledState(isDisabled: boolean) {
+    this.isDisabled = isDisabled;
+  }
 
   writeValue(value: string) {
     this.search.setValue(value);

@@ -19,11 +19,4 @@ export class CustomersListComponent extends ListComponent<Customer> {
     'actions'
   ];
   collection = FirestoreCollections.Customers;
-
-  ngOnInit() {
-    super.ngOnInit();
-    this.filters.valueChanges.subscribe(value => {
-      console.log('value', value);
-    });
-  }
 }
