@@ -7,6 +7,19 @@ import {ENV_CONFIG} from '../consts/env-config.const';
 import {HttpStatus} from '../enums/http-status.enum';
 import {parseEmail} from '../utils/parse-email';
 
+class CheckoutError extends Error {
+  constructor(
+    public data: Array<{
+      data: any;
+      message: string;
+      type: string;
+    }>
+  ) {
+    super('not important');
+    Object.setPrototypeOf(this, CheckoutError.prototype);
+  }
+}
+
 interface OrderItem {
   id: string;
   quantity: number;
@@ -28,12 +41,35 @@ async function getItems(orderItems: OrderItem[], lang: string) {
       return doc.get();
     })
   );
-
+  const error = [];
   for (let i = 0; i < snapshots.length; i++) {
-    snapshots[i] = {
-      id: snapshots[i].id,
-      ...snapshots[i].data()
-    };
+    if (snapshots[i].exists) {
+      snapshots[i] = {
+        id: snapshots[i].id,
+        ...snapshots[i].data()
+      };
+      const item = orderItems.find(x => x.id === snapshots[i].id);
+      if (snapshots[i].quantity < item.quantity) {
+        error.push({
+          message: `We currently don't have enough of ${
+            snapshots[i].id
+          } in inventory`,
+          data: snapshots[i].id,
+          type: 'quantity_insufficient'
+        });
+      }
+    } else {
+      error.push({
+        message: `item ${snapshots[i].id} is currently unavailable`,
+        data: snapshots[i].id,
+        type: 'product_missing'
+      });
+    }
+  }
+
+  if (error.length) {
+    console.log('error', error);
+    throw new CheckoutError(error);
   }
 
   return snapshots;
@@ -61,7 +97,8 @@ app.post('/checkout', (req, res) => {
       currency: 'usd',
       metadata: {
         lang: req.body.lang
-      }
+      },
+      description: 'Purchase from fireShop website'
     });
 
     return {clientSecret: paymentIntent.client_secret};
@@ -69,9 +106,15 @@ app.post('/checkout', (req, res) => {
 
   exec()
     .then(data => res.json(data))
-    .catch(error =>
-      res.status(HttpStatus.InternalServerError).send({error: error.toString()})
-    );
+    .catch(error => {
+      if (error instanceof CheckoutError) {
+        res.status(HttpStatus.BadRequest).send(error.data);
+      } else {
+        res
+          .status(HttpStatus.InternalServerError)
+          .send({error: error.toString()});
+      }
+    });
 });
 
 app.post('/webhook', async (req, res) => {

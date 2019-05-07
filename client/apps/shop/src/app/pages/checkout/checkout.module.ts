@@ -7,7 +7,7 @@ import {CheckoutSuccessComponent} from './checkout-success/checkout-success.comp
 
 const routes: Routes = [
   {path: '', component: CheckoutComponent},
-  {path: 'admin-error.hbs', component: CheckoutErrorComponent},
+  {path: 'error', component: CheckoutErrorComponent},
   {path: 'success', component: CheckoutSuccessComponent}
 ];
 

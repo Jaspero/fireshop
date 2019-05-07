@@ -30,6 +30,7 @@ import {
   throwError
 } from 'rxjs';
 import {
+  catchError,
   finalize,
   first,
   map,
@@ -210,6 +211,12 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
           termsControl: new FormControl(false)
         };
       }),
+      catchError(error => {
+        localStorage.setItem('error', JSON.stringify(error.error));
+        this.router.navigate(['/checkout/error']);
+
+        return throwError(error);
+      }),
       shareReplay(1)
     );
   }
@@ -298,13 +305,13 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
               status: OrderStatus.Ordered,
               paymentIntentId: paymentIntent.id,
               billing: data.billing,
-              orderItems: data.orderItems,
+              orderItems: state.orderItems,
               createdOn: Date.now(),
 
               ...(data.shippingInfo ? {} : {shipping: data.shipping}),
               ...(state.user
                 ? {
-                    customerId: state.user.customerData.id,
+                    customerId: state.user.authData.uid,
                     customerName: state.user.customerData.name,
                     email: state.user.authData.email
                   }
@@ -317,7 +324,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
         () => {
           this.router.navigate(['checkout/success']);
         },
-        () => {
+        err => {
           this.router.navigate(['checkout/error']);
         }
       );
