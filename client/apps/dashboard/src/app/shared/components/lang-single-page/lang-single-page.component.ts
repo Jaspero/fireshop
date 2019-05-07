@@ -15,9 +15,13 @@ export class LangSinglePageComponent extends SinglePageComponent
     combineLatest(this.activatedRoute.params, this.state.language$)
       .pipe(
         switchMap(([params, lang]) => {
+          // console.log(params);
+
           if (params.id === 'new') {
             this.isEdit = '';
             return of({});
+          } else if (params.id.includes('copy')) {
+            // console.log(123)
           } else {
             this.isEdit = params.id;
             return this.afs
@@ -54,7 +58,6 @@ export class LangSinglePageComponent extends SinglePageComponent
   save() {
     const {id, ...item} = this.form.getRawValue();
     this.initialValue = this.form.getRawValue();
-
     return this.state.language$.pipe(
       take(1),
       switchMap(lang => this.getSaveData(id, item, lang)),

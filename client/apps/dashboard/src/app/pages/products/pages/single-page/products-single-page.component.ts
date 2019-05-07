@@ -12,6 +12,7 @@ import {Product} from '@jf/interfaces/product.interface';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
 import {Observable} from 'rxjs';
 import {map, shareReplay, switchMap, take} from 'rxjs/operators';
+import {environment} from '../../../../../../../shop/src/environments/environment';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {CURRENCIES} from '../../../../shared/const/currency.const';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
@@ -31,6 +32,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   categories$: Observable<Category[]>;
   collection = FirestoreCollections.Products;
   currency: string;
+  duplicateProduct: boolean;
 
   ngOnInit() {
     super.ngOnInit();
@@ -138,10 +140,11 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   }
 
   view(form) {
-    window.open('http://localhost:4200/product/' + form.controls.id.value);
+    window.open(environment.websiteUrl + '/product/' + form.controls.id.value);
   }
 
   duplicate(form) {
-    this.router.navigate(['/products/new']);
+    this.duplicateProduct = true;
+    // this.router.navigate(['/copy' + form.controls.id.value])
   }
 }
