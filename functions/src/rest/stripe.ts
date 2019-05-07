@@ -25,8 +25,6 @@ async function getItems(orderItems: OrderItem[], lang: string) {
         .collection(`products-${lang}`)
         .doc(item.id);
 
-      console.log('doc', doc);
-
       return doc.get();
     })
   );
@@ -51,9 +49,6 @@ app.post('/checkout', (req, res) => {
         .get(),
       getItems(req.body.orderItems, req.body.lang)
     ]);
-
-    console.log(2, req.body.orderItems);
-    console.log('bad', items);
 
     const amount = items.reduce(
       (acc, cur, curIndex) =>
