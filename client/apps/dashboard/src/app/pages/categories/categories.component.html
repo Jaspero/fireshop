@@ -11,15 +11,9 @@
     <div class="col-12">
       <mat-card>
 
-        <form [formGroup]="filters" autocomplete="off">
-          <div class="toolbar toolbar-inset p-t-0">
-            <mat-form-field appearance="outline">
-              <mat-label>&nbsp;Search</mat-label>
-              <input matInput formControlName="search">
-              <mat-icon matPrefix>search</mat-icon>
-            </mat-form-field>
-            <div class="f1"></div>
-          </div>
+        <form [formGroup]="filters" class="toolbar toolbar-inset p-t-0">
+          <jfsc-search-input formControlName="search"></jfsc-search-input>
+          <div class="f1"></div>
         </form>
 
         <jfsc-chips [chips$]="filters.valueChanges" (filterValue)="changeFilters($event)"></jfsc-chips>
