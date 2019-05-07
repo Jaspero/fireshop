@@ -1,14 +1,16 @@
 import {SelectionModel} from '@angular/cdk/collections';
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {
+  AngularFirestore,
+  CollectionReference,
+  QueryDocumentSnapshot
+} from '@angular/fire/firestore';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {MatBottomSheet, MatDialog, MatSort} from '@angular/material';
 import {Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {confirmation} from '@jf/utils/confirmation';
-import {FirebaseOperator} from 'shared/enums/firebase-operator.enum';
-import {FirestoreCollections} from 'shared/enums/firestore-collections.enum';
-import {notify} from 'shared/utils/notify.operator';
+import {notify} from '@jf/utils/notify.operator';
 import {
   BehaviorSubject,
   combineLatest,
@@ -22,17 +24,19 @@ import {
 import {
   debounceTime,
   map,
-  scan,
+  shareReplay,
+  skip,
   startWith,
   switchMap,
   take,
   tap
 } from 'rxjs/operators';
-import {ImageUploadComponent} from '../../modules/file-upload/image-upload/image-upload.component';
-import {ExportComponent} from '../export/export.component';
+import {FirebaseOperator} from 'shared/enums/firebase-operator.enum';
+import {FirestoreCollections} from 'shared/enums/firestore-collections.enum';
 import {PAGE_SIZES} from '../../consts/page-sizes.const';
 import {RouteData} from '../../interfaces/route-data.interface';
 import {StateService} from '../../services/state/state.service';
+import {ExportComponent} from '../export/export.component';
 
 @Component({
   selector: 'jfsc-list',
@@ -61,6 +65,7 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
   items$: Observable<T[]>;
   allChecked$: Observable<{checked: boolean}>;
   loadMore$ = new Subject<boolean>();
+  emptyState$ = new BehaviorSubject(false);
   dataLoading$ = new BehaviorSubject(true);
   hasMore$ = new BehaviorSubject(true);
   chips$: Observable<Array<{filter: string; value: string}>>;
@@ -78,8 +83,9 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
     }
   };
 
-  // TODO: Pull from settings
-  realTime = false;
+  get collectionRef() {
+    return of(this.collection as string);
+  }
 
   ngOnInit() {
     this.options = this.state.getRouterData({
@@ -87,13 +93,16 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
         direction: 'desc',
         active: 'createdOn'
       },
-      pageSize: 10,
+      pageSize: 5,
       ...this.additionalRouteData
     });
     this.pageSize = new FormControl(this.options.pageSize);
     this.filters = this.fb.group(this.options.filters);
 
-    this.setItems();
+    this.items$ = this.collectionRef.pipe(
+      switchMap(collection => this.setItems(collection)),
+      shareReplay(1)
+    );
 
     this.allChecked$ = combineLatest(
       this.items$,
@@ -118,107 +127,176 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
     );
   }
 
-  setItems() {
-    this.items$ = merge(
-      this.sort.sortChange.pipe(
-        tap((sort: any) => {
-          this.options.sort = sort;
-          this.state.setRouteData(this.options);
-        })
-      ),
+  setItems(collection: string) {
+    const listeners = [];
 
-      this.pageSize.valueChanges.pipe(
-        tap(pageSize => {
-          this.options.pageSize = pageSize;
-          this.state.setRouteData(this.options);
-        })
-      ),
+    if (this.options.sort) {
+      listeners.push(
+        this.sort.sortChange.pipe(
+          tap((sort: any) => {
+            this.options.sort = sort;
+            this.state.setRouteData(this.options);
+          })
+        )
+      );
+    }
 
-      this.filters.valueChanges.pipe(
-        debounceTime(400),
-        tap(filters => {
-          this.options.filters = filters;
-          this.state.setRouteData(this.options);
-        })
-      )
-    ).pipe(
+    if (this.options.pageSize) {
+      listeners.push(
+        this.pageSize.valueChanges.pipe(
+          tap(pageSize => {
+            this.options.pageSize = pageSize;
+            this.state.setRouteData(this.options);
+          })
+        )
+      );
+    }
+
+    if (this.options.filters) {
+      listeners.push(
+        this.filters.valueChanges.pipe(
+          debounceTime(400),
+          tap(filters => {
+            this.options.filters = filters;
+            this.state.setRouteData(this.options);
+          })
+        )
+      );
+    }
+
+    return merge(...listeners).pipe(
       startWith(null),
       switchMap(() => {
         this.dataLoading$.next(true);
 
-        let items;
+        return this.getCollection(collection, null, this.options.pageSize)
+          .snapshotChanges(['added'])
+          .pipe(take(1));
+      }),
+      switchMap(snapshots => {
+        let cursor;
 
-        return this.loadItems(this.realTime, true).pipe(
-          switchMap(data => {
-            items = data;
+        if (snapshots.length < this.options.pageSize) {
+          this.hasMore$.next(false);
+        }
 
-            this.dataLoading$.next(true);
+        if (snapshots.length) {
+          cursor = snapshots[snapshots.length - 1].payload.doc;
+        } else {
+          this.emptyState$.next(true);
+        }
 
-            return this.loadMore$.pipe(startWith(false));
-          }),
-          switchMap(toDo => {
-            if (toDo) {
-              return this.loadItems(false);
-            } else {
-              return of(items);
-            }
-          }),
-          scan((acc, cur) => acc.concat(cur), []),
-          tap(() => this.dataLoading$.next(false))
+        const docs = snapshots.map(item => ({
+          id: item.payload.doc.id,
+          ...item.payload.doc.data()
+        }));
+
+        return merge(
+          this.loadMore$.pipe(
+            switchMap(() => {
+              this.dataLoading$.next(true);
+              return this.getCollection(
+                collection,
+                cursor,
+                this.options.pageSize
+              )
+                .snapshotChanges(['added'])
+                .pipe(
+                  take(1),
+                  tap(snaps => {
+                    if (snaps.length < this.options.pageSize) {
+                      this.hasMore$.next(false);
+                    }
+
+                    if (snaps.length) {
+                      cursor = snaps[snaps.length - 1].payload.doc;
+
+                      docs.push(
+                        ...snaps.map(item => ({
+                          id: item.payload.doc.id,
+                          ...item.payload.doc.data()
+                        }))
+                      );
+                    }
+                  })
+                );
+            })
+          ),
+
+          this.getCollection(collection, null, null)
+            .stateChanges()
+            .pipe(
+              skip(1),
+              tap(snaps => {
+                snaps.forEach(snap => {
+                  const index = docs.findIndex(
+                    doc => doc.id === snap.payload.doc.id
+                  );
+
+                  switch (snap.type) {
+                    case 'added':
+                      if (index === -1) {
+                        docs.push({
+                          id: snap.payload.doc.id,
+                          ...snap.payload.doc.data()
+                        });
+                      }
+                      break;
+                    case 'modified':
+                      if (index !== -1) {
+                        docs[index] = {
+                          id: snap.payload.doc.id,
+                          ...snap.payload.doc.data()
+                        };
+                      }
+                      break;
+                    case 'removed':
+                      if (index !== -1) {
+                        docs.splice(index, 1);
+                      }
+                      break;
+                  }
+                });
+              })
+            )
+        ).pipe(
+          startWith(null),
+          map(() => {
+            this.dataLoading$.next(false);
+            return [...docs];
+          })
         );
       })
     );
   }
 
-  loadItems(...args): Observable<any>;
-  loadItems(continues: boolean, reset = false) {
-    if (reset) {
-      this.cursor = null;
-    }
+  getCollection(
+    collection: string,
+    cursor?: QueryDocumentSnapshot<T>,
+    pageSize?: number
+  ) {
+    return this.afs.collection<T>(collection, ref => {
+      let final = ref;
 
-    const changes = this.afs
-      .collection<T>(this.collection, ref => {
-        let final = ref
-          .limit(this.options.pageSize)
-          .orderBy(this.options.sort.active, this.options.sort.direction);
+      if (pageSize) {
+        final = final.limit(pageSize) as CollectionReference;
+      }
 
-        final = this.runFilters(final);
+      if (this.options.sort) {
+        final = final.orderBy(
+          this.options.sort.active,
+          this.options.sort.direction
+        ) as CollectionReference;
+      }
 
-        if (this.cursor) {
-          final = final.startAfter(this.cursor);
-        }
+      final = this.runFilters(final);
 
-        return final;
-      })
-      .snapshotChanges()
-      .pipe(
-        map(actions => {
-          if (actions.length) {
-            this.cursor = actions[actions.length - 1].payload.doc;
+      if (cursor) {
+        final = final.startAfter(cursor) as CollectionReference;
+      }
 
-            this.hasMore$.next(true);
-
-            return actions.map(action => ({
-              id: action.payload.doc.id,
-              ...(action.payload.doc.data() as any)
-            }));
-          }
-
-          this.hasMore$.next(false);
-
-          return [];
-        })
-      );
-
-    /**
-     * If data shouldn't be streamed continually
-     * we only take one emit from the stream
-     */
-    if (!continues) {
-      changes.pipe(take(1));
-    }
-
-    return changes;
+      return final;
+    });
   }
 
   runFilters(ref) {
@@ -271,9 +349,13 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
     this.router.navigate(['/', this.collection, item]);
   }
 
-  // TODO: Implement
   export() {
-    this.bottomSheet.open(ExportComponent);
+    this.bottomSheet.open(ExportComponent, {
+      data: {
+        collection: this.collection,
+        ids: this.selection.selected
+      }
+    });
   }
 
   // TODO: Implement

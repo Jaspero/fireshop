@@ -27,7 +27,6 @@ import {
   takeUntil,
   tap
 } from 'rxjs/operators';
-import {LoginSignupDialogComponent} from '../../shared/components/login-signup-dialog/login-signup-dialog.component';
 import {CartService} from '../../shared/services/cart/cart.service';
 
 @Component({
@@ -243,16 +242,5 @@ export class ShopComponent extends RxDestroy implements OnInit {
 
   setCategory(id: string) {
     this.filters.get('category').setValue(id);
-  }
-
-  logInOrAddToWishList() {
-    if (this.afAuth.auth.currentUser) {
-      // TODO: WHEN USER IS LOGGED IN, HE CAN EDIT(ADD || REMOVE) HIS WISH LIST
-    } else {
-      this.dialog.open(LoginSignupDialogComponent, {
-        width: '400px',
-        height: '700px'
-      });
-    }
   }
 }

@@ -1,5 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   OnInit,
@@ -12,6 +13,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
+import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {ENV_CONFIG} from '@jf/consts/env-config.const';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
@@ -37,14 +39,17 @@ import {
   takeUntil
 } from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
-import {LoginSignupDialogComponent} from '../../shared/components/login-signup-dialog/login-signup-dialog.component';
+import {
+  LoginSignupDialogComponent,
+  LoginSignUpView
+} from '../../shared/components/login-signup-dialog/login-signup-dialog.component';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {
   LoggedInUser,
   StateService
 } from '../../shared/services/state/state.service';
 
-interface CheckoutSate {
+interface CheckoutState {
   price: OrderPrice;
   form: FormGroup;
   termsControl: FormControl;
@@ -58,7 +63,7 @@ interface CheckoutSate {
   user?: LoggedInUser;
 }
 
-function cardValidator(cardChanges$: CheckoutSate['stripe']['cardChanges$']) {
+function cardValidator(cardChanges$: CheckoutState['stripe']['cardChanges$']) {
   return () =>
     cardChanges$.pipe(
       take(1),
@@ -71,7 +76,8 @@ function cardValidator(cardChanges$: CheckoutSate['stripe']['cardChanges$']) {
 @Component({
   selector: 'jfs-checkout',
   templateUrl: './checkout.component.html',
-  styleUrls: ['./checkout.component.scss']
+  styleUrls: ['./checkout.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CheckoutComponent extends RxDestroy implements OnInit {
   constructor(
@@ -95,8 +101,9 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   @ViewChildren('card')
   cardHostEl: QueryList<ElementRef<HTMLElement>>;
 
-  loading$ = new BehaviorSubject(false);
-  data$: Observable<CheckoutSate>;
+  pageLoading$ = new BehaviorSubject(true);
+  checkoutLoading$ = new BehaviorSubject(false);
+  data$: Observable<CheckoutState>;
 
   private shippingSubscription: Subscription;
 
@@ -178,13 +185,16 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
           .pipe(takeUntil(this.destroyed$))
           .subscribe(() => form.updateValueAndValidity());
 
+        this.pageLoading$.next(false);
+
         return {
           /**
-           * TODO: Incorporate tax and shipping
+           * TODO: Incorporate tax
            */
           price: {
             total,
-            subTotal: total
+            shipping: DYNAMIC_CONFIG.currency.shippingCost,
+            subTotal: total - (DYNAMIC_CONFIG.currency.shippingCost || 0)
           },
 
           stripe: {
@@ -248,8 +258,10 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     });
   }
 
-  checkOut(state: CheckoutSate, data: any) {
-    if (data.saveInfo) {
+  checkOut(state: CheckoutState, data: any) {
+    this.checkoutLoading$.next(true);
+
+    if (this.afAuth.auth.currentUser && data.saveInfo) {
       this.afs
         .doc(
           `${FirestoreCollections.Customers}/${
@@ -259,10 +271,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
         .update(data);
     }
 
-    this.loading$.next(true);
-
     from(
-      state.stripe['handleCardPayment'](
+      state.stripe.stripe['handleCardPayment'](
         state.stripe.clientSecret,
         state.stripe.cardObj,
         {
@@ -301,7 +311,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
                 : {})
             });
         }),
-        finalize(() => this.loading$.next(false))
+        finalize(() => this.checkoutLoading$.next(false))
       )
       .subscribe(
         () => {
@@ -315,7 +325,10 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
 
   logInSignUp(logIn = true) {
     this.dialog.open(LoginSignupDialogComponent, {
-      width: '400px'
+      width: '400px',
+      data: {
+        view: logIn ? LoginSignUpView.LogIn : LoginSignUpView.SignUp
+      }
     });
   }
 }

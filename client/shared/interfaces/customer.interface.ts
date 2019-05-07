@@ -11,6 +11,12 @@ export interface CustomerReview {
   createdOn: number;
 }
 
+export interface CustomerWishList {
+  productId: string;
+  name: string;
+  addedOn: number;
+}
+
 export interface Customer {
   id: string;
   createdOn: number;
@@ -19,7 +25,7 @@ export interface Customer {
   billing?: Address;
   shippingInfo?: boolean;
   shipping?: Address;
-  wishList?: string[];
+  wishList?: CustomerWishList[];
   orders?: Order[];
   reviews?: CustomerReview[];
 }

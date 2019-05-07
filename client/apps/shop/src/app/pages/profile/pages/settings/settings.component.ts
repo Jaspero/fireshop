@@ -1,13 +1,13 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material';
-import {DeleteUserComponent} from '../../components/delete-user/delete-user.component';
-import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {AngularFirestore} from '@angular/fire/firestore';
 import {AngularFireAuth} from '@angular/fire/auth';
+import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {MatDialog} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
+import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Observable, Subscription} from 'rxjs';
+import {map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {DeleteUserComponent} from '../../components/delete-user/delete-user.component';
 
 @Component({
   selector: 'jfs-settings',

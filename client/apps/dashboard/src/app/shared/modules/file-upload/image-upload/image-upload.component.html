@@ -1,4 +1,4 @@
-<input matInput type="url" placeholder="Image URL" [class.disabled]="disInput" [formControl]="imageUrl">
+<input matInput type="url" [placeholder]="placeholder" [class.disabled]="disInput" [formControl]="imageUrl">
 
 <ng-container *ngIf="imageUrl.value">
   <div class="iblock relative">

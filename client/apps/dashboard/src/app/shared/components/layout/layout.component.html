@@ -20,7 +20,8 @@
     <mat-menu #mainMenu="matMenu">
       <a *ngFor="let link of links"
          mat-menu-item
-         [routerLink]="[link.value]">
+         [routerLink]="[link.value]"
+         routerLinkActive="active">
         <mat-icon>{{link.icon}}</mat-icon>
         <span>{{link.label}}</span>
       </a>

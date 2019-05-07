@@ -5,6 +5,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {Validators} from '@angular/forms';
+import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {Product} from '@jf/interfaces/product.interface';
@@ -12,9 +13,9 @@ import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
 import {Observable} from 'rxjs';
 import {map, shareReplay, switchMap, take} from 'rxjs/operators';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
+import {CURRENCIES} from '../../../../shared/const/currency.const';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
-import {FileUploadComponent} from '../../../../shared/modules/file-upload/component/file-upload.component';
-import {ImageUploadComponent} from '../../../../shared/modules/file-upload/image-upload/image-upload.component';
+import {GalleryUploadComponent} from '../../../../shared/modules/file-upload/gallery-upload/gallery-upload.component';
 
 @Component({
   selector: 'jfsc-single-page',
@@ -24,17 +25,19 @@ import {ImageUploadComponent} from '../../../../shared/modules/file-upload/image
 })
 export class ProductsSinglePageComponent extends LangSinglePageComponent
   implements OnInit {
-  @ViewChild(FileUploadComponent)
-  fileUploadComponent: FileUploadComponent;
-
-  @ViewChild(ImageUploadComponent)
-  imageUploadComponent: ImageUploadComponent;
+  @ViewChild(GalleryUploadComponent)
+  galleryUploadComponent: GalleryUploadComponent;
 
   categories$: Observable<Category[]>;
   collection = FirestoreCollections.Products;
+  currency: string;
 
   ngOnInit() {
     super.ngOnInit();
+
+    this.currency = CURRENCIES.find(
+      cur => cur.value === DYNAMIC_CONFIG.currency.primary
+    ).symbol;
 
     this.categories$ = this.state.language$.pipe(
       switchMap(lang =>
@@ -107,9 +110,12 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
           }
         }
 
-        return this.fileUploadComponent
-          .save()
-          .pipe(switchMap(() => super.getSaveData(...args)));
+        return this.galleryUploadComponent.save().pipe(
+          switchMap(() => {
+            args[1].gallery = this.form.get('gallery').value;
+            return super.getSaveData(...args);
+          })
+        );
       })
     );
   }
