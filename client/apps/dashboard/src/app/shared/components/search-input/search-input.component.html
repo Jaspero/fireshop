@@ -2,7 +2,9 @@
   <mat-icon matPrefix>search</mat-icon>
   <mat-label>Search</mat-label>
   <input
+    [class.disabled]="isDisabled"
     matInput
+    (focus)="onTouch()"
     [formControl]="search"
     (click)="clearInput()">
 </mat-form-field>

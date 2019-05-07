@@ -31,7 +31,7 @@ export class SearchInputComponent
   constructor() {}
 
   @Input()
-  debounceTime: number;
+  debounceTime = 400;
 
   search: FormControl;
   onTouch: Function;
@@ -43,9 +43,11 @@ export class SearchInputComponent
   }
 
   ngAfterViewInit() {
-    this.search.valueChanges.pipe(debounceTime(400)).subscribe(value => {
-      this.onModelChange(value);
-    });
+    this.search.valueChanges
+      .pipe(debounceTime(this.debounceTime))
+      .subscribe(value => {
+        this.onModelChange(value);
+      });
   }
 
   registerOnTouched(fn: any) {
