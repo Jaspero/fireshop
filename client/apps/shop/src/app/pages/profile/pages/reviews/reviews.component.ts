@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  OnInit
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {MatDialog} from '@angular/material';
@@ -11,7 +6,6 @@ import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Review} from '@jf/interfaces/review.interface';
 import {confirmation} from '@jf/utils/confirmation';
-import {UNIQUE_ID, UNIQUE_ID_PROVIDER} from '@jf/utils/id.provider';
 import {notify} from '@jf/utils/notify.operator';
 import {from, Observable} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';

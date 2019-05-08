@@ -9,4 +9,6 @@ export interface Product {
   description: string;
   gallery: string[];
   search: string[];
+  showingQuantity: boolean;
+  quantity: number;
 }

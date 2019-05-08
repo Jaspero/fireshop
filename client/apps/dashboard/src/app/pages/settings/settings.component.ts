@@ -51,7 +51,8 @@ export class SettingsComponent extends RxDestroy implements OnInit {
         statusUpdates: true,
         errorNotificationEmail: '',
         notifyOnShipped: true,
-        notifyOnDelivered: true
+        notifyOnDelivered: true,
+        showingQuantity: true
       }
     },
     {

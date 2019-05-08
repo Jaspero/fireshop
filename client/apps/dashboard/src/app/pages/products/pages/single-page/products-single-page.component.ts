@@ -34,7 +34,6 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   ngOnInit() {
     super.ngOnInit();
-
     this.currency = CURRENCIES.find(
       cur => cur.value === DYNAMIC_CONFIG.currency.primary
     ).symbol;
@@ -133,7 +132,8 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       shortDescription: data.shortDescription || '',
       gallery: [data.gallery || []],
       quantity: [data.quantity || 0, Validators.min(0)],
-      category: data.category
+      category: data.category,
+      showingQuantity: data.showingQuantity || false
     });
   }
 }

@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
+import {AngularFirestore} from '@angular/fire/firestore';
 import {MatSnackBar} from '@angular/material';
+import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
@@ -7,7 +9,7 @@ import {map} from 'rxjs/operators';
   providedIn: 'root'
 })
 export class CartService {
-  constructor(private snackBar: MatSnackBar) {
+  constructor(private snackBar: MatSnackBar, private afs: AngularFirestore) {
     const cart = JSON.parse(localStorage.getItem('cartItem'));
     if (cart) {
       this.items$.next(cart);
@@ -30,6 +32,7 @@ export class CartService {
   items$ = new BehaviorSubject<any[]>([]);
   totalPrice$: Observable<number>;
   numOfItems$: Observable<number>;
+  totalQun: 0;
 
   add(item) {
     const current = this.items$.getValue();
@@ -64,6 +67,15 @@ export class CartService {
     current[index]['quantity'] += num;
     localStorage.setItem('cartItem', JSON.stringify(current));
     this.items$.next(current);
+
+    //TODO: do this better way, (disabling increase button in cart when there are no more product in storage(quantity))
+    this.afs
+      .collection(`${FirestoreCollections.Products}-en`)
+      .doc(product)
+      .get()
+      .subscribe(val => {
+        this.totalQun = val.data().quantity;
+      });
   }
 
   remove(product) {
