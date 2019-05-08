@@ -266,7 +266,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     return this.fb.group({
       firstName: [data.firstName || '', Validators.required],
       lastName: [data.lastName || '', Validators.required],
-      email: [data.email || '', Validators.required],
+      email: [data.email || '', [Validators.required, Validators.email]],
       phone: [data.phone || '', Validators.required],
       city: [data.city || '', Validators.required],
       zip: [data.zip || '', Validators.required],
@@ -335,6 +335,15 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
       )
       .subscribe(
         () => {
+          localStorage.setItem(
+            'success',
+            JSON.stringify({
+              items: state.orderItems,
+              price: state.price,
+              data: data.billing,
+              ...(data.shippingInfo ? {} : {shipping: data.shipping.email})
+            })
+          );
           this.router.navigate(['checkout/success']);
         },
         () => {

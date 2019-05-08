@@ -51,7 +51,9 @@ export class SettingsComponent extends RxDestroy implements OnInit {
         statusUpdates: true,
         errorNotificationEmail: '',
         notifyOnShipped: true,
-        notifyOnDelivered: true
+        notifyOnDelivered: true,
+        description: 'Purchase from fireShop website',
+        statementDescription: 'Fireshop purchase'
       }
     },
     {
@@ -120,6 +122,10 @@ export class SettingsComponent extends RxDestroy implements OnInit {
           }, {})
         );
         this.cdr.detectChanges();
+
+        this.form.valueChanges.subscribe(res => {
+          console.log('res', res);
+        });
       });
   }
 

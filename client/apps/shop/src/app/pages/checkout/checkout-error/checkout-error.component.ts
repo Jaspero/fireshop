@@ -6,6 +6,7 @@ import {
   OnInit
 } from '@angular/core';
 import {Router} from '@angular/router';
+import {take} from 'rxjs/operators';
 import {CartService} from '../../../shared/services/cart/cart.service';
 
 @Component({
@@ -21,7 +22,11 @@ export class CheckoutErrorComponent implements OnInit, OnDestroy {
     private router: Router
   ) {}
 
-  error: Array<any>;
+  error: Array<{
+    data: {id: string; name: string; quantity: number};
+    message: string;
+    type: string;
+  }>;
 
   ngOnInit() {
     this.error = JSON.parse(localStorage.getItem('error'));
@@ -32,21 +37,22 @@ export class CheckoutErrorComponent implements OnInit, OnDestroy {
   }
 
   resolveIssue() {
-    const array = this.cartService.items$.getValue();
-    this.error.forEach(er => {
-      switch (er.type) {
-        case 'product_missing':
-          const ind = array.findIndex(x => x.productId === er.data);
-          array.splice(ind, 1);
-          break;
-        case 'quantity_insufficient':
-          const ind2 = array.findIndex(x => x.productId === er.data);
-          array[ind2].quantity = 1;
-          break;
-      }
+    this.cartService.items$.pipe(take(1)).subscribe(items => {
+      this.error.forEach(er => {
+        const ind = items.findIndex(x => x.productId === er.data.id);
+        switch (er.type) {
+          case 'product_missing':
+            items.splice(ind, 1);
+            this.cartService.remove(er.data.id);
+            break;
+          case 'quantity_insufficient':
+            items[ind].quantity = er.data.quantity;
+            break;
+        }
+      });
+      localStorage.setItem('cartItem', JSON.stringify(items));
+      this.router.navigate(['/']);
     });
-    localStorage.setItem('cartItem', JSON.stringify(array));
-    this.router.navigate(['/']);
   }
 
   clearCart() {

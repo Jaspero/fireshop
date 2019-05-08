@@ -1,4 +1,10 @@
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  OnDestroy
+} from '@angular/core';
+import {CartService} from '../../../shared/services/cart/cart.service';
 
 @Component({
   selector: 'jfs-checkout-success',
@@ -6,8 +12,21 @@ import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
   styleUrls: ['./checkout-success.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CheckoutSuccessComponent implements OnInit {
-  constructor() {}
+export class CheckoutSuccessComponent implements OnInit, OnDestroy {
+  constructor(public cartService: CartService) {}
 
-  ngOnInit() {}
+  result: {
+    items: {};
+    price: {};
+    data: {};
+  };
+
+  ngOnInit() {
+    this.result = JSON.parse(localStorage.getItem('success'));
+  }
+
+  ngOnDestroy() {
+    this.cartService.clear();
+    localStorage.removeItem('success');
+  }
 }

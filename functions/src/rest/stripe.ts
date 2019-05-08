@@ -48,27 +48,33 @@ async function getItems(orderItems: OrderItem[], lang: string) {
         id: snapshots[i].id,
         ...snapshots[i].data()
       };
-      const item = orderItems.find(x => x.id === snapshots[i].id);
-      if (snapshots[i].quantity < item.quantity) {
+      if (snapshots[i].quantity < orderItems[i].quantity) {
         error.push({
           message: `We currently don't have enough of ${
-            snapshots[i].id
+            snapshots[i].name
           } in inventory`,
-          data: snapshots[i].id,
+          data: {
+            id: snapshots[i].id,
+            quantity: snapshots[i].quantity,
+            name: snapshots[i].name
+          },
           type: 'quantity_insufficient'
         });
       }
     } else {
       error.push({
-        message: `item ${snapshots[i].id} is currently unavailable`,
-        data: snapshots[i].id,
+        message: `item ${snapshots[i].name} is currently unavailable`,
+        data: {
+          id: snapshots[i].id,
+          quantity: snapshots[i].quantity,
+          name: snapshots[i].name
+        },
         type: 'product_missing'
       });
     }
   }
 
   if (error.length) {
-    console.log('error', error);
     throw new CheckoutError(error);
   }
 
@@ -77,42 +83,58 @@ async function getItems(orderItems: OrderItem[], lang: string) {
 
 app.post('/checkout', (req, res) => {
   async function exec() {
-    let [currency, items, stripeCustomer]: any = await Promise.all([
-      admin
-        .firestore()
-        .collection('settings')
-        .doc('currency')
-        .get(),
-      getItems(req.body.orderItems, req.body.lang),
+    let [currency, description, items, stripeCustomer]: any = await Promise.all(
+      [
+        admin
+          .firestore()
+          .collection('settings')
+          .doc('currency')
+          .get(),
+        admin
+          .firestore()
+          .collection('settings')
+          .doc('general-settings')
+          .get(),
+        getItems(req.body.orderItems, req.body.lang),
 
-      /**
-       * Try to retrieve a customer if the
-       * checkout is from a logged in user
-       */
-      ...(req.body.customer
-        ? [
-            si.customers.list({
-              email: req.body.customer.email,
-              limit: 1
-            })
-          ]
-        : [])
-    ]);
+        /**
+         * Try to retrieve a customer if the
+         * checkout is from a logged in user
+         */
+        ...(req.body.customer
+          ? [
+              si.customers.list({
+                email: req.body.customer.email,
+                limit: 1
+              })
+            ]
+          : [])
+      ]
+    );
+
+    console.log(1, stripeCustomer);
 
     /**
      * Create the customer if it doesn't exist
      */
-    if (!stripeCustomer && req.body.customer) {
-      stripeCustomer = await si.customers.create({
-        email: req.body.customer.email,
-        name: req.body.customer.name,
-        metadata: {
-          id: req.body.customer.id
-        }
-      });
+    if (stripeCustomer) {
+      if (stripeCustomer.data.length) {
+        stripeCustomer = stripeCustomer.data[0];
+      } else {
+        stripeCustomer = await si.customers.create({
+          email: req.body.customer.email,
+          name: req.body.customer.name,
+          metadata: {
+            id: req.body.customer.id
+          }
+        });
+      }
     }
 
+    console.log(2, stripeCustomer);
+
     currency = currency.data();
+    description = description.data();
 
     const amount = items.reduce(
       (acc, cur, curIndex) =>
@@ -126,8 +148,8 @@ app.post('/checkout', (req, res) => {
       metadata: {
         lang: req.body.lang
       },
-      description: 'Purchase from fireShop website',
-      statement_descriptor: 'Fireshop purchase',
+      description: description.description,
+      statement_descriptor: description.statementDescription,
 
       /**
        * Attach customer if it was created
