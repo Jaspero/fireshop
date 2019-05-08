@@ -54,6 +54,7 @@ import {ListComponent} from './components/list/list.component';
 import {SinglePageComponent} from './components/single-page/single-page.component';
 import {WysiwygComponent} from './components/wysiwyg/wysiwyg.component';
 import {FileUploadModule} from './modules/file-upload/file-upload.module';
+import {ImportComponent} from './components/import/import.component';
 
 const IMPORTS = [
   CommonModule,
@@ -110,7 +111,7 @@ const IMPORTS = [
   FileUploadModule
 ];
 
-const COMPONENTS = [WysiwygComponent, ChipsComponent];
+const COMPONENTS = [WysiwygComponent, ChipsComponent, ImportComponent];
 
 const ENTRY_COMPONENTS = [
   ConfirmationComponent,
