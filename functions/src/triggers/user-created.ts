@@ -4,13 +4,14 @@ import {parseEmail} from '../utils/parse-email';
 
 export const userCreated = functions.auth.user().onCreate(async user => {
   const documentRef = await firestore()
-    .doc('settings/allowed-admins')
+    .doc('settings/user')
     .get();
-  const emails = (documentRef.data() || {}).emails || [];
+  const roles = (documentRef.data() || {}).roles || [];
+  const role = roles.find(ro => ro.email === user.email);
 
-  if (emails.includes(user.email)) {
+  if (role) {
     const customClaims = {
-      admin: true
+      role: role.role
     };
 
     // Set custom user claims on this newly created user.

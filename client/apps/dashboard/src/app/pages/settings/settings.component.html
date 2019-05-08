@@ -68,30 +68,34 @@
 
           <div class="col-12">
             <mat-card>
-              <h6 class="p-y-xs">Admin</h6>
+              <h6 class="p-y-xs">Roles</h6>
               <div class="p-y-xs">
                 <mat-divider></mat-divider>
               </div>
-              <div class="p-y-xs">
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Admins</mat-label>
-                  <mat-chip-list #chipList>
-                    <mat-chip
-                      *ngFor="let admin of adminEmails.value; index as index"
-                      [removable]="true"
-                      (removed)="removeAdmin(index)">
-                      {{admin}}
-                      <mat-icon matChipRemove>cancel</mat-icon>
-                    </mat-chip>
-                    <input
-                      [formControl]="emailControl"
-                      [matChipInputFor]="chipList"
-                      (matChipInputTokenEnd)="emailControl.valid  ? addAdmin($event) : ''">
-                    <mat-error *ngIf="emailControl.invalid && emailControl.value">Please enter valid email</mat-error>
-                    <mat-error *ngIf="alreadyAdmin">This email is already an admin</mat-error>
-                  </mat-chip-list>
+
+              <div class="p-y-xs flex" *ngFor="let control of roles.controls; index as index" [formGroup]="control">
+
+                <mat-form-field appearance="outline" class="w-full m-r-xs">
+                  <mat-label>Email</mat-label>
+                  <input type="email" formControlName="email" matInput>
                 </mat-form-field>
+
+                <mat-form-field appearance="outline" class="w-full m-r-xs">
+                  <mat-label>Role</mat-label>
+                  <mat-select formControlName="role">
+                    <mat-option *ngFor="let option of role | keyvalue" [value]="option.value">{{option.key}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <button mat-icon-button color="warn" (click)="roles.removeAt(index)">
+                  <mat-icon>delete</mat-icon>
+                </button>
               </div>
+
+              <div class="flex jc-end">
+                <button mat-raised-button color="primary" (click)="roles.push(createRole())">Add role</button>
+              </div>
+
             </mat-card>
           </div>
         </div>
