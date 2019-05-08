@@ -127,4 +127,10 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
     this.currentValue = '';
     this.router.navigate(['/', this.collection]);
   }
+
+  duplicate(form) {
+    this.router.navigate([
+      this.collection + '/copy' + '_' + form.controls.id.value
+    ]);
+  }
 }

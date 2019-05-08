@@ -52,8 +52,4 @@ export class CustomersSinglePageComponent extends SinglePageComponent {
       line2: data.line2 || ''
     });
   }
-
-  duplicate(form) {
-    this.router.navigate(['customers/copy' + '_' + form.controls.id.value]);
-  }
 }

@@ -22,8 +22,4 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
       description: [data.description || '']
     });
   }
-
-  duplicate(form) {
-    this.router.navigate(['discounts/copy' + '_' + form.controls.id.value]);
-  }
 }

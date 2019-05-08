@@ -57,38 +57,38 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   }
 
   // TODO: I think this can be done in a better way
-  move(next = true) {
-    this.state.language$
-      .pipe(
-        switchMap(lang => {
-          const cursor = this.afs
-            .collection<Product>(`${FirestoreCollections.Products}-${lang}`)
-            .doc(this.viewState.Edit).ref;
-
-          return this.afs
-            .collection<Product>(
-              `${FirestoreCollections.Products}-${lang}`,
-              ref => {
-                const final = ref
-                  .limit(2)
-                  .orderBy('name', next ? 'desc' : 'asc');
-
-                if (next) {
-                  final.startAfter(cursor);
-                }
-
-                return final;
-              }
-            )
-            .snapshotChanges();
-        })
-      )
-      .subscribe(value => {
-        if (value && value[1]) {
-          this.router.navigate(['/products', value[1].payload.doc.id]);
-        }
-      });
-  }
+  // move(next = true) {
+  //   this.state.language$
+  //     .pipe(
+  //       switchMap(lang => {
+  //         const cursor = this.afs
+  //           .collection<Product>(`${FirestoreCollections.Products}-${lang}`)
+  //           .doc(this.viewState.Edit).ref;
+  //
+  //         return this.afs
+  //           .collection<Product>(
+  //             `${FirestoreCollections.Products}-${lang}`,
+  //             ref => {
+  //               const final = ref
+  //                 .limit(2)
+  //                 .orderBy('name', next ? 'desc' : 'asc');
+  //
+  //               if (next) {
+  //                 final.startAfter(cursor);
+  //               }
+  //
+  //               return final;
+  //             }
+  //           )
+  //           .snapshotChanges();
+  //       })
+  //     )
+  //     .subscribe(value => {
+  //       if (value && value[1]) {
+  //         this.router.navigate(['/products', value[1].payload.doc.id]);
+  //       }
+  //     });
+  // }
 
   getSaveData(...args) {
     return this.categories$.pipe(
@@ -140,9 +140,5 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   view(form) {
     window.open(environment.websiteUrl + '/product/' + form.controls.id.value);
-  }
-
-  duplicate(form) {
-    this.router.navigate(['products/copy' + '_' + form.controls.id.value]);
   }
 }

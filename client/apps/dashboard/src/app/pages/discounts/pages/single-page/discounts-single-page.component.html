@@ -15,10 +15,10 @@
         <div class="flex ai-center jc-between">
           <h5>{{form.get('name').value}}</h5>
           <div>
-            <button mat-icon-button aria-label="Previous product" matTooltip="Previous category" (click)="move(false, form)">
+            <button mat-icon-button aria-label="Previous category" matTooltip="Previous category" (click)="move(false, form)">
               <mat-icon>arrow_back</mat-icon>
             </button>
-            <button mat-icon-button aria-label="Next product" matTooltip="Next category" (click)="move(true, form)">
+            <button mat-icon-button aria-label="Next category" matTooltip="Next category" (click)="move(true, form)">
               <mat-icon>arrow_forward</mat-icon>
             </button>
           </div>
@@ -27,15 +27,11 @@
           <mat-icon>filter_none</mat-icon>
           <span>&nbsp;Duplicate</span>
         </button>
-        <button mat-button (click)="view(form)">
-          <mat-icon>visibility</mat-icon>
-          <span>&nbsp;View</span>
-        </button>
       </ng-container>
       <h5 *ngSwitchCase="viewState.New">New Discount</h5>
 
       <ng-container *ngSwitchCase="viewState.Copy">
-        Copy of {{form.value.name}}
+        <h5>Copy of {{form.get('name').value}}</h5>
       </ng-container>
 
     </div>
@@ -83,7 +79,7 @@
       mat-flat-button
       color="primary"
       (click)="back()">
-      {{isEdit ? 'Discard changes' : 'Cancel'}}
+      {{currentState === viewState.Edit ? 'Discard changes' : 'Cancel'}}
     </button> &nbsp;
 
     <button
@@ -91,7 +87,7 @@
       type="submit"
       [disabled]="form.invalid"
       [jpLoadClick]="save()">
-      {{isEdit ? 'Save changes' : 'Save'}}
+      {{currentState === viewState.Edit ? 'Save changes' : 'Save'}}
     </button>
   </div>
 

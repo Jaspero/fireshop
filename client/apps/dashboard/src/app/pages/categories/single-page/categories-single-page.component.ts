@@ -22,8 +22,4 @@ export class CategoriesSinglePageComponent extends LangSinglePageComponent {
       description: [data.description || '']
     });
   }
-
-  duplicate(form) {
-    this.router.navigate(['categories/copy' + '_' + form.controls.id.value]);
-  }
 }
