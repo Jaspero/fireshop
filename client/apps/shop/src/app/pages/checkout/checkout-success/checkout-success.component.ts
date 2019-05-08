@@ -16,9 +16,30 @@ export class CheckoutSuccessComponent implements OnInit, OnDestroy {
   constructor(public cartService: CartService) {}
 
   result: {
-    items: {};
-    price: {};
-    data: {};
+    items: Array<{
+      attributes: {};
+      id: string;
+      name: string;
+      price: number;
+      quantity: number;
+    }>;
+    price: {
+      shipping: number;
+      subTotal: number;
+      total: number;
+    };
+    data: {
+      city: string;
+      country: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+      line1: string;
+      line2: string;
+      phone: string;
+      zip: string;
+    };
+    shipping?: string;
   };
 
   ngOnInit() {
