@@ -1,3 +1,4 @@
+import {HttpClient} from '@angular/common/http';
 import {
   Component,
   OnInit,
@@ -5,6 +6,7 @@ import {
   ViewChild,
   ElementRef
 } from '@angular/core';
+import {environment} from '../../../../environments/environment';
 
 @Component({
   selector: 'jfsc-import',
@@ -13,7 +15,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImportComponent implements OnInit {
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   @ViewChild('file')
   fileEl: ElementRef<HTMLInputElement>;
@@ -21,6 +23,13 @@ export class ImportComponent implements OnInit {
   ngOnInit() {}
 
   selectFile(event) {
-    console.log('event', event);
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    this.http
+      .post(`${environment.restApi}/importData`, formData)
+      .subscribe(val => {
+        console.log('val', val);
+      });
   }
 }
