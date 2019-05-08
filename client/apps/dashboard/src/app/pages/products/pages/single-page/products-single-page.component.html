@@ -1,5 +1,4 @@
 <form *ngIf="form" [formGroup]="form">
-
   <section>
     <mat-toolbar color="primary">
       <a mat-icon-button routerLink="/products" aria-label="Back" matTooltip="Back">
@@ -8,11 +7,10 @@
       <span>Products</span>
     </mat-toolbar>
   </section>
-
   <section class="p-y-m">
     <div class="grid">
-      <div class="col-12">
-        <ng-container *ngIf="isEdit; else newProduct;">
+      <div class="col-12" [ngSwitch]="currentState">
+        <ng-container *ngSwitchCase="viewState.Edit">
           <div class="flex ai-center jc-between">
             <h5>{{form.get('name').value}}</h5>
             <div>
@@ -24,7 +22,7 @@
               </button>
             </div>
           </div>
-          <button mat-button  (click)="duplicate(form)">
+          <button mat-button (click)="duplicate(form)">
             <mat-icon>filter_none</mat-icon>
             <span>&nbsp;Duplicate</span>
           </button>
@@ -33,9 +31,12 @@
             <span>&nbsp;View</span>
           </button>
         </ng-container>
-        <ng-template #newProduct>
-          <h5>New Product</h5>
-        </ng-template>
+        <h5 *ngSwitchCase="viewState.New">New Product</h5>
+
+        <ng-container *ngSwitchCase="viewState.Copy">
+          Copy of {{form.value.name}}
+        </ng-container>
+
       </div>
     </div>
     <div class="grid grid-no-gutter">
@@ -149,7 +150,7 @@
       mat-flat-button
       color="primary"
       (click)="back()">
-      {{isEdit ? 'Discard changes' : 'Cancel'}}
+      {{viewState.New ? 'Discard changes' : 'Cancel'}}
     </button> &nbsp;
 
     <button
@@ -157,7 +158,7 @@
       type="submit"
       [disabled]="form.invalid"
       [jpLoadClick]="save()">
-      {{isEdit ? 'Save changes' : 'Save'}}
+      {{viewState.New ? 'Save changes' : 'Save'}}
     </button>
   </div>
 

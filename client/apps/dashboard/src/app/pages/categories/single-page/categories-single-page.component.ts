@@ -15,11 +15,15 @@ export class CategoriesSinglePageComponent extends LangSinglePageComponent {
   buildForm(data: any) {
     this.form = this.fb.group({
       id: [
-        {value: data.id, disabled: this.isEdit},
+        {value: data.id, disabled: this.viewState.Edit},
         [Validators.required, Validators.pattern(URL_REGEX)]
       ],
       name: [data.name || '', Validators.required],
       description: [data.description || '']
     });
+  }
+
+  duplicate(form) {
+    this.router.navigate(['categories/copy' + '_' + form.controls.id.value]);
   }
 }

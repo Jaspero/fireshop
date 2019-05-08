@@ -32,7 +32,6 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   categories$: Observable<Category[]>;
   collection = FirestoreCollections.Products;
   currency: string;
-  duplicateProduct: boolean;
 
   ngOnInit() {
     super.ngOnInit();
@@ -64,7 +63,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
         switchMap(lang => {
           const cursor = this.afs
             .collection<Product>(`${FirestoreCollections.Products}-${lang}`)
-            .doc(this.isEdit).ref;
+            .doc(this.viewState.Edit).ref;
 
           return this.afs
             .collection<Product>(
@@ -125,7 +124,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   buildForm(data: any) {
     this.form = this.fb.group({
       id: [
-        {value: data.id, disabled: this.isEdit},
+        {value: data.id, disabled: this.viewState.Edit},
         [Validators.required, Validators.pattern(URL_REGEX)]
       ],
       name: [data.name || '', Validators.required],
@@ -144,7 +143,6 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   }
 
   duplicate(form) {
-    this.duplicateProduct = true;
-    // this.router.navigate(['/copy' + form.controls.id.value])
+    this.router.navigate(['products/copy' + '_' + form.controls.id.value]);
   }
 }

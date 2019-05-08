@@ -11,6 +11,12 @@ import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {StateService} from '../../services/state/state.service';
 import {queue} from '../../utils/queue.operator';
 
+export enum ViewState {
+  New,
+  Edit,
+  Copy
+}
+
 @Component({
   selector: 'jfsc-single-page',
   template: ''
@@ -29,19 +35,34 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
 
   initialValue: any;
   currentValue: any;
-  isEdit: string;
   collection: FirestoreCollections;
   form: FormGroup;
+  viewState = ViewState;
+  currentState: ViewState;
 
   ngOnInit() {
     this.activatedRoute.params
       .pipe(
         switchMap(params => {
           if (params.id === 'new') {
-            this.isEdit = '';
+            this.currentState = ViewState.New;
             return of({});
+          } else if (params.id.includes('copy')) {
+            this.currentState = ViewState.Copy;
+            return this.afs
+              .collection(this.collection)
+              .doc(this.form.controls.id.value)
+              .valueChanges()
+              .pipe(
+                take(1),
+                map(value => ({
+                  ...value,
+                  id: params.id
+                })),
+                queue()
+              );
           } else {
-            this.isEdit = params.id;
+            this.currentState = ViewState.Edit;
             return this.afs
               .collection(this.collection)
               .doc(params.id)
@@ -93,7 +114,7 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
           .set(
             {
               ...item,
-              ...(this.isEdit ? {} : {createdOn: Date.now()})
+              ...(this.viewState.Edit ? {} : {createdOn: Date.now()})
             },
             {merge: true}
           )

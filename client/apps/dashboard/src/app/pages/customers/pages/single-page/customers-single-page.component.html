@@ -11,16 +11,33 @@
 
   <section class="p-y-m">
     <div class="grid">
-      <div class="col-8 col-s-10 col-xs-12 flex ai-center jc-between">
-
-        <ng-container *ngIf="isEdit; else newCustomer;">
-          <h5>{{form.get('name').value || form.get('email').value}}</h5>
-          <a mat-button [routerLink]="['/customers/overview', form.get('id').value]">View stats</a>
+      <div class="col-8 col-s-10 col-xs-12" [ngSwitch]="currentState">
+        <ng-container *ngSwitchCase="viewState.Edit">
+          <div class="flex ai-center jc-between">
+            <h5>{{form.get('name').value}}</h5>
+            <div>
+              <button mat-icon-button aria-label="Previous product" matTooltip="Previous customer" (click)="move(false, form)">
+                <mat-icon>arrow_back</mat-icon>
+              </button>
+              <button mat-icon-button aria-label="Next product" matTooltip="Next customer" (click)="move(true, form)">
+                <mat-icon>arrow_forward</mat-icon>
+              </button>
+            </div>
+          </div>
+          <button mat-button (click)="duplicate(form)">
+            <mat-icon>filter_none</mat-icon>
+            <span>&nbsp;Duplicate</span>
+          </button>
+          <button mat-button (click)="view(form)">
+            <mat-icon>visibility</mat-icon>
+            <span>&nbsp;View</span>
+          </button>
         </ng-container>
+        <h5 *ngSwitchCase="viewState.New">New Customer</h5>
 
-        <ng-template #newCustomer>
-          <h5>New customer</h5>
-        </ng-template>
+        <ng-container *ngSwitchCase="viewState.Copy">
+          Copy of {{form.value.name}}
+        </ng-container>
 
       </div>
     </div>
