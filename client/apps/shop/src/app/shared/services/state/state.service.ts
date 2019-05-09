@@ -3,6 +3,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Customer} from '@jf/interfaces/customer.interface';
+import {Errors, Order} from '@jf/interfaces/order.interface';
 import {User} from 'firebase/app';
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {
@@ -44,7 +45,7 @@ export class StateService {
 
   logInValid$ = new BehaviorSubject<boolean>(true);
   user$: Observable<LoggedInUser>;
-  checkoutResult: any;
+  checkoutResult: Array<Errors> | Partial<Order>;
 
   currentRoute$ = new BehaviorSubject<{data: any; url: string}>({
     data: {},

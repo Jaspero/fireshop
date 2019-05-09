@@ -6,6 +6,7 @@ import {
   OnInit
 } from '@angular/core';
 import {Router} from '@angular/router';
+import {Errors} from '@jf/interfaces/order.interface';
 import {take} from 'rxjs/operators';
 import {CartService} from '../../../shared/services/cart/cart.service';
 import {StateService} from '../../../shared/services/state/state.service';
@@ -24,14 +25,10 @@ export class CheckoutErrorComponent implements OnInit, OnDestroy {
     private state: StateService
   ) {}
 
-  error: Array<{
-    data: {id: string; name: string; quantity: number};
-    message: string;
-    type: string;
-  }>;
+  error: Array<Errors>;
 
   ngOnInit() {
-    this.error = this.state.checkoutResult;
+    this.error = this.state.checkoutResult as Array<Errors>;
   }
 
   ngOnDestroy() {

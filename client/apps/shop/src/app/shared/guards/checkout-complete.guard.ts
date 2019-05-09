@@ -2,9 +2,7 @@ import {Injectable} from '@angular/core';
 import {CanActivate, Router} from '@angular/router';
 import {StateService} from '../services/state/state.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CheckoutCompleteGuard implements CanActivate {
   constructor(private state: StateService, private router: Router) {}
 

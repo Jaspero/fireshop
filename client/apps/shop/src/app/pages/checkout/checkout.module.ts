@@ -26,6 +26,7 @@ const routes: Routes = [
     CheckoutErrorComponent,
     CheckoutSuccessComponent
   ],
-  imports: [SharedModule, RouterModule.forChild(routes)]
+  imports: [SharedModule, RouterModule.forChild(routes)],
+  providers: [CheckoutCompleteGuard]
 })
 export class CheckoutModule {}

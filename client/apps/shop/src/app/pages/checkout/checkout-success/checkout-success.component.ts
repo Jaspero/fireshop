@@ -20,11 +20,11 @@ export class CheckoutSuccessComponent implements OnInit, OnDestroy {
   result: Partial<Order>;
 
   ngOnInit() {
-    this.result = this.state.checkoutResult;
+    this.result = this.state.checkoutResult as Partial<Order>;
+    this.cartService.clear();
   }
 
   ngOnDestroy() {
-    this.cartService.clear();
     localStorage.removeItem('result');
   }
 }
