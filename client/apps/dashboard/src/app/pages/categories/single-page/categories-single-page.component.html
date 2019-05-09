@@ -30,9 +30,7 @@
       </ng-container>
       <h5 *ngSwitchCase="viewState.New">New Category</h5>
 
-      <ng-container *ngSwitchCase="viewState.Copy">
-        <h5>Copy of {{form.get('name').value}}</h5>
-      </ng-container>
+      <h5 *ngSwitchCase="viewState.Copy">Copy of {{form.get('name').value}}</h5>
 
     </div>
   </div>
