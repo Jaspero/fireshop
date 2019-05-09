@@ -19,11 +19,9 @@ app.post('/', (req, res) => {
   });
 
   busboy.on('finish', () => {
-    console.log('fileData', fileData);
     csv()
       .fromString(fileData)
       .then(jsonObj => {
-        console.log('jsonObj', jsonObj);
         res.json({jsonObj});
       });
   });
