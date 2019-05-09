@@ -221,7 +221,6 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
             };
           }),
           catchError(error => {
-            console.log('error', error);
             localStorage.setItem('result', JSON.stringify(error.error));
             this.router.navigate(['/checkout/error']);
 
