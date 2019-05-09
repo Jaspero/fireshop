@@ -39,7 +39,11 @@ export class LoginComponent implements OnInit {
         switchMap(user => user.getIdTokenResult())
       )
       .subscribe(res => {
-        if (res.claims.admin) {
+        /**
+         * If the user has any kind of role we allow
+         * access to the dashboard
+         */
+        if (res.claims.role) {
           this.router.navigate(['/dashboard']);
         } else {
           this.afAuth.auth.signOut();
