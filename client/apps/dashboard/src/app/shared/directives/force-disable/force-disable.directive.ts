@@ -16,7 +16,6 @@ export class ForceDisableDirective implements OnInit {
   ngOnInit() {
     if (this.state.role === Role.Read) {
       this.renderer.addClass(this.el.nativeElement, 'disabled');
-      this.renderer.setAttribute(this.el.nativeElement, 'disabled', '');
     }
   }
 }

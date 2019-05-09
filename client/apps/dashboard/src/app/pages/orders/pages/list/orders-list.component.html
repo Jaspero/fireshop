@@ -147,6 +147,7 @@
               <mat-form-field>
                 <mat-select
                   [value]="element.status"
+                  [disabled]="readMode"
                   (selectionChange)="changeClient($event.value, element.id)">
                   <mat-option
                     *ngFor="let stat of deliveryStatus | keyvalue"
@@ -169,7 +170,7 @@
                   <mat-icon>info</mat-icon>
                   <span>View order</span>
                 </button>
-                <button mat-menu-item (click)="deleteOne(element)">
+                <button mat-menu-item fDisable (click)="deleteOne(element)">
                   <mat-icon>delete_forever</mat-icon>
                   <span>Delete product</span>
                 </button>

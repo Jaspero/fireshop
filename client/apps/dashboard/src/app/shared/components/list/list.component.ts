@@ -5,12 +5,7 @@ import {
   CollectionReference,
   QueryDocumentSnapshot
 } from '@angular/fire/firestore';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  NG_VALUE_ACCESSOR
-} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {MatBottomSheet, MatDialog, MatSort} from '@angular/material';
 import {Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
@@ -27,7 +22,6 @@ import {
   Subject
 } from 'rxjs';
 import {
-  debounceTime,
   map,
   shareReplay,
   skip,
@@ -39,6 +33,7 @@ import {
 import {FirebaseOperator} from 'shared/enums/firebase-operator.enum';
 import {FirestoreCollections} from 'shared/enums/firestore-collections.enum';
 import {PAGE_SIZES} from '../../consts/page-sizes.const';
+import {Role} from '../../enums/role.enum';
 import {RouteData} from '../../interfaces/route-data.interface';
 import {StateService} from '../../services/state/state.service';
 import {ExportComponent} from '../export/export.component';
@@ -92,13 +87,17 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
     return of(this.collection as string);
   }
 
+  get readMode() {
+    return this.state.role === Role.Read;
+  }
+
   ngOnInit() {
     this.options = this.state.getRouterData({
       sort: {
         direction: 'desc',
         active: 'createdOn'
       },
-      pageSize: 5,
+      pageSize: 10,
       ...this.additionalRouteData
     });
     this.pageSize = new FormControl(this.options.pageSize);

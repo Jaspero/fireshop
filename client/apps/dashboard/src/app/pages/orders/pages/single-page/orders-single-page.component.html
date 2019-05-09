@@ -232,15 +232,16 @@
       tabindex="-1"
       color="primary"
       (click)="back()">
-      {{isEdit ? 'Discard changes' : 'Cancel'}}
+      {{currentState === viewState.Edit ? 'Discard changes' : 'Cancel'}}
     </button> &nbsp;
 
     <button
       mat-flat-button
       type="submit"
+      fDisable
       [disabled]="form.invalid"
       [jpLoadClick]="save()">
-      {{isEdit ? 'Save changes' : 'Save'}}
+      {{currentState === viewState.Edit ? 'Save changes' : 'Save'}}
     </button>
   </div>
 

@@ -3,7 +3,6 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {CanActivate, Router} from '@angular/router';
 import {from, of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
-import {Role} from '../enums/role.enum';
 import {StateService} from '../services/state/state.service';
 
 @Injectable({
@@ -26,8 +25,7 @@ export class AuthGuard implements CanActivate {
            */
           return from(user.getIdTokenResult()).pipe(
             map(res => {
-              this.state.role = Role.Read;
-              // this.state.role = res.claims.role;
+              this.state.role = res.claims.role;
 
               return true;
             })
