@@ -3,7 +3,10 @@ import {notify} from '@jf/utils/notify.operator';
 import {combineLatest, defer, from, of} from 'rxjs';
 import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {queue} from '../../utils/queue.operator';
-import {SinglePageComponent} from '../single-page/single-page.component';
+import {
+  SinglePageComponent,
+  ViewState
+} from '../single-page/single-page.component';
 
 @Component({
   selector: 'jfsc-lang-single-page',
@@ -16,10 +19,23 @@ export class LangSinglePageComponent extends SinglePageComponent
       .pipe(
         switchMap(([params, lang]) => {
           if (params.id === 'new') {
-            this.isEdit = '';
+            this.currentState = ViewState.New;
             return of({});
+          } else if (params.id.includes('copy')) {
+            this.currentState = ViewState.Copy;
+            return this.afs
+              .collection(`${this.collection}-${lang}`)
+              .doc(this.form.controls.id.value)
+              .valueChanges()
+              .pipe(
+                take(1),
+                map(value => ({
+                  ...value
+                })),
+                queue()
+              );
           } else {
-            this.isEdit = params.id;
+            this.currentState = ViewState.Edit;
             return this.afs
               .collection(`${this.collection}-${lang}`)
               .doc(params.id)
@@ -38,7 +54,6 @@ export class LangSinglePageComponent extends SinglePageComponent
       )
       .subscribe(data => {
         this.buildForm(data);
-
         this.initialValue = this.form.getRawValue();
         this.currentValue = this.form.getRawValue();
 
@@ -50,11 +65,9 @@ export class LangSinglePageComponent extends SinglePageComponent
         this.cdr.detectChanges();
       });
   }
-
   save() {
     const {id, ...item} = this.form.getRawValue();
     this.initialValue = this.form.getRawValue();
-
     return this.state.language$.pipe(
       take(1),
       switchMap(lang => this.getSaveData(id, item, lang)),
@@ -76,7 +89,7 @@ export class LangSinglePageComponent extends SinglePageComponent
           .set(
             {
               ...item,
-              ...(this.isEdit ? {} : {createdOn: Date.now()})
+              ...(this.viewState.Edit ? {} : {createdOn: Date.now()})
             },
             {merge: true}
           )

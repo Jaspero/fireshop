@@ -8,5 +8,56 @@
         <a routerLink="" mat-flat-button color="primary">Back to home</a>
       </mat-card>
     </div>
+    <div class="col-6 col-m-8 col-s-10 col-xs-12">
+      <mat-card>
+        <h6 class="m-y-xs">Your purchase</h6>
+        <div class="bg-l-secondary p-a-s">
+          <table class="w-full">
+            <tr *ngFor="let product of result.orderItems">
+              <td class="w-half p-a-xs">{{product.name}}:</td>
+              <td class="w-half p-a-xs">{{product.price | sp }} x{{product.quantity}}</td>
+            </tr>
+            <tr>
+              <td class="w-half p-a-xs">Subtotal:</td>
+              <td class="w-half p-a-xs">{{result.price.subTotal | sp}}</td>
+            </tr>
+            <tr>
+              <td colspan="2"><hr></td>
+            </tr>
+            <tr>
+              <td class="w-half p-a-xs">Shipping:</td>
+              <td class="w-half p-a-xs">{{result.price.shipping ? (result.price.shipping | sp) : 'Free'}}</td>
+            </tr>
+            <tr>
+              <td colspan="2"><hr></td>
+            </tr>
+            <tr class="fw-bold">
+              <td class="w-half p-a-xs">Total:</td>
+              <td class="w-half p-a-xs">{{result.price.total | sp}}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="p-y-s">
+          <mat-divider></mat-divider>
+        </div>
+        <table class="w-full">
+          <tr>
+            <td class="w-half p-a-xs">Checkout:</td>
+            <td class="w-half p-a-xs">{{result.billing.firstName}} {{result.billing.lastName}}</td>
+          </tr>
+          <tr>
+            <td class="w-half p-a-xs">Billing email:</td>
+            <td class="w-half p-a-xs">{{result.billing.email}}</td>
+          </tr>
+          <tr>
+            <td class="w-half p-a-xs">Shipping email:</td>
+            <td class="w-half p-a-xs">{{result.shipping ? result.shipping : result.billing.email}}</td>
+          </tr>
+        </table>
+        <div class="p-y-s">
+          <mat-divider></mat-divider>
+        </div>
+      </mat-card>
+    </div>
   </div>
 </section>

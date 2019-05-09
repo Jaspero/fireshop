@@ -55,6 +55,9 @@ export class SettingsComponent extends RxDestroy implements OnInit {
         notifyOnShipped: true,
         notifyOnDelivered: true,
         showingQuantity: true
+        notifyOnDelivered: true,
+        description: 'Purchase from fireShop website',
+        statementDescription: 'Fireshop purchase'
       }
     },
     {
