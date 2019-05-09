@@ -40,6 +40,21 @@
                 <span>Inactive when out of stock</span>
                 <mat-slide-toggle formControlName="inactiveForQuantity"></mat-slide-toggle>
               </div>
+
+              <div class="p-y-xs flex jc-between">
+                <mat-form-field appearance="outline" class="w-full p-y-xs">
+                  <mat-label>Order Description</mat-label>
+                  <input type="email" formControlName="description" matInput>
+                  <mat-hint>This description will show up on the stripe dashboard</mat-hint>
+                </mat-form-field>
+              </div>
+              <div class="p-y-xs flex jc-between">
+                <mat-form-field appearance="outline" class="w-full p-y-xs">
+                  <mat-label>Statement Description</mat-label>
+                  <input type="email" formControlName="statementDescription" matInput>
+                  <mat-hint>This description will show up on users receipt</mat-hint>
+                </mat-form-field>
+              </div>
             </mat-card>
           </div>
 
