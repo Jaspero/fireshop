@@ -122,10 +122,6 @@ export class SettingsComponent extends RxDestroy implements OnInit {
           }, {})
         );
         this.cdr.detectChanges();
-
-        this.form.valueChanges.subscribe(res => {
-          console.log('res', res);
-        });
       });
   }
 
