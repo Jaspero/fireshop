@@ -1,4 +1,5 @@
 import {HttpClient} from '@angular/common/http';
+import {isNewLine} from '@angular/compiler/src/chars';
 import {
   Component,
   OnInit,
@@ -29,7 +30,8 @@ export class ImportComponent implements OnInit {
     this.http
       .post(`${environment.restApi}/importData`, formData)
       .subscribe(val => {
-        console.log('val', val);
+        const mama = val.fileData.split(/\r?\n/);
+        console.log('val', mama);
       });
   }
 }

@@ -19,7 +19,7 @@ app.post('/', (req, res) => {
 
   busboy.on('finish', () => {
     // TODO: start here
-    console.log(fileData);
+    console.log('fileData', fileData);
 
     res.json({fileData});
   });
