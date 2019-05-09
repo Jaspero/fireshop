@@ -31,6 +31,8 @@ export class SettingsComponent extends RxDestroy implements OnInit {
     super();
   }
 
+  //TODO(FILIP): fix general settings
+
   currencies = CURRENCIES;
   form: FormGroup;
   emailControl = new FormControl('', [Validators.required, Validators.email]);

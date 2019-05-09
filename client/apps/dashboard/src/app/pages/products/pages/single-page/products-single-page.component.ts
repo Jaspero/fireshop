@@ -8,6 +8,7 @@ import {Validators} from '@angular/forms';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
+import {GeneralSettings} from '@jf/interfaces/general-settings.interface';
 import {Product} from '@jf/interfaces/product.interface';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
 import {Observable} from 'rxjs';
@@ -133,7 +134,8 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       gallery: [data.gallery || []],
       quantity: [data.quantity || 0, Validators.min(0)],
       category: data.category,
-      showingQuantity: data.showingQuantity || false
+      showingQuantity:
+        data.showingQuantity || DYNAMIC_CONFIG.generalSettings.showingQuantity
     });
   }
 }

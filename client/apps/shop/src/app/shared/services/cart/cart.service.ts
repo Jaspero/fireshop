@@ -32,13 +32,12 @@ export class CartService {
   items$ = new BehaviorSubject<any[]>([]);
   totalPrice$: Observable<number>;
   numOfItems$: Observable<number>;
-  totalQun: 0;
+  totalQun = 0;
 
   add(item) {
     const current = this.items$.getValue();
 
     const index = current.findIndex(val => val['productId'] === item.id);
-
     if (index === -1) {
       current.push({
         identifier: item.id,
@@ -46,12 +45,12 @@ export class CartService {
         price: item.price,
         productId: item.id,
         image: item.gallery[0],
-        quantity: 1
+        quantity: 1,
+        maxQuantity: item.quantity
       });
     } else {
       current[index]['quantity'] += 1;
     }
-
     this.snackBar.open('Product added to cart', 'Dismiss', {
       duration: 2000
     });
@@ -68,7 +67,7 @@ export class CartService {
     localStorage.setItem('cartItem', JSON.stringify(current));
     this.items$.next(current);
 
-    //TODO: do this better way, (disabling increase button in cart when there are no more product in storage(quantity))
+    //TODO: do this better way, with no request, (disabling increase button in cart when there are no more product in storage(quantity))
     this.afs
       .collection(`${FirestoreCollections.Products}-en`)
       .doc(product)
