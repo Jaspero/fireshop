@@ -5,7 +5,9 @@ import {
   OnInit,
   ChangeDetectionStrategy,
   ViewChild,
-  ElementRef
+  ElementRef,
+  Output,
+  EventEmitter
 } from '@angular/core';
 import {environment} from '../../../../environments/environment';
 
@@ -17,6 +19,9 @@ import {environment} from '../../../../environments/environment';
 })
 export class ImportComponent implements OnInit {
   constructor(private http: HttpClient) {}
+
+  @Output()
+  importedData = new EventEmitter<any>();
 
   @ViewChild('file')
   fileEl: ElementRef<HTMLInputElement>;
@@ -30,8 +35,7 @@ export class ImportComponent implements OnInit {
     this.http
       .post(`${environment.restApi}/importData`, formData)
       .subscribe(val => {
-        const mama = val.fileData.split(/\r?\n/);
-        console.log('val', mama);
+        this.importedData.emit(val.jsonObj);
       });
   }
 }

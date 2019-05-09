@@ -374,4 +374,8 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
   resetAll() {
     this.filters.reset();
   }
+
+  addData(event) {
+    console.log('event', event);
+  }
 }

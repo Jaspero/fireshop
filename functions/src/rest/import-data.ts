@@ -1,6 +1,7 @@
 import * as Busboy from 'busboy';
 import * as cors from 'cors';
 import * as express from 'express';
+import * as csv from 'csvtojson';
 import * as functions from 'firebase-functions';
 
 const app = express();
@@ -18,10 +19,13 @@ app.post('/', (req, res) => {
   });
 
   busboy.on('finish', () => {
-    // TODO: start here
     console.log('fileData', fileData);
-
-    res.json({fileData});
+    csv()
+      .fromString(fileData)
+      .then(jsonObj => {
+        console.log('jsonObj', jsonObj);
+        res.json({jsonObj});
+      });
   });
 
   busboy.end(req['rawBody']);
