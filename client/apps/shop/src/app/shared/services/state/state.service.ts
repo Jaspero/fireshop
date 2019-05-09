@@ -44,6 +44,7 @@ export class StateService {
 
   logInValid$ = new BehaviorSubject<boolean>(true);
   user$: Observable<LoggedInUser>;
+  checkoutResult: any;
 
   currentRoute$ = new BehaviorSubject<{data: any; url: string}>({
     data: {},

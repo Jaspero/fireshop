@@ -221,7 +221,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
             };
           }),
           catchError(error => {
-            localStorage.setItem('error', JSON.stringify(error.error));
+            localStorage.setItem('result', JSON.stringify(error.error));
             this.router.navigate(['/checkout/error']);
 
             return throwError(error);
@@ -336,11 +336,11 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
       .subscribe(
         () => {
           localStorage.setItem(
-            'success',
+            'result',
             JSON.stringify({
-              items: state.orderItems,
+              orderItems: state.orderItems,
               price: state.price,
-              data: data.billing,
+              billing: data.billing,
               ...(data.shippingInfo ? {} : {shipping: data.shipping.email})
             })
           );
