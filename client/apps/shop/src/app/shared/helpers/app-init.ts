@@ -6,7 +6,6 @@ import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {FirestoreStaticDocuments} from '@jf/enums/firestore-static-documents.enum';
 import {CurrencySettings} from '@jf/interfaces/currency-settings.interface';
-import {GeneralSettings} from '@jf/interfaces/general-settings.interface';
 import {take} from 'rxjs/operators';
 import {NetworkService} from '../services/network/network.service';
 

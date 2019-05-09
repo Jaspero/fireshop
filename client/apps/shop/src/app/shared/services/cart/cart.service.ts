@@ -32,7 +32,6 @@ export class CartService {
   items$ = new BehaviorSubject<any[]>([]);
   totalPrice$: Observable<number>;
   numOfItems$: Observable<number>;
-  totalQun = 0;
 
   add(item) {
     const current = this.items$.getValue();
@@ -54,7 +53,6 @@ export class CartService {
     this.snackBar.open('Product added to cart', 'Dismiss', {
       duration: 2000
     });
-
     localStorage.setItem('cartItem', JSON.stringify(current));
 
     this.items$.next(current);
@@ -66,15 +64,6 @@ export class CartService {
     current[index]['quantity'] += num;
     localStorage.setItem('cartItem', JSON.stringify(current));
     this.items$.next(current);
-
-    //TODO: do this better way, with no request, (disabling increase button in cart when there are no more product in storage(quantity))
-    this.afs
-      .collection(`${FirestoreCollections.Products}-en`)
-      .doc(product)
-      .get()
-      .subscribe(val => {
-        this.totalQun = val.data().quantity;
-      });
   }
 
   remove(product) {
