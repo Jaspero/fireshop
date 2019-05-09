@@ -32,3 +32,9 @@ export interface Order {
   customerName?: string;
   error?: string;
 }
+
+export interface Errors {
+  data: {id: string; name: string; quantity: number};
+  message: string;
+  type: string;
+}

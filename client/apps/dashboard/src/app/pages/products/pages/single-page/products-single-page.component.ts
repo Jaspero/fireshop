@@ -12,6 +12,7 @@ import {Product} from '@jf/interfaces/product.interface';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
 import {Observable} from 'rxjs';
 import {map, shareReplay, switchMap, take} from 'rxjs/operators';
+import {environment} from '../../../../../../../shop/src/environments/environment';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {CURRENCIES} from '../../../../shared/const/currency.const';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
@@ -56,38 +57,38 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   }
 
   // TODO: I think this can be done in a better way
-  move(next = true) {
-    this.state.language$
-      .pipe(
-        switchMap(lang => {
-          const cursor = this.afs
-            .collection<Product>(`${FirestoreCollections.Products}-${lang}`)
-            .doc(this.isEdit).ref;
-
-          return this.afs
-            .collection<Product>(
-              `${FirestoreCollections.Products}-${lang}`,
-              ref => {
-                const final = ref
-                  .limit(2)
-                  .orderBy('name', next ? 'desc' : 'asc');
-
-                if (next) {
-                  final.startAfter(cursor);
-                }
-
-                return final;
-              }
-            )
-            .snapshotChanges();
-        })
-      )
-      .subscribe(value => {
-        if (value && value[1]) {
-          this.router.navigate(['/products', value[1].payload.doc.id]);
-        }
-      });
-  }
+  // move(next = true) {
+  //   this.state.language$
+  //     .pipe(
+  //       switchMap(lang => {
+  //         const cursor = this.afs
+  //           .collection<Product>(`${FirestoreCollections.Products}-${lang}`)
+  //           .doc(this.viewState.Edit).ref;
+  //
+  //         return this.afs
+  //           .collection<Product>(
+  //             `${FirestoreCollections.Products}-${lang}`,
+  //             ref => {
+  //               const final = ref
+  //                 .limit(2)
+  //                 .orderBy('name', next ? 'desc' : 'asc');
+  //
+  //               if (next) {
+  //                 final.startAfter(cursor);
+  //               }
+  //
+  //               return final;
+  //             }
+  //           )
+  //           .snapshotChanges();
+  //       })
+  //     )
+  //     .subscribe(value => {
+  //       if (value && value[1]) {
+  //         this.router.navigate(['/products', value[1].payload.doc.id]);
+  //       }
+  //     });
+  // }
 
   getSaveData(...args) {
     return this.categories$.pipe(
@@ -123,7 +124,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   buildForm(data: any) {
     this.form = this.fb.group({
       id: [
-        {value: data.id, disabled: this.isEdit},
+        {value: data.id, disabled: this.viewState.Edit},
         [Validators.required, Validators.pattern(URL_REGEX)]
       ],
       name: [data.name || '', Validators.required],
@@ -135,5 +136,9 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       quantity: [data.quantity || 0, Validators.min(0)],
       category: data.category
     });
+  }
+
+  view(form) {
+    window.open(environment.websiteUrl + '/product/' + form.controls.id.value);
   }
 }

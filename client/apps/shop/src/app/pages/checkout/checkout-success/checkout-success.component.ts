@@ -4,7 +4,9 @@ import {
   ChangeDetectionStrategy,
   OnDestroy
 } from '@angular/core';
+import {Order} from '@jf/interfaces/order.interface';
 import {CartService} from '../../../shared/services/cart/cart.service';
+import {StateService} from '../../../shared/services/state/state.service';
 
 @Component({
   selector: 'jfs-checkout-success',
@@ -13,41 +15,16 @@ import {CartService} from '../../../shared/services/cart/cart.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CheckoutSuccessComponent implements OnInit, OnDestroy {
-  constructor(public cartService: CartService) {}
+  constructor(public cartService: CartService, private state: StateService) {}
 
-  result: {
-    items: Array<{
-      attributes: {};
-      id: string;
-      name: string;
-      price: number;
-      quantity: number;
-    }>;
-    price: {
-      shipping: number;
-      subTotal: number;
-      total: number;
-    };
-    data: {
-      city: string;
-      country: string;
-      email: string;
-      firstName: string;
-      lastName: string;
-      line1: string;
-      line2: string;
-      phone: string;
-      zip: string;
-    };
-    shipping?: string;
-  };
+  result: Partial<Order>;
 
   ngOnInit() {
-    this.result = JSON.parse(localStorage.getItem('success'));
+    this.result = this.state.checkoutResult as Partial<Order>;
+    this.cartService.clear();
   }
 
   ngOnDestroy() {
-    this.cartService.clear();
-    localStorage.removeItem('success');
+    localStorage.removeItem('result');
   }
 }

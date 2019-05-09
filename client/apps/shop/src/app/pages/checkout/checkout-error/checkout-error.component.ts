@@ -6,8 +6,10 @@ import {
   OnInit
 } from '@angular/core';
 import {Router} from '@angular/router';
+import {Errors} from '@jf/interfaces/order.interface';
 import {take} from 'rxjs/operators';
 import {CartService} from '../../../shared/services/cart/cart.service';
+import {StateService} from '../../../shared/services/state/state.service';
 
 @Component({
   selector: 'jfs-checkout-error',
@@ -19,21 +21,18 @@ export class CheckoutErrorComponent implements OnInit, OnDestroy {
   constructor(
     public cartService: CartService,
     private cdk: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private state: StateService
   ) {}
 
-  error: Array<{
-    data: {id: string; name: string; quantity: number};
-    message: string;
-    type: string;
-  }>;
+  error: Array<Errors>;
 
   ngOnInit() {
-    this.error = JSON.parse(localStorage.getItem('error'));
+    this.error = this.state.checkoutResult as Array<Errors>;
   }
 
   ngOnDestroy() {
-    localStorage.removeItem('error');
+    localStorage.removeItem('result');
   }
 
   resolveIssue() {
