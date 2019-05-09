@@ -156,6 +156,7 @@
       mat-flat-button
       type="submit"
       [disabled]="form.invalid"
+      fDisable
       [jpLoadClick]="save()">
       {{currentState === viewState.Edit ? 'Save changes' : 'Save'}}
     </button>

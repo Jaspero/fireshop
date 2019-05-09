@@ -55,6 +55,7 @@ import {SearchInputComponent} from './components/search-input/search-input.compo
 import {SinglePageComponent} from './components/single-page/single-page.component';
 import {WysiwygComponent} from './components/wysiwyg/wysiwyg.component';
 import {FileUploadModule} from './modules/file-upload/file-upload.module';
+import {ForceDisableDirective} from './directives/force-disable/force-disable.directive';
 
 const IMPORTS = [
   CommonModule,
@@ -123,12 +124,14 @@ const ENTRY_COMPONENTS = [
   LangSinglePageComponent
 ];
 
+const DIRECTIVES = [ForceDisableDirective];
+
 const PIPES = [StripePipe];
 
 @NgModule({
-  declarations: [...ENTRY_COMPONENTS, ...COMPONENTS, ...PIPES],
+  declarations: [...ENTRY_COMPONENTS, ...COMPONENTS, ...PIPES, ...DIRECTIVES],
   imports: [...IMPORTS],
-  exports: [...IMPORTS, ...COMPONENTS, ...PIPES],
+  exports: [...IMPORTS, ...COMPONENTS, ...PIPES, ...DIRECTIVES],
   entryComponents: ENTRY_COMPONENTS,
   providers: [{provide: MAT_DATE_LOCALE, useValue: 'en-GB'}]
 })

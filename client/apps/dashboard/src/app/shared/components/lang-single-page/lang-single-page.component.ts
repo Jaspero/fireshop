@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {notify} from '@jf/utils/notify.operator';
 import {combineLatest, defer, from, of} from 'rxjs';
 import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import {Role} from '../../enums/role.enum';
 import {queue} from '../../utils/queue.operator';
 import {
   SinglePageComponent,
@@ -54,14 +55,20 @@ export class LangSinglePageComponent extends SinglePageComponent
       )
       .subscribe(data => {
         this.buildForm(data);
-        this.initialValue = this.form.getRawValue();
-        this.currentValue = this.form.getRawValue();
 
-        this.form.valueChanges
-          .pipe(takeUntil(this.destroyed$))
-          .subscribe(value => {
-            this.currentValue = value;
-          });
+        if (this.state.role === Role.Read) {
+          this.form.disable();
+        } else {
+          this.initialValue = this.form.getRawValue();
+          this.currentValue = this.form.getRawValue();
+
+          this.form.valueChanges
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe(value => {
+              this.currentValue = value;
+            });
+        }
+
         this.cdr.detectChanges();
       });
   }

@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {Language} from '@jf/enums/language.enum';
 import {BehaviorSubject, Subject} from 'rxjs';
+import {Role} from '../../enums/role.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,11 @@ export class StateService {
 
   language$ = new BehaviorSubject<Language>(STATIC_CONFIG.lang);
   loadingQue$ = new Subject<Array<string | boolean>>();
+
+  /**
+   * Logged in users role
+   */
+  role: Role;
 
   /**
    * Holds state information for all

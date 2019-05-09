@@ -8,6 +8,7 @@ import {notify} from '@jf/utils/notify.operator';
 import * as nanoid from 'nanoid';
 import {defer, from, Observable, of} from 'rxjs';
 import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import {Role} from '../../enums/role.enum';
 import {StateService} from '../../services/state/state.service';
 import {queue} from '../../utils/queue.operator';
 
@@ -81,6 +82,20 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
       )
       .subscribe(data => {
         this.buildForm(data);
+
+        if (this.state.role === Role.Read) {
+          this.form.disable();
+        } else {
+          this.initialValue = this.form.getRawValue();
+          this.currentValue = this.form.getRawValue();
+
+          this.form.valueChanges
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe(value => {
+              this.currentValue = value;
+            });
+        }
+
         this.cdr.detectChanges();
       });
   }
