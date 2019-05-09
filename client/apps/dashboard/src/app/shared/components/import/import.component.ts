@@ -7,7 +7,8 @@ import {
   ViewChild,
   ElementRef,
   Output,
-  EventEmitter
+  EventEmitter,
+  Input
 } from '@angular/core';
 import {environment} from '../../../../environments/environment';
 
@@ -23,6 +24,9 @@ export class ImportComponent implements OnInit {
   @Output()
   importedData = new EventEmitter<any>();
 
+  @Input()
+  collection: string;
+
   @ViewChild('file')
   fileEl: ElementRef<HTMLInputElement>;
 
@@ -33,7 +37,11 @@ export class ImportComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', file, file.name);
     this.http
-      .post(`${environment.restApi}/importData`, formData)
+      .post(`${environment.restApi}/importData`, formData, {
+        params: {
+          collection: this.collection
+        }
+      })
       .subscribe(val => {
         this.importedData.emit(val.jsonObj);
       });

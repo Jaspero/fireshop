@@ -33,6 +33,7 @@
     "@nguniversal/express-engine": "7.1.1",
     "@nguniversal/module-map-ngfactory-loader": "7.1.1",
     "@sendgrid/mail": "6.3.1",
+    "ajv": "^6.10.0",
     "busboy": "^0.3.1",
     "core-js": "^2.5.4",
     "cors": "2.8.5",
@@ -54,6 +55,7 @@
     "zone.js": "0.8.26"
   },
   "devDependencies": {
+    "@types/ajv": "^1.0.0",
     "@types/busboy": "^0.2.3",
     "@types/handlebars": "^4.1.0",
     "@types/json2csv": "^4.4.0",

@@ -1,4 +1,4 @@
-export const Categories = {
+export const categories = {
   title: 'Categories Schema',
   type: 'object',
   properties: {
@@ -15,7 +15,7 @@ export const Categories = {
   required: ['id', 'name']
 };
 
-export const Product = {
+export const product = {
   title: 'Product Schema',
   type: 'object',
   properties: {
@@ -59,7 +59,7 @@ export const Product = {
   required: ['id', 'category', 'price', 'active', 'name']
 };
 
-export const Discount = {
+export const discount = {
   title: 'Discount Schema',
   type: 'object',
   properties: {
@@ -73,7 +73,7 @@ export const Discount = {
   required: ['id', 'name']
 };
 
-export const Order = {
+export const order = {
   title: 'Order Schema',
   type: 'object',
   properties: {
@@ -227,7 +227,7 @@ export const Order = {
   required: ['id', 'price', 'billing', 'orderItems', 'email']
 };
 
-export const Customer = {
+export const customer = {
   title: 'Customer Schema',
   type: 'object',
   properties: {
@@ -539,7 +539,7 @@ export const Customer = {
   required: ['id']
 };
 
-export const Review = {
+export const review = {
   title: 'Review Schema',
   type: 'object',
   properties: {

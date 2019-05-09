@@ -50,7 +50,7 @@
             <span>Export</span>
           </button>
 
-          <jfsc-import (importedData)="addData($event)" ></jfsc-import>
+          <jfsc-import [collection]="collection" (importedData)="addData($event)" ></jfsc-import>
 
         </div>
         <table
