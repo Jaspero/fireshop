@@ -13,7 +13,7 @@ export async function parseEmail(
   const templateFile = await promisify(readFile)(
     `./email-templates/${template}.hbs`
   );
-  const html = compile(templateFile)(context);
+  const html = compile(templateFile.toString())(context);
 
   sgMail.setApiKey(ENV_CONFIG.sendgrid.token);
 
