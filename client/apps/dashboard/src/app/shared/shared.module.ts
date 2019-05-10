@@ -7,6 +7,7 @@ import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {
   MAT_DATE_LOCALE,
+  MatAutocompleteModule,
   MatBottomSheetModule,
   MatButtonModule,
   MatCardModule,
@@ -47,6 +48,7 @@ import {ColorPickerComponent} from '@jf/components/color-picker/color-picker.com
 import {ConfirmationComponent} from '@jf/components/confirmation/confirmation.component';
 import {StripePipe} from '@jf/pipes/stripe.pipe';
 import {ChipsComponent} from './components/chips/chips.component';
+import {CustomerLookupComponent} from './components/customer-lookup/customer-lookup.component';
 import {ExportComponent} from './components/export/export.component';
 import {LangListComponent} from './components/lang-list/lang-list.component';
 import {LangSinglePageComponent} from './components/lang-single-page/lang-single-page.component';
@@ -95,6 +97,7 @@ const IMPORTS = [
   MatChipsModule,
   MatToolbarModule,
   MatProgressBarModule,
+  MatAutocompleteModule,
 
   // AngularFire
   AngularFirestoreModule,
@@ -112,7 +115,12 @@ const IMPORTS = [
   FileUploadModule
 ];
 
-const COMPONENTS = [WysiwygComponent, ChipsComponent, SearchInputComponent];
+const COMPONENTS = [
+  WysiwygComponent,
+  ChipsComponent,
+  SearchInputComponent,
+  CustomerLookupComponent
+];
 
 const ENTRY_COMPONENTS = [
   ConfirmationComponent,

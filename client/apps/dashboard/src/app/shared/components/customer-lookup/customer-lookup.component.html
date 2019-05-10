@@ -1,0 +1,9 @@
+<mat-form-field class="w-full m-b-xs">
+  <input  [class.disabled]="isDisabled" tabindex="-1" placeholder="Customer" matInput [matAutocomplete]="auto" [formControl]="search">
+  <mat-autocomplete (optionSelected)="onChange($event)" #auto="matAutocomplete">
+    <mat-option  *ngFor="let customer of filteredCustomers$ | async" [value]="customer.id">
+      {{customer.name}}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
+

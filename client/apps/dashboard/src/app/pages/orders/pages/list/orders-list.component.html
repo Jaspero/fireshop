@@ -18,9 +18,6 @@
             <span>&nbsp;Filters&nbsp;</span>
             <mat-icon>filter_list</mat-icon>
           </button>
-        </form>
-
-        <jfsc-chips [chips$]="filters.valueChanges" (filterValue)="changeFilters($event)"></jfsc-chips>
 
         <ng-template #filterDialog>
           <div mat-dialog-title>
@@ -37,12 +34,18 @@
           </div>
 
           <div mat-dialog-content>
-            <mat-form-field class="w-full m-b-xs">
-              <mat-select placeholder="Orders" [formControl]="orders">
-                <mat-option [value]="null"> All </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
+
+            <jfsc-customer-lookup formControlName="customers">
+            </jfsc-customer-lookup>
+
+              <mat-form-field class="w-full m-b-xs">
+                <mat-select  placeholder="Status" formControlName="status">
+                  <mat-option *ngFor="let status of deliveryStatus | keyvalue" [value]="status.value">
+                    {{status.key}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
 
           <div mat-dialog-actions>
             <div class="ta-right w-full">
@@ -53,7 +56,9 @@
             </div>
           </div>
         </ng-template>
+        </form>
 
+        <jfsc-chips [chips$]="filters.valueChanges" (filterValue)="changeFilters($event)"></jfsc-chips>
 
         <div class="toolbar toolbar-inset">
 
