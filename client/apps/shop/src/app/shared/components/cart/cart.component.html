@@ -1,4 +1,6 @@
 <ng-container *ngIf="(cart.items$ | async) as prod">
+
+
   <!--Cart (non-empty state)-->
   <ng-container *ngIf="prod.length; else emptyCart">
     <mat-list>
@@ -13,16 +15,17 @@
         <p mat-line>{{product.price | sp}}</p>
         <p mat-line>
           <button
+            [disabled]="product.quantity === 1"
             id="btn-dec"
             tabindex="-1"
             class="jfs-cart-quantity-button"
             matTooltip="Decrease"
-            [disabled]="product.quantity === 1"
             (click)="cart.changeNumber(product.productId, -1)">
             -
           </button>
           <span>&nbsp;{{product.quantity}}&nbsp;</span>
           <button
+            [disabled]="product.quantity === product.maxQuantity"
             id="btn-inc"
             tabindex="-1"
             class="jfs-cart-quantity-button"

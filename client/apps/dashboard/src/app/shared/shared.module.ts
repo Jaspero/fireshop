@@ -51,10 +51,12 @@ import {ExportComponent} from './components/export/export.component';
 import {LangListComponent} from './components/lang-list/lang-list.component';
 import {LangSinglePageComponent} from './components/lang-single-page/lang-single-page.component';
 import {ListComponent} from './components/list/list.component';
+import {SearchInputComponent} from './components/search-input/search-input.component';
 import {SinglePageComponent} from './components/single-page/single-page.component';
 import {WysiwygComponent} from './components/wysiwyg/wysiwyg.component';
 import {FileUploadModule} from './modules/file-upload/file-upload.module';
 import {ImportComponent} from './components/import/import.component';
+import {ForceDisableDirective} from './directives/force-disable/force-disable.directive';
 
 const IMPORTS = [
   CommonModule,
@@ -111,6 +113,7 @@ const IMPORTS = [
   FileUploadModule
 ];
 
+const COMPONENTS = [WysiwygComponent, ChipsComponent, SearchInputComponent];
 const COMPONENTS = [WysiwygComponent, ChipsComponent, ImportComponent];
 
 const ENTRY_COMPONENTS = [
@@ -123,12 +126,14 @@ const ENTRY_COMPONENTS = [
   LangSinglePageComponent
 ];
 
+const DIRECTIVES = [ForceDisableDirective];
+
 const PIPES = [StripePipe];
 
 @NgModule({
-  declarations: [...ENTRY_COMPONENTS, ...COMPONENTS, ...PIPES],
+  declarations: [...ENTRY_COMPONENTS, ...COMPONENTS, ...PIPES, ...DIRECTIVES],
   imports: [...IMPORTS],
-  exports: [...IMPORTS, ...COMPONENTS, ...PIPES],
+  exports: [...IMPORTS, ...COMPONENTS, ...PIPES, ...DIRECTIVES],
   entryComponents: ENTRY_COMPONENTS,
   providers: [{provide: MAT_DATE_LOCALE, useValue: 'en-GB'}]
 })

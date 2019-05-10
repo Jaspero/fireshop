@@ -13,6 +13,7 @@ import {auth} from 'firebase';
 import {from} from 'rxjs';
 import {filter, switchMap} from 'rxjs/operators';
 import {notify} from '@jf/utils/notify.operator';
+import {StateService} from '../../shared/services/state/state.service';
 
 @Component({
   selector: 'jfsc-login',
@@ -25,7 +26,8 @@ export class LoginComponent implements OnInit {
     public router: Router,
     public afAuth: AngularFireAuth,
     public fb: FormBuilder,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private state: StateService
   ) {}
 
   @ViewChild('password') passwordField: ElementRef;
@@ -39,7 +41,12 @@ export class LoginComponent implements OnInit {
         switchMap(user => user.getIdTokenResult())
       )
       .subscribe(res => {
-        if (res.claims.admin) {
+        /**
+         * If the user has any kind of role we allow
+         * access to the dashboard
+         */
+        if (res.claims.role) {
+          this.state.role = res.claims.role;
           this.router.navigate(['/dashboard']);
         } else {
           this.afAuth.auth.signOut();

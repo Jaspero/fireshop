@@ -12,11 +12,7 @@
       <mat-card>
         <form [formGroup]="filters" autocomplete="off">
           <div class="toolbar toolbar-inset p-t-0">
-            <mat-form-field appearance="outline">
-              <mat-label>&nbsp;Search</mat-label>
-              <input matInput formControlName="search">
-              <mat-icon matPrefix>search</mat-icon>
-            </mat-form-field>
+            <jfsc-search-input formControlName="search"></jfsc-search-input>
             <div class="f1"></div>
             <button mat-button (click)="openFilter()">
               <span>&nbsp;Filters&nbsp;</span>
@@ -185,7 +181,7 @@
           <ng-container matColumnDef="active">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Active</th>
             <td mat-cell *matCellDef="let element">
-              <mat-checkbox [checked]="element.active" (change)="toggleActive($event, element.id)"></mat-checkbox>
+              <mat-checkbox [checked]="element.active" [disabled]="readMode" (change)="toggleActive($event, element.id)"></mat-checkbox>
             </td>
           </ng-container>
 
@@ -209,7 +205,7 @@
                   <mat-icon>edit</mat-icon>
                   <span>Edit product</span>
                 </button>
-                <button mat-menu-item (click)="deleteOne(element)">
+                <button mat-menu-item fDisable (click)="deleteOne(element)">
                   <mat-icon>delete_forever</mat-icon>
                   <span>Delete product</span>
                 </button>

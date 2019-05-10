@@ -64,6 +64,6 @@
     "typescript": "3.3.3333"
   },
   "engines": {
-    "node": "10"
+    "node": "8"
   }
 }

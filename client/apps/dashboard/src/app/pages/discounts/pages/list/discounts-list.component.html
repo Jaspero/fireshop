@@ -13,11 +13,7 @@
       <mat-card>
 
         <form [formGroup]="filters" class="toolbar toolbar-inset p-t-0">
-          <mat-form-field appearance="outline">
-            <mat-label>&nbsp;Search</mat-label>
-            <input matInput formControlName="search">
-            <mat-icon matPrefix>search</mat-icon>
-          </mat-form-field>
+          <jfsc-search-input formControlName="search"></jfsc-search-input>
           <div class="f1"></div>
           <button mat-button (click)="openFilter()">
             <span>&nbsp;Filters&nbsp;</span>
@@ -146,7 +142,7 @@
                   <mat-icon>edit</mat-icon>
                   <span>Edit</span>
                 </button>
-                <button mat-menu-item (click)="deleteOne(element)">
+                <button mat-menu-item fDisable (click)="deleteOne(element)">
                   <mat-icon>delete_forever</mat-icon>
                   <span>Delete</span>
                 </button>

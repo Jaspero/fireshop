@@ -5,16 +5,23 @@ import {
   OnInit
 } from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {MatChipInputEvent} from '@angular/material';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {FirestoreStaticDocuments} from '@jf/enums/firestore-static-documents.enum';
 import {notify} from '@jf/utils/notify.operator';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format';
 import {BehaviorSubject, forkJoin, from} from 'rxjs';
 import {finalize, takeUntil} from 'rxjs/operators';
 import {CURRENCIES} from '../../shared/const/currency.const';
+import {Role} from '../../shared/enums/role.enum';
+import {hasDuplicates} from '../../shared/utils/has-duplicates';
+
+interface UserRole {
+  email: string;
+  role: Role;
+}
 
 @Component({
   selector: 'jfsc-settings',
@@ -31,31 +38,40 @@ export class SettingsComponent extends RxDestroy implements OnInit {
     super();
   }
 
+  //TODO(FILIP): fix general settings
+
   currencies = CURRENCIES;
   form: FormGroup;
-  emailControl = new FormControl('', [Validators.required, Validators.email]);
-  alreadyAdmin = false;
   loading$ = new BehaviorSubject(false);
   groups = [
     {
-      collection: 'allowed-admins',
+      collection: FirestoreStaticDocuments.UserSettings,
       defaultValues: {
-        emails: []
+        roles: []
+      },
+      transform: {
+        roles: value => this.fb.array(value.map(val => this.createRole(val)))
+      },
+      groupSettings: {
+        validators: [this.uniqueEmails()]
       }
     },
     {
-      collection: 'general-settings',
+      collection: FirestoreStaticDocuments.GeneralSettings,
       defaultValues: {
         autoReduceQuantity: true,
         inactiveForQuantity: true,
         statusUpdates: true,
         errorNotificationEmail: '',
         notifyOnShipped: true,
-        notifyOnDelivered: true
+        notifyOnDelivered: true,
+        showingQuantity: true,
+        description: 'Purchase from fireShop website',
+        statementDescription: 'Fireshop purchase'
       }
     },
     {
-      collection: 'currency',
+      collection: FirestoreStaticDocuments.CurrencySettings,
       defaultValues: {
         primary: 'USD',
         shippingCost: 0
@@ -68,6 +84,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
       }
     }
   ];
+  role = Role;
 
   static setFieldValue(group: any, key: string, value: any) {
     return group.transform && group.transform[key]
@@ -81,8 +98,8 @@ export class SettingsComponent extends RxDestroy implements OnInit {
       : value;
   }
 
-  get adminEmails() {
-    return this.form.get('allowed-admins.emails');
+  get roles() {
+    return this.form.get('user.roles') as FormArray;
   }
 
   get currencySymbol() {
@@ -114,32 +131,33 @@ export class SettingsComponent extends RxDestroy implements OnInit {
               finalData[key] = Array.isArray(value) ? [value] : value;
             }
 
-            acc[cur.collection] = this.fb.group(finalData);
+            acc[cur.collection] = this.fb.group(
+              finalData,
+              cur.groupSettings || {}
+            );
 
             return acc;
           }, {})
         );
+
         this.cdr.detectChanges();
       });
   }
 
-  removeAdmin(index: number) {
-    const admins = this.adminEmails.value as String[];
-    admins.splice(index, 1);
-    this.adminEmails.setValue(admins);
+  uniqueEmails() {
+    return (control: FormGroup) => {
+      const users = (control.get('roles') as FormArray).getRawValue();
+      return hasDuplicates(users.map(user => user.email))
+        ? {duplicates: true}
+        : null;
+    };
   }
 
-  addAdmin(event: MatChipInputEvent) {
-    const admins = this.adminEmails.value as String[];
-
-    if (admins.includes(event.value)) {
-      this.alreadyAdmin = true;
-    } else {
-      this.alreadyAdmin = false;
-      admins.push(event.value);
-      this.adminEmails.setValue(admins);
-      this.emailControl.setValue('');
-    }
+  createRole(role: Partial<UserRole> = {}) {
+    return this.fb.group({
+      email: [role.email || '', [Validators.required, Validators.email]],
+      role: [role.role || Role.Read]
+    });
   }
 
   save() {

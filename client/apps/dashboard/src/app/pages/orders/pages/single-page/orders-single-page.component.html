@@ -11,8 +11,27 @@
 
   <section class="p-y-m">
     <div class="grid">
-      <div class="col-8">
-        <h5> <h5>{{isEdit ? form.get('name').value  : 'New Orders'}}</h5></h5>
+      <div class="col-8 col-s-10 col-xs-12" [ngSwitch]="currentState">
+        <ng-container *ngSwitchCase="viewState.Edit">
+          <div class="flex ai-center jc-between">
+            <h5>{{form.get('id').value}}</h5>
+            <div>
+              <button mat-icon-button aria-label="Previous product" matTooltip="Previous order" (click)="move(false, form)">
+                <mat-icon>arrow_back</mat-icon>
+              </button>
+              <button mat-icon-button aria-label="Next product" matTooltip="Next order" (click)="move(true, form)">
+                <mat-icon>arrow_forward</mat-icon>
+              </button>
+            </div>
+          </div>
+          <button mat-button (click)="duplicate(form)">
+            <mat-icon>filter_none</mat-icon>
+            <span>&nbsp;Duplicate</span>
+          </button>
+        </ng-container>
+        <h5 *ngSwitchCase="viewState.New">New Order</h5>
+
+        <h5 *ngSwitchCase="viewState.Copy">{{form.get('id').value}}</h5>
       </div>
     </div>
   </section>
@@ -213,15 +232,16 @@
       tabindex="-1"
       color="primary"
       (click)="back()">
-      {{isEdit ? 'Discard changes' : 'Cancel'}}
+      {{currentState === viewState.Edit ? 'Discard changes' : 'Cancel'}}
     </button> &nbsp;
 
     <button
       mat-flat-button
       type="submit"
+      fDisable
       [disabled]="form.invalid"
       [jpLoadClick]="save()">
-      {{isEdit ? 'Save changes' : 'Save'}}
+      {{currentState === viewState.Edit ? 'Save changes' : 'Save'}}
     </button>
   </div>
 

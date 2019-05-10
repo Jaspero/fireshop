@@ -30,6 +30,7 @@ import {
   throwError
 } from 'rxjs';
 import {
+  catchError,
   finalize,
   first,
   map,
@@ -108,108 +109,125 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   private shippingSubscription: Subscription;
 
   ngOnInit() {
-    this.data$ = combineLatest(
-      this.cartService.totalPrice$.pipe(take(1)),
+    this.data$ = this.state.user$.pipe(
+      switchMap(user =>
+        combineLatest(
+          this.cartService.totalPrice$.pipe(take(1)),
 
-      this.cartService.items$.pipe(
-        take(1),
-        switchMap(items => {
-          const orderItems = items.map(val => ({
-            id: val.productId,
-            quantity: val.quantity,
-            price: val.price,
-            name: val.name,
+          this.cartService.items$.pipe(
+            take(1),
+            switchMap(items => {
+              const orderItems = items.map(val => ({
+                id: val.productId,
+                quantity: val.quantity,
+                price: val.price,
+                name: val.name,
+
+                /**
+                 * TODO: Connect attributes if necessary
+                 */
+                attributes: {}
+              }));
+
+              return this.http
+                .post<{clientSecret: string}>(
+                  `${environment.restApi}/stripe/checkout`,
+                  {
+                    orderItems,
+                    lang: STATIC_CONFIG.lang,
+                    ...(user
+                      ? {
+                          customer: {
+                            email: user.authData.email,
+                            name: user.customerData.name,
+                            id: user.authData.uid
+                          }
+                        }
+                      : {})
+                  }
+                )
+                .pipe(map(({clientSecret}) => ({clientSecret, orderItems})));
+            })
+          )
+        ).pipe(
+          map(([total, {clientSecret, orderItems}]) => {
+            /**
+             * Connect stripe
+             */
+            const str = Stripe(ENV_CONFIG.stripe.token);
+            const elements = str.elements();
+            const cardObj = elements.create('card', {
+              style: {
+                base: {
+                  fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                  fontSmoothing: 'antialiased',
+                  fontSize: '16px'
+                }
+              }
+            });
+
+            const cardChanges$ = new Observable<
+              stripe.elements.ElementChangeResponse
+            >(obs => {
+              cardObj.on('change', event => {
+                obs.next(event);
+              });
+            }).pipe(shareReplay(1));
+
+            this.cardHostEl.changes
+              .pipe(first(changes => changes.first))
+              .subscribe(value => {
+                cardObj.mount(value.first.nativeElement);
+              });
+
+            const form = this.buildForm(
+              user ? user.customerData : {},
+              cardChanges$
+            );
 
             /**
-             * TODO: Connect attributes if necessary
+             * Dirty solution for updating validity
+             * when card element changes. This is
+             * necessary because it isn't part of the
+             * form
              */
-            attributes: {}
-          }));
+            cardChanges$
+              .pipe(takeUntil(this.destroyed$))
+              .subscribe(() => form.updateValueAndValidity());
 
-          return this.http
-            .post<{clientSecret: string}>(
-              `${environment.restApi}/stripe/checkout`,
-              {
-                orderItems,
-                lang: STATIC_CONFIG.lang
-              }
-            )
-            .pipe(map(({clientSecret}) => ({clientSecret, orderItems})));
-        })
+            this.pageLoading$.next(false);
+
+            return {
+              /**
+               * TODO: Incorporate tax
+               */
+              price: {
+                total,
+                shipping: DYNAMIC_CONFIG.currency.shippingCost || 0,
+                subTotal: total - (DYNAMIC_CONFIG.currency.shippingCost || 0)
+              },
+
+              stripe: {
+                stripe: str,
+                cardObj,
+                cardChanges$,
+                clientSecret
+              },
+
+              orderItems,
+              user,
+              form,
+              termsControl: new FormControl(false)
+            };
+          }),
+          catchError(error => {
+            localStorage.setItem('result', JSON.stringify(error.error));
+            this.router.navigate(['/checkout/error']);
+
+            return throwError(error);
+          })
+        )
       ),
-
-      this.state.user$
-    ).pipe(
-      map(([total, {clientSecret, orderItems}, user]) => {
-        /**
-         * Connect stripe
-         */
-        const str = Stripe(ENV_CONFIG.stripe.token);
-        const elements = str.elements();
-        const cardObj = elements.create('card', {
-          style: {
-            base: {
-              fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-              fontSmoothing: 'antialiased',
-              fontSize: '16px'
-            }
-          }
-        });
-
-        const cardChanges$ = new Observable<
-          stripe.elements.ElementChangeResponse
-        >(obs => {
-          cardObj.on('change', event => {
-            obs.next(event);
-          });
-        }).pipe(shareReplay(1));
-
-        this.cardHostEl.changes
-          .pipe(first(changes => changes.first))
-          .subscribe(value => {
-            cardObj.mount(value.first.nativeElement);
-          });
-
-        const form = this.buildForm(
-          user ? user.customerData : {},
-          cardChanges$
-        );
-
-        /**
-         * Dirty solution for updating validity
-         * when card element changes. This is
-         * necessary because it isn't part of the
-         * form
-         */
-        cardChanges$
-          .pipe(takeUntil(this.destroyed$))
-          .subscribe(() => form.updateValueAndValidity());
-
-        this.pageLoading$.next(false);
-
-        return {
-          /**
-           * TODO: Incorporate tax
-           */
-          price: {
-            total,
-            shipping: DYNAMIC_CONFIG.currency.shippingCost,
-            subTotal: total - (DYNAMIC_CONFIG.currency.shippingCost || 0)
-          },
-
-          stripe: {
-            stripe: str,
-            cardObj,
-            cardChanges$,
-            clientSecret
-          },
-
-          orderItems,
-          user,
-          form,
-          termsControl: new FormControl(false)
-        };
-      }),
       shareReplay(1)
     );
   }
@@ -248,7 +266,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     return this.fb.group({
       firstName: [data.firstName || '', Validators.required],
       lastName: [data.lastName || '', Validators.required],
-      email: [data.email || '', Validators.required],
+      email: [data.email || '', [Validators.required, Validators.email]],
       phone: [data.phone || '', Validators.required],
       city: [data.city || '', Validators.required],
       zip: [data.zip || '', Validators.required],
@@ -280,7 +298,9 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
             billing_details: {
               name: `${data.billing.firstName} ${data.billing.lastName}`
             }
-          }
+          },
+          receipt_email: data.billing.email,
+          save_payment_method: !!this.afAuth.auth.currentUser
         }
       )
     )
@@ -298,13 +318,13 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
               status: OrderStatus.Ordered,
               paymentIntentId: paymentIntent.id,
               billing: data.billing,
-              orderItems: data.orderItems,
+              orderItems: state.orderItems,
               createdOn: Date.now(),
 
               ...(data.shippingInfo ? {} : {shipping: data.shipping}),
               ...(state.user
                 ? {
-                    customerId: state.user.customerData.id,
+                    customerId: state.user.authData.uid,
                     customerName: state.user.customerData.name,
                     email: state.user.authData.email
                   }
@@ -315,6 +335,15 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
       )
       .subscribe(
         () => {
+          localStorage.setItem(
+            'result',
+            JSON.stringify({
+              orderItems: state.orderItems,
+              price: state.price,
+              billing: data.billing,
+              ...(data.shippingInfo ? {} : {shipping: data.shipping.email})
+            })
+          );
           this.router.navigate(['checkout/success']);
         },
         () => {

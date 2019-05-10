@@ -8,8 +8,15 @@ import {notify} from '@jf/utils/notify.operator';
 import * as nanoid from 'nanoid';
 import {defer, from, Observable, of} from 'rxjs';
 import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import {Role} from '../../enums/role.enum';
 import {StateService} from '../../services/state/state.service';
 import {queue} from '../../utils/queue.operator';
+
+export enum ViewState {
+  New,
+  Edit,
+  Copy
+}
 
 @Component({
   selector: 'jfsc-single-page',
@@ -29,19 +36,34 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
 
   initialValue: any;
   currentValue: any;
-  isEdit: string;
   collection: FirestoreCollections;
   form: FormGroup;
+  viewState = ViewState;
+  currentState: ViewState;
 
   ngOnInit() {
     this.activatedRoute.params
       .pipe(
         switchMap(params => {
           if (params.id === 'new') {
-            this.isEdit = '';
+            this.currentState = ViewState.New;
             return of({});
+          } else if (params.id.includes('copy')) {
+            this.currentState = ViewState.Copy;
+            return this.afs
+              .collection(this.collection)
+              .doc(this.form.controls.id.value)
+              .valueChanges()
+              .pipe(
+                take(1),
+                map(value => ({
+                  ...value,
+                  id: params.id
+                })),
+                queue()
+              );
           } else {
-            this.isEdit = params.id;
+            this.currentState = ViewState.Edit;
             return this.afs
               .collection(this.collection)
               .doc(params.id)
@@ -60,6 +82,20 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
       )
       .subscribe(data => {
         this.buildForm(data);
+
+        if (this.state.role === Role.Read) {
+          this.form.disable();
+        } else {
+          this.initialValue = this.form.getRawValue();
+          this.currentValue = this.form.getRawValue();
+
+          this.form.valueChanges
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe(value => {
+              this.currentValue = value;
+            });
+        }
+
         this.cdr.detectChanges();
       });
   }
@@ -93,7 +129,7 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
           .set(
             {
               ...item,
-              ...(this.isEdit ? {} : {createdOn: Date.now()})
+              ...(this.viewState.Edit ? {} : {createdOn: Date.now()})
             },
             {merge: true}
           )
@@ -105,5 +141,11 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
     this.initialValue = '';
     this.currentValue = '';
     this.router.navigate(['/', this.collection]);
+  }
+
+  duplicate(form) {
+    this.router.navigate([
+      this.collection + '/copy' + '_' + form.controls.id.value
+    ]);
   }
 }

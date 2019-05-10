@@ -645,3 +645,8 @@
 .m-l-xxl {
   @include fluid(320px, 160px, margin-left);
 }
+
+.disabled {
+  cursor: default;
+  pointer-events: none;
+}
