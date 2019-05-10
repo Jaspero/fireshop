@@ -38,6 +38,8 @@ export class SettingsComponent extends RxDestroy implements OnInit {
     super();
   }
 
+  //TODO(FILIP): fix general settings
+
   currencies = CURRENCIES;
   form: FormGroup;
   loading$ = new BehaviorSubject(false);
@@ -62,6 +64,8 @@ export class SettingsComponent extends RxDestroy implements OnInit {
         statusUpdates: true,
         errorNotificationEmail: '',
         notifyOnShipped: true,
+        notifyOnDelivered: true,
+        showingQuantity: true
         notifyOnDelivered: true,
         description: 'Purchase from fireShop website',
         statementDescription: 'Fireshop purchase'

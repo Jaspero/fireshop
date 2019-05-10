@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
+import {AngularFirestore} from '@angular/fire/firestore';
 import {MatSnackBar} from '@angular/material';
+import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
@@ -7,7 +9,7 @@ import {map} from 'rxjs/operators';
   providedIn: 'root'
 })
 export class CartService {
-  constructor(private snackBar: MatSnackBar) {
+  constructor(private snackBar: MatSnackBar, private afs: AngularFirestore) {
     const cart = JSON.parse(localStorage.getItem('cartItem'));
     if (cart) {
       this.items$.next(cart);
@@ -35,7 +37,6 @@ export class CartService {
     const current = this.items$.getValue();
 
     const index = current.findIndex(val => val['productId'] === item.id);
-
     if (index === -1) {
       current.push({
         identifier: item.id,
@@ -43,16 +44,15 @@ export class CartService {
         price: item.price,
         productId: item.id,
         image: item.gallery[0],
-        quantity: 1
+        quantity: 1,
+        maxQuantity: item.quantity
       });
     } else {
       current[index]['quantity'] += 1;
     }
-
     this.snackBar.open('Product added to cart', 'Dismiss', {
       duration: 2000
     });
-
     localStorage.setItem('cartItem', JSON.stringify(current));
 
     this.items$.next(current);

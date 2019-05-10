@@ -8,6 +8,7 @@ import {Validators} from '@angular/forms';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
+import {GeneralSettings} from '@jf/interfaces/general-settings.interface';
 import {Product} from '@jf/interfaces/product.interface';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
 import {Observable} from 'rxjs';
@@ -35,7 +36,6 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   ngOnInit() {
     super.ngOnInit();
-
     this.currency = CURRENCIES.find(
       cur => cur.value === DYNAMIC_CONFIG.currency.primary
     ).symbol;
@@ -134,7 +134,9 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       shortDescription: data.shortDescription || '',
       gallery: [data.gallery || []],
       quantity: [data.quantity || 0, Validators.min(0)],
-      category: data.category
+      category: data.category,
+      showingQuantity:
+        data.showingQuantity || DYNAMIC_CONFIG.generalSettings.showingQuantity
     });
   }
 

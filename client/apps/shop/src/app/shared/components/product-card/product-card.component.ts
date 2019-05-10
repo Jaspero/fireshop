@@ -8,7 +8,7 @@ import {
 import {Product} from '@jf/interfaces/product.interface';
 import {UNIQUE_ID, UNIQUE_ID_PROVIDER} from '@jf/utils/id.provider';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, shareReplay} from 'rxjs/operators';
 import {CartService} from '../../services/cart/cart.service';
 import {WishListService} from '../../services/wish-list/wish-list.service';
 
@@ -35,6 +35,9 @@ export class ProductCardComponent implements OnInit {
     label: string;
   }>;
 
+  cartQuantity$: Observable<any>;
+  canAddToCart$: Observable<boolean>;
+
   ngOnInit() {
     this.wishList$ = this.wishList.includes(this.product.id).pipe(
       map(value =>
@@ -48,6 +51,25 @@ export class ProductCardComponent implements OnInit {
               icon: 'favorite_bordered'
             }
       )
+    );
+    this.cartQuantity$ = this.cart.items$.pipe(
+      map(items => {
+        const index = items.findIndex(
+          val => val.identifier === this.product.id
+        );
+        if (index !== -1) {
+          return items[index].quantity;
+        } else {
+          return 0;
+        }
+      }),
+      shareReplay(1)
+    );
+
+    this.canAddToCart$ = this.cartQuantity$.pipe(
+      map(data => {
+        return data < this.product.quantity;
+      })
     );
   }
 }
