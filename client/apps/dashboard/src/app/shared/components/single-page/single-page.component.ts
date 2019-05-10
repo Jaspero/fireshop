@@ -129,7 +129,9 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
           .set(
             {
               ...item,
-              ...(this.viewState.Edit ? {} : {createdOn: Date.now()})
+              ...(this.currentState === this.viewState.Edit
+                ? {}
+                : {createdOn: Date.now()})
             },
             {merge: true}
           )

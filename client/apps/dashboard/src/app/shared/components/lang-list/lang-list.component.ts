@@ -19,6 +19,7 @@ export class LangListComponent<
 
   delete(id: string): Observable<any> {
     return this.state.language$.pipe(
+      take(1),
       switchMap(lang =>
         from(
           this.afs
