@@ -15,3 +15,4 @@ export {exportData} from './rest/export-data';
 export {importData} from './rest/import-data';
 export {similarProducts} from './rest/similar-products';
 export {stripe} from './rest/stripe';
+export {instagram} from './rest/instagram-authorization';
