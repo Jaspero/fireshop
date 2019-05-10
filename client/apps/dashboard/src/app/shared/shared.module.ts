@@ -51,6 +51,7 @@ import {ExportComponent} from './components/export/export.component';
 import {LangListComponent} from './components/lang-list/lang-list.component';
 import {LangSinglePageComponent} from './components/lang-single-page/lang-single-page.component';
 import {ListComponent} from './components/list/list.component';
+import {OverviewComponent} from './components/overview/overview.component';
 import {SearchInputComponent} from './components/search-input/search-input.component';
 import {SinglePageComponent} from './components/single-page/single-page.component';
 import {WysiwygComponent} from './components/wysiwyg/wysiwyg.component';
@@ -113,8 +114,12 @@ const IMPORTS = [
   FileUploadModule
 ];
 
-const COMPONENTS = [WysiwygComponent, ChipsComponent, SearchInputComponent];
-const COMPONENTS = [WysiwygComponent, ChipsComponent, ImportComponent];
+const COMPONENTS = [
+  WysiwygComponent,
+  ChipsComponent,
+  SearchInputComponent,
+  ImportComponent
+];
 
 const ENTRY_COMPONENTS = [
   ConfirmationComponent,
@@ -123,7 +128,8 @@ const ENTRY_COMPONENTS = [
   ListComponent,
   LangListComponent,
   SinglePageComponent,
-  LangSinglePageComponent
+  LangSinglePageComponent,
+  OverviewComponent
 ];
 
 const DIRECTIVES = [ForceDisableDirective];

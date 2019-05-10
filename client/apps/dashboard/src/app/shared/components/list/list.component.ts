@@ -37,6 +37,7 @@ import {Role} from '../../enums/role.enum';
 import {RouteData} from '../../interfaces/route-data.interface';
 import {StateService} from '../../services/state/state.service';
 import {ExportComponent} from '../export/export.component';
+import {OverviewComponent} from '../overview/overview.component';
 
 @Component({
   selector: 'jfsc-list',
@@ -379,6 +380,9 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
   }
 
   addData(event) {
-    console.log('event', event);
+    this.dialog.open(OverviewComponent, {
+      width: '250px',
+      data: {event}
+    });
   }
 }

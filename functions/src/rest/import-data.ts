@@ -6,12 +6,17 @@ import * as functions from 'firebase-functions';
 import * as ajv from 'ajv';
 import * as schemas from '../consts/schemas.const';
 import * as admin from 'firebase-admin';
+import nanoid = require('nanoid');
 
 const app = express();
 app.use(cors());
 
 app.post('/', (req, res) => {
-  const schema = schemas[req.query.collection];
+  let collection = req.query.collection;
+  if (collection.includes('-')) {
+    collection = collection.substring(0, collection.length - 3);
+  }
+  const schema = schemas[collection];
   const ajvInstance = new ajv();
   const validator = ajvInstance.compile(schema);
 
@@ -35,23 +40,32 @@ app.post('/', (req, res) => {
         jsonObj.forEach(obj => {
           validator(obj);
           if (validator.errors) {
-            errors.push(validator.errors[0]);
+            const err = validator.errors[0];
+            err['object'] = obj;
+            errors.push(err);
           } else {
-            console.log('obj', obj);
-
-            admin
+            let {id, ...data} = obj;
+            data = {...data, ...{createdOn: Date.now()}};
+            const objToUpload = admin
               .firestore()
               .collection(req.query.collection)
-              .set(obj)
-              .then(snapshots => {
-                console.log('snapshots', snapshots);
-              })
-              .catch(err => {
-                console.log('err', err);
-              });
+              .doc(id || nanoid())
+              .set(data);
+            created.push(objToUpload);
           }
         });
-        res.json({errors});
+
+        if (created.length) {
+          Promise.all(created)
+            .then(res => {
+              console.log('result', res);
+            })
+            .catch(err => {
+              console.log('error', err);
+            });
+        }
+
+        res.json({errors, success: created.length});
       });
   });
 

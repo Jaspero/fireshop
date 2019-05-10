@@ -1,14 +1,13 @@
 import {HttpClient} from '@angular/common/http';
-import {isNewLine} from '@angular/compiler/src/chars';
 import {
-  Component,
-  OnInit,
   ChangeDetectionStrategy,
-  ViewChild,
+  Component,
   ElementRef,
-  Output,
   EventEmitter,
-  Input
+  Input,
+  OnInit,
+  Output,
+  ViewChild
 } from '@angular/core';
 import {environment} from '../../../../environments/environment';
 
@@ -18,19 +17,17 @@ import {environment} from '../../../../environments/environment';
   styleUrls: ['./import.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImportComponent implements OnInit {
+export class ImportComponent {
   constructor(private http: HttpClient) {}
 
   @Output()
   importedData = new EventEmitter<any>();
 
   @Input()
-  collection: string;
+  collection: any;
 
   @ViewChild('file')
   fileEl: ElementRef<HTMLInputElement>;
-
-  ngOnInit() {}
 
   selectFile(event) {
     const file = event.target.files[0];
@@ -42,8 +39,8 @@ export class ImportComponent implements OnInit {
           collection: this.collection
         }
       })
-      .subscribe(val => {
-        this.importedData.emit(val.jsonObj);
+      .subscribe((val: {errors: any}) => {
+        this.importedData.emit(val);
       });
   }
 }

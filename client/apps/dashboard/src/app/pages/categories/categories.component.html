@@ -5,7 +5,6 @@
     <a mat-flat-button routerLink="/categories/new">Add category</a>
   </mat-toolbar>
 </section>
-
 <section class="p-y-m">
   <div class="grid">
     <div class="col-12">
@@ -44,7 +43,7 @@
             <span>Export</span>
           </button>
 
-          <jfsc-import [collection]="collection" (importedData)="addData($event)" ></jfsc-import>
+          <jfsc-import [collection]="collectionRef | async" (importedData)="addData($event)" ></jfsc-import>
 
         </div>
         <table

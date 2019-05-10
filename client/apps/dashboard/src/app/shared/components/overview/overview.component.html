@@ -1,0 +1,15 @@
+<div *ngIf="data">
+  <div *ngIf="data.event.success">
+    <h4>success</h4>
+    <p> You have successfully uploaded {{data.event.success}} items</p>
+  </div>
+  <div *ngIf="data.event.errors">
+    <h4>errors</h4>
+    <div *ngFor="let error of data.event.errors">
+      <div>
+        <p>there was a problem uploading {{error.object | json}}</p>
+        <p>Missing required property: {{error.params.missingProperty}}</p>
+      </div>
+    </div>
+  </div>
+</div>
