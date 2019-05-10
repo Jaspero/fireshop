@@ -15,6 +15,7 @@
         <p mat-line>{{product.price | sp}}</p>
         <p mat-line>
           <button
+            [disabled]="product.quantity === 1"
             id="btn-dec"
             tabindex="-1"
             class="jfs-cart-quantity-button"
