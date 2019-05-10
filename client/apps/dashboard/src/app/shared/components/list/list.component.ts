@@ -320,6 +320,7 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
       .pipe(take(1))
       .subscribe(([check, items]) => {
         if (check.checked) {
+          console.log('selection', this.selection.selected);
           this.selection.clear();
         } else {
           items.forEach(row => this.selection.select(row.id));
@@ -334,7 +335,11 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
   deleteSelection() {
     confirmation([
       switchMap(() =>
-        forkJoin(this.selection.selected.map(id => this.delete(id)))
+        forkJoin(this.selection.selected.map(id => this.delete(id))).pipe(
+          tap(() => {
+            console.log(this.selection.selected);
+          })
+        )
       ),
       notify()
     ]);
@@ -380,8 +385,9 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
   }
 
   addData(event) {
+    console.log(event);
     this.dialog.open(OverviewComponent, {
-      width: '250px',
+      width: '400px',
       data: {event}
     });
   }

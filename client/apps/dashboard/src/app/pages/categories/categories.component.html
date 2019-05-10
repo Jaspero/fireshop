@@ -5,6 +5,12 @@
     <a mat-flat-button routerLink="/categories/new">Add category</a>
   </mat-toolbar>
 </section>
+<!--test button-->
+<button (click)="addData({
+success: 3,
+errors: [
+{object: {name: 'some name'},params: {missingProperty: 'id'}}]
+})">test overview</button>
 <section class="p-y-m">
   <div class="grid">
     <div class="col-12">
