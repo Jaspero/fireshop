@@ -58,14 +58,15 @@
     "zone.js": "0.8.26"
   },
   "devDependencies": {
-    "@types/cookie-parser": "^1.4.1",
     "@types/ajv": "^1.0.0",
     "@types/busboy": "^0.2.3",
+    "@types/cookie-parser": "^1.4.1",
     "@types/handlebars": "^4.1.0",
     "@types/json2csv": "^4.4.0",
     "@types/nanoid": "^1.2.1",
     "@types/sharp": "0.21.2",
     "@types/simple-oauth2": "^2.2.1",
+    "firebase-functions-test": "^0.1.6",
     "tslint": "5.11.0",
     "typescript": "3.3.3333"
   },

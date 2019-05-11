@@ -32,6 +32,8 @@ app.get('/redirect', (req, res) => {
     httpOnly: true
   });
 
+  console.log(`${req.protocol}://${req.get('host')}/instagram/callback`);
+
   res.redirect(
     oauth2.authorizationCode.authorizeURL({
       redirect_uri: `${req.protocol}://${req.get('host')}/instagram/callback`,
@@ -103,15 +105,21 @@ function createFirebaseAccount(
 }
 
 function signInFirebaseTemplate(token) {
-  return `
-    <!--<script src="https://www.gstatic.com/firebasejs/3.6.0/firebase.js"></script>-->
-    <script>
-      var token = '${token}';
-      var app = firebase.initializeApp();
-      app.auth().signInWithCustomToken(token).then(function() {
-        window.close();
-      });
-    </script>`;
+  return `<html>
+    <head>
+      <title>Instagram Login</title>
+    </head>
+    <body>
+      <script src="/__/firebase/6.0.2/firebase-app.js"></script>
+      <script src="/__/firebase/6.0.2/firebase-auth.js"></script>
+      <script src="/__/firebase/init.js"></script>
+      <script>
+        firebase.auth().signInWithCustomToken('${token}').then(function() {
+          window.close();
+        });
+      </script>
+    </body>  
+  </html>`;
 }
 
 export const instagram = functions.https.onRequest(app);

@@ -13,6 +13,7 @@ import {auth} from 'firebase';
 import {from} from 'rxjs';
 import {filter, switchMap} from 'rxjs/operators';
 import {notify} from '@jf/utils/notify.operator';
+import {environment} from '../../../../../shop/src/environments/environment';
 import {StateService} from '../../shared/services/state/state.service';
 
 @Component({
@@ -71,6 +72,14 @@ export class LoginComponent implements OnInit {
 
   loginTwitter() {
     this.afAuth.auth.signInWithPopup(new auth.TwitterAuthProvider());
+  }
+
+  logInWithInstagram() {
+    window.open(
+      `${environment.restApi}/instagram/redirect`,
+      'firebaseAuth',
+      'height=315,width=400'
+    );
   }
 
   loginEmail() {

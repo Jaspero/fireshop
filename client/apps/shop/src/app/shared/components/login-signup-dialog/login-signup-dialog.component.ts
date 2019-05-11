@@ -20,6 +20,7 @@ import {notify} from '@jf/utils/notify.operator';
 import {auth, firestore, User} from 'firebase';
 import {from} from 'rxjs';
 import {filter, map, skip, switchMap, take, takeUntil} from 'rxjs/operators';
+import {environment} from '../../../../environments/environment';
 import {RepeatPasswordValidator} from '../../helpers/compare-passwords';
 import {StateService} from '../../services/state/state.service';
 
@@ -146,6 +147,14 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
   // Todo: must connect Firestore with Twitter
   logInWithTwitter() {
     this.afAuth.auth.signInWithPopup(new auth.TwitterAuthProvider());
+  }
+
+  logInWithInstagram() {
+    window.open(
+      `${environment.restApi}/instagram/redirect`,
+      'firebaseAuth',
+      'height=315,width=400'
+    );
   }
 
   signUpWithEmail() {
