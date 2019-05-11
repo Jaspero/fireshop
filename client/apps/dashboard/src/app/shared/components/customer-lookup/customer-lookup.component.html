@@ -1,0 +1,20 @@
+<mat-form-field class="w-full m-b-xs">
+
+  <input
+    tabindex="-1"
+    placeholder="Customer"
+    matInput
+    [matAutocomplete]="auto"
+    [formControl]="search">
+
+  <mat-autocomplete (optionSelected)="optionSelected($event)" #auto="matAutocomplete">
+    <mat-option
+      *ngFor="let customer of filteredCustomers$ | async"
+      [id]="customer.id"
+      [value]="customer.name">
+      {{customer.name}}
+    </mat-option>
+  </mat-autocomplete>
+
+</mat-form-field>
+

@@ -49,7 +49,7 @@
                   <mat-option [value]="null">All</mat-option>
                   <mat-option
                     *ngFor="let category of categories$ | async"
-                    [value]="category.id">
+                    [value]="category">
                     {{category.name}}
                   </mat-option>
                 </mat-select>

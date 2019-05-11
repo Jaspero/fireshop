@@ -1,4 +1,3 @@
-import {ListKeyManager} from '@angular/cdk/a11y';
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormControl} from '@angular/forms';
@@ -27,7 +26,6 @@ export class SearchComponent implements OnInit {
   search: FormControl;
   products$: Observable<Product[]>;
   loading$ = new BehaviorSubject(false);
-  keyboardEventsManager: ListKeyManager<any>;
 
   ngOnInit() {
     this.search = new FormControl('');

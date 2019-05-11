@@ -96,7 +96,9 @@ export class LangSinglePageComponent extends SinglePageComponent
           .set(
             {
               ...item,
-              ...(this.viewState.Edit ? {} : {createdOn: Date.now()})
+              ...(this.currentState === this.viewState.Edit
+                ? {}
+                : {createdOn: Date.now()})
             },
             {merge: true}
           )

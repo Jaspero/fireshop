@@ -81,19 +81,9 @@
             <td mat-cell *matCellDef="let element">{{element.createdOn | date: 'yyyy/MM/dd'}}</td>
           </ng-container>
 
-          <ng-container matColumnDef="productId">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Product Id</th>
-            <td mat-cell *matCellDef="let element">{{element.productId}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="customerId">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer Id</th>
-            <td mat-cell *matCellDef="let element">{{element.customerId}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="comment">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Comment</th>
-            <td mat-cell *matCellDef="let element">{{element.comment}}</td>
+          <ng-container matColumnDef="customerName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer Name</th>
+            <td mat-cell *matCellDef="let element">{{element.customerName}}</td>
           </ng-container>
 
           <ng-container matColumnDef="rating">
@@ -101,9 +91,18 @@
             <td mat-cell *matCellDef="let element">{{element.rating}}</td>
           </ng-container>
 
+          <ng-container matColumnDef="productId">
+            <th mat-header-cell *matHeaderCellDef>Product Id</th>
+            <td mat-cell *matCellDef="let element">{{element.productId}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="comment">
+            <th mat-header-cell *matHeaderCellDef>Comment</th>
+            <td mat-cell *matCellDef="let element">{{element.comment}}</td>
+          </ng-container>
 
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+            <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let element" class="ta-right">
               <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions" matTooltip="Actions">
                 <mat-icon>more_vert</mat-icon>

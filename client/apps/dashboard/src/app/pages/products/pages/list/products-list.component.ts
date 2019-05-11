@@ -74,8 +74,8 @@ export class ProductsListComponent extends LangListComponent<Product>
 
     if (this.options.filters.search) {
       ref = ref.where(
-        'name',
-        FirebaseOperator.LargerThenOrEqual,
+        'search',
+        FirebaseOperator.ArrayContains,
         this.options.filters.search
       );
     }

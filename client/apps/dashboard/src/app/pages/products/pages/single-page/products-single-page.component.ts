@@ -124,7 +124,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   buildForm(data: any) {
     this.form = this.fb.group({
       id: [
-        {value: data.id, disabled: this.viewState.Edit},
+        {value: data.id, disabled: this.currentState === this.viewState.Edit},
         [Validators.required, Validators.pattern(URL_REGEX)]
       ],
       name: [data.name || '', Validators.required],

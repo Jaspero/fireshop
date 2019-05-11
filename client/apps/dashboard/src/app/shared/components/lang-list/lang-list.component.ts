@@ -19,6 +19,7 @@ export class LangListComponent<
 
   delete(id: string): Observable<any> {
     return this.state.language$.pipe(
+      take(1),
       switchMap(lang =>
         from(
           this.afs
@@ -31,14 +32,14 @@ export class LangListComponent<
   }
 
   export() {
-    this.state.language$
+    this.collectionRef
       .pipe(
         take(1),
-        switchMap(lang =>
+        switchMap(collection =>
           this.bottomSheet
             .open(ExportComponent, {
               data: {
-                collection: `${this.collection}-${lang}`,
+                collection,
                 ids: this.selection.selected
               }
             })

@@ -1,0 +1,18 @@
+<div *ngIf="data">
+  <div *ngIf="data.event.success">
+    <h4 mat-dialog-title>Success</h4>
+    <p mat-dialog-content>You have successfully uploaded {{data.event.success}} items</p>
+    <div mat-dialog-actions class="jc-end">
+      <button mat-button mat-dialog-close>Ok</button>
+    </div>
+  </div>
+  <div *ngIf="data.event.errors">
+    <h4 mat-dialog-title>Error</h4>
+    <div mat-dialog-content>
+      <p class="m-b-xs" *ngFor="let error of data.event.errors">Problem uploading {{error.object | json}}: <b>missing {{error.params.missingProperty}}</b></p>
+    </div>
+    <div mat-dialog-actions class="jc-end">
+      <button mat-button mat-dialog-close>Ok</button>
+    </div>
+  </div>
+</div>

@@ -39,7 +39,7 @@ jobs:
           name: Building
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                npm run build
+                npm run build && npm run build-indexes
             fi
       - save_cache:
           key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}

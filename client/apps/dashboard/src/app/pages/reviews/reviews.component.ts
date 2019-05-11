@@ -13,11 +13,11 @@ import {ListComponent} from '../../shared/components/list/list.component';
 export class ReviewsComponent extends ListComponent<Review> {
   displayedColumns = [
     'checkBox',
-    'productId',
-    'customerId',
-    'comment',
-    'rating',
     'createdOn',
+    'rating',
+    'productId',
+    'customerName',
+    'comment',
     'actions'
   ];
   collection = FirestoreCollections.Reviews;
@@ -25,7 +25,7 @@ export class ReviewsComponent extends ListComponent<Review> {
   runFilters(ref) {
     if (this.options.filters.search) {
       ref = ref.where(
-        'comment',
+        'customerName',
         FirebaseOperator.LargerThenOrEqual,
         this.options.filters.search
       );
