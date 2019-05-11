@@ -153,7 +153,7 @@
                 <mat-select
                   [value]="element.status"
                   [disabled]="readMode"
-                  (selectionChange)="changeClient($event.value, element.id)">
+                  (selectionChange)="statusChanged($event.value, element.id)">
                   <mat-option
                     *ngFor="let stat of deliveryStatus | keyvalue"
                     [value]="stat.value">

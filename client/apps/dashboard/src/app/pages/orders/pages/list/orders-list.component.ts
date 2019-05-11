@@ -9,10 +9,7 @@ import {MatAutocompleteSelectedEvent} from '@angular/material';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
-import {Customer} from '@jf/interfaces/customer.interface';
 import {Order} from '@jf/interfaces/order.interface';
-import {combineLatest, Observable} from 'rxjs';
-import {map, shareReplay, startWith} from 'rxjs/operators';
 import {ListComponent} from '../../../../shared/components/list/list.component';
 
 @Component({
@@ -38,8 +35,6 @@ export class OrdersListComponent extends ListComponent<Order>
 
   collection = FirestoreCollections.Orders;
   deliveryStatus = OrderStatus;
-  customers$: Observable<Customer[]>;
-  filteredCustomers$: Observable<Customer[]>;
   additionalRouteData = {
     filters: {
       search: '',
@@ -47,37 +42,6 @@ export class OrdersListComponent extends ListComponent<Order>
       status: ''
     }
   };
-
-  ngOnInit() {
-    super.ngOnInit();
-
-    this.customers$ = this.afs
-      .collection<Customer>(FirestoreCollections.Customers)
-      .snapshotChanges()
-      .pipe(
-        map(actions => {
-          return actions.map(action => ({
-            id: action.payload.doc.id,
-            ...action.payload.doc.data()
-          }));
-        }),
-        shareReplay(1)
-      );
-
-    this.filteredCustomers$ = combineLatest(
-      this.customers$,
-      this.filters.get('customers').valueChanges.pipe(
-        startWith(this.options.filters.customers || ''),
-        map(value => value.toLowerCase())
-      )
-    ).pipe(
-      map(([customers, value]) =>
-        customers.filter(customer =>
-          (customer.name || '').toLowerCase().includes(value)
-        )
-      )
-    );
-  }
 
   runFilters(ref): any {
     if (this.options.filters.customers) {
@@ -99,7 +63,7 @@ export class OrdersListComponent extends ListComponent<Order>
     return super.runFilters(ref);
   }
 
-  changeClient(status: OrderStatus, id: string) {
+  statusChanged(status: OrderStatus, id: string) {
     this.afs
       .collection(FirestoreCollections.Orders)
       .doc(id)

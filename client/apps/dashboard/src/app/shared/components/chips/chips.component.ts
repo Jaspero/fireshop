@@ -7,6 +7,8 @@ import {
 } from '@angular/core';
 import {Observable} from 'rxjs';
 
+type chipValue = string | {id: string; name: string};
+
 @Component({
   selector: 'jfsc-chips',
   templateUrl: './chips.component.html',
@@ -17,7 +19,7 @@ export class ChipsComponent {
   constructor() {}
 
   @Input()
-  chips$: Observable<{key: string; value: string}>;
+  chips$: Observable<{key: string; value: chipValue}>;
 
   @Output()
   filterValue = new EventEmitter<string>();
@@ -30,5 +32,13 @@ export class ChipsComponent {
     return Object.entries(chips).some(
       item => item[1] !== null && item[1] !== ''
     );
+  }
+
+  getValue(value: chipValue) {
+    if (typeof value === 'string') {
+      return value;
+    } else {
+      return value.name;
+    }
   }
 }

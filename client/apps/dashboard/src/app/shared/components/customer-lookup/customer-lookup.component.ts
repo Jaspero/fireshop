@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   forwardRef,
@@ -15,7 +14,7 @@ import {MatAutocompleteSelectedEvent} from '@angular/material';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Customer} from '@jf/interfaces/customer.interface';
 import {combineLatest, Observable} from 'rxjs';
-import {debounceTime, map, startWith} from 'rxjs/operators';
+import {map, startWith} from 'rxjs/operators';
 
 @Component({
   selector: 'jfsc-customer-lookup',
@@ -35,10 +34,9 @@ export class CustomerLookupComponent implements OnInit, ControlValueAccessor {
 
   onTouch: Function;
   onModelChange: Function;
-  customers$: Observable<Customer[]>;
   search = new FormControl('');
+  customers$: Observable<Customer[]>;
   filteredCustomers$: Observable<Customer[]>;
-  isDisabled: boolean;
 
   ngOnInit() {
     this.customers$ = this.afs
@@ -68,8 +66,11 @@ export class CustomerLookupComponent implements OnInit, ControlValueAccessor {
     );
   }
 
-  onChange(e) {
-    this.onModelChange(e.option.value);
+  optionSelected(event: MatAutocompleteSelectedEvent) {
+    this.onModelChange({
+      id: event.option.id,
+      name: event.option.value
+    });
   }
 
   registerOnChange(fn: any) {
@@ -81,7 +82,11 @@ export class CustomerLookupComponent implements OnInit, ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean) {
-    this.isDisabled = isDisabled;
+    if (isDisabled) {
+      this.search.disable();
+    } else if (this.search.disabled) {
+      this.search.enable();
+    }
   }
 
   writeValue(value: any) {
