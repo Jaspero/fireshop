@@ -11,5 +11,12 @@ import {LangListComponent} from '../../shared/components/lang-list/lang-list.com
 })
 export class CategoriesComponent extends LangListComponent<Category> {
   collection = FirestoreCollections.Categories;
-  displayedColumns = ['checkBox', 'id', 'createdOn', 'name', 'actions'];
+  displayedColumns = [
+    'checkBox',
+    'id',
+    'createdOn',
+    'name',
+    'description',
+    'actions'
+  ];
 }
