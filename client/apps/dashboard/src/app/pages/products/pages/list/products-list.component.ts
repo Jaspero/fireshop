@@ -72,7 +72,15 @@ export class ProductsListComponent extends LangListComponent<Product>
       );
     }
 
-    return super.runFilters(ref);
+    if (this.options.filters.search) {
+      ref = ref.where(
+        'search',
+        FirebaseOperator.ArrayContains,
+        this.options.filters.search
+      );
+    }
+
+    return ref;
   }
 
   toggleActive(event: MatCheckboxChange, id: string) {

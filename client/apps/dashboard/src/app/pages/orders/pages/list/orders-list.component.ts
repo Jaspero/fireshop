@@ -24,9 +24,9 @@ export class OrdersListComponent extends ListComponent<Order>
     'checkBox',
     'id',
     'createdOn',
-    'customer',
+    'customerName',
     'price',
-    'statusChange',
+    'status',
     'actions'
   ];
 
