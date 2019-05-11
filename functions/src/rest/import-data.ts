@@ -34,8 +34,8 @@ app.post('/', (req, res) => {
     csv()
       .fromString(fileData)
       .then(jsonObj => {
-        let errors = [];
-        let created = [];
+        const errors = [];
+        const created = [];
 
         jsonObj.forEach(obj => {
           validator(obj);
@@ -44,21 +44,23 @@ app.post('/', (req, res) => {
             err['object'] = obj;
             errors.push(err);
           } else {
-            let {id, ...data} = obj;
-            data = {...data, ...{createdOn: Date.now()}};
+            const {id, ...data} = obj;
             const objToUpload = admin
               .firestore()
               .collection(req.query.collection)
               .doc(id || nanoid())
-              .set(data);
+              .set({
+                ...data,
+                ...{createdOn: Date.now()}
+              });
             created.push(objToUpload);
           }
         });
 
         if (created.length) {
           Promise.all(created)
-            .then(res => {
-              console.log('result', res);
+            .then(result => {
+              console.log('result', result);
             })
             .catch(err => {
               console.log('error', err);
