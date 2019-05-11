@@ -35,12 +35,12 @@ service cloud.firestore {
 
     match /orders/{order} {
       allow read: if readWrite() || resource.data.customerId == auth.uid;
-      allow write: if write() || resource.data.customerId == auth.uid;
+      allow write, delete: if write() || resource.data.customerId == auth.uid;
     }
 
     match /customers/{customer} {
       allow read: if readWrite() || resource.data.customerId == auth.uid;
-      allow write: if write() || resource.data.customerId == auth.uid;
+      allow write, delete: if write() || resource.data.customerId == auth.uid;
     }
 
     match /reviews/{review} {
