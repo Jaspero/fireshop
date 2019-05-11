@@ -381,7 +381,6 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
   }
 
   addData(event) {
-    console.log(event);
     this.dialog.open(OverviewComponent, {
       width: '500px',
       data: {event}
