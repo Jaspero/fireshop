@@ -237,7 +237,7 @@ app.post('/webhook', async (req, res) => {
       exec = [
         admin
           .firestore()
-          .collection('order')
+          .collection('orders')
           .doc(order.id)
           .set(
             {
@@ -294,7 +294,7 @@ app.post('/webhook', async (req, res) => {
       exec = [
         admin
           .firestore()
-          .collection('order')
+          .collection('orders')
           .doc(order.id)
           .set(
             {

@@ -44,6 +44,7 @@ app.get('/redirect', (req, res) => {
 });
 
 app.get('/callback', async (req, res) => {
+  console.log('state', req.cookies);
   if (!req.cookies.state) {
     return res
       .status(HttpStatus.BadRequest)
@@ -53,6 +54,11 @@ app.get('/callback', async (req, res) => {
   } else if (req.cookies.state !== req.query.state) {
     return res.status(HttpStatus.BadRequest).send('State validation failed');
   }
+
+  console.log('results', {
+    code: req.query.code,
+    redirect_uri: `${req.protocol}://${req.get('host')}/instagram/callback`
+  });
 
   const results = await oauth2.authorizationCode.getToken({
     code: req.query.code,
