@@ -185,6 +185,7 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
 
         if (snapshots.length) {
           cursor = snapshots[snapshots.length - 1].payload.doc;
+          this.emptyState$.next(false);
         } else {
           this.emptyState$.next(true);
         }
