@@ -5,6 +5,7 @@ import {
   AngularFirestore,
   AngularFirestoreModule
 } from '@angular/fire/firestore';
+import {AngularFirePerformanceModule} from '@angular/fire/performance';
 import {
   BrowserModule,
   BrowserTransferStateModule
@@ -59,6 +60,7 @@ const ENTRY_COMPONENTS = [UpdateAvailableComponent];
     AngularFireModule.initializeApp(ENV_CONFIG.firebase),
     AngularFirestoreModule.enablePersistence(),
     AngularFireAuthModule,
+    AngularFirePerformanceModule,
 
     JpImagePreloadModule.forRoot()
   ],
