@@ -8,9 +8,9 @@ the [Angular](https://angular.io/) framework.
 ## Supports
 
 - [x] Multilingual
-- [ ] Universal Rendering (SSR)
+- [x] Universal Rendering ([SSR](https://angular.io/guide/universal))
 - [x] PWA
-- [ ] [Stripe Checkout](https://stripe.com/docs)
+- [x] [Stripe Checkout](https://stripe.com/docs)
 - [x] Offline
   - [x] Browsing
   - [ ] Cart

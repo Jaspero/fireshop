@@ -37,7 +37,7 @@ app.use(cors());
 app.use(json());
 app.use(urlencoded({extended: true}));
 
-const DIST_FOLDER = './../dist/public/shop';
+const DIST_FOLDER = './dist/public/shop';
 const {
   AppServerModuleNgFactory,
   LAZY_MODULE_MAP
