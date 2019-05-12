@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
 import {MatSnackBar} from '@angular/material';
-import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {BROWSER_CONFIG} from '@jf/consts/browser-config.const';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
@@ -9,11 +8,15 @@ import {map} from 'rxjs/operators';
   providedIn: 'root'
 })
 export class CartService {
-  constructor(private snackBar: MatSnackBar, private afs: AngularFirestore) {
-    const cart = JSON.parse(localStorage.getItem('cartItem'));
+  constructor(private snackBar: MatSnackBar) {
+    const cart = BROWSER_CONFIG.isBrowser
+      ? JSON.parse(localStorage.getItem('cartItem'))
+      : [];
+
     if (cart) {
       this.items$.next(cart);
     }
+
     this.numOfItems$ = this.items$.pipe(
       map(items =>
         items.length ? items.reduce((acc, cur) => (acc += cur.quantity), 0) : ''
