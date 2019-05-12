@@ -1,7 +1,6 @@
 import * as cookieParser from 'cookie-parser';
 import {randomBytes} from 'crypto';
 import * as express from 'express';
-import * as firebase from 'firebase';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import {create} from 'simple-oauth2';

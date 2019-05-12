@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["es2017", "dom"],
+    "lib": ["es2018", "dom"],
     "moduleResolution": "node",
     "outDir": "lib",
     "sourceMap": true,

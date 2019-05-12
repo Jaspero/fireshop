@@ -9,7 +9,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material';
 import {Router} from '@angular/router';
-import {auth} from 'firebase';
+import {auth} from 'firebase/app';
 import {from} from 'rxjs';
 import {filter, switchMap} from 'rxjs/operators';
 import {notify} from '@jf/utils/notify.operator';
