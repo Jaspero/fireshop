@@ -36,18 +36,18 @@
             <h5 class="p-t-s p-b-xs">Description</h5>
             <div [innerHtml]="data.product.description"></div>
             <h2 class="m-t-m m-b-xs">{{data.product.price | sp}}</h2>
-            <div  *ngIf="data.product.showingQuantity === true">
-              <p>Quantity of this product is: {{data.product.quantity}}</p>
+            <div *ngIf="data.product.showingQuantity">
+              <p>Stock: {{data.product.quantity}}</p>
             </div>
             <div *ngIf="data.quantity === data.product.quantity">
-              <p>There are no more item in stock</p>
+              <p>There are no more items in stock</p>
             </div>
             <ng-container *ngIf="data.quantity; else notInCart">
               <button
-                [disabled]="data.quantity === data.product.quantity"
                 id="btn-add-more-prod-0"
                 mat-flat-button
                 color="accent"
+                [disabled]="data.quantity >= data.product.quantity"
                 (click)="cart.add(data.product)">
                 <span class="iblock p-x-s">Add more to cart (currently {{data.quantity}})</span>
               </button>
@@ -57,6 +57,7 @@
                 id="btn-add-cart-prod-1"
                 mat-flat-button
                 color="accent"
+                [disabled]="data.quantity >= data.product.quantity"
                 (click)="cart.add(data.product)">
                 <span class="iblock p-x-m">Add to cart</span>
               </button>
