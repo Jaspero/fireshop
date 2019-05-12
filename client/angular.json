@@ -27,7 +27,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "../dist/public/shop",
+            "outputPath": "../functions/dist/public/shop",
             "index": "apps/shop/src/index.html",
             "main": "apps/shop/src/main.ts",
             "polyfills": "apps/shop/src/polyfills.ts",
@@ -116,7 +116,7 @@
         "server": {
           "builder": "@angular-devkit/build-angular:server",
           "options": {
-            "outputPath": "../dist/server",
+            "outputPath": "../functions/dist/server",
             "main": "apps/shop/src/main-ssr.ts",
             "tsConfig": "apps/shop/src/tsconfig.app-ssr.json"
           },
@@ -201,7 +201,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "../dist/public/dashboard",
+            "outputPath": "../functions/dist/public/dashboard",
             "index": "apps/dashboard/src/index.html",
             "main": "apps/dashboard/src/main.ts",
             "polyfills": "apps/dashboard/src/polyfills.ts",

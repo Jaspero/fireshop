@@ -19,6 +19,16 @@ global['window'] = win;
 global['document'] = win.document;
 global['DOMTokenList'] = win['DOMTokenList'];
 
+/**
+ * hack for protobufjs
+ * https://github.com/protobufjs/protobuf.js/blob/master/src/util/minimal.js
+ */
+global['window']['process'] = {
+  versions: {
+    node: true
+  }
+};
+
 enableProdMode();
 
 const app = express();
@@ -27,11 +37,11 @@ app.use(cors());
 app.use(json());
 app.use(urlencoded({extended: true}));
 
-const DIST_FOLDER = './../../dist/public/shop';
+const DIST_FOLDER = './../dist/public/shop';
 const {
   AppServerModuleNgFactory,
   LAZY_MODULE_MAP
-} = require('./../../dist/server/main');
+} = require('./../dist/server/main');
 
 app.engine('html', (_, options, callback) =>
   ngExpressEngine({
@@ -60,6 +70,3 @@ app.get('*', (req, res) => {
 });
 
 export const ssr = functions.https.onRequest(app);
-// export const ssr = functions.https.onRequest(() => {
-//   console.log('123');
-// });
