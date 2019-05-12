@@ -1,13 +1,7 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {AngularFireAuth} from '@angular/fire/auth';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {MatDialogRef} from '@angular/material';
 import {Router} from '@angular/router';
-import {Product} from '@jf/interfaces/product.interface';
-import {Observable} from 'rxjs';
-import {map, shareReplay} from 'rxjs/operators';
 import {CartService} from '../../services/cart/cart.service';
-import {StateService} from '../../services/state/state.service';
 
 @Component({
   selector: 'jfs-cart',
@@ -19,11 +13,9 @@ export class CartComponent {
   constructor(
     public dialogRef: MatDialogRef<CartComponent>,
     public cart: CartService,
-    private afs: AngularFirestore,
-    private afAuth: AngularFireAuth,
-    private state: StateService,
     private router: Router
   ) {}
+
   checkOut() {
     this.router.navigate(['/checkout']);
     this.closeDialog();

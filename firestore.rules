@@ -39,8 +39,8 @@ service cloud.firestore {
     }
 
     match /customers/{customer} {
-      allow read: if readWrite() || resource.data.customerId == auth.uid;
-      allow write, delete: if write() || resource.data.customerId == auth.uid;
+      allow read: if readWrite() || resource.id == auth.uid;
+      allow write, delete: if write() || resource.id == auth.uid;
     }
 
     match /reviews/{review} {
