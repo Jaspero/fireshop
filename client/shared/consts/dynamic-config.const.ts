@@ -19,6 +19,7 @@ export let DYNAMIC_CONFIG: {
     errorNotificationEmail: '',
     notifyOnShipped: true,
     notifyOnDelivered: true,
-    showingQuantity: true
+    showingQuantity: true,
+    allowOutOfQuantityPurchase: false
   }
 };

@@ -6,4 +6,5 @@ export interface GeneralSettings {
   notifyOnShipped: boolean;
   notifyOnDelivered: boolean;
   showingQuantity: boolean;
+  allowOutOfQuantityPurchase: boolean;
 }

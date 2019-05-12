@@ -11,4 +11,5 @@ export interface Product {
   search: string[];
   showingQuantity: boolean;
   quantity: number;
+  allowOutOfQuantityPurchase: boolean;
 }

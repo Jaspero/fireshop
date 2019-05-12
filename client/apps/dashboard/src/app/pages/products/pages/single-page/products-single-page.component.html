@@ -105,12 +105,17 @@
                 <mat-checkbox color="primary" formControlName="active">Active</mat-checkbox>
               </div>
               <div class="p-y-xs">
+                <mat-checkbox color="primary" formControlName="showingQuantity">Show quantity</mat-checkbox>
+              </div>
+              <div class="p-y-xs">
+                <mat-checkbox color="primary" formControlName="allowOutOfQuantityPurchase">Allow out of quantity purchase</mat-checkbox>
+              </div>
+              <div class="p-y-xs">
                 <mat-form-field appearance="outline" class="w-full">
                   <mat-label>Quantity</mat-label>
                   <input matInput type="number"  formControlName="quantity">
                 </mat-form-field>
               </div>
-              <mat-slide-toggle formControlName="showingQuantity">Showing quantity</mat-slide-toggle>
             </mat-card>
           </div>
           <div class="col-12">
