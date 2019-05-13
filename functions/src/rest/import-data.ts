@@ -6,6 +6,7 @@ import * as functions from 'firebase-functions';
 import * as ajv from 'ajv';
 import * as schemas from '../consts/schemas.const';
 import * as admin from 'firebase-admin';
+import {HttpStatus} from '../enums/http-status.enum';
 import nanoid = require('nanoid');
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(cors());
 
 app.post('/', (req, res) => {
   let collection = req.query.collection;
+
   if (collection.includes('-')) {
     collection = collection.substring(0, collection.length - 3);
   }
@@ -31,20 +33,19 @@ app.post('/', (req, res) => {
   });
 
   busboy.on('finish', () => {
-    csv()
-      .fromString(fileData)
-      .then(jsonObj => {
-        const errors = [];
-        const created = [];
+    async function exec() {
+      const jsonObj = await csv().fromString(fileData);
 
-        jsonObj.forEach(obj => {
-          validator(obj);
+      const {errors, created} = jsonObj.reduce(
+        (acc, cur) => {
+          validator(cur);
+
           if (validator.errors) {
             const err = validator.errors[0];
-            err['object'] = obj;
+            err['object'] = cur;
             errors.push(err);
           } else {
-            const {id, ...data} = obj;
+            const {id, ...data} = cur;
             created.push(
               admin
                 .firestore()
@@ -56,24 +57,27 @@ app.post('/', (req, res) => {
                 })
             );
           }
-        });
-        if (created.length) {
-          let result;
-          Promise.all(created)
-            .then(res => {
-              console.log('res', res);
-              result = res;
-            })
-            .catch(err => {
-              console.log('error', err);
-            })
-            .finally(() => {
-              res.json({errors, success: created.length});
-            });
-        } else {
-          res.json({errors});
+
+          return acc;
+        },
+        {
+          errors: [],
+          created: []
         }
-      });
+      );
+
+      if (created.length) {
+        await Promise.all(created);
+      }
+    }
+
+    exec()
+      .then(data => res.json(data))
+      .catch(error =>
+        res
+          .status(HttpStatus.InternalServerError)
+          .send({error: error.toString()})
+      );
   });
 
   busboy.end(req['rawBody']);
