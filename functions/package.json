@@ -2,7 +2,7 @@
   "name": "functions",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
-    "build": "tsc && cp -r email-templates lib/email-templates",
+    "build": "tsc",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
@@ -44,7 +44,7 @@
     "express": "4.16.4",
     "firebase": "6.0.2",
     "firebase-admin": "7.3.0",
-    "firebase-functions": "2.3.1",
+    "firebase-functions": "^2.3.1",
     "handlebars": "4.1.2",
     "json2csv": "4.5.1",
     "nanoid": "2.0.1",

@@ -14,6 +14,7 @@ import {from} from 'rxjs';
 import {filter, switchMap} from 'rxjs/operators';
 import {notify} from '@jf/utils/notify.operator';
 import {environment} from '../../../../../shop/src/environments/environment';
+import {Role} from '../../shared/enums/role.enum';
 import {StateService} from '../../shared/services/state/state.service';
 
 @Component({
@@ -42,6 +43,7 @@ export class LoginComponent implements OnInit {
         switchMap(user => user.getIdTokenResult())
       )
       .subscribe(res => {
+        res.claims.role = Role.Write;
         /**
          * If the user has any kind of role we allow
          * access to the dashboard

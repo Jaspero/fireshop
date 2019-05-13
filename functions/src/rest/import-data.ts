@@ -45,18 +45,18 @@ app.post('/', (req, res) => {
             errors.push(err);
           } else {
             const {id, ...data} = obj;
-            const objToUpload = admin
-              .firestore()
-              .collection(req.query.collection)
-              .doc(id || nanoid())
-              .set({
-                ...data,
-                ...{createdOn: Date.now()}
-              });
-            created.push(objToUpload);
+            created.push(
+              admin
+                .firestore()
+                .collection(req.query.collection)
+                .doc(id || nanoid())
+                .set({
+                  ...data,
+                  ...{createdOn: Date.now()}
+                })
+            );
           }
         });
-
         if (created.length) {
           Promise.all(created)
             .then(result => {

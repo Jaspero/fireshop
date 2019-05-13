@@ -1,14 +1,14 @@
 import {HttpClient} from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
-  EventEmitter,
   Input,
-  OnInit,
-  Output,
+  TemplateRef,
   ViewChild
 } from '@angular/core';
+import {MatDialog} from '@angular/material';
 import {environment} from '../../../../environments/environment';
 
 @Component({
@@ -18,16 +18,19 @@ import {environment} from '../../../../environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImportComponent {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef,
+    public dialog: MatDialog
+  ) {}
 
-  @Output()
-  importedData = new EventEmitter<any>();
+  @ViewChild('file') fileEl: ElementRef<HTMLInputElement>;
+  @ViewChild('overview') overview: TemplateRef<any>;
 
   @Input()
-  collection: any;
+  collection: string;
 
-  @ViewChild('file')
-  fileEl: ElementRef<HTMLInputElement>;
+  data: any;
 
   selectFile(event) {
     const file = event.target.files[0];
@@ -40,7 +43,12 @@ export class ImportComponent {
         }
       })
       .subscribe((val: {errors: any}) => {
-        this.importedData.emit(val);
+        this.data = val;
+        this.cdr.detectChanges();
+        console.log('val', val);
+        this.dialog.open(this.overview, {
+          width: '500px'
+        });
       });
   }
 }
