@@ -78,20 +78,43 @@
           </div>
           <div class="col-12">
             <mat-card>
-              <h6 class="p-y-xs">Description Variants</h6>
+              <h6 class="p-y-xs">Description Variants
+                <button mat-button (click)="addAttribute()"><mat-icon>add</mat-icon></button>
+              </h6>
               <div class="p-y-xs">
                 <mat-divider></mat-divider>
               </div>
               <div class="p-y-xs">
 
-                <div class="p-y-xs">
-                  <mat-form-field appearance="outline">
-                    <mat-label>Add description</mat-label>
-                    <input matInput [formControl]="addDesc">
-                  </mat-form-field>
-                  <button mat-raised-button (click)="addDescription()">Add</button>
-                </div>
+                <div class="p-y-xs" formArrayName="attributes">
 
+                  <div *ngFor="let attribute of attributesForms.controls; let i=index"
+                       [formGroupName]="i">
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Key</mat-label>
+                      <input matInput formControlName="key">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="w-full">
+                      <mat-chip-list #chipList>
+                        <mat-chip *ngFor="let items of attribute.get('list').value; let ind=index" [selectable]="true"
+                                  (removed)="remove(i, ind)">
+                          {{items}}
+                          <mat-icon matChipRemove>cancel</mat-icon>
+                        </mat-chip>
+                        <input placeholder="Add attribute"
+                               [matChipInputFor]="chipList"
+                               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                               [matChipInputAddOnBlur]="true"
+                               (matChipInputTokenEnd)="add($event, i)">
+                      </mat-chip-list>
+                    </mat-form-field>
+
+                    <button mat-button (click)="delAttribute(i)">Delete</button>
+
+                  </div>
+                </div>
               </div>
             </mat-card>
           </div>

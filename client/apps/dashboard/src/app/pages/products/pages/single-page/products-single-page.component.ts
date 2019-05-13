@@ -1,10 +1,11 @@
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
   ViewChild
 } from '@angular/core';
-import {FormControl, Validators} from '@angular/forms';
+import {FormArray, Validators} from '@angular/forms';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
@@ -30,9 +31,9 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   categories$: Observable<Category[]>;
   collection = FirestoreCollections.Products;
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   currency: string;
-  addDesc = new FormControl('');
-  descriptions = [];
+  finalAttributes = {};
 
   ngOnInit() {
     super.ngOnInit();
@@ -54,6 +55,10 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       }),
       shareReplay(1)
     );
+  }
+
+  get attributesForms() {
+    return this.form.get('attributes') as FormArray;
   }
 
   // TODO: I think this can be done in a better way
@@ -142,7 +147,29 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
         'allowOutOfQuantityPurchase '
       )
         ? data.allowOutOfQuantityPurchase
-        : DYNAMIC_CONFIG.generalSettings.allowOutOfQuantityPurchase
+        : DYNAMIC_CONFIG.generalSettings.allowOutOfQuantityPurchase,
+      attributes: this.fb.array([])
+    });
+
+    this.attributesForms.valueChanges.subscribe(res => {
+      let array = [];
+      res.map(val => {
+        if (array.length && val.list.length) {
+          array = array.reduce((acc, cur) => {
+            const arrays = val.list.map(y => `${cur}_${y}`);
+            acc.push(...arrays);
+            return acc;
+          }, []);
+        } else {
+          array.push(...val.list);
+        }
+      });
+      this.finalAttributes = {};
+      array.forEach(x => {
+        this.finalAttributes[x] = '';
+      });
+
+      console.log(123, this.finalAttributes);
     });
   }
 
@@ -150,9 +177,40 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
     window.open(environment.websiteUrl + '/product/' + form.controls.id.value);
   }
 
-  addDescription() {
-    console.log(this.addDesc.value);
-    this.descriptions.push(this.addDesc.value);
-    this.addDesc.setValue('');
+  addAttribute() {
+    this.attributesForms.push(
+      this.fb.group({
+        key: '',
+        list: [[]]
+      })
+    );
+  }
+
+  delAttribute(i) {
+    this.attributesForms.removeAt(i);
+  }
+
+  add(item, ind) {
+    const input = item.input;
+    const value = item.value;
+
+    if (value) {
+      const list = this.attributesForms.at(ind).get('list').value;
+      list.push(value);
+      this.attributesForms
+        .at(ind)
+        .get('list')
+        .setValue(list);
+      input.value = '';
+    }
+  }
+
+  remove(ind, index) {
+    const list = this.attributesForms.at(ind).get('list').value;
+    list.splice(index, 1);
+    this.attributesForms
+      .at(ind)
+      .get('list')
+      .setValue(list);
   }
 }
