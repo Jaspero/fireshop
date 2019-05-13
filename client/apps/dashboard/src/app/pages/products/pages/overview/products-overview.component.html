@@ -1,0 +1,11 @@
+<section>
+  <mat-toolbar color="primary">
+    <a mat-icon-button routerLink="/products" aria-label="Back" matTooltip="Back">
+      <mat-icon>arrow_back</mat-icon>
+    </a>
+    <span>Products</span>
+  </mat-toolbar>
+</section>
+<ng-container *ngIf="data$ | async as data">
+  {{data | json}}
+</ng-container>
