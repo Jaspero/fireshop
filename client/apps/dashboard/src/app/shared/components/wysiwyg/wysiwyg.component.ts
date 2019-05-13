@@ -7,6 +7,7 @@ import {
   forwardRef,
   HostBinding,
   Inject,
+  Input,
   ViewChild
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
@@ -34,7 +35,6 @@ export class WysiwygComponent implements AfterViewInit, ControlValueAccessor {
     public uniqueId: string,
     private cdr: ChangeDetectorRef
   ) {}
-
   @HostBinding('class.active')
   focused = false;
 
@@ -45,6 +45,7 @@ export class WysiwygComponent implements AfterViewInit, ControlValueAccessor {
   editorContent: string;
   onTouch: Function;
   onModelChange: Function;
+  isDisabled: boolean;
 
   ngAfterViewInit() {
     this.registerTiny();
@@ -66,6 +67,7 @@ export class WysiwygComponent implements AfterViewInit, ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean) {
+    this.isDisabled = isDisabled;
     if (this.editor) {
       this.editor.getBody().setAttribute('contenteditable', !isDisabled);
     }
@@ -89,6 +91,13 @@ export class WysiwygComponent implements AfterViewInit, ControlValueAccessor {
       ].join(' | '),
       setup: editor => {
         this.editor = editor;
+
+        editor.on('init', () => {
+          if (this.isDisabled) {
+            this.editor.getBody().setAttribute('contenteditable', false);
+          }
+        });
+
         editor.on('keyup change', () => {
           const tinyContent = editor.getContent();
           this.editorContent = tinyContent;
