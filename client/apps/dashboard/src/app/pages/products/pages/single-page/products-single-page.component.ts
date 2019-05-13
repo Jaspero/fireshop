@@ -4,7 +4,7 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {Validators} from '@angular/forms';
+import {FormControl, Validators} from '@angular/forms';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
@@ -31,6 +31,8 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   categories$: Observable<Category[]>;
   collection = FirestoreCollections.Products;
   currency: string;
+  addDesc = new FormControl('');
+  descriptions = [];
 
   ngOnInit() {
     super.ngOnInit();
@@ -146,5 +148,11 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   view(form) {
     window.open(environment.websiteUrl + '/product/' + form.controls.id.value);
+  }
+
+  addDescription() {
+    console.log(this.addDesc.value);
+    this.descriptions.push(this.addDesc.value);
+    this.addDesc.setValue('');
   }
 }

@@ -76,6 +76,25 @@
               </div>
             </mat-card>
           </div>
+          <div class="col-12">
+            <mat-card>
+              <h6 class="p-y-xs">Description Variants</h6>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="p-y-xs">
+
+                <div class="p-y-xs">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Add description</mat-label>
+                    <input matInput [formControl]="addDesc">
+                  </mat-form-field>
+                  <button mat-raised-button (click)="addDescription()">Add</button>
+                </div>
+
+              </div>
+            </mat-card>
+          </div>
         </div>
       </div>
       <div class="col-4 col-s-10 col-xs-12">
