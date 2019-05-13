@@ -58,16 +58,21 @@ app.post('/', (req, res) => {
           }
         });
         if (created.length) {
+          let result;
           Promise.all(created)
-            .then(result => {
-              console.log('result', result);
+            .then(res => {
+              console.log('res', res);
+              result = res;
             })
             .catch(err => {
               console.log('error', err);
+            })
+            .finally(() => {
+              res.json({errors, success: created.length});
             });
+        } else {
+          res.json({errors});
         }
-
-        res.json({errors, success: created.length});
       });
   });
 

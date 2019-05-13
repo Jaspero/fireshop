@@ -45,7 +45,6 @@ export class ImportComponent {
       .subscribe((val: {errors: any}) => {
         this.data = val;
         this.cdr.detectChanges();
-        console.log('val', val);
         this.dialog.open(this.overview, {
           width: '500px'
         });
