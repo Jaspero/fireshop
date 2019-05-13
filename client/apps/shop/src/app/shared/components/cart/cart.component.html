@@ -29,7 +29,7 @@
             tabindex="-1"
             class="jfs-cart-quantity-button"
             matTooltip="Increase"
-            [disabled]="product.quantity >= product.maxQuantity"
+            [disabled]="product.allowOutOfQuantityPurchase ? false : product.quantity >= product.maxQuantity"
             (click)="cart.changeNumber(product.productId, 1)">
             +
           </button>

@@ -48,7 +48,8 @@ export class CartService {
         productId: item.id,
         image: item.gallery[0],
         quantity: 1,
-        maxQuantity: item.quantity
+        maxQuantity: item.quantity,
+        allowOutOfQuantityPurchase: item.allowOutOfQuantityPurchase
       });
     } else {
       current[index]['quantity'] += 1;

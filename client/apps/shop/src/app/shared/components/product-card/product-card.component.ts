@@ -68,7 +68,11 @@ export class ProductCardComponent implements OnInit {
 
     this.canAddToCart$ = this.cartQuantity$.pipe(
       map(data => {
-        return data < this.product.quantity;
+        if (this.product.allowOutOfQuantityPurchase) {
+          return true;
+        } else {
+          return data < this.product.quantity;
+        }
       })
     );
   }
