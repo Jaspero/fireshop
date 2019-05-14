@@ -21,11 +21,15 @@ export class ProductsOverviewComponent implements OnInit {
 
   ngOnInit() {
     this.data$ = this.activatedRoute.params.pipe(
-      switchMap(identifier => {
-        return forkJoin(
+      switchMap(identifier =>
+        forkJoin([
           this.afs
             .collection(FirestoreCollections.Orders, ref =>
-              ref.where('orderItems[id]', FirebaseOperator.Equal, identifier.id)
+              ref.where(
+                'orderItems',
+                FirebaseOperator.ArrayContains,
+                identifier.id
+              )
             )
             .get()
             .pipe(
@@ -53,7 +57,11 @@ export class ProductsOverviewComponent implements OnInit {
 
           this.afs
             .collection(FirestoreCollections.Customers, ref =>
-              ref.where('wishList', 'array-contains', identifier.id)
+              ref.where(
+                'wishList',
+                FirebaseOperator.ArrayContains,
+                identifier.id
+              )
             )
             .get()
             .pipe(
@@ -64,8 +72,8 @@ export class ProductsOverviewComponent implements OnInit {
                 }))
               )
             )
-        );
-      })
+        ])
+      )
     );
   }
 }
