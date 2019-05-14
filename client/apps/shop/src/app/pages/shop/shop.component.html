@@ -56,8 +56,9 @@
   </cdk-virtual-scroll-viewport>
 
   <!--Loading-->
-  <div class="jfs-shop-loading" *ngIf="(loading$ | async)">
-    <mat-spinner [diameter]="48"></mat-spinner>
+  <!--*ngIf="(loading$ | async)"-->
+  <div class="jfs-shop-loading">
+    <mat-progress-bar mode="query"></mat-progress-bar>
   </div>
 
   <!--Filters dialog-->
