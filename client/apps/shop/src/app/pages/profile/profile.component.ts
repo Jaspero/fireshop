@@ -1,19 +1,18 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ElementRef,
   OnInit,
   ViewChild
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {Router} from '@angular/router';
-import {AngularFireStorage} from '@angular/fire/storage';
-import {RxDestroy} from '@jaspero/ng-helpers';
-import {BehaviorSubject, from} from 'rxjs';
-import {switchMap, takeUntil} from 'rxjs/operators';
 import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFireStorage} from '@angular/fire/storage';
+import {Router} from '@angular/router';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {BehaviorSubject, from, Observable} from 'rxjs';
+import {map, switchMap, take} from 'rxjs/operators';
+import {StateService} from '../../shared/services/state/state.service';
 
 @Component({
   selector: 'jfs-profile',
@@ -21,16 +20,14 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
   styleUrls: ['./profile.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProfileComponent extends RxDestroy implements OnInit {
+export class ProfileComponent implements OnInit {
   constructor(
     public afAuth: AngularFireAuth,
     private router: Router,
     private afs: AngularFireStorage,
     private angularFireStore: AngularFirestore,
-    private cdr: ChangeDetectorRef
-  ) {
-    super();
-  }
+    private state: StateService
+  ) {}
 
   @ViewChild('file')
   fileEl: ElementRef<HTMLInputElement>;
@@ -59,8 +56,7 @@ export class ProfileComponent extends RxDestroy implements OnInit {
   ];
 
   activeLink: any;
-  downloadURL = 'assets/images/profile-placeholder.svg';
-  loadImg: boolean;
+  downloadURL$: Observable<string>;
   loading$ = new BehaviorSubject(false);
 
   ngOnInit() {
@@ -71,20 +67,15 @@ export class ProfileComponent extends RxDestroy implements OnInit {
       this.links.splice(4, 1);
     }
 
+    this.downloadURL$ = this.state.user$.pipe(
+      map(
+        ({customerData}) =>
+          customerData.profileImage || 'assets/images/profile-placeholder.svg'
+      )
+    );
+
     const url = this.router.url.replace('/my-profile/', '');
     this.activeLink = this.links.find(val => val.route === url);
-    this.angularFireStore
-      .doc(
-        `${FirestoreCollections.Customers}/${this.afAuth.auth.currentUser.uid}`
-      )
-      .snapshotChanges()
-      .subscribe(rex => {
-        if (rex.payload.data() && rex.payload.data()['profileImage']) {
-          this.downloadURL = rex.payload.data()['profileImage'];
-        }
-        this.loadImg = true;
-        this.cdr.detectChanges();
-      });
   }
 
   openFileUpload() {
@@ -93,8 +84,10 @@ export class ProfileComponent extends RxDestroy implements OnInit {
 
   filesImage(file) {
     this.loading$.next(true);
+
     const fileToUpload = Array.from(file)[0];
     const userID = this.afAuth.auth.currentUser.uid;
+
     if (fileToUpload) {
       from(
         this.afs.upload(userID, fileToUpload, {
@@ -106,14 +99,12 @@ export class ProfileComponent extends RxDestroy implements OnInit {
       )
         .pipe(
           switchMap(res => res.ref.getDownloadURL()),
-          switchMap(res => {
-            this.downloadURL = res;
-            this.cdr.detectChanges();
-            return this.angularFireStore
+          switchMap(profileImage =>
+            this.angularFireStore
               .doc(`${FirestoreCollections.Customers}/${userID}`)
-              .update({profileImage: res});
-          }),
-          takeUntil(this.destroyed$)
+              .update({profileImage})
+          ),
+          take(1)
         )
         .subscribe(() => {
           this.loading$.next(false);
