@@ -57,7 +57,7 @@
 
   <!--Loading-->
   <div class="jfs-shop-loading" *ngIf="(loading$ | async)">
-    <mat-spinner [diameter]="48"></mat-spinner>
+    <mat-progress-bar mode="query"></mat-progress-bar>
   </div>
 
   <!--Filters dialog-->
