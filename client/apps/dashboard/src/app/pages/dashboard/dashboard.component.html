@@ -47,11 +47,11 @@
           <mat-divider></mat-divider>
         </div>
         <mat-nav-list>
-          <mat-list-item *ngFor="let i of [].constructor(3)">
-            <mat-icon mat-list-icon>receipt</mat-icon>
-            <h4 mat-line>[OrderId]</h4>
-            <p mat-line>[OrderDate]</p>
-          </mat-list-item>
+            <mat-list-item *ngFor="let ord of orders$ | async" [routerLink]="['/orders/' + ord.id]">
+              <mat-icon mat-list-icon>receipt</mat-icon>
+              <h4 mat-line>{{ord.id}}</h4>
+              <p mat-line>{{ord.createdOn | date}}</p>
+            </mat-list-item>
         </mat-nav-list>
       </mat-card>
     </div>
