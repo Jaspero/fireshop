@@ -56,8 +56,7 @@
   </cdk-virtual-scroll-viewport>
 
   <!--Loading-->
-  <!--*ngIf="(loading$ | async)"-->
-  <div class="jfs-shop-loading">
+  <div class="jfs-shop-loading" *ngIf="(loading$ | async)">
     <mat-progress-bar mode="query"></mat-progress-bar>
   </div>
 
