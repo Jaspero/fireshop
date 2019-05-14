@@ -3,6 +3,9 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {ActivatedRoute} from '@angular/router';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {Customer} from '@jf/interfaces/customer.interface';
+import {Order} from '@jf/interfaces/order.interface';
+import {Review} from '@jf/interfaces/review.interface';
 import {forkJoin, Observable} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 
@@ -17,7 +20,11 @@ export class ProductsOverviewComponent implements OnInit {
     private afs: AngularFirestore
   ) {}
 
-  data$: Observable<any>;
+  data$: Observable<{
+    orders: Order[];
+    reviews: Review[];
+    customers: Customer[];
+  }>;
 
   ngOnInit() {
     this.data$ = this.activatedRoute.params.pipe(
@@ -36,7 +43,7 @@ export class ProductsOverviewComponent implements OnInit {
               map(actions =>
                 actions.docs.map(action => ({
                   id: action.id,
-                  ...action.data()
+                  ...(action.data() as Order)
                 }))
               )
             ),
@@ -50,7 +57,7 @@ export class ProductsOverviewComponent implements OnInit {
               map(actions =>
                 actions.docs.map(action => ({
                   id: action.id,
-                  ...action.data()
+                  ...(action.data() as Review)
                 }))
               )
             ),
@@ -68,12 +75,17 @@ export class ProductsOverviewComponent implements OnInit {
               map(actions =>
                 actions.docs.map(action => ({
                   id: action.id,
-                  ...action.data()
+                  ...(action.data() as Customer)
                 }))
               )
             )
         ])
-      )
+      ),
+      map(data => ({
+        orders: data[0],
+        reviews: data[1],
+        customers: data[2]
+      }))
     );
   }
 }

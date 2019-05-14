@@ -19,8 +19,8 @@
           <mat-card>
             <mat-nav-list>
               <h3 mat-subheader>Customers who has this item in their wishlist</h3>
-              <ng-container *ngIf="data[2].length; else noWishList">
-                <mat-list-item *ngFor="let wish of data[2]" [routerLink]="['/customers/' + wish.id]">
+              <ng-container *ngIf="data.customers.length; else noWishList">
+                <mat-list-item *ngFor="let wish of data.customers" [routerLink]="['/customers/' + wish.id]">
                   <mat-icon mat-list-icon>favorite</mat-icon>
                   {{wish.name}}
                 </mat-list-item>
@@ -32,8 +32,8 @@
               </ng-template>
               <mat-divider></mat-divider>
               <h3 mat-subheader>Orders of the product</h3>
-              <ng-container *ngIf="data[0].length; else noOrders">
-                <mat-list-item *ngFor="let order of data[1]" [routerLink]="['/orders/' + order.id]">
+              <ng-container *ngIf="data.orders.length; else noOrders">
+                <mat-list-item *ngFor="let order of data.orders" [routerLink]="['/orders/' + order.id]">
                   <mat-icon mat-list-icon>shopping_cart</mat-icon>
                   <h4 mat-line>{{order.createdOn}}</h4>
                   <p mat-line>{{order.createdOn | date: 'yyyy/MM/dd'}}</p>
@@ -47,8 +47,8 @@
               <mat-divider></mat-divider>
               <mat-divider></mat-divider>
               <h3 mat-subheader>Reviews of the product</h3>
-              <ng-container *ngIf="data[1].length; else noReviews">
-                <mat-list-item *ngFor="let rev of data[1]" [routerLink]="['/reviews/' + rev.id]">
+              <ng-container *ngIf="data.reviews.length; else noReviews">
+                <mat-list-item *ngFor="let rev of data.reviews" [routerLink]="['/reviews/' + rev.id]">
                   <mat-icon mat-list-icon>shopping_cart</mat-icon>
                   <h4 mat-line>{{rev.comment}}</h4>
                   <p mat-line>{{rev.createdOn | date: 'yyyy/MM/dd'}}</p>
