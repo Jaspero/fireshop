@@ -73,6 +73,6 @@
     "typescript": "3.4.5"
   },
   "engines": {
-    "node": "10"
+    "node": "8"
   }
 }
