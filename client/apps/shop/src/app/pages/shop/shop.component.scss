@@ -12,12 +12,15 @@
 .jfs-shop-loading {
   position: fixed;
   z-index: 2;
-  top: 0;
+  bottom: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  background: rgba(255,255,255,0.75);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  height: 4px;
+
+  ::ng-deep .mat-progress-bar.mat-primary .mat-progress-bar-buffer {
+    background-color: rgba(0,0,0,.12) !important;
+  }
+  ::ng-deep .mat-progress-bar-background {
+    fill: transparent;
+  }
 }
