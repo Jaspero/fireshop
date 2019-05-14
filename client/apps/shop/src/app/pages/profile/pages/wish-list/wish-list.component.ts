@@ -40,12 +40,12 @@ export class WishListComponent implements OnInit {
            */
           if (user.customerData.wishList) {
             return forkJoin(
-              user.customerData.wishList.map(product =>
+              user.customerData.wishList.map(id =>
                 this.afs
                   .doc(
-                    `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}/${
-                      product.productId
-                    }`
+                    `${FirestoreCollections.Products}-${
+                      STATIC_CONFIG.lang
+                    }/${id}`
                   )
                   .get()
                   .pipe(
@@ -61,10 +61,10 @@ export class WishListComponent implements OnInit {
           }
         })
       )
-      .subscribe(res => {
+      .subscribe(data => {
         this.state$.next({
-          state: res.length ? LoadState.Loaded : LoadState.Empty,
-          data: res
+          state: data.length ? LoadState.Loaded : LoadState.Empty,
+          data
         });
       });
   }

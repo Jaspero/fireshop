@@ -41,7 +41,9 @@ async function getItems(orderItems: OrderItem[], lang: string) {
       return doc.get();
     })
   );
+
   const error = [];
+
   for (let i = 0; i < snapshots.length; i++) {
     if (snapshots[i].exists) {
       snapshots[i] = {
@@ -112,8 +114,6 @@ app.post('/checkout', (req, res) => {
       ]
     );
 
-    console.log(1, stripeCustomer);
-
     /**
      * Create the customer if it doesn't exist
      */
@@ -130,8 +130,6 @@ app.post('/checkout', (req, res) => {
         });
       }
     }
-
-    console.log(2, stripeCustomer);
 
     currency = currency.data();
     description = description.data();
@@ -206,7 +204,8 @@ app.post('/webhook', async (req, res) => {
         const docs = snapshots.docs.map(d => ({
           ...(d.data() as {
             email: string;
-            orderItems: OrderItem[];
+            orderItems: string[];
+            orderItemsData: OrderItem[];
           }),
           id: d.id
         }));
@@ -228,7 +227,19 @@ app.post('/webhook', async (req, res) => {
         })
       }))
   ]);
-  const items = await getItems(order.orderItems, intent.metadata.lang);
+
+  /**
+   * Join orderItems[] and orderItemsData[]
+   */
+  const items = await getItems(
+    order.orderItems.map((id, index) => {
+      return {
+        id,
+        ...order.orderItemsData[index]
+      };
+    }),
+    intent.metadata.lang
+  );
 
   let exec;
 
@@ -255,7 +266,7 @@ app.post('/webhook', async (req, res) => {
         exec.push(
           ...items.map((item, itemIndex) => {
             const quantity =
-              item.quantity - order.orderItems[itemIndex].quantity;
+              item.quantity - order.orderItemsData[itemIndex].quantity;
 
             let active = item.active;
 

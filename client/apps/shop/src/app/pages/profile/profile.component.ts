@@ -1,4 +1,3 @@
-import {HttpClient} from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -12,7 +11,7 @@ import {Router} from '@angular/router';
 import {AngularFireStorage} from '@angular/fire/storage';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {BehaviorSubject, from} from 'rxjs';
-import {debounceTime, switchMap, takeUntil} from 'rxjs/operators';
+import {switchMap, takeUntil} from 'rxjs/operators';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 
@@ -28,8 +27,7 @@ export class ProfileComponent extends RxDestroy implements OnInit {
     private router: Router,
     private afs: AngularFireStorage,
     private angularFireStore: AngularFirestore,
-    private cdr: ChangeDetectorRef,
-    private httpService: HttpClient
+    private cdr: ChangeDetectorRef
   ) {
     super();
   }
@@ -67,7 +65,6 @@ export class ProfileComponent extends RxDestroy implements OnInit {
 
   ngOnInit() {
     // showing change password tab only for user who are sign in with email and password
-
     if (
       this.afAuth.auth.currentUser.providerData[0].providerId !== 'password'
     ) {
