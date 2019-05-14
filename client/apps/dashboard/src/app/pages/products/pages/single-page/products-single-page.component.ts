@@ -1,4 +1,3 @@
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -31,9 +30,9 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   categories$: Observable<Category[]>;
   collection = FirestoreCollections.Products;
-  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   currency: string;
-  finalAttributes = {};
+  inventoryKeys: string[] = [];
+  colors = ['c-warm', 'c-primary', 'c-accent', 'c-primary'];
 
   ngOnInit() {
     super.ngOnInit();
@@ -148,28 +147,10 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       )
         ? data.allowOutOfQuantityPurchase
         : DYNAMIC_CONFIG.generalSettings.allowOutOfQuantityPurchase,
-      attributes: this.fb.array([])
-    });
-
-    this.attributesForms.valueChanges.subscribe(res => {
-      let array = [];
-      res.map(val => {
-        if (array.length && val.list.length) {
-          array = array.reduce((acc, cur) => {
-            const arrays = val.list.map(y => `${cur}_${y}`);
-            acc.push(...arrays);
-            return acc;
-          }, []);
-        } else {
-          array.push(...val.list);
-        }
-      });
-      this.finalAttributes = {};
-      array.forEach(x => {
-        this.finalAttributes[x] = '';
-      });
-
-      console.log(123, this.finalAttributes);
+      attributes: this.fb.array(data.attributes || []),
+      inventory: this.fb.group(
+        data.inventory ? this.formatInventory(data.inventory) : {}
+      )
     });
   }
 
@@ -202,15 +183,73 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
         .get('list')
         .setValue(list);
       input.value = '';
+
+      let obj = {};
+      this.attributesForms.getRawValue().map(val => {
+        if (Object.keys(obj).length && val.list.length) {
+          for (let key in obj) {
+            val.list.forEach(y => {
+              obj[`${key}_${y}`] = {
+                quantity: 0
+              };
+            });
+          }
+        } else {
+          val.list.forEach(x => {
+            obj[x] = {
+              quantity: 0
+            };
+          });
+        }
+      });
+
+      const inventory = this.form.get('inventory');
+      obj = {...obj, ...inventory.value};
+      const listLength = this.attributesForms.value.length;
+      for (const key in obj) {
+        const mama = key.split('_');
+        if (mama.length < listLength) {
+          delete obj[key];
+        }
+      }
+      obj = this.formatInventory(obj);
+      this.form.setControl('inventory', this.fb.group(obj));
     }
   }
 
-  remove(ind, index) {
+  formatInventory(data) {
+    const obj = {};
+    for (const key in data) {
+      obj[key] = this.fb.group(data[key]);
+    }
+    this.inventoryKeys = Object.keys(data);
+    return obj;
+  }
+
+  remove(ind, index, item) {
     const list = this.attributesForms.at(ind).get('list').value;
     list.splice(index, 1);
     this.attributesForms
       .at(ind)
       .get('list')
       .setValue(list);
+    let obj = this.form.get('inventory').value;
+    for (const key in obj) {
+      const arr = key.split('_');
+      if (arr[ind] === item) {
+        delete obj[key];
+      }
+    }
+    obj = this.formatInventory(obj);
+    this.form.setControl('inventory', this.fb.group(obj));
+  }
+
+  labelFormat(key: string) {
+    let finale = '';
+    const str = key.split('_');
+    str.forEach((x, ind) => {
+      finale = finale + ` <span class="${this.colors[ind]}">  ${x}</span>`;
+    });
+    return finale;
   }
 }

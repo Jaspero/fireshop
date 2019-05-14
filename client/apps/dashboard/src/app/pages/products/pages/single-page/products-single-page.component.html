@@ -99,13 +99,12 @@
                     <mat-form-field appearance="outline" class="w-full">
                       <mat-chip-list #chipList>
                         <mat-chip *ngFor="let items of attribute.get('list').value; let ind=index" [selectable]="true"
-                                  (removed)="remove(i, ind)">
+                                  (removed)="remove(i, ind, items)">
                           {{items}}
                           <mat-icon matChipRemove>cancel</mat-icon>
                         </mat-chip>
                         <input placeholder="Add attribute"
                                [matChipInputFor]="chipList"
-                               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                                [matChipInputAddOnBlur]="true"
                                (matChipInputTokenEnd)="add($event, i)">
                       </mat-chip-list>
@@ -114,6 +113,24 @@
                     <button mat-button (click)="delAttribute(i)">Delete</button>
 
                   </div>
+                </div>
+              </div>
+            </mat-card>
+          </div>
+          <div class="col-12" *ngIf="inventoryKeys.length">
+            <mat-card>
+              <h6 class="p-y-xs">Enter number of items in stock</h6>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="p-y-xs" formGroupName="inventory">
+
+                <div class="p-y-xs" *ngFor="let item of inventoryKeys" [formGroupName]="item">
+                  <div [innerHtml]="labelFormat(item)"></div>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Number in stock</mat-label>
+                    <input type="number" matInput formControlName="quantity">
+                  </mat-form-field>
                 </div>
               </div>
             </mat-card>
