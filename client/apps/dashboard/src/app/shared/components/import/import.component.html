@@ -4,3 +4,21 @@
 </button>
 
 <input type="file" hidden #file (change)="selectFile($event)">
+
+<ng-template #overview>
+  <div *ngIf="data">
+    <div *ngIf="data.success">
+      <h4 mat-dialog-title>Success</h4>
+      <p mat-dialog-content>You have successfully uploaded {{data.success}} items</p>
+    </div>
+    <div *ngIf="data.errors">
+      <h4 mat-dialog-title>Error</h4>
+      <div mat-dialog-content>
+        <p class="m-b-xs" *ngFor="let error of data.errors">Problem uploading {{error.object | json}}: <b>missing {{error.params.missingProperty}}</b></p>
+      </div>
+    </div>
+    <div mat-dialog-actions class="jc-end">
+      <button mat-button mat-dialog-close>Ok</button>
+    </div>
+  </div>
+</ng-template>
