@@ -7,5 +7,63 @@
   </mat-toolbar>
 </section>
 <ng-container *ngIf="data$ | async as data">
-  {{data | json}}
+  <section class="p-y-m">
+    <div class="grid">
+      <div class="col-8 col-s-10 col-xs-12 flex ai-center jc-between"></div>
+    </div>
+  </section>
+  <div class="grid grid-no-gutter p-b-m">
+    <div class="col-8 col-s-10 col-xs-12">
+      <div>
+        <div class="col-12">
+          <mat-card>
+            <mat-nav-list>
+              <h3 mat-subheader>Customers who has this item in their wishlist</h3>
+              <ng-container *ngIf="data[2].length; else noWishList">
+                <mat-list-item *ngFor="let wish of data[2]" [routerLink]="['/customers/' + wish.id]">
+                  <mat-icon mat-list-icon>favorite</mat-icon>
+                  {{wish.name}}
+                </mat-list-item>
+              </ng-container>
+              <ng-template #noWishList>
+                <mat-list-item>
+                  <h4 mat-line>No customers with this item in their yet.</h4>
+                </mat-list-item>
+              </ng-template>
+              <mat-divider></mat-divider>
+              <h3 mat-subheader>Orders of the product</h3>
+              <ng-container *ngIf="data[0].length; else noOrders">
+                <mat-list-item *ngFor="let order of data[1]" [routerLink]="['/orders/' + order.id]">
+                  <mat-icon mat-list-icon>shopping_cart</mat-icon>
+                  <h4 mat-line>{{order.createdOn}}</h4>
+                  <p mat-line>{{order.createdOn | date: 'yyyy/MM/dd'}}</p>
+                </mat-list-item>
+              </ng-container>
+              <ng-template #noOrders>
+                <mat-list-item>
+                  <h4 mat-line>No orders for this item yet.</h4>
+                </mat-list-item>
+              </ng-template>
+              <mat-divider></mat-divider>
+              <mat-divider></mat-divider>
+              <h3 mat-subheader>Reviews of the product</h3>
+              <ng-container *ngIf="data[1].length; else noReviews">
+                <mat-list-item *ngFor="let rev of data[1]" [routerLink]="['/reviews/' + rev.id]">
+                  <mat-icon mat-list-icon>shopping_cart</mat-icon>
+                  <h4 mat-line>{{rev.comment}}</h4>
+                  <p mat-line>{{rev.createdOn | date: 'yyyy/MM/dd'}}</p>
+                </mat-list-item>
+              </ng-container>
+              <ng-template #noReviews>
+                <mat-list-item>
+                  <h4 mat-line>No reviews for this item yet.</h4>
+                </mat-list-item>
+              </ng-template>
+              <mat-divider></mat-divider>
+            </mat-nav-list>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
 </ng-container>

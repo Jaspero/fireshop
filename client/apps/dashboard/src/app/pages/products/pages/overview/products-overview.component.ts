@@ -18,6 +18,7 @@ export class ProductsOverviewComponent implements OnInit {
   ) {}
 
   data$: Observable<any>;
+  product$: Observable<string>;
 
   ngOnInit() {
     this.data$ = this.activatedRoute.params.pipe(
@@ -75,5 +76,8 @@ export class ProductsOverviewComponent implements OnInit {
         ])
       )
     );
+    this.data$.subscribe(value => {
+      console.log('value', value);
+    });
   }
 }
