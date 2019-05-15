@@ -1,9 +1,9 @@
 import {NgModule} from '@angular/core';
+import {MatInputModule} from '@angular/material';
 import {RouterModule} from '@angular/router';
 import {MetaResolver} from '../../shared/resolvers/meta.resolver';
 import {SharedModule} from '../../shared/shared.module';
 import {ShopComponent} from './shop.component';
-import {MatInputModule} from '@angular/material';
 
 @NgModule({
   declarations: [ShopComponent],

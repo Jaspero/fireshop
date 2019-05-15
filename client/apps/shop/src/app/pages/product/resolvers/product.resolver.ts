@@ -5,18 +5,22 @@ import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Product} from '@jf/interfaces/product.interface';
 import {Observable, throwError} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
+import {catchError, finalize, map} from 'rxjs/operators';
 import {MetaResolver} from '../../../shared/resolvers/meta.resolver';
+import {StateService} from '../../../shared/services/state/state.service';
 
 @Injectable()
 export class ProductResolver implements Resolve<Observable<Product>> {
   constructor(
     private afs: AngularFirestore,
     private router: Router,
-    private metaResolver: MetaResolver
+    private metaResolver: MetaResolver,
+    private state: StateService
   ) {}
 
   resolve(route: ActivatedRouteSnapshot) {
+    this.state.loading$.next(true);
+
     return this.afs
       .doc<Product>(
         `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}/${
@@ -47,6 +51,8 @@ export class ProductResolver implements Resolve<Observable<Product>> {
 
           return prod;
         }),
+
+        finalize(() => this.state.loading$.next(false)),
 
         catchError(error => {
           this.router.navigate(['/404']);

@@ -44,5 +44,8 @@
     "husky": "2.2.0 ",
     "lint-staged": "8.1.6",
     "prettier": "1.17.0"
+  },
+  "dependencies": {
+    "firebase-functions": "^2.3.1"
   }
 }
