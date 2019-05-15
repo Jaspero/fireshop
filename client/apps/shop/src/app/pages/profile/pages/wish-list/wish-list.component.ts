@@ -38,7 +38,7 @@ export class WishListComponent implements OnInit {
            * If the user has items in his wish list
            * we populate them with products from
            */
-          if (user.customerData.wishList) {
+          if (user.customerData.wishList.length) {
             return forkJoin(
               user.customerData.wishList.map(id =>
                 this.afs
