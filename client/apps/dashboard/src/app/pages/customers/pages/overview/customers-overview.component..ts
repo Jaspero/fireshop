@@ -25,7 +25,7 @@ export class CustomersOverviewComponent extends RxDestroy implements OnInit {
   ngOnInit() {
     this.data$ = this.activatedRoute.params.pipe(
       switchMap(user =>
-        forkJoin(
+        forkJoin([
           this.afs
             .doc(`${FirestoreCollections.Customers}/${user.id}`)
             .get()
@@ -61,7 +61,7 @@ export class CustomersOverviewComponent extends RxDestroy implements OnInit {
                 }))
               )
             )
-        )
+        ])
       )
     );
   }

@@ -53,7 +53,6 @@ import {ExportComponent} from './components/export/export.component';
 import {LangListComponent} from './components/lang-list/lang-list.component';
 import {LangSinglePageComponent} from './components/lang-single-page/lang-single-page.component';
 import {ListComponent} from './components/list/list.component';
-import {OverviewComponent} from './components/overview/overview.component';
 import {SearchInputComponent} from './components/search-input/search-input.component';
 import {SinglePageComponent} from './components/single-page/single-page.component';
 import {WysiwygComponent} from './components/wysiwyg/wysiwyg.component';
@@ -132,8 +131,7 @@ const ENTRY_COMPONENTS = [
   ListComponent,
   LangListComponent,
   SinglePageComponent,
-  LangSinglePageComponent,
-  OverviewComponent
+  LangSinglePageComponent
 ];
 
 const DIRECTIVES = [ForceDisableDirective];

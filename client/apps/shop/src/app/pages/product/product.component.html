@@ -36,12 +36,8 @@
             <h5 class="p-t-s p-b-xs">Description</h5>
             <div [innerHtml]="data.product.description"></div>
             <h2 class="m-t-m m-b-xs">{{data.product.price | sp}}</h2>
-            <div *ngIf="data.product.showingQuantity">
-              <p>Stock: {{data.product.quantity}}</p>
-            </div>
-            <div *ngIf="data.quantity >= data.product.quantity && !data.product.allowOutOfQuantityPurchase">
-              <p>There are no more items in stock</p>
-            </div>
+            <p class="m-t-s" *ngIf="data.product.showingQuantity">{{data.product.quantity}} in stock</p>
+            <p class="m-t-s" *ngIf="data.quantity >= data.product.quantity && !data.product.allowOutOfQuantityPurchase">There are no more items in stock</p>
             <ng-container *ngIf="data.quantity; else notInCart">
               <button
                 id="btn-add-more-prod-0"
