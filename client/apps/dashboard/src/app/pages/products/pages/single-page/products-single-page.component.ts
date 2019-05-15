@@ -126,6 +126,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   }
 
   buildForm(data: any) {
+    console.log('data', data);
     this.form = this.fb.group({
       id: [
         {value: data.id, disabled: this.currentState === this.viewState.Edit},
@@ -147,11 +148,22 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       )
         ? data.allowOutOfQuantityPurchase
         : DYNAMIC_CONFIG.generalSettings.allowOutOfQuantityPurchase,
-      attributes: this.fb.array(data.attributes || []),
+      attributes: this.fb.array(
+        data.attributes
+          ? data.attributes.map(x =>
+              this.fb.group({
+                key: x.key || '',
+                list: [x.list || []]
+              })
+            )
+          : []
+      ),
       inventory: this.fb.group(
         data.inventory ? this.formatInventory(data.inventory) : {}
       )
     });
+
+    console.log(111, this.form.getRawValue());
   }
 
   view(form) {
