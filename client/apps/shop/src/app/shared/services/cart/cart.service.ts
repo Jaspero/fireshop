@@ -24,11 +24,9 @@ export class CartService {
     );
 
     this.totalPrice$ = this.items$.pipe(
-      map(items => {
-        return items.reduce((acc, cur) => {
-          return (acc += cur['quantity'] * cur['price']);
-        }, 0);
-      })
+      map(items =>
+        items.reduce((acc, cur) => (acc += cur['quantity'] * cur['price']), 0)
+      )
     );
   }
 
@@ -36,19 +34,30 @@ export class CartService {
   totalPrice$: Observable<number>;
   numOfItems$: Observable<number>;
 
-  add(item) {
+  add(item, filters = {}) {
+    let finalId = '';
+    let filter = '';
+    for (const key in filters) {
+      finalId = finalId
+        ? `${finalId}_${filters[key]}`
+        : `${item.id}_${filters[key]}`;
+      filter = filter ? `${filter}_${filters[key]}` : `${filters[key]}`;
+    }
     const current = this.items$.getValue();
+    const index = current.findIndex(val =>
+      finalId ? val['identifier'] === finalId : val['identifier'] === item.id
+    );
 
-    const index = current.findIndex(val => val['productId'] === item.id);
     if (index === -1) {
       current.push({
-        identifier: item.id,
+        identifier: finalId ? finalId : item.id,
         name: item.name,
         price: item.price,
         productId: item.id,
-        image: item.gallery[0],
+        image: filter ? item.inventory[filter].quantity : item.gallery[0],
         quantity: 1,
-        maxQuantity: item.quantity
+        maxQuantity: item.quantity,
+        ...(finalId ? {filters} : {})
       });
     } else {
       current[index]['quantity'] += 1;
@@ -63,7 +72,8 @@ export class CartService {
 
   changeNumber(product, num) {
     const current = this.items$.getValue();
-    const index = current.findIndex(res => res['productId'] === product);
+    console.log('current', current);
+    const index = current.findIndex(res => res['identifier'] === product);
     current[index]['quantity'] += num;
     localStorage.setItem('cartItem', JSON.stringify(current));
     this.items$.next(current);
@@ -71,7 +81,7 @@ export class CartService {
 
   remove(product) {
     const current = this.items$.getValue();
-    const index = current.findIndex(res => res['productId'] === product);
+    const index = current.findIndex(res => res['identifier'] === product);
     current.splice(index, 1);
     localStorage.setItem('cartItem', JSON.stringify(current));
     this.items$.next(current);

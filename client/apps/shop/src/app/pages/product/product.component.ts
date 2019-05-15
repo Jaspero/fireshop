@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {ActivatedRoute} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
@@ -17,7 +18,7 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Product} from '@jf/interfaces/product.interface';
 import {Review} from '@jf/interfaces/review.interface';
 import {combineLatest, Observable} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {map, startWith, switchMap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {StateService} from '../../shared/services/state/state.service';
@@ -38,10 +39,12 @@ export class ProductComponent extends RxDestroy implements OnInit {
     private afs: AngularFirestore,
     private state: StateService,
     private activatedRoute: ActivatedRoute,
-    private http: HttpClient
+    private http: HttpClient,
+    private fb: FormBuilder
   ) {
     super();
   }
+
   rews$: Observable<[Review[], number]>;
   data$: Observable<{
     product: Product;
@@ -50,43 +53,77 @@ export class ProductComponent extends RxDestroy implements OnInit {
       label: string;
       icon: string;
     };
+    isDisabled: boolean;
   }>;
   similar$: Observable<any>;
   imgIndex = 0;
+  filters: FormGroup;
 
   @ViewChild('reviewsDialog') reviewsDialog: TemplateRef<any>;
 
   ngOnInit() {
-    this.data$ = this.activatedRoute.params.pipe(
-      switchMap(params => {
-        return combineLatest([
-          this.activatedRoute.data.pipe(
-            tap(val => {
-              this.similar$ = this.http.get(
-                `${environment.restApi}/similarProducts`,
-                {
-                  params: {
-                    category: val.product.category,
-                    id: val.product.id,
-                    num: '3',
-                    lang: STATIC_CONFIG.lang
-                  }
-                }
-              );
-            })
-          ),
+    this.data$ = this.activatedRoute.data.pipe(
+      switchMap(data => {
+        this.similar$ = this.http.get(
+          `${environment.restApi}/similarProducts`,
+          {
+            params: {
+              category: data.product.category,
+              id: data.product.id,
+              num: '3',
+              lang: STATIC_CONFIG.lang
+            }
+          }
+        );
+
+        if (data.product.attributes) {
+          const fbGroup = data.product.attributes.reduce((acc, cur) => {
+            acc[cur.key] = ['', Validators.required];
+            return acc;
+          }, {});
+          this.filters = this.fb.group(fbGroup);
+        } else {
+          this.filters = null;
+        }
+
+        const toCombine = [
           this.cart.items$,
-          this.wishList.includes(params.id)
-        ]).pipe(
-          map(([routeData, cartData, inWishList]) => {
-            const cart = cartData.find(c => params.id === c.identifier);
+          this.wishList.includes(data.product.id)
+        ];
+
+        if (this.filters) {
+          toCombine.push(
+            this.filters.valueChanges.pipe(
+              startWith(this.filters.getRawValue())
+            )
+          );
+        }
+
+        return combineLatest(...toCombine).pipe(
+          map(([cartData, inWishList, filters]) => {
+            let cart = cartData.find(c => data.product.id === c.identifier);
+            let disabled = false;
+            if (data.product.attributes) {
+              if (this.filters.valid) {
+                let statId = '';
+                for (const key in filters) {
+                  statId = statId
+                    ? `${statId}_${filters[key]}`
+                    : `${data.product.id}_${filters[key]}`;
+                }
+                cart = cartData.find(c => statId === c.identifier);
+                if (cart) {
+                  statId = statId.replace(`${data.product.id}_`, '');
+                  disabled =
+                    data.product.inventory[statId].quantity <= cart.quantity;
+                }
+              }
+            }
 
             return {
-              product: {
-                id: params.id,
-                ...routeData.product
-              } as Product,
+              product: data.product as Product,
               quantity: cart ? cart.quantity : 0,
+              isDisabled: disabled,
               wishList: inWishList
                 ? {
                     label: 'Already on wishlist',
@@ -159,6 +196,23 @@ export class ProductComponent extends RxDestroy implements OnInit {
       'facebook-popup',
       'height=350,width=600'
     );
+  }
+
+  disabledButton(val) {
+    if (val.product.attributes) {
+      if (this.filters.valid) {
+        let statId = '';
+        const object = this.filters.getRawValue();
+        for (const key in object) {
+          statId = statId ? `${statId}_${object[key]}` : `${object[key]}`;
+        }
+        return val.quantity >= val.product.inventory[statId].quantity;
+      } else {
+        return true;
+      }
+    } else {
+      return val.quantity >= val.product.quantity;
+    }
   }
 
   twitterShare(data) {
