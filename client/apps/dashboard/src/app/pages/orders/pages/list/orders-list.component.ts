@@ -26,6 +26,7 @@ export class OrdersListComponent extends ListComponent<Order>
     'createdOn',
     'customerName',
     'price',
+    'stripe',
     'status',
     'actions'
   ];
