@@ -19,14 +19,20 @@ import {LandingComponent} from './landing.component';
             description: 'Home page of the fireshop webshop'
           },
           structuredData: {
-            '@type': 'Landing page',
+            '@type': 'WebSite',
             name: 'Fireshop',
             email: 'info@jaspero.co',
+            url: 'https://jaspero.co/',
             logo: 'http://jaspero.co/assets/imgs/logo.svg',
             author: {
-              '@type': 'Company',
+              '@type': 'Organization',
               name: 'Jaspero Ltd.'
             },
+            sameAs: [
+              'http://www.facebook.com/your-profile',
+              'http://instagram.com/yourProfile',
+              'http://www.linkedin.com/in/yourprofile'
+            ],
             description: 'A modern pwa webshop built on Firebase with Angular',
             keywords: 'web-shop, jaspero, firebase, angular'
           }

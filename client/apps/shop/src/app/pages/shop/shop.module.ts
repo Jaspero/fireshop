@@ -21,7 +21,7 @@ import {ShopComponent} from './shop.component';
             description: 'ListComponent of the products in our shop'
           },
           structuredData: {
-            '@type': 'Shop',
+            '@type': 'WebSite',
             name: 'Shop',
             description: 'List component of the products in our shop'
           }
