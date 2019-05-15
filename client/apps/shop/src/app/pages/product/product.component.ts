@@ -59,7 +59,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
   ngOnInit() {
     this.data$ = this.activatedRoute.params.pipe(
       switchMap(params => {
-        return combineLatest(
+        return combineLatest([
           this.activatedRoute.data.pipe(
             tap(val => {
               this.similar$ = this.http.get(
@@ -77,7 +77,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
           ),
           this.cart.items$,
           this.wishList.includes(params.id)
-        ).pipe(
+        ]).pipe(
           map(([routeData, cartData, inWishList]) => {
             const cart = cartData.find(c => params.id === c.identifier);
 
