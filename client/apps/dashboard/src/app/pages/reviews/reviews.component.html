@@ -55,70 +55,72 @@
           </button>
         </div>
 
-        <table
-          class="w-full"
-          mat-table
-          matSort
-          matSortDisableClear
-          [dataSource]="items$ | async"
-          [matSortActive]="options.sort.active"
-          [matSortDirection]="options.sort.direction">
+        <div class="of-x-auto">
+          <table
+            class="w-full"
+            mat-table
+            matSort
+            matSortDisableClear
+            [dataSource]="items$ | async"
+            [matSortActive]="options.sort.active"
+            [matSortDirection]="options.sort.direction">
 
-          <ng-container matColumnDef="checkBox">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let row">
-              <mat-checkbox
-                (click)="$event.stopPropagation()"
-                (change)="$event ? selection.toggle(row.id) : null"
-                [checked]="selection.isSelected(row.id)"
-                color="primary">
-              </mat-checkbox>
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="checkBox">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let row">
+                <mat-checkbox
+                  (click)="$event.stopPropagation()"
+                  (change)="$event ? selection.toggle(row.id) : null"
+                  [checked]="selection.isSelected(row.id)"
+                  color="primary">
+                </mat-checkbox>
+              </td>
+            </ng-container>
 
-          <ng-container matColumnDef="createdOn">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Created on</th>
-            <td mat-cell *matCellDef="let element">{{element.createdOn | date: 'yyyy/MM/dd'}}</td>
-          </ng-container>
+            <ng-container matColumnDef="createdOn">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Created on</th>
+              <td mat-cell *matCellDef="let element">{{element.createdOn | date: 'yyyy/MM/dd'}}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="customerName">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer Name</th>
-            <td mat-cell *matCellDef="let element">{{element.customerName}}</td>
-          </ng-container>
+            <ng-container matColumnDef="customerName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer Name</th>
+              <td mat-cell *matCellDef="let element">{{element.customerName}}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="rating">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Rating</th>
-            <td mat-cell *matCellDef="let element">{{element.rating}}</td>
-          </ng-container>
+            <ng-container matColumnDef="rating">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Rating</th>
+              <td mat-cell *matCellDef="let element">{{element.rating}}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="productId">
-            <th mat-header-cell *matHeaderCellDef>Product Id</th>
-            <td mat-cell *matCellDef="let element">{{element.productId}}</td>
-          </ng-container>
+            <ng-container matColumnDef="productId">
+              <th mat-header-cell *matHeaderCellDef>Product Id</th>
+              <td mat-cell *matCellDef="let element">{{element.productId}}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="comment">
-            <th mat-header-cell *matHeaderCellDef>Comment</th>
-            <td mat-cell *matCellDef="let element">{{element.comment}}</td>
-          </ng-container>
+            <ng-container matColumnDef="comment">
+              <th mat-header-cell *matHeaderCellDef>Comment</th>
+              <td mat-cell class="jfsc-reviews-comment" [matTooltip]="element.comment" *matCellDef="let element">{{element.comment}}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let element" class="ta-right">
-              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions" matTooltip="Actions">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="deleteOne(element)">
-                  <mat-icon>delete_forever</mat-icon>
-                  <span>Delete</span>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element" class="ta-right">
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions" matTooltip="Actions">
+                  <mat-icon>more_vert</mat-icon>
                 </button>
-              </mat-menu>
-            </td>
-          </ng-container>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="deleteOne(element)">
+                    <mat-icon>delete_forever</mat-icon>
+                    <span>Delete</span>
+                  </button>
+                </mat-menu>
+              </td>
+            </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </div>
 
         <div class="ta-center p-y-m bg-l-secondary" *ngIf="emptyState$ | async">
           <span class="iblock">No reviews yet.</span>

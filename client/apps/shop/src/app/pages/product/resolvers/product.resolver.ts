@@ -6,7 +6,7 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Product} from '@jf/interfaces/product.interface';
 import {fromStripeFormat} from '@jf/utils/stripe-format';
 import {Observable, throwError} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
+import {catchError, finalize, map} from 'rxjs/operators';
 import {MetaResolver} from '../../../shared/resolvers/meta.resolver';
 import {StructuredDataResolver} from '../../../shared/resolvers/structured-data.resolver';
 import {StateService} from '../../../shared/services/state/state.service';
@@ -22,6 +22,8 @@ export class ProductResolver implements Resolve<Observable<Product>> {
   ) {}
 
   resolve(route: ActivatedRouteSnapshot) {
+    this.state.loading$.next(true);
+
     return this.afs
       .doc<Product>(
         `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}/${
@@ -69,6 +71,8 @@ export class ProductResolver implements Resolve<Observable<Product>> {
 
           return prod;
         }),
+
+        finalize(() => this.state.loading$.next(false)),
 
         catchError(error => {
           this.router.navigate(['/404']);

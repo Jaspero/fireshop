@@ -89,3 +89,8 @@
 </main>
 
 <jfs-color-picker *ngIf="showLayout$ | async"></jfs-color-picker>
+
+<!--Loading-->
+<div class="jfs-shop-loading" *ngIf="state.loading$ | async">
+  <mat-progress-bar mode="query"></mat-progress-bar>
+</div>
