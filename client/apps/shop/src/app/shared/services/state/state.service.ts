@@ -52,4 +52,6 @@ export class StateService {
     data: {},
     url: '/'
   });
+
+  structuredData: any = {};
 }
