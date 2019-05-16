@@ -126,7 +126,6 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   }
 
   buildForm(data: any) {
-    console.log('data', data);
     this.form = this.fb.group({
       id: [
         {value: data.id, disabled: this.currentState === this.viewState.Edit},
@@ -162,8 +161,23 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
         data.inventory ? this.formatInventory(data.inventory) : {}
       )
     });
+  }
 
-    console.log(111, this.form.getRawValue());
+  checkBoxes(event, ind) {
+    console.log(event);
+    if (event) {
+      for (let i = 0; i < this.attributesForms.value.length; i++) {
+        if (i !== ind) {
+          // this.attributesForms.at(i).get('default').setValue(false)
+        }
+      }
+    } else {
+      // this.attributesForms.at(0).get('default').setValue(true)
+    }
+  }
+
+  testera() {
+    console.log(this.form.getRawValue());
   }
 
   view(form) {
@@ -197,19 +211,24 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       input.value = '';
 
       let obj = {};
+      const price = this.form.get('price').value;
       this.attributesForms.getRawValue().map(val => {
         if (Object.keys(obj).length && val.list.length) {
           for (let key in obj) {
             val.list.forEach(y => {
               obj[`${key}_${y}`] = {
-                quantity: 0
+                quantity: 0,
+                price: price || 0,
+                default: false
               };
             });
           }
         } else {
           val.list.forEach(x => {
             obj[x] = {
-              quantity: 0
+              quantity: 0,
+              price: price || 0,
+              default: false
             };
           });
         }

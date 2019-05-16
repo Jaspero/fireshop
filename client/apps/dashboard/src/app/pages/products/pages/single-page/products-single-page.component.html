@@ -80,6 +80,7 @@
             <mat-card>
               <h6 class="p-y-xs">Description Variants
                 <button mat-button (click)="addAttribute()"><mat-icon>add</mat-icon></button>
+                <button (click)="testera()">test</button>
               </h6>
               <div class="p-y-xs">
                 <mat-divider></mat-divider>
@@ -130,6 +131,12 @@
                     <mat-label>Number in stock</mat-label>
                     <input type="number" matInput formControlName="quantity">
                   </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Price</mat-label>
+                    <span matPrefix>{{currency}}&nbsp;</span>
+                    <input formControlName="price" matInput type="number">
+                  </mat-form-field>
+                  <mat-checkbox color="primary" formControlName="default" (change)="checkBoxes($event.checked, i)">Default</mat-checkbox>
                 </div>
               </div>
             </mat-card>
