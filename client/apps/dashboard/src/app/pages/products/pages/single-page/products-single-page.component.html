@@ -80,7 +80,6 @@
             <mat-card>
               <h6 class="p-y-xs">Description Variants
                 <button mat-button (click)="addAttribute()"><mat-icon>add</mat-icon></button>
-                <button (click)="testera()">test</button>
               </h6>
               <div class="p-y-xs">
                 <mat-divider></mat-divider>
@@ -120,25 +119,29 @@
           <div class="col-12" *ngIf="inventoryKeys.length">
             <mat-card>
               <h6 class="p-y-xs">Enter number of items in stock</h6>
+              <p>default: <span [innerHtml]="labelFormat(form.get('default').value)"></span></p>
               <div class="p-y-xs">
                 <mat-divider></mat-divider>
               </div>
+              <mat-radio-group formControlName="default">
               <div class="p-y-xs" formGroupName="inventory">
 
-                <div class="p-y-xs" *ngFor="let item of inventoryKeys" [formGroupName]="item">
-                  <div [innerHtml]="labelFormat(item)"></div>
-                  <mat-form-field appearance="outline">
-                    <mat-label>Number in stock</mat-label>
-                    <input type="number" matInput formControlName="quantity">
-                  </mat-form-field>
-                  <mat-form-field appearance="outline">
-                    <mat-label>Price</mat-label>
-                    <span matPrefix>{{currency}}&nbsp;</span>
-                    <input formControlName="price" matInput type="number">
-                  </mat-form-field>
-                  <mat-checkbox color="primary" formControlName="default" (change)="checkBoxes($event.checked, i)">Default</mat-checkbox>
-                </div>
+                  <div class="p-y-xs" *ngFor="let item of inventoryKeys; let i = index" [formGroupName]="item">
+                    <mat-radio-button class="example-radio-button" [value]="item">
+                      <div [innerHtml]="labelFormat(item)"></div>
+                    </mat-radio-button>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Number in stock</mat-label>
+                      <input type="number" matInput formControlName="quantity">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Price</mat-label>
+                      <span matPrefix>{{currency}}&nbsp;</span>
+                      <input formControlName="price" matInput type="number">
+                    </mat-form-field>
+                  </div>
               </div>
+              </mat-radio-group>
             </mat-card>
           </div>
         </div>

@@ -58,6 +58,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
   similar$: Observable<any>;
   imgIndex = 0;
   filters: FormGroup;
+  price: number;
 
   @ViewChild('reviewsDialog') reviewsDialog: TemplateRef<any>;
 
@@ -77,11 +78,24 @@ export class ProductComponent extends RxDestroy implements OnInit {
         );
 
         if (data.product.attributes) {
-          const fbGroup = data.product.attributes.reduce((acc, cur) => {
-            acc[cur.key] = ['', Validators.required];
+          const arr = data.product.default.split('_');
+          const fbGroup = data.product.attributes.reduce((acc, cur, ind) => {
+            acc[cur.key] = [arr[ind] || '', Validators.required];
             return acc;
           }, {});
           this.filters = this.fb.group(fbGroup);
+
+          this.filters.valueChanges
+            .pipe(startWith(this.filters.getRawValue()))
+            .subscribe(val => {
+              let finalKey = '';
+              for (const key in val) {
+                finalKey
+                  ? (finalKey = `${finalKey}_${val[key]}`)
+                  : (finalKey = `${val[key]}`);
+              }
+              this.price = data.product.inventory[finalKey].price;
+            });
         } else {
           this.filters = null;
         }

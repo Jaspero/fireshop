@@ -4,7 +4,7 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {FormArray, Validators} from '@angular/forms';
+import {FormArray, FormGroup, Validators} from '@angular/forms';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
@@ -115,6 +115,14 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
           }
         }
 
+        if (args[1].inventory) {
+          for (const key in args[1].inventory) {
+            args[1].inventory[key].price = toStripeFormat(
+              args[1].inventory[key].price
+            );
+          }
+        }
+
         return this.galleryUploadComponent.save().pipe(
           switchMap(() => {
             args[1].gallery = this.form.get('gallery').value;
@@ -159,25 +167,9 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       ),
       inventory: this.fb.group(
         data.inventory ? this.formatInventory(data.inventory) : {}
-      )
+      ),
+      default: data.default || ''
     });
-  }
-
-  checkBoxes(event, ind) {
-    console.log(event);
-    if (event) {
-      for (let i = 0; i < this.attributesForms.value.length; i++) {
-        if (i !== ind) {
-          // this.attributesForms.at(i).get('default').setValue(false)
-        }
-      }
-    } else {
-      // this.attributesForms.at(0).get('default').setValue(true)
-    }
-  }
-
-  testera() {
-    console.log(this.form.getRawValue());
   }
 
   view(form) {
@@ -237,6 +229,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       const inventory = this.form.get('inventory');
       obj = {...obj, ...inventory.value};
       const listLength = this.attributesForms.value.length;
+
       for (const key in obj) {
         const mama = key.split('_');
         if (mama.length < listLength) {
@@ -251,7 +244,10 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   formatInventory(data) {
     const obj = {};
     for (const key in data) {
-      obj[key] = this.fb.group(data[key]);
+      obj[key] = this.fb.group({
+        ...data[key],
+        ...{price: fromStripeFormat(data[key].price)}
+      });
     }
     this.inventoryKeys = Object.keys(data);
     return obj;
@@ -270,6 +266,9 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       if (arr[ind] === item) {
         delete obj[key];
       }
+    }
+    if (!obj[this.form.get('default').value]) {
+      this.form.get('default').setValue(Object.keys(obj)[0]);
     }
     obj = this.formatInventory(obj);
     this.form.setControl('inventory', this.fb.group(obj));
