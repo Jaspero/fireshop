@@ -48,6 +48,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
     quantity: number;
     wishList: {
       label: string;
+      tooltip: string;
       icon: string;
     };
   }>;
