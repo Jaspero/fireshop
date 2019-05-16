@@ -23,8 +23,8 @@
             <mat-card>
               <mat-nav-list>
                 <h3 mat-subheader>Wishlist</h3>
-                <ng-container *ngIf="(data.customer.wishList && data.customer.wishListSnippets) && (data.customer.wishList.length && data.customer.wishListSnippets.length) ; else noWishList">
-                  <mat-list-item *ngFor="let wish of data.customer.wishListSnippets" [routerLink]="['/products/' + wish]">
+                <ng-container *ngIf="data.customer.wishList && data.customer.wishList.length; else noWishList">
+                  <mat-list-item *ngFor="let wish of data.customer.wishListSnippets; index as index" [routerLink]="['/products/' + data.customer.wishList[index]]">
                     <mat-icon mat-list-icon>favorite</mat-icon>
                     <h4 mat-line>{{wish.name}}</h4>
                     <p mat-line>Added on {{wish.addedOn | date}}</p>
