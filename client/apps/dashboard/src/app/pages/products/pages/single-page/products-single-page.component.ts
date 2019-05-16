@@ -187,6 +187,45 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   delAttribute(i) {
     this.attributesForms.removeAt(i);
+    let obj = this.filterData();
+    const listLength = this.attributesForms.value.length;
+    for (const key in obj) {
+      const splitArr = key.split('_');
+      if (splitArr.length !== listLength) {
+        delete obj[key];
+      }
+    }
+    this.form.get('default').setValue(Object.keys(obj)[0]);
+    obj = this.formatInventory(obj);
+    this.form.setControl('inventory', this.fb.group(obj));
+  }
+
+  filterData() {
+    let obj = {};
+    const price = this.form.get('price').value;
+    this.attributesForms.getRawValue().map(val => {
+      if (Object.keys(obj).length && val.list.length) {
+        for (let key in obj) {
+          val.list.forEach(y => {
+            obj[`${key}_${y}`] = {
+              quantity: 0,
+              price: price || 0
+            };
+          });
+        }
+      } else {
+        val.list.forEach(x => {
+          obj[x] = {
+            quantity: 0,
+            price: price || 0
+          };
+        });
+      }
+    });
+
+    const inventory = this.form.get('inventory');
+    obj = {...obj, ...inventory.value};
+    return obj;
   }
 
   add(item, ind) {
@@ -202,35 +241,13 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
         .setValue(list);
       input.value = '';
 
-      let obj = {};
-      const price = this.form.get('price').value;
-      this.attributesForms.getRawValue().map(val => {
-        if (Object.keys(obj).length && val.list.length) {
-          for (let key in obj) {
-            val.list.forEach(y => {
-              obj[`${key}_${y}`] = {
-                quantity: 0,
-                price: price || 0
-              };
-            });
-          }
-        } else {
-          val.list.forEach(x => {
-            obj[x] = {
-              quantity: 0,
-              price: price || 0
-            };
-          });
-        }
-      });
+      let obj = this.filterData();
 
-      const inventory = this.form.get('inventory');
-      obj = {...obj, ...inventory.value};
       const listLength = this.attributesForms.value.length;
 
       for (const key in obj) {
-        const mama = key.split('_');
-        if (mama.length < listLength) {
+        const splitArr = key.split('_');
+        if (splitArr.length < listLength) {
           delete obj[key];
         }
       }
