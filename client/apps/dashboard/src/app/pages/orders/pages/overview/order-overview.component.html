@@ -1,0 +1,40 @@
+<section>
+  <mat-toolbar color="primary">
+    <a mat-icon-button routerLink="/orders" aria-label="Back" matTooltip="Back">
+      <mat-icon>arrow_back</mat-icon>
+    </a>
+    <span>Orders</span>
+  </mat-toolbar>
+</section>
+
+<ng-container>
+  <ng-container *ngIf="data$ | async as data">
+    <section class="p-y-m">
+      <div class="grid">
+        <div class="col-8 col-s-10 col-xs-12 flex ai-center jc-between">
+          <p>{{data.customerName ? data.customerName : 'Anonymous'}} order</p>
+          <button mat-button [routerLink]="['/customers/', data.customerId]">Customer info</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <div class="col-12">
+        <mat-card>
+          <mat-nav-list>
+            <h3 mat-subheader>
+              Products in order
+            </h3>
+            <mat-nav-list *ngFor="let ordItems of data.orderItems; index as index" [routerLink]="['/products/' + ordItems]">
+              <p mat-line>ID: {{ordItems}}</p>
+              <p mat-line>Price: {{data.orderItemsData[index].price | sp}}</p>
+              <p mat-line>Quantity: {{data.orderItemsData[index].quantity}}</p>
+            </mat-nav-list>
+          </mat-nav-list>
+        </mat-card>
+      </div>
+    </div>
+
+
+  </ng-container>
+</ng-container>
