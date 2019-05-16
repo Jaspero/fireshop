@@ -3,21 +3,44 @@
     <a mat-icon-button routerLink="/orders" aria-label="Back" matTooltip="Back">
       <mat-icon>arrow_back</mat-icon>
     </a>
-    <span>{{data.order.customerId ? data.order.customerName : 'Anonymous'}} order</span>
+    <span>{{data.order.customerName.id ? data.order.customerName.name : 'Anonymous'}} order</span>
     <div class="f1"></div>
     <button mat-flat-button [routerLink]="['/customers/', data.order.customerId]">Customer info</button>
   </mat-toolbar>
 
+
   <section class="grid p-y-m">
     <div class="col-12">
+      <pre>{{data.order | json}}</pre>
       <mat-card>
+        <mat-list>
+          <h3 mat-subheader>General info</h3>
+          <mat-list-item>
+            <p mat-line>Customer: {{data.order.customerName.name}}</p>
+            <p mat-line>Order date: {{data.order.createdOn | date}}</p>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <h3 mat-subheader>Billing info</h3>
+          <mat-list-item>
+            <p mat-line>{{data.order.billing.firstName}} {{data.order.billing.lastName}}</p>
+            <p mat-line>{{data.order.billing.email}}, {{data.order.billing.phone}}</p>
+            <p mat-line>{{data.order.billing.line1}}, {{data.order.billing.line2}}, {{data.order.billing.zip}}, {{data.order.billing.city}}, {{data.order.billing.country}}</p>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <h3 mat-subheader>Payment info</h3>
+          <mat-list-item>
+            <p mat-line>Total: {{data.order.price | sp}} — {{data.order.status}}</p>
+            <p mat-line>ID: {{data.order.paymentIntentId}}</p>
+          </mat-list-item>
+        </mat-list>
+        <mat-divider></mat-divider>
         <mat-nav-list>
-          <h3 mat-subheader>Products in order</h3>
+          <h3 mat-subheader>Ordered items</h3>
           <mat-list-item *ngFor="let ordItems of data.order.orderItems; index as index" [routerLink]="['/products/' + ordItems]">
             <p mat-line>{{ordItems}}</p>
             <p mat-line>{{data.order.orderItemsData[index].quantity}}x @ {{data.order.orderItemsData[index].price | sp}}</p>
             <ng-container *ngIf="data.order.customerId && data.reviews[index]">
-              <p class="fs-small c-d-secondary m-r-xs">{{data.reviews[index][0].rating}}/5</p>
+              <p class="fs-small c-d-secondary m-r-xs">Review: {{data.reviews[index][0].rating}}/5</p>
               <mat-icon [matTooltip]="data.reviews[index][0].comment">info</mat-icon>
             </ng-container>
           </mat-list-item>
