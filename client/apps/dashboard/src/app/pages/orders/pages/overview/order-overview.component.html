@@ -12,8 +12,8 @@
     <section class="p-y-m">
       <div class="grid">
         <div class="col-8 col-s-10 col-xs-12 flex ai-center jc-between">
-          <p>{{data.customerName ? data.customerName : 'Anonymous'}} order</p>
-          <button mat-button [routerLink]="['/customers/', data.customerId]">Customer info</button>
+          <p>{{data.order.customerId ? data.order.customerName : 'Anonymous'}} order</p>
+          <button mat-button [routerLink]="['/customers/', data.order.customerId]">Customer info</button>
         </div>
       </div>
     </section>
@@ -25,10 +25,18 @@
             <h3 mat-subheader>
               Products in order
             </h3>
-            <mat-nav-list *ngFor="let ordItems of data.orderItems; index as index" [routerLink]="['/products/' + ordItems]">
+            <mat-nav-list *ngFor="let ordItems of data.order.orderItems; index as index" [routerLink]="['/products/' + ordItems]">
               <p mat-line>ID: {{ordItems}}</p>
-              <p mat-line>Price: {{data.orderItemsData[index].price | sp}}</p>
-              <p mat-line>Quantity: {{data.orderItemsData[index].quantity}}</p>
+              <p mat-line>Price: {{data.order.orderItemsData[index].price | sp}}</p>
+              <p mat-line>Quantity: {{data.order.orderItemsData[index].quantity}}</p>
+              <div *ngIf="data.order.customerId && data.reviews[index]">
+                <p>Review {{data.order.customerName}} left for {{ordItems}}</p>
+                <div>
+                  Comment: {{data.reviews[index][0].comment}}
+                  <br>
+                  Rating: {{data.reviews[index][0].rating}}
+                </div>
+              </div>
             </mat-nav-list>
           </mat-nav-list>
         </mat-card>
