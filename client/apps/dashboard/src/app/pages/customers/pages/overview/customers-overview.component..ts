@@ -4,6 +4,9 @@ import {ActivatedRoute} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {Customer} from '@jf/interfaces/customer.interface';
+import {Order} from '@jf/interfaces/order.interface';
+import {Review} from '@jf/interfaces/review.interface';
 import {forkJoin, Observable} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 
@@ -20,7 +23,11 @@ export class CustomersOverviewComponent extends RxDestroy implements OnInit {
     super();
   }
 
-  data$: Observable<any>;
+  data$: Observable<{
+    customer: Customer;
+    orders: Order[];
+    reviews: Review[];
+  }>;
 
   ngOnInit() {
     this.data$ = this.activatedRoute.params.pipe(
@@ -32,7 +39,7 @@ export class CustomersOverviewComponent extends RxDestroy implements OnInit {
             .pipe(
               map(res => ({
                 id: res.id,
-                ...res.data()
+                ...(res.data() as Customer)
               }))
             ),
           this.afs
@@ -44,7 +51,7 @@ export class CustomersOverviewComponent extends RxDestroy implements OnInit {
               map(actions =>
                 actions.docs.map(action => ({
                   id: action.id,
-                  ...action.data()
+                  ...(action.data() as Order)
                 }))
               )
             ),
@@ -57,12 +64,17 @@ export class CustomersOverviewComponent extends RxDestroy implements OnInit {
               map(actions =>
                 actions.docs.map(action => ({
                   id: action.id,
-                  ...action.data()
+                  ...(action.data() as Review)
                 }))
               )
             )
         ])
-      )
+      ),
+      map(data => ({
+        customer: data[0],
+        orders: data[1],
+        reviews: data[2]
+      }))
     );
   }
 }
