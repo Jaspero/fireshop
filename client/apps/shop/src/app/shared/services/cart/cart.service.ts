@@ -72,7 +72,6 @@ export class CartService {
 
   changeNumber(product, num) {
     const current = this.items$.getValue();
-    console.log('current', current);
     const index = current.findIndex(res => res['identifier'] === product);
     current[index]['quantity'] += num;
     localStorage.setItem('cartItem', JSON.stringify(current));
