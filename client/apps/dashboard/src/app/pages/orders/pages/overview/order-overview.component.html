@@ -8,14 +8,18 @@
     <button mat-flat-button [routerLink]="['/customers/', data.order.customerId]">Customer info</button>
   </mat-toolbar>
 
-
   <section class="grid p-y-m">
     <div class="col-12">
       <mat-card>
         <mat-list>
           <h3 mat-subheader>General info</h3>
           <mat-list-item>
-            <p mat-line>Customer: {{data.order.customerName.name}}</p>
+            <a mat-line *ngIf="data.order.customerId; else anonymous" [routerLink]="['/customers/overview', data.order.customerId]">
+              Customer: {{data.order.customerName}}
+            </a>
+            <ng-template #anonymous>
+              <p mat-line>Customer: Anonymous Purchase </p>
+            </ng-template>
             <p mat-line>Order date: {{data.order.createdOn | date}}</p>
           </mat-list-item>
           <mat-divider></mat-divider>
