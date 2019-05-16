@@ -185,7 +185,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
     );
   }
 
-  delAttribute(i) {
+  deleteAttribute(i) {
     this.attributesForms.removeAt(i);
     let obj = this.filterData();
     const listLength = this.attributesForms.value.length;
@@ -201,31 +201,33 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   }
 
   filterData() {
-    let obj = {};
     const price = this.form.get('price').value;
-    this.attributesForms.getRawValue().map(val => {
-      if (Object.keys(obj).length && val.list.length) {
-        for (let key in obj) {
-          val.list.forEach(y => {
-            obj[`${key}_${y}`] = {
+    let collector = this.attributesForms.getRawValue().reduce((acc, cur) => {
+      if (Object.keys(acc).length && cur.list.length) {
+        for (let key in acc) {
+          cur.list.forEach(y => {
+            acc[`${key}_${y}`] = {
               quantity: 0,
               price: price || 0
             };
           });
         }
       } else {
-        val.list.forEach(x => {
-          obj[x] = {
+        cur.list.forEach(x => {
+          acc[x] = {
             quantity: 0,
             price: price || 0
           };
         });
       }
-    });
+      return acc;
+    }, {});
+
+    console.log('collector', collector);
 
     const inventory = this.form.get('inventory');
-    obj = {...obj, ...inventory.value};
-    return obj;
+    collector = {...collector, ...inventory.value};
+    return collector;
   }
 
   add(item, ind) {

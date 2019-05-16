@@ -88,7 +88,7 @@
 
                 <div class="p-y-xs" formArrayName="attributes">
 
-                  <div *ngFor="let attribute of attributesForms.controls; let i=index"
+                  <div *ngFor="let attribute of attributesForms.controls; index as i"
                        [formGroupName]="i">
                     <mat-form-field appearance="outline">
                       <mat-label>Key</mat-label>
@@ -97,7 +97,7 @@
 
                     <mat-form-field appearance="outline" class="w-full">
                       <mat-chip-list #chipList>
-                        <mat-chip *ngFor="let items of attribute.get('list').value; let ind=index" [selectable]="true"
+                        <mat-chip *ngFor="let items of attribute.get('list').value; index as ind" [selectable]="true"
                                   (removed)="remove(i, ind, items)">
                           {{items}}
                           <mat-icon matChipRemove>cancel</mat-icon>
@@ -109,7 +109,7 @@
                       </mat-chip-list>
                     </mat-form-field>
 
-                    <button mat-button (click)="delAttribute(i)">Delete</button>
+                    <button mat-button (click)="deleteAttribute(i)">Delete</button>
 
                   </div>
                 </div>
@@ -126,7 +126,7 @@
               <mat-radio-group formControlName="default">
               <div class="p-y-xs" formGroupName="inventory">
 
-                  <div class="p-y-xs" *ngFor="let item of inventoryKeys; let i = index" [formGroupName]="item">
+                  <div class="p-y-xs" *ngFor="let item of inventoryKeys; index as i" [formGroupName]="item">
                     <mat-radio-button class="example-radio-button" [value]="item">
                       <div [innerHtml]="labelFormat(item)"></div>
                     </mat-radio-button>

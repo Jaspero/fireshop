@@ -4,7 +4,7 @@
     <div class="col-6 col-m-8 col-s-10 col-xs-12">
       <mat-card>
         <h5 class="fw-reg">An error has occurred</h5>
-        <div *ngFor="let single of error; let ind = index">
+        <div *ngFor="let single of error">
           <p class="m-t-s m-b-m">{{single.message}}</p>
         </div>
         <button mat-flat-button color="primary" (click)="resolveIssue()">Resolve issues</button>
