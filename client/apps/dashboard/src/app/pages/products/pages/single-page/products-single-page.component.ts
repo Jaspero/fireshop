@@ -210,8 +210,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
             val.list.forEach(y => {
               obj[`${key}_${y}`] = {
                 quantity: 0,
-                price: price || 0,
-                default: false
+                price: price || 0
               };
             });
           }
@@ -219,8 +218,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
           val.list.forEach(x => {
             obj[x] = {
               quantity: 0,
-              price: price || 0,
-              default: false
+              price: price || 0
             };
           });
         }
@@ -235,6 +233,10 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
         if (mama.length < listLength) {
           delete obj[key];
         }
+      }
+      const def = this.form.get('default');
+      if (Object.keys(obj).length && !def.value) {
+        def.setValue(Object.keys(obj)[0]);
       }
       obj = this.formatInventory(obj);
       this.form.setControl('inventory', this.fb.group(obj));
