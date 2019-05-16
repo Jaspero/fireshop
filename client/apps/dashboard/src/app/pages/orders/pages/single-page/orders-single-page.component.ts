@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FormArray} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
+import {fromStripeFormat} from '@jf/utils/stripe-format';
 import {takeUntil} from 'rxjs/operators';
 import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
 
@@ -17,24 +18,23 @@ export class OrdersSinglePageComponent extends SinglePageComponent
   deliveryStatus = OrderStatus;
 
   get ordersItemForms() {
-    return this.form.get('ordersItems') as FormArray;
+    return this.form.get('orderItemsData') as FormArray;
   }
 
   buildForm(data: any) {
+    console.log('data', data);
     this.form = this.fb.group({
       billing: this.checkForm(data.billing ? data.billing : {}),
       shippingInfo: data.shippingInfo || true,
-      createdOn: data.createdOn || '',
-      customerId: data.customerId || '',
-      customerName: data.customerName || '',
+      customerInfo: data.customerInfo || '',
       email: data.email || '',
       id: data.id || '',
-      paymentIntentId: data.paymentIntentId || '',
-      price: data.price || '',
+      paymentIntentId: {value: data.paymentIntentId || '', disabled: true},
+      price: data.price ? fromStripeFormat(data.price.total) : '',
       status: data.status || '',
-      ordersItems: this.fb.array(
-        data.orderItems
-          ? data.orderItems.map(x => this.fb.group(this.itemGroup(x)))
+      orderItemsData: this.fb.array(
+        data.orderItemsData
+          ? data.orderItemsData.map(x => this.fb.group(this.itemGroup(x)))
           : []
       )
     });
@@ -52,6 +52,10 @@ export class OrdersSinglePageComponent extends SinglePageComponent
           );
         }
       });
+  }
+
+  testera() {
+    console.log(this.form.getRawValue());
   }
 
   checkForm(data: any) {

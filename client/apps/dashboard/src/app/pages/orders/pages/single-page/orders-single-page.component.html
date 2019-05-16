@@ -163,21 +163,26 @@
                 <mat-divider></mat-divider>
               </div>
               <div class="p-y-xs">
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Customer Name</mat-label>
-                  <input matInput formControlName="customerName">
-                </mat-form-field>
+                <jfsc-customer-lookup formControlName="customerInfo">
+                </jfsc-customer-lookup>
               </div>
+              <button (click)="testera()">test</button>
               <div class="p-y-xs">
                 <mat-form-field appearance="outline" class="w-full">
                   <mat-label>Email</mat-label>
-                  <textarea matInput formControlName="email"></textarea>
+                  <input matInput formControlName="email">
                 </mat-form-field>
               </div>
               <div class="p-y-xs">
                 <mat-form-field appearance="outline" class="w-full">
                   <mat-label>Price</mat-label>
-                  <textarea matInput formControlName="price"></textarea>
+                  <input matInput formControlName="price">
+                </mat-form-field>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Payment intent id</mat-label>
+                  <input matInput formControlName="paymentIntentId">
                 </mat-form-field>
               </div>
               <div class="p-y-xs">
@@ -194,7 +199,7 @@
                 </mat-form-field>
               </div>
 
-              <div formArrayName="ordersItems">
+              <div formArrayName="orderItemsData">
 
                 <h6 class="p-y-xs">Items:</h6>
                 <div *ngFor="let order of ordersItemForms.controls; let i=index"

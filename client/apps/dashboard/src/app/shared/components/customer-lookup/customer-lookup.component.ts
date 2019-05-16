@@ -43,12 +43,12 @@ export class CustomerLookupComponent implements OnInit, ControlValueAccessor {
       .collection<Customer>(FirestoreCollections.Customers)
       .snapshotChanges()
       .pipe(
-        map(actions => {
-          return actions.map(action => ({
+        map(actions =>
+          actions.map(action => ({
             id: action.payload.doc.id,
             ...action.payload.doc.data()
-          }));
-        })
+          }))
+        )
       );
 
     this.filteredCustomers$ = combineLatest(
@@ -67,6 +67,7 @@ export class CustomerLookupComponent implements OnInit, ControlValueAccessor {
   }
 
   optionSelected(event: MatAutocompleteSelectedEvent) {
+    console.log('event', event);
     this.onModelChange({
       id: event.option.id,
       name: event.option.value
