@@ -1,48 +1,28 @@
-<section>
+<ng-container *ngIf="data$ | async as data">
   <mat-toolbar color="primary">
     <a mat-icon-button routerLink="/orders" aria-label="Back" matTooltip="Back">
       <mat-icon>arrow_back</mat-icon>
     </a>
-    <span>Orders</span>
+    <span>{{data.order.customerId ? data.order.customerName : 'Anonymous'}} order</span>
+    <div class="f1"></div>
+    <button mat-flat-button [routerLink]="['/customers/', data.order.customerId]">Customer info</button>
   </mat-toolbar>
-</section>
 
-<ng-container>
-  <ng-container *ngIf="data$ | async as data">
-    <section class="p-y-m">
-      <div class="grid">
-        <div class="col-8 col-s-10 col-xs-12 flex ai-center jc-between">
-          <p>{{data.order.customerId ? data.order.customerName : 'Anonymous'}} order</p>
-          <button mat-button [routerLink]="['/customers/', data.order.customerId]">Customer info</button>
-        </div>
-      </div>
-    </section>
-
-    <div class="grid">
-      <div class="col-12">
-        <mat-card>
-          <mat-nav-list>
-            <h3 mat-subheader>
-              Products in order
-            </h3>
-            <mat-nav-list *ngFor="let ordItems of data.order.orderItems; index as index" [routerLink]="['/products/' + ordItems]">
-              <p mat-line>ID: {{ordItems}}</p>
-              <p mat-line>Price: {{data.order.orderItemsData[index].price | sp}}</p>
-              <p mat-line>Quantity: {{data.order.orderItemsData[index].quantity}}</p>
-              <div *ngIf="data.order.customerId && data.reviews[index]">
-                <p>Review {{data.order.customerName}} left for {{ordItems}}</p>
-                <div>
-                  Comment: {{data.reviews[index][0].comment}}
-                  <br>
-                  Rating: {{data.reviews[index][0].rating}}
-                </div>
-              </div>
-            </mat-nav-list>
-          </mat-nav-list>
-        </mat-card>
-      </div>
+  <section class="grid p-y-m">
+    <div class="col-12">
+      <mat-card>
+        <mat-nav-list>
+          <h3 mat-subheader>Products in order</h3>
+          <mat-list-item *ngFor="let ordItems of data.order.orderItems; index as index" [routerLink]="['/products/' + ordItems]">
+            <p mat-line>{{ordItems}}</p>
+            <p mat-line>{{data.order.orderItemsData[index].quantity}}x @ {{data.order.orderItemsData[index].price | sp}}</p>
+            <ng-container *ngIf="data.order.customerId && data.reviews[index]">
+              <p class="fs-small c-d-secondary m-r-xs">{{data.reviews[index][0].rating}}/5</p>
+              <mat-icon [matTooltip]="data.reviews[index][0].comment">info</mat-icon>
+            </ng-container>
+          </mat-list-item>
+        </mat-nav-list>
+      </mat-card>
     </div>
-
-
-  </ng-container>
+  </section>
 </ng-container>
