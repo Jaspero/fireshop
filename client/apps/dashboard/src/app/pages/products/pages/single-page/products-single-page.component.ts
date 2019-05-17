@@ -166,7 +166,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
           : []
       ),
       inventory: this.fb.group(
-        data.inventory ? this.formatInventory(data.inventory) : {}
+        data.inventory ? this.formatInventory(data.inventory, true) : {}
       ),
       default: data.default || ''
     });
@@ -205,14 +205,14 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
     };
   }
 
-  formatInventory(data) {
+  formatInventory(data: any, adjustPrice?: boolean) {
     const obj = {};
     this.inventoryKeys = [];
     for (const key in data) {
       this.inventoryKeys.push(key);
       obj[key] = this.fb.group({
         ...data[key],
-        ...{price: fromStripeFormat(data[key].price)}
+        price: adjustPrice ? fromStripeFormat(data[key].price) : data[key].price
       });
     }
     return obj;
