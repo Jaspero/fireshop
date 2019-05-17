@@ -47,9 +47,10 @@
                 </div>
               </form>
             </div>
-            <h2 class="m-b-xs">{{(data.product.inventory ? (price$ | async) : data.product.price) | sp}}</h2>
-            <p class="m-t-s" *ngIf="data.product.showingQuantity">{{data.quantity}} in stock</p>
-            <p class="m-t-s" *ngIf="data.isDisabled">There are no more items in stock</p>
+            <h2 class="m-b-xs">{{data.price | sp}}</h2>
+            <p class="m-t-s" *ngIf="data.product.showingQuantity">
+              {{data.quantity ? data.quantity + ' in stock' : 'There are no more items in stock'}}
+            </p>
             <button
               id="btn-add-cart-prod-1"
               mat-flat-button
@@ -57,7 +58,7 @@
               color="accent"
               [disabled]="data.isDisabled"
               (click)="cart.add(data.product, filters ? filters.getRawValue() : {})">
-              <span class="iblock p-x-m">{{data.quantity ? 'Add more to cart (currently ' + data.quantity + ')' : 'Add to cart'}} </span>
+              <span class="iblock p-x-m">{{data.itemsInCart ? 'Add more to cart (currently ' + data.itemsInCart + ')' : 'Add to cart'}} </span>
             </button>
             <div class="m-y-m flex fd-col ai-start">
               <p class="m-b-xs"><b>Share this product:</b></p>

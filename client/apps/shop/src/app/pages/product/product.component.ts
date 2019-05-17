@@ -49,7 +49,9 @@ export class ProductComponent extends RxDestroy implements OnInit {
   rews$: Observable<[Review[], number]>;
   data$: Observable<{
     product: Product;
+    itemsInCart: number;
     quantity: number;
+    price: number;
     wishList: {
       label: string;
       tooltip: string;
@@ -60,7 +62,6 @@ export class ProductComponent extends RxDestroy implements OnInit {
   similar$: Observable<any>;
   imgIndex = 0;
   filters: FormGroup;
-  price$: Observable<number>;
 
   @ViewChild('reviewsDialog') reviewsDialog: TemplateRef<any>;
 
@@ -90,19 +91,6 @@ export class ProductComponent extends RxDestroy implements OnInit {
               return acc;
             }, {})
           );
-
-          this.price$ = this.filters.valueChanges.pipe(
-            startWith(this.filters.getRawValue()),
-            map(val => {
-              let finalKey = '';
-              for (const key in val) {
-                finalKey
-                  ? (finalKey = `${finalKey}_${val[key]}`)
-                  : (finalKey = `${val[key]}`);
-              }
-              return data.product.inventory[finalKey].price;
-            })
-          );
         } else {
           this.filters = null;
         }
@@ -123,7 +111,8 @@ export class ProductComponent extends RxDestroy implements OnInit {
         return combineLatest(toCombine).pipe(
           map(([cartData, inWishList, filters]: [CartItem[], boolean, any]) => {
             let cart: CartItem;
-            let isDisabled = false;
+            let price = data.product.price;
+            let quantity = data.product.quantity;
 
             if (data.product.attributes) {
               if (this.filters.valid) {
@@ -136,21 +125,26 @@ export class ProductComponent extends RxDestroy implements OnInit {
                 }
 
                 cart = cartData.find(c => statId === c.identifier);
-
-                if (cart) {
-                  statId = statId.replace(`${data.product.id}_`, '');
-                  isDisabled =
-                    data.product.inventory[statId].quantity <= cart.quantity;
-                }
+                statId = statId.replace(`${data.product.id}_`, '');
+                price = data.product.inventory[statId].price;
+                quantity = data.product.inventory[statId].quantity;
               }
             } else {
               cart = cartData.find(c => data.product.id === c.identifier);
             }
 
+            if (cart) {
+              quantity -= cart.quantity;
+            }
+
             return {
-              isDisabled,
+              quantity,
+              price,
+              itemsInCart: cart ? cart.quantity : 0,
+              isDisabled: data.product.allowOutOfQuantityPurchase
+                ? false
+                : quantity <= 0,
               product: data.product as Product,
-              quantity: cart ? cart.quantity : 0,
               wishList: inWishList
                 ? {
                     label: 'Already on wishlist',
