@@ -34,8 +34,8 @@
         <div class="grid">
           <div class="col-6 col-s-12">
             <h5 class="p-t-s p-b-xs">Description</h5>
-            <div [innerHtml]="data.product.description"></div>
-            <div *ngIf="data.product.attributes">
+            <div class="m-b-s" [innerHtml]="data.product.description"></div>
+            <div class="m-b-s" *ngIf="data.product.attributes">
               <form [formGroup]="filters">
                 <div *ngFor="let attribute of data.product.attributes">
                   <mat-form-field appearance="outline">
@@ -47,7 +47,7 @@
                 </div>
               </form>
             </div>
-            <h2 class="m-t-m m-b-xs">{{(data.product.inventory ? price : data.product.price) | sp}}</h2>
+            <h2 class="m-b-xs">{{(data.product.inventory ? price : data.product.price) | sp}}</h2>
             <p class="m-t-s" *ngIf="data.product.showingQuantity">{{data.product.quantity}} in stock</p>
             <p class="m-t-s" *ngIf="data.isDisabled">There are no more items in stock</p>
             <button
