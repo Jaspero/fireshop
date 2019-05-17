@@ -3,6 +3,7 @@ import {FormArray} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
 import {fromStripeFormat} from '@jf/utils/stripe-format';
+import {defer, of} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
 
@@ -22,11 +23,9 @@ export class OrdersSinglePageComponent extends SinglePageComponent
   }
 
   buildForm(data: any) {
-    console.log('data', data);
     this.form = this.fb.group({
       billing: this.checkForm(data.billing ? data.billing : {}),
       shippingInfo: data.shippingInfo || true,
-      customerInfo: data.customerInfo || '',
       email: data.email || '',
       id: data.id || '',
       paymentIntentId: {value: data.paymentIntentId || '', disabled: true},
@@ -36,7 +35,18 @@ export class OrdersSinglePageComponent extends SinglePageComponent
         data.orderItemsData
           ? data.orderItemsData.map(x => this.fb.group(this.itemGroup(x)))
           : []
-      )
+      ),
+
+      /**
+       * Map to customerName and customerId
+       * when saving
+       */
+      customerInfo: data.customerId
+        ? {
+            name: data.customerName,
+            id: data.customerId
+          }
+        : ''
     });
 
     this.form
@@ -54,8 +64,14 @@ export class OrdersSinglePageComponent extends SinglePageComponent
       });
   }
 
-  testera() {
-    console.log(this.form.getRawValue());
+  getSaveData(...args) {
+    if (Object.keys(args[1].customerInfo).length > 0) {
+      args[1]['customerName'] = args[1].customerInfo.name;
+      args[1]['customerId'] = args[1].customerInfo.id;
+    }
+    delete args[1].customerInfo;
+    console.log('args', args[1]);
+    return super.getSaveData(...args);
   }
 
   checkForm(data: any) {

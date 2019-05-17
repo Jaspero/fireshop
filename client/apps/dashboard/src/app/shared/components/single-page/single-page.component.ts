@@ -101,15 +101,20 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
   }
 
   save() {
-    const {id, ...item} = this.form.getRawValue();
-    this.initialValue = this.form.getRawValue();
+    /**
+     * TODO(Filip): clean this up
+     */
+    return defer(() => {
+      const {id, ...item} = this.form.getRawValue();
+      this.initialValue = this.form.getRawValue();
 
-    return this.getSaveData(id, item).pipe(
-      notify(),
-      tap(() => {
-        this.back();
-      })
-    );
+      return this.getSaveData(id, item).pipe(
+        notify(),
+        tap(() => {
+          this.back();
+        })
+      );
+    });
   }
 
   buildForm(data: any) {}

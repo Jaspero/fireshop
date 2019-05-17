@@ -67,7 +67,6 @@ export class CustomerLookupComponent implements OnInit, ControlValueAccessor {
   }
 
   optionSelected(event: MatAutocompleteSelectedEvent) {
-    console.log('event', event);
     this.onModelChange({
       id: event.option.id,
       name: event.option.value
@@ -90,7 +89,7 @@ export class CustomerLookupComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-  writeValue(value: any) {
-    this.search.setValue(value);
+  writeValue(value: string | {id: string; name: string}) {
+    this.search.setValue(typeof value === 'string' ? value : value.name);
   }
 }
