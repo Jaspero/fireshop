@@ -99,15 +99,17 @@
   </section>
 
   <!--Similar products-->
-  <section class="grid p-t-m">
-    <div class="col-12">
-      <h5>Similar products</h5>
-      <div *ngIf="similar$ | async as similarProducts">
-        <ng-container *ngFor="let next of similarProducts">
-          <jfs-product-card [product]="next"></jfs-product-card>
-        </ng-container>
+  <ng-container *ngIf="similar$ | async as similarProducts">
+    <section class="grid p-t-m" *ngIf="similarProducts.length">
+      <div class="col-12">
+        <h5>Similar products</h5>
+        <div>
+          <ng-container *ngFor="let next of similarProducts">
+            <jfs-product-card [product]="next"></jfs-product-card>
+          </ng-container>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </ng-container>
 
 </ng-container>
