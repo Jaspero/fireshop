@@ -115,12 +115,23 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
           }
         }
 
+        /**
+         * Format inventory price
+         */
         if (args[1].inventory) {
           for (const key in args[1].inventory) {
             args[1].inventory[key].price = toStripeFormat(
               args[1].inventory[key].price
             );
           }
+        }
+
+        /**
+         * Don't store empty objects in database
+         */
+        if (!Object.keys(args[1].attributes).length) {
+          delete args[1].attributes;
+          delete args[1].inventory;
         }
 
         return this.galleryUploadComponent.save().pipe(
