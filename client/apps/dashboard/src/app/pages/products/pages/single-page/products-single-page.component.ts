@@ -202,32 +202,29 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   filterData() {
     const price = this.form.get('price').value;
-    let collector = this.attributesForms.getRawValue().reduce((acc, cur) => {
-      if (Object.keys(acc).length && cur.list.length) {
-        for (let key in acc) {
-          cur.list.forEach(y => {
-            acc[`${key}_${y}`] = {
+    return {
+      ...this.attributesForms.getRawValue().reduce((acc, cur) => {
+        if (Object.keys(acc).length && cur.list.length) {
+          for (let key in acc) {
+            cur.list.forEach(y => {
+              acc[`${key}_${y}`] = {
+                quantity: 0,
+                price: price || 0
+              };
+            });
+          }
+        } else {
+          cur.list.forEach(x => {
+            acc[x] = {
               quantity: 0,
               price: price || 0
             };
           });
         }
-      } else {
-        cur.list.forEach(x => {
-          acc[x] = {
-            quantity: 0,
-            price: price || 0
-          };
-        });
-      }
-      return acc;
-    }, {});
-
-    console.log('collector', collector);
-
-    const inventory = this.form.get('inventory');
-    collector = {...collector, ...inventory.value};
-    return collector;
+        return acc;
+      }, {}),
+      ...this.form.get('inventory').value
+    };
   }
 
   add(item, ind) {
@@ -264,13 +261,14 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   formatInventory(data) {
     const obj = {};
+    this.inventoryKeys = [];
     for (const key in data) {
+      this.inventoryKeys.push(key);
       obj[key] = this.fb.group({
         ...data[key],
         ...{price: fromStripeFormat(data[key].price)}
       });
     }
-    this.inventoryKeys = Object.keys(data);
     return obj;
   }
 
