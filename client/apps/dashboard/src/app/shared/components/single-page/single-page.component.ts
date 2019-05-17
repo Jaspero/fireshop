@@ -1,6 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {MatDialog} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
@@ -29,7 +30,8 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
     public state: StateService,
     public activatedRoute: ActivatedRoute,
     public cdr: ChangeDetectorRef,
-    public fb: FormBuilder
+    public fb: FormBuilder,
+    public dialog: MatDialog
   ) {
     super();
   }

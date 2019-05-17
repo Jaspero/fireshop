@@ -1,10 +1,17 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {FormArray} from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
+import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
+import {Product} from '@jf/interfaces/product.interface';
 import {fromStripeFormat} from '@jf/utils/stripe-format';
-import {defer, of} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {combineLatest, Observable} from 'rxjs';
+import {filter, map, startWith, takeUntil} from 'rxjs/operators';
 import {SinglePageComponent} from '../../../../shared/components/single-page/single-page.component';
 
 @Component({
@@ -17,12 +24,57 @@ export class OrdersSinglePageComponent extends SinglePageComponent
   implements OnInit {
   collection = FirestoreCollections.Orders;
   deliveryStatus = OrderStatus;
+  product$: Observable<Product[]>;
+  search = new FormControl('');
+  filteredProducts$: Observable<Product[]>;
+  @ViewChild('addProduct')
+  addProduct: TemplateRef<any>;
+  productForm: FormGroup;
+  orderItems = [];
 
-  get ordersItemForms() {
-    return this.form.get('orderItemsData') as FormArray;
+  ngOnInit() {
+    super.ngOnInit();
+
+    this.product$ = this.afs
+      .collection<Product>(`${FirestoreCollections.Products}-en`)
+      .snapshotChanges()
+      .pipe(
+        map(actions =>
+          actions.map(action => ({
+            id: action.payload.doc.id,
+            ...action.payload.doc.data()
+          }))
+        )
+      );
+
+    this.filteredProducts$ = combineLatest(
+      this.product$,
+      this.search.valueChanges.pipe(
+        startWith(this.search.value || ''),
+        map(value => value.toLowerCase())
+      )
+    ).pipe(
+      map(([products, value]) =>
+        products.filter(product =>
+          (product.name || '').toLowerCase().includes(value)
+        )
+      )
+    );
+  }
+
+  selectedProduct(event) {
+    console.log('event', event.option);
+    this.productForm.get('product').setValue({
+      id: event.option.id,
+      name: event.option.value
+    });
   }
 
   buildForm(data: any) {
+    this.orderItems = data.orderItemsData.map((val, ind) => ({
+      data: val,
+      id: data.orderItems[ind]
+    }));
     this.form = this.fb.group({
       billing: this.checkForm(data.billing ? data.billing : {}),
       shippingInfo: data.shippingInfo || true,
@@ -31,11 +83,6 @@ export class OrdersSinglePageComponent extends SinglePageComponent
       paymentIntentId: {value: data.paymentIntentId || '', disabled: true},
       price: data.price ? fromStripeFormat(data.price.total) : '',
       status: data.status || '',
-      orderItemsData: this.fb.array(
-        data.orderItemsData
-          ? data.orderItemsData.map(x => this.fb.group(this.itemGroup(x)))
-          : []
-      ),
 
       /**
        * Map to customerName and customerId
@@ -70,7 +117,6 @@ export class OrdersSinglePageComponent extends SinglePageComponent
       args[1]['customerId'] = args[1].customerInfo.id;
     }
     delete args[1].customerInfo;
-    console.log('args', args[1]);
     return super.getSaveData(...args);
   }
 
@@ -88,9 +134,27 @@ export class OrdersSinglePageComponent extends SinglePageComponent
     });
   }
 
-  addItem() {
-    const order = this.fb.group(this.itemGroup({}));
-    this.ordersItemForms.push(order);
+  openProductDialog(product = null) {
+    console.log('ind', product);
+    this.productForm = this.fb.group({
+      product: product.data
+        ? {
+            id: product.id,
+            name: product.data.name
+          }
+        : {},
+      quantity: product.data ? product.data.quantity : ''
+    });
+
+    this.dialog
+      .open(this.addProduct, {
+        width: '400px'
+      })
+      .afterClosed()
+      .pipe(filter(val => !!val))
+      .subscribe(() => {
+        console.log('The dialog was closed');
+      });
   }
 
   itemGroup(data) {
@@ -102,7 +166,11 @@ export class OrdersSinglePageComponent extends SinglePageComponent
     };
   }
 
+  testera() {
+    console.log(this.productForm.getRawValue());
+  }
+
   deleteItem(i) {
-    this.ordersItemForms.removeAt(i);
+    this.orderItems.splice(i, 1);
   }
 }

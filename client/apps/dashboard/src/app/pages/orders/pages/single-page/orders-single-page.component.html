@@ -197,30 +197,51 @@
                   </mat-select>
                 </mat-form-field>
               </div>
+              <button (click)="testera()">test</button>
 
-              <div formArrayName="orderItemsData">
-
+              <div>
                 <h6 class="p-y-xs">Items:</h6>
-                <div *ngFor="let order of ordersItemForms.controls; let i=index"
-                     [formGroupName]="i">
-
-                  <div class="p-y-xs">
-                    <mat-form-field appearance="outline" class="w-full">
-                      <mat-label>Name</mat-label>
-                      <input matInput formControlName="name">
-                    </mat-form-field>
+                <button  mat-flat-button (click)="openProductDialog()">Add item in order</button>
+                <ng-container *ngIf="orderItems">
+                  <div *ngFor="let order of orderItems; let i=index">
+                    <div class="p-y-xs">
+                      <p>name: {{order.data.name}}</p>
+                      <p>quantity: {{order.data.quantity}}</p>
+                    </div>
+                    <button mat-flat-button (click)="deleteItem(i)">Delete</button>
+                    <button mat-flat-button (click)="openProductDialog(order)">Edit Item</button>
+                    <ng-container *ngIf="filteredProducts$ | async as prod">
+                      <ng-template #addProduct>
+                        <form [formGroup]="productForm">
+                          <mat-form-field class="w-full m-b-xs">
+                            <input
+                              tabindex="-1"
+                              placeholder="Product"
+                              matInput
+                              [matAutocomplete]="auto"
+                              [formControl]="search">
+                            <mat-autocomplete (optionSelected)="selectedProduct($event)" #auto="matAutocomplete">
+                              <mat-option
+                                *ngFor="let item of prod"
+                                [id]="item.id"
+                                [value]="item.name">
+                                {{item.name}}
+                              </mat-option>
+                            </mat-autocomplete>
+                          </mat-form-field>
+                          <div class="p-y-xs">
+                            <mat-form-field appearance="outline" class="w-full">
+                              <mat-label>Quantity</mat-label>
+                              <input matInput formControlName="quantity">
+                            </mat-form-field>
+                          </div>
+                        </form>
+                        <button mat-flat-button [mat-dialog-close]="true">Add item</button>
+                        <button mat-flat-button (click)="testera()">aaaaa item</button>
+                      </ng-template>
+                    </ng-container>
                   </div>
-                  <div class="p-y-xs">
-                    <mat-form-field appearance="outline" class="w-full">
-                      <mat-label>Quantity</mat-label>
-                      <input matInput formControlName="quantity">
-                    </mat-form-field>
-                  </div>
-
-                  <button mat-flat-button (click)="deleteItem(i)">Delete</button>
-
-                </div>
-                <button  mat-flat-button (click)="addItem()">Add item in order</button>
+                </ng-container>
               </div>
             </mat-card>
           </div>
