@@ -1,14 +1,28 @@
 service firebase.storage {
+  function write() {
+    return request.auth.token.role == 'write'
+  }
+
+  function read() {
+    return request.auth.token.role == 'read'
+  }
+
+  function readOrWrite() {
+    return write() || read()
+  }
+
   match /b/{bucket}/o {
     match /{allPaths=**} {
       allow read: if true
-      allow write: if request.auth.token.admin == true
+      allow write, delete: if write()
     }
 
-    match /users/{userId}/profilePicture.png {
-     	allow read: if true
- 			allow write: if request.auth.uid == userId;
-      allow write: if request.auth.token.admin == true
+    match /users/{userId}/profilePicture {
+      allow read: if true
+      allow write, delete: if
+        // Size is smaller than 1mb
+        request.resource.size < 1024 * 1024 &&
+        request.auth.uid == userId || write();
     }
 
   }
