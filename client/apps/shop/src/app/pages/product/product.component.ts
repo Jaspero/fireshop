@@ -20,6 +20,7 @@ import {Review} from '@jf/interfaces/review.interface';
 import {combineLatest, Observable} from 'rxjs';
 import {map, startWith, switchMap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
+import {CartItem} from '../../shared/services/cart/cart-item.interface';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {StateService} from '../../shared/services/state/state.service';
 import {WishListService} from '../../shared/services/wish-list/wish-list.service';
@@ -59,7 +60,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
   similar$: Observable<any>;
   imgIndex = 0;
   filters: FormGroup;
-  price: number;
+  price$: Observable<number>;
 
   @ViewChild('reviewsDialog') reviewsDialog: TemplateRef<any>;
 
@@ -79,24 +80,29 @@ export class ProductComponent extends RxDestroy implements OnInit {
         );
 
         if (data.product.attributes) {
-          const arr = data.product.default.split('_');
-          const fbGroup = data.product.attributes.reduce((acc, cur, ind) => {
-            acc[cur.key] = [arr[ind] || '', Validators.required];
-            return acc;
-          }, {});
-          this.filters = this.fb.group(fbGroup);
+          this.filters = this.fb.group(
+            data.product.attributes.reduce((acc, cur, ind) => {
+              acc[cur.key] = [
+                data.product.default.split('_')[ind] || '',
+                Validators.required
+              ];
 
-          this.filters.valueChanges
-            .pipe(startWith(this.filters.getRawValue()))
-            .subscribe(val => {
+              return acc;
+            }, {})
+          );
+
+          this.price$ = this.filters.valueChanges.pipe(
+            startWith(this.filters.getRawValue()),
+            map(val => {
               let finalKey = '';
               for (const key in val) {
                 finalKey
                   ? (finalKey = `${finalKey}_${val[key]}`)
                   : (finalKey = `${val[key]}`);
               }
-              this.price = data.product.inventory[finalKey].price;
-            });
+              return data.product.inventory[finalKey].price;
+            })
+          );
         } else {
           this.filters = null;
         }
@@ -114,31 +120,37 @@ export class ProductComponent extends RxDestroy implements OnInit {
           );
         }
 
-        return combineLatest(...toCombine).pipe(
-          map(([cartData, inWishList, filters]) => {
-            let cart = cartData.find(c => data.product.id === c.identifier);
-            let disabled = false;
+        return combineLatest(toCombine).pipe(
+          map(([cartData, inWishList, filters]: [CartItem[], boolean, any]) => {
+            let cart: CartItem;
+            let isDisabled = false;
+
             if (data.product.attributes) {
               if (this.filters.valid) {
                 let statId = '';
+
                 for (const key in filters) {
                   statId = statId
                     ? `${statId}_${filters[key]}`
                     : `${data.product.id}_${filters[key]}`;
                 }
+
                 cart = cartData.find(c => statId === c.identifier);
+
                 if (cart) {
                   statId = statId.replace(`${data.product.id}_`, '');
-                  disabled =
+                  isDisabled =
                     data.product.inventory[statId].quantity <= cart.quantity;
                 }
               }
+            } else {
+              cart = cartData.find(c => data.product.id === c.identifier);
             }
 
             return {
+              isDisabled,
               product: data.product as Product,
               quantity: cart ? cart.quantity : 0,
-              isDisabled: disabled,
               wishList: inWishList
                 ? {
                     label: 'Already on wishlist',
@@ -211,23 +223,6 @@ export class ProductComponent extends RxDestroy implements OnInit {
       'facebook-popup',
       'height=350,width=600'
     );
-  }
-
-  disabledButton(val) {
-    if (val.product.attributes) {
-      if (this.filters.valid) {
-        let statId = '';
-        const object = this.filters.getRawValue();
-        for (const key in object) {
-          statId = statId ? `${statId}_${object[key]}` : `${object[key]}`;
-        }
-        return val.quantity >= val.product.inventory[statId].quantity;
-      } else {
-        return true;
-      }
-    } else {
-      return val.quantity >= val.product.quantity;
-    }
   }
 
   twitterShare(data) {

@@ -47,8 +47,8 @@
                 </div>
               </form>
             </div>
-            <h2 class="m-b-xs">{{(data.product.inventory ? price : data.product.price) | sp}}</h2>
-            <p class="m-t-s" *ngIf="data.product.showingQuantity">{{data.product.quantity}} in stock</p>
+            <h2 class="m-b-xs">{{(data.product.inventory ? (price$ | async) : data.product.price) | sp}}</h2>
+            <p class="m-t-s" *ngIf="data.product.showingQuantity">{{data.quantity}} in stock</p>
             <p class="m-t-s" *ngIf="data.isDisabled">There are no more items in stock</p>
             <button
               id="btn-add-cart-prod-1"
