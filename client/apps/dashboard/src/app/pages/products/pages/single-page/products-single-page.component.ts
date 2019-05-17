@@ -151,7 +151,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
         ? data.showingQuantity
         : DYNAMIC_CONFIG.generalSettings.showingQuantity,
       allowOutOfQuantityPurchase: data.hasOwnProperty(
-        'allowOutOfQuantityPurchase '
+        'allowOutOfQuantityPurchase'
       )
         ? data.allowOutOfQuantityPurchase
         : DYNAMIC_CONFIG.generalSettings.allowOutOfQuantityPurchase,
@@ -176,36 +176,14 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
     window.open(environment.websiteUrl + '/product/' + form.controls.id.value);
   }
 
-  addAttribute() {
-    this.attributesForms.push(
-      this.fb.group({
-        key: '',
-        list: [[]]
-      })
-    );
-  }
-
-  deleteAttribute(i) {
-    this.attributesForms.removeAt(i);
-    let obj = this.filterData();
-    const listLength = this.attributesForms.value.length;
-    for (const key in obj) {
-      const splitArr = key.split('_');
-      if (splitArr.length !== listLength) {
-        delete obj[key];
-      }
-    }
-    this.form.get('default').setValue(Object.keys(obj)[0]);
-    obj = this.formatInventory(obj);
-    this.form.setControl('inventory', this.fb.group(obj));
-  }
-
   filterData() {
     const price = this.form.get('price').value;
+    const attributesData = this.attributesForms.getRawValue();
+
     return {
-      ...this.attributesForms.getRawValue().reduce((acc, cur) => {
+      ...attributesData.reduce((acc, cur) => {
         if (Object.keys(acc).length && cur.list.length) {
-          for (let key in acc) {
+          for (const key in acc) {
             cur.list.forEach(y => {
               acc[`${key}_${y}`] = {
                 quantity: 0,
@@ -227,38 +205,6 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
     };
   }
 
-  add(item, ind) {
-    const input = item.input;
-    const value = item.value;
-
-    if (value) {
-      const list = this.attributesForms.at(ind).get('list').value;
-      list.push(value);
-      this.attributesForms
-        .at(ind)
-        .get('list')
-        .setValue(list);
-      input.value = '';
-
-      let obj = this.filterData();
-
-      const listLength = this.attributesForms.value.length;
-
-      for (const key in obj) {
-        const splitArr = key.split('_');
-        if (splitArr.length < listLength) {
-          delete obj[key];
-        }
-      }
-      const def = this.form.get('default');
-      if (Object.keys(obj).length && !def.value) {
-        def.setValue(Object.keys(obj)[0]);
-      }
-      obj = this.formatInventory(obj);
-      this.form.setControl('inventory', this.fb.group(obj));
-    }
-  }
-
   formatInventory(data) {
     const obj = {};
     this.inventoryKeys = [];
@@ -272,17 +218,94 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
     return obj;
   }
 
-  remove(ind, index, item) {
-    const list = this.attributesForms.at(ind).get('list').value;
-    list.splice(index, 1);
+  addAttribute() {
+    this.attributesForms.push(
+      this.fb.group({
+        key: '',
+        list: [[]]
+      })
+    );
+  }
+
+  deleteAttribute(i) {
+    this.attributesForms.removeAt(i);
+    const obj = this.filterData();
+    const listLength = this.attributesForms.value.length;
+
+    let firstKey;
+
+    for (const key in obj) {
+      const splitArr = key.split('_');
+
+      if (!firstKey) {
+        firstKey = key;
+      }
+
+      if (splitArr.length !== listLength) {
+        delete obj[key];
+      }
+    }
+
+    this.form.get('default').setValue(Object.keys(obj)[0]);
+    this.form.setControl('inventory', this.fb.group(this.formatInventory(obj)));
+  }
+
+  addAttributeValue(item, ind) {
+    if (item.value) {
+      const list = this.attributesForms.at(ind).get('list').value;
+
+      list.push(item.value);
+
+      this.attributesForms
+        .at(ind)
+        .get('list')
+        .setValue(list);
+
+      item.input.value = '';
+
+      const obj = this.filterData();
+      const listLength = this.attributesForms.value.length;
+      const def = this.form.get('default');
+
+      let valuesLength = 0;
+      let firstKey;
+
+      for (const key in obj) {
+        if (!firstKey) {
+          firstKey = key;
+        }
+
+        valuesLength++;
+
+        const splitArr = key.split('_');
+
+        if (splitArr.length < listLength) {
+          delete obj[key];
+        }
+      }
+
+      if (valuesLength && !def.value) {
+        def.setValue(firstKey);
+      }
+
+      this.form.setControl(
+        'inventory',
+        this.fb.group(this.formatInventory(obj))
+      );
+    }
+  }
+
+  removeAttributeValue(attributeIndex: number, itemIndex: number, item) {
+    const list = this.attributesForms.at(attributeIndex).get('list').value;
+    list.splice(itemIndex, 1);
     this.attributesForms
-      .at(ind)
+      .at(attributeIndex)
       .get('list')
       .setValue(list);
     let obj = this.form.get('inventory').value;
     for (const key in obj) {
       const arr = key.split('_');
-      if (arr[ind] === item) {
+      if (arr[attributeIndex] === item) {
         delete obj[key];
       }
     }
@@ -294,11 +317,12 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   }
 
   labelFormat(key: string) {
-    let finale = '';
-    const str = key.split('_');
-    str.forEach((x, ind) => {
-      finale = finale + ` <span class="${this.colors[ind]}">  ${x}</span>`;
-    });
-    return finale;
+    return key
+      .split('_')
+      .reduce(
+        (acc, cur, ind) =>
+          acc + ` <span class="${this.colors[ind]}">  ${cur}</span>`,
+        ''
+      );
   }
 }
