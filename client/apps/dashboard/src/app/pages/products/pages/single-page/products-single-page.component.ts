@@ -132,6 +132,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
         if (!Object.keys(args[1].attributes).length) {
           delete args[1].attributes;
           delete args[1].inventory;
+          delete args[1].default;
         }
 
         return this.galleryUploadComponent.save().pipe(

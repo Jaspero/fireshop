@@ -80,6 +80,11 @@ export class ProductComponent extends RxDestroy implements OnInit {
           }
         );
 
+        const toCombine = [
+          this.cart.items$,
+          this.wishList.includes(data.product.id)
+        ];
+
         if (data.product.attributes) {
           this.filters = this.fb.group(
             data.product.attributes.reduce((acc, cur, ind) => {
@@ -91,21 +96,14 @@ export class ProductComponent extends RxDestroy implements OnInit {
               return acc;
             }, {})
           );
-        } else {
-          this.filters = null;
-        }
 
-        const toCombine = [
-          this.cart.items$,
-          this.wishList.includes(data.product.id)
-        ];
-
-        if (this.filters) {
           toCombine.push(
             this.filters.valueChanges.pipe(
               startWith(this.filters.getRawValue())
             )
           );
+        } else {
+          this.filters = null;
         }
 
         return combineLatest(toCombine).pipe(

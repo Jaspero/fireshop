@@ -17,6 +17,7 @@ export interface Product {
   showingQuantity: boolean;
   quantity: number;
   allowOutOfQuantityPurchase: boolean;
+  default?: string;
   attributes?: ProductAttribute[];
   inventory?: {
     [key: string]: {
