@@ -20,10 +20,11 @@ import {Review} from '@jf/interfaces/review.interface';
 import {combineLatest, Observable} from 'rxjs';
 import {map, startWith, switchMap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
-import {CartItem} from '../../shared/services/cart/cart-item.interface';
+import {CartItem} from '../../shared/interfaces/cart-item.interface';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {StateService} from '../../shared/services/state/state.service';
 import {WishListService} from '../../shared/services/wish-list/wish-list.service';
+import {getProductFilters} from '../../shared/utils/get-product-filters';
 
 @Component({
   selector: 'jfs-product',
@@ -86,16 +87,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
         ];
 
         if (data.product.attributes) {
-          this.filters = this.fb.group(
-            data.product.attributes.reduce((acc, cur, ind) => {
-              acc[cur.key] = [
-                data.product.default.split('_')[ind] || '',
-                Validators.required
-              ];
-
-              return acc;
-            }, {})
-          );
+          this.filters = this.fb.group(getProductFilters(data.product));
 
           toCombine.push(
             this.filters.valueChanges.pipe(

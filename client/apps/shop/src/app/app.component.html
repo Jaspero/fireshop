@@ -74,7 +74,7 @@
       matTooltip="Cart"
       aria-label="Your cart"
       (click)="openCheckout()">
-      <mat-icon [matBadge]="cart.numOfItems$ | async" matBadgeColor="accent">
+      <mat-icon [matBadge]="cartBadge$ | async" matBadgeColor="accent">
         shopping_cart
       </mat-icon>
     </button>
