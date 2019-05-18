@@ -1,0 +1,20 @@
+service cloud.firestore {
+  function write() {
+    return request.auth.token.role == 'write'
+  }
+
+  function read() {
+    return request.auth.token.role == 'read'
+  }
+
+  function readOrWrite() {
+    return write() || read()
+  }
+
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read: if readOrWrite();
+      allow write, delete: write();
+    }
+  }
+}
