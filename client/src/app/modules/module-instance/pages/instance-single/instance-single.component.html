@@ -1,0 +1,54 @@
+<form *ngIf="data$ | async as data" [formGroup]="data.form" [ngSwitch]="currentState">
+    <section class="primary bg p-x-s p-y-m flex jc-between ai-center">
+        <h6 *ngSwitchCase="viewState.Edit">Editing {{data.form.get('id').value}}</h6>
+        <h6 *ngSwitchCase="viewState.New">New {{data.module.name}}</h6>
+        <h6 *ngSwitchCase="viewState.Copy">Copy of {{data.form.get('id').value}}</h6>
+        <div>
+            <a mat-button (click)="back(data)">Cancel</a>
+            <button
+                mat-flat-button
+                [disabled]="data.form.invalid"
+                [jpLoadClick]="save(data)">
+                Save
+            </button>
+        </div>
+    </section>
+
+    <section class="grid" *ngSwitchCase="viewState.Edit">
+        <div class="col-12 flex ai-center">
+            <button mat-button (click)="duplicate(data)">
+                <mat-icon>filter_none</mat-icon>
+                <span>&nbsp;Duplicate</span>
+            </button>
+            <div class="flex1"></div>
+            <button mat-icon-button aria-label="Previous category" matTooltip="Previous category" (click)="move(false, data.form)">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+            <button mat-icon-button aria-label="Next category" matTooltip="Next category" (click)="move(true, data.form)">
+                <mat-icon>arrow_forward</mat-icon>
+            </button>
+        </div>
+    </section>
+
+    <section class="grid fw-rev">
+        <ng-container *ngFor="let segment of data.segments">
+            <ng-container *ngTemplateOutlet="segmentTemp; context: {segment: segment}"></ng-container>
+        </ng-container>
+    </section>
+</form>
+
+<ng-template #segmentTemp let-segment="segment">
+    <div [ngClass]="segment.classes">
+        <mat-card>
+            <h6>{{segment.title || ''}}</h6>
+            <div class="p-y-m">
+                <mat-divider></mat-divider>
+            </div>
+            <div class="segment-wrapper">
+                <ng-container *ngFor="let field of segment.fields">
+                    <ng-template [cdkPortalOutlet]="field.portal"></ng-template>
+                </ng-container>
+            </div>
+        </mat-card>
+    </div>
+</ng-template>

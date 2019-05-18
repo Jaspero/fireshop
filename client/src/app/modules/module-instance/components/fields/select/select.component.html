@@ -1,0 +1,10 @@
+<mat-form-field class="w-full" appearance="outline">
+  <mat-select [placeholder]="cData.label" [formControl]="cData.control">
+    <mat-option *ngFor="let data of cData.dataSet" [value]="data.value">
+      {{data.name}}
+    </mat-option>
+  </mat-select>
+  <mat-hint *ngIf="cData.hint">
+    {{cData.hint}}
+  </mat-hint>
+</mat-form-field>

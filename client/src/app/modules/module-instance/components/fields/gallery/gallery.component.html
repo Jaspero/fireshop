@@ -1,0 +1,3 @@
+<p>
+  gallery works!
+</p>

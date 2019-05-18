@@ -1,0 +1,46 @@
+{
+  "name": "@jaspero/jms",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "npm --prefix client run build && npm --prefix functions run build",
+    "lint": "npm --prefix client run lint && npm --prefix functions run lint",
+    "deploy": "firebase deploy"
+  },
+  "author": {
+    "name": "Jaspero Ltd",
+    "email": "info@jaspero.co"
+  },
+  "keywords": [
+    "cms",
+    "JSON",
+    "JSON schema",
+    "firebase",
+    "angular"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jaspero/jms"
+  },
+  "bugs": {
+    "url": "https://github.com/jaspero/jms/issues"
+  },
+  "homepage": "https://jaspero-jms.firebaseapp.com",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "post-commit": "git update-index -g"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,json,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "husky": "2.3.0",
+    "lint-staged": "8.1.7",
+    "prettier": "1.17.1"
+  }
+}

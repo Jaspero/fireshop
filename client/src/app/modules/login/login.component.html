@@ -1,0 +1,53 @@
+<section class="grid p-y-l">
+  <div class="col-4 col-m-6 col-s-9 col-xs-12">
+    <mat-card>
+      <h6 class="m-b-l p-t-m ta-center">Schema Forms</h6>
+      <!--Social login-->
+      <section>
+        <div class="m-b-s">
+          <button class="w-full" mat-stroked-button (click)="loginGoogle()">
+            Log in with Google
+          </button>
+        </div>
+      </section>
+
+      <!--Divider-->
+      <div class="flex ai-center m-y-m disabled">
+        <hr class="flex1">
+        <p class="p-x-s">or</p>
+        <hr class="flex1">
+      </div>
+
+      <!--Regular login-->
+      <form [formGroup]="loginForm">
+        <mat-form-field class="w-full" appearance="outline">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            type="email"
+            formControlName="emailLogin"
+          />
+        </mat-form-field>
+        <mat-form-field class="w-full" appearance="outline">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            #password
+            type="password"
+            formControlName="passwordLogin"
+          />
+        </mat-form-field>
+        <button
+          mat-flat-button
+          color="primary"
+          class="w-full"
+          [disabled]="loginForm.invalid"
+          (click)="loginEmail()">
+          Login
+        </button>
+        <a routerLink="/reset-password" class="block ta-right fg-secondary fs-small">Forgot password?</a>
+      </form>
+
+    </mat-card>
+  </div>
+</section>

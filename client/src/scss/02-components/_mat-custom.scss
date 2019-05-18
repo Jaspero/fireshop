@@ -1,0 +1,32 @@
+/**
+ * Mat-custom
+ *
+ * Custom utilities and overrides for material components
+ *
+ *============================================================================*/
+
+
+
+/* mat-form-field overrides
+ *============================================================================*/
+
+.mat-form-field {
+  font-size: 14px;
+}
+
+
+
+/* Inset
+ *============================================================================*/
+
+.mat-card-inset.mat-card-inset {
+  margin-left: -16px;
+  margin-right: -16px;
+  padding-left: 24px;
+  padding-right: 24px;
+  width: calc(100% + 32px);
+}
+
+.mat-list-base .mat-list-item {
+  font-size: inherit;
+}

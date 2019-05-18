@@ -1,0 +1,10 @@
+<mat-form-field class="w-full" appearance="outline">
+  <input
+      matInput
+      [attr.type]="cData.type"
+      [placeholder]="cData.label"
+      [formControl]="cData.control">
+  <mat-hint *ngIf="cData.hint">
+    {{cData.hint}}
+  </mat-hint>
+</mat-form-field>

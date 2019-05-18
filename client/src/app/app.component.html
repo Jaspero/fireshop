@@ -1,0 +1,37 @@
+<header class="jms-header primary bg p-a-s shadow-s flex jc-between ai-center relative" [class.sidebar-expanded]="sidebarExpanded">
+  <h6>Schema forms</h6>
+  <button mat-icon-button (click)="expandSidebar()">
+    <mat-icon>menu</mat-icon>
+  </button>
+</header>
+
+<aside class="jms-aside sidebar bg shadow-s of-x-hidden of-y-auto" [class.sidebar-expanded]="sidebarExpanded">
+  <mat-nav-list>
+    <mat-list-item class="jms-nav-item ws-nowrap" routerLink="/dashboard" routerLinkActive="active">
+      <mat-icon>dashboard</mat-icon>
+      <a>&nbsp;Dashboard</a>
+    </mat-list-item>
+    <mat-list-item class="jms-nav-item ws-nowrap" routerLink="/settings" routerLinkActive="active">
+      <mat-icon>settings</mat-icon>
+      <a>&nbsp;Settings</a>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+    <mat-list-item
+      class="jms-nav-item ws-nowrap"
+      [routerLink]="['/m', module.id, 'overview']"
+      routerLinkActive="active"
+      *ngFor="let module of state.modules$ | async">
+      <mat-icon>{{module.overview?.icon || 'folder_open'}}</mat-icon>
+      <a>&nbsp;{{module.name}}</a>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+    <mat-list-item class="jms-nav-item ws-nowrap" routerLink="/module-definition/overview" routerLinkActive="active">
+      <mat-icon>view_module</mat-icon>
+      <a>&nbsp;Modules</a>
+    </mat-list-item>
+  </mat-nav-list>
+</aside>
+
+<main class="jms-main" [class.sidebar-expanded]="sidebarExpanded">
+  <router-outlet></router-outlet>
+</main>

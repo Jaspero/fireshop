@@ -1,0 +1,79 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/project
+    docker:
+      - image: flauc/firebase
+    environment:
+      NPM_VERSION: "6.9.0"
+    steps:
+      - checkout
+      - run:
+          name: Set Public Environment
+          command: echo export const ENV_CONFIG=$PUBLIC_CONFIG > client/src/env-config.ts
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}-{{ checksum "client/package-lock.json" }}-{{ checksum "functions/package-lock.json" }}
+      - run:
+          name: Install Shared dependencies
+          command: yes | npm ci || true
+      - run:
+          name: Install Client dependencies
+          command: yes | npm --prefix client ci || true
+      - run:
+          name: Install Function dependencies
+          command: yes | npm --prefix functions ci || true
+      - save_cache:
+          key: v1-dependencies-{{ checksum "package-lock.json" }}-{{ checksum "client/package-lock.json" }}-{{ checksum "functions/package-lock.json" }}
+          paths:
+            - node_modules
+            - client/node_modules
+            - functions/node_modules
+      - run:
+          name: Linting
+          command: npm run lint
+      - run:
+          name: Building
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                npm run build
+            fi
+      - save_cache:
+          key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - package.json
+            - client/package.json
+            - functions/package.json
+            - package-lock.json
+            - firebase.json
+            - functions/node_modules
+            - functions/lib
+            - firestore.indexes.json
+            - firestore.rules
+            - public
+            - .firebaserc
+  deploy:
+    docker:
+      - image: flauc/firebase
+    working_directory: ~/project
+    steps:
+      - run:
+          name: Show current branch
+          command: echo ${CIRCLE_BRANCH}
+      - restore_cache:
+          key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Deploy Master to Firebase
+          command: npm run deploy  -- -m $CIRCLE_SHA1 --token $FIREBASE_CI_TOKEN
+
+workflows:
+  version: 2
+  -deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master

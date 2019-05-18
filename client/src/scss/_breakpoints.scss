@@ -1,0 +1,15 @@
+/**
+ * @media breakpoints
+ *
+ * Phone           :    0px - 600px
+ * Tablet portrait :  600px - 900px
+ * Tablet landscape:  900px - 1200px
+ * Desktop         : 1200px - 1800px
+ * Large desktop   : 1800px +
+ *
+ *============================================================================*/
+
+$screen-xs: 600px;
+$screen-s : 900px;
+$screen-m : 1200px;
+$screen-l : 1800px;
