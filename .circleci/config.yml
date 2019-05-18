@@ -50,6 +50,7 @@ jobs:
             - functions/lib
             - firestore.indexes.json
             - firestore.rules
+            - storage.rules
             - public
             - .firebaserc
   deploy:
