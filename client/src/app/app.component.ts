@@ -1,5 +1,4 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {StateService} from './shared/services/state/state.service';
 
 @Component({
   selector: 'jms-root',
@@ -7,12 +6,4 @@ import {StateService} from './shared/services/state/state.service';
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent {
-  constructor(public state: StateService) {}
-
-  sidebarExpanded = false;
-
-  expandSidebar() {
-    this.sidebarExpanded = !this.sidebarExpanded;
-  }
-}
+export class AppComponent {}

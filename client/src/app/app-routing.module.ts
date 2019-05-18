@@ -10,6 +10,7 @@ import {InstanceOverviewComponent} from './modules/module-instance/pages/instanc
 import {InstanceSingleComponent} from './modules/module-instance/pages/instance-single/instance-single.component';
 import {ResetPasswordComponent} from './modules/reset-password/reset-password.component';
 import {SettingsComponent} from './modules/settings/settings.component';
+import {LayoutComponent} from './shared/components/layout/layout.component';
 import {AuthGuard} from './shared/guards/auth.guard';
 import {LoginGuard} from './shared/guards/login.guard';
 
@@ -17,6 +18,7 @@ const routes: Routes = [
   {
     path: '',
     canActivate: [AuthGuard],
+    component: LayoutComponent,
     children: [
       {
         path: 'dashboard',

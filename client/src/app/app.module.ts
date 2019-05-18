@@ -47,6 +47,7 @@ import {SettingsComponent} from './modules/settings/settings.component';
 import {SelectComponent} from './modules/module-instance/components/fields/select/select.component';
 import {ImageComponent} from './modules/module-instance/components/fields/image/image.component';
 import {GalleryComponent} from './modules/module-instance/components/fields/gallery/gallery.component';
+import {LayoutComponent} from './shared/components/layout/layout.component';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -62,7 +63,7 @@ const PAGES = [
   ResetPasswordComponent
 ];
 
-const COMPONENTS = [SearchInputComponent, JsonEditorComponent];
+const COMPONENTS = [SearchInputComponent, JsonEditorComponent, LayoutComponent];
 
 const ENTRY_COMPONENTS = [
   ConfirmationComponent,
