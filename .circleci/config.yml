@@ -51,7 +51,7 @@ jobs:
             - firestore.indexes.json
             - firestore.rules
             - storage.rules
-            - public/cms
+            - public
             - .firebaserc
   deploy:
     docker:
