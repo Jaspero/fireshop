@@ -1,4 +1,10 @@
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {FieldComponent, FieldData} from '../../field/field.component';
+
+interface ImageData extends FieldData {
+  allowUrl?: boolean;
+  allowServerUpload?: boolean;
+}
 
 @Component({
   selector: 'jms-image',
@@ -6,8 +12,4 @@ import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
   styleUrls: ['./image.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImageComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit() {}
-}
+export class ImageComponent extends FieldComponent<ImageData> {}

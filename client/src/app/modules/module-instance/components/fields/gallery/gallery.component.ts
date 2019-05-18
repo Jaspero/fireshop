@@ -1,4 +1,10 @@
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {FieldComponent, FieldData} from '../../field/field.component';
+
+interface GalleryData extends FieldData {
+  allowUrl?: boolean;
+  allowServerUpload?: boolean;
+}
 
 @Component({
   selector: 'jms-gallery',
@@ -6,8 +12,4 @@ import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
   styleUrls: ['./gallery.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GalleryComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit() {}
-}
+export class GalleryComponent extends FieldComponent<GalleryData> {}

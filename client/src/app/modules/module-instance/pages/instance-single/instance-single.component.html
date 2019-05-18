@@ -48,6 +48,10 @@
                 <ng-container *ngFor="let field of segment.fields">
                     <ng-template [cdkPortalOutlet]="field.portal"></ng-template>
                 </ng-container>
+
+                <ng-container *ngFor="let nestedSegment of segment.nestedSegments">
+                  <ng-container *ngTemplateOutlet="segmentTemp; context: {segment: nestedSegment}"></ng-container>
+                </ng-container>
             </div>
         </mat-card>
     </div>

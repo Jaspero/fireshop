@@ -1,3 +1,6 @@
 export enum ComponentType {
-  Input = 'input'
+  Input = 'input',
+  Select = 'select',
+  Image = 'image',
+  Gallery = 'gallery'
 }

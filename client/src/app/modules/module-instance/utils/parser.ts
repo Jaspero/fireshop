@@ -4,6 +4,7 @@ import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 // @ts-ignore
 import * as nanoid from 'nanoid';
 import {ModuleDefinitions} from '../../../shared/interfaces/module.interface';
+import {FieldComponent} from '../components/field/field.component';
 import {COMPONENT_TYPE_COMPONENT_MAP} from '../consts/component-type-component-map.const';
 import {SchemaType} from '../enums/schema-type.enum';
 import {CompiledField} from '../interfaces/compiled-field.interface';
@@ -193,7 +194,7 @@ export class Parser {
       component: schemaToComponent(type),
       ...definitions[pointer]
     };
-    const portal = new ComponentPortal(
+    const portal = new ComponentPortal<FieldComponent<any>>(
       COMPONENT_TYPE_COMPONENT_MAP[component.type],
       null,
       createInjector(this.injector, {
