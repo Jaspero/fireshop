@@ -1,10 +1,10 @@
 import {PortalInjector} from '@angular/cdk/portal';
 import {InjectionToken} from '@angular/core';
 
-export const COMPONENT_DATA = new InjectionToken<{}>('COMPONENT_DATA');
+export const SEGMENT_DATA = new InjectionToken<{}>('SEGMENT_DATA');
 
-export function createInjector(injector, dataToPass): PortalInjector {
+export function createSegmentInjector(injector, dataToPass): PortalInjector {
   const injectorTokens = new WeakMap();
-  injectorTokens.set(COMPONENT_DATA, dataToPass);
+  injectorTokens.set(SEGMENT_DATA, dataToPass);
   return new PortalInjector(injector, injectorTokens);
 }

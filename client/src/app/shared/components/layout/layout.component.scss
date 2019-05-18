@@ -1,0 +1,36 @@
+@import "../../../../scss/breakpoints";
+
+$sidebarWidth: 200px;
+
+.jms-aside {
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  width: $sidebarWidth;
+  height: 100%;
+  transform: translateX(-$sidebarWidth);
+  transition: .4s;
+  &.sidebar-expanded {
+    transform: translateX(0);
+  }
+}
+
+.jms-nav-item {
+  border-left: 3px solid transparent;
+  &.active {
+    border-left: 3px solid var(--primary-theme);
+    background: var(--tertiary);
+    color: var(--primary-theme);
+  }
+}
+
+.jms-header, .jms-main {
+  transition: .4s;
+  &.sidebar-expanded {
+    margin-left: $sidebarWidth;
+    @media (max-width: $screen-m) {
+      margin-left: 0;
+    }
+  }
+}

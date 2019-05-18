@@ -1,3 +1,4 @@
+import {ComponentPortal} from '@angular/cdk/portal';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -17,13 +18,17 @@ import {
 import {StateService} from '../../../../shared/services/state/state.service';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {queue} from '../../../../shared/utils/queue.operator';
+import {SegmentComponent} from '../../components/segment/segment.component';
 import {CompiledField} from '../../interfaces/compiled-field.interface';
 import {ModuleInstanceComponent} from '../../module-instance.component';
+import {compileSegment} from '../../utils/compile-segment';
 import {Parser} from '../../utils/parser';
 
-interface CompiledSegment extends InstanceSegment {
+export interface CompiledSegment extends InstanceSegment {
   classes: string[];
   fields: CompiledField[];
+  component?: ComponentPortal<SegmentComponent>;
+  nestedSegments?: CompiledSegment[];
 }
 
 interface Instance {
@@ -127,29 +132,14 @@ export class InstanceSingleComponent implements OnInit {
 
             return {
               form,
-              segments: segments.map(segment => {
-                const classes = [];
-
-                if (segment.columnsDesktop) {
-                  classes.push(`col-${segment.columnsDesktop}`);
-                }
-
-                if (segment.columnsTablet) {
-                  classes.push(`col-m-${segment.columnsTablet}`);
-                }
-
-                if (segment.columnsMobile) {
-                  classes.push(`col-s-${segment.columnsMobile}`);
-                }
-
-                return {
-                  ...segment,
-                  classes,
-                  fields: (segment.fields || []).map(key =>
-                    parser.field(key, module.definitions)
-                  )
-                } as CompiledSegment;
-              }),
+              segments: segments.map(segment =>
+                compileSegment(
+                  segment,
+                  parser,
+                  module.definitions,
+                  this.injector
+                )
+              ),
               module: {
                 id: module.id,
                 name: module.name

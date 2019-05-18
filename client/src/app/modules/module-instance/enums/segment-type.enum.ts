@@ -1,4 +1,4 @@
-export enum LayoutType {
+export enum SegmentType {
   Empty = 'empty',
   Card = 'card',
   Accordion = 'accordion',

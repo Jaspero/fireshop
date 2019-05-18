@@ -1,6 +1,6 @@
 import {Component, Inject} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {COMPONENT_DATA} from '../../utils/create-injector';
+import {COMPONENT_DATA} from '../../utils/create-component-injector';
 
 export interface FieldData {
   control: FormControl;

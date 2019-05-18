@@ -9,7 +9,7 @@ import {COMPONENT_TYPE_COMPONENT_MAP} from '../consts/component-type-component-m
 import {SchemaType} from '../enums/schema-type.enum';
 import {CompiledField} from '../interfaces/compiled-field.interface';
 import {SchemaValidators} from '../validators/schema-validators.class';
-import {createInjector} from './create-injector';
+import {createComponentInjector} from './create-component-injector';
 import {schemaToComponent} from './schema-to-component';
 
 export interface PropertyDefinition {
@@ -197,7 +197,7 @@ export class Parser {
     const portal = new ComponentPortal<FieldComponent<any>>(
       COMPONENT_TYPE_COMPONENT_MAP[component.type],
       null,
-      createInjector(this.injector, {
+      createComponentInjector(this.injector, {
         control,
         ...definition,
         ...(component.configuration || {})

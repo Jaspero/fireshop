@@ -1,7 +1,7 @@
 import {SortDirection} from '@angular/material';
 import {JSONSchema7} from 'json-schema';
 import {ComponentType} from './component-type.enum';
-import {LayoutType} from './layout-type.enum';
+import {SegmentType} from '../../modules/module-instance/enums/segment-type.enum';
 
 export interface TableColumn {
   key: string | string[];
@@ -18,7 +18,7 @@ export interface NestedTableColumn extends TableColumn {
 
 export interface InstanceSegment {
   fields: string[] | any[];
-  type?: LayoutType;
+  type?: SegmentType;
   title?: string;
   nestedSegments?: InstanceSegment[];
   columnsDesktop?: number;

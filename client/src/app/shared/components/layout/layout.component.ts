@@ -1,4 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {AngularFireAuth} from '@angular/fire/auth';
+import {Router} from '@angular/router';
 import {StateService} from '../../services/state/state.service';
 
 @Component({
@@ -8,11 +10,20 @@ import {StateService} from '../../services/state/state.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LayoutComponent {
-  constructor(public state: StateService) {}
+  constructor(
+    public state: StateService,
+    private afAuth: AngularFireAuth,
+    private router: Router
+  ) {}
 
   sidebarExpanded = false;
 
   expandSidebar() {
     this.sidebarExpanded = !this.sidebarExpanded;
+  }
+
+  logOut() {
+    this.router.navigate(['/login']);
+    this.afAuth.auth.signOut();
   }
 }

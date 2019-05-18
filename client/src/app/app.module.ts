@@ -48,6 +48,9 @@ import {SelectComponent} from './modules/module-instance/components/fields/selec
 import {ImageComponent} from './modules/module-instance/components/fields/image/image.component';
 import {GalleryComponent} from './modules/module-instance/components/fields/gallery/gallery.component';
 import {LayoutComponent} from './shared/components/layout/layout.component';
+import {SegmentComponent} from './modules/module-instance/components/segment/segment.component';
+import {EmptyComponent} from './modules/module-instance/components/segments/empty/empty.component';
+import {CardComponent} from './modules/module-instance/components/segments/card/card.component';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -66,16 +69,27 @@ const PAGES = [
 const COMPONENTS = [SearchInputComponent, JsonEditorComponent, LayoutComponent];
 
 const ENTRY_COMPONENTS = [
+  // Fields
+  FieldComponent,
   ConfirmationComponent,
   InputComponent,
-  FieldComponent,
   SelectComponent,
   ImageComponent,
-  GalleryComponent
+  GalleryComponent,
+
+  // Segments
+  SegmentComponent
 ];
 
 @NgModule({
-  declarations: [AppComponent, ...PAGES, ...COMPONENTS, ...ENTRY_COMPONENTS],
+  declarations: [
+    AppComponent,
+    ...PAGES,
+    ...COMPONENTS,
+    ...ENTRY_COMPONENTS,
+    EmptyComponent,
+    CardComponent
+  ],
   entryComponents: [...ENTRY_COMPONENTS],
   imports: [
     BrowserModule,
