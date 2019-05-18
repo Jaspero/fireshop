@@ -15,6 +15,6 @@ platformBrowserDynamic()
     /**
      * Gives us a global reference to the injector
      */
-    window['rootInjector'] = module.injector;
+    (window as any).rootInjector = module.injector;
   })
   .catch(err => console.error(err));

@@ -7,7 +7,7 @@ export function confirmation(
   pipes,
   options: Partial<ConfirmationOptions> = {}
 ) {
-  const dialog: MatDialog = window['rootInjector'].get(MatDialog);
+  const dialog: MatDialog = (window as any).rootInjector.get(MatDialog);
 
   // @ts-ignore
   dialog

@@ -7,7 +7,7 @@ const cq = [];
 export function queue(
   name?: string | number
 ): <T>(source$: Observable<T>) => Observable<T> {
-  const state: StateService = window['rootInjector'].get(StateService);
+  const state: StateService = (window as any).rootInjector.get(StateService);
 
   return <T>(source$: Observable<T>) => {
     return source$.pipe(

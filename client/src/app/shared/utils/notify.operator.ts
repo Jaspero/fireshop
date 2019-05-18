@@ -18,7 +18,7 @@ export function notify(
     ...options
   };
 
-  const snackBar: MatSnackBar = window['rootInjector'].get(MatSnackBar);
+  const snackBar: MatSnackBar = (window as any).rootInjector.get(MatSnackBar);
 
   return <T>(source$: Observable<T>) => {
     return source$.pipe(
