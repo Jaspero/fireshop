@@ -9,6 +9,7 @@ import {
   MatCardModule,
   MatCheckboxModule,
   MatDialogModule,
+  MatExpansionModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
@@ -51,6 +52,9 @@ import {LayoutComponent} from './shared/components/layout/layout.component';
 import {SegmentComponent} from './modules/module-instance/components/segment/segment.component';
 import {EmptyComponent} from './modules/module-instance/components/segments/empty/empty.component';
 import {CardComponent} from './modules/module-instance/components/segments/card/card.component';
+import {AccordionComponent} from './modules/module-instance/components/segments/accordion/accordion.component';
+import {TabsComponent} from './modules/module-instance/components/segments/tabs/tabs.component';
+import {StepperComponent} from './modules/module-instance/components/segments/stepper/stepper.component';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -78,19 +82,17 @@ const ENTRY_COMPONENTS = [
   GalleryComponent,
 
   // Segments
-  SegmentComponent
+  SegmentComponent,
+  CardComponent,
+  EmptyComponent,
+  AccordionComponent,
+  TabsComponent,
+  StepperComponent
 ];
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    ...PAGES,
-    ...COMPONENTS,
-    ...ENTRY_COMPONENTS,
-    EmptyComponent,
-    CardComponent
-  ],
-  entryComponents: [...ENTRY_COMPONENTS],
+  declarations: [AppComponent, ...PAGES, ...COMPONENTS, ...ENTRY_COMPONENTS],
+  entryComponents: ENTRY_COMPONENTS,
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -123,6 +125,7 @@ const ENTRY_COMPONENTS = [
     MatTabsModule,
     MatSelectModule,
     PortalModule,
+    MatExpansionModule,
 
     // Ng Helpers
     LoadClickModule

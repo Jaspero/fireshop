@@ -31,6 +31,14 @@ export function compileSegment(
     classes.push(`col-s-${segment.columnsMobile}`);
   }
 
+  /**
+   * If there aren't any column definitions
+   * default to full width
+   */
+  if (!classes.length) {
+    classes.push('col-12');
+  }
+
   const compiledSegment = {
     ...segment,
     classes,

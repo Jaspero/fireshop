@@ -9,8 +9,6 @@ export const userCreated = functions.auth.user().onCreate(async user => {
     (documentRef.data() || {}).roles || [];
   const role = roles.find(ro => ro.email === user.email);
 
-  console.log('roles', roles);
-
   if (role) {
     const customClaims = {
       role: role.role

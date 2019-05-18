@@ -194,6 +194,7 @@ export class Parser {
       component: schemaToComponent(type),
       ...definitions[pointer]
     };
+
     const portal = new ComponentPortal<FieldComponent<any>>(
       COMPONENT_TYPE_COMPONENT_MAP[component.type],
       null,

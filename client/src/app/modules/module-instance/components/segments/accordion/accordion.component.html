@@ -1,0 +1,16 @@
+<mat-accordion>
+  <mat-expansion-panel *ngFor="let accord of accordions">
+    <mat-expansion-panel-header>
+      <mat-panel-title *ngIf="accord.title">{{accord.title}}</mat-panel-title>
+      <mat-panel-description *ngIf="accord.description">{{accord.description}}</mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <ng-container *ngFor="let field of accord.fields">
+      <ng-template [cdkPortalOutlet]="field.portal"></ng-template>
+    </ng-container>
+
+    <ng-container *ngFor="let nested of accord.nestedSegments">
+      <ng-template [cdkPortalOutlet]="nested.component"></ng-template>
+    </ng-container>
+  </mat-expansion-panel>
+</mat-accordion>

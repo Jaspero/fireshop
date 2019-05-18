@@ -32,27 +32,7 @@
 
     <section class="grid fw-rev">
         <ng-container *ngFor="let segment of data.segments">
-            <ng-container *ngTemplateOutlet="segmentTemp; context: {segment: segment}"></ng-container>
+            <ng-template [cdkPortalOutlet]="segment.component"></ng-template>
         </ng-container>
     </section>
 </form>
-
-<ng-template #segmentTemp let-segment="segment">
-    <div [ngClass]="segment.classes">
-        <mat-card>
-            <h6>{{segment.title || ''}}</h6>
-            <div class="p-y-m">
-                <mat-divider></mat-divider>
-            </div>
-            <div class="segment-wrapper">
-                <ng-container *ngFor="let field of segment.fields">
-                    <ng-template [cdkPortalOutlet]="field.portal"></ng-template>
-                </ng-container>
-
-                <ng-container *ngFor="let nestedSegment of segment.nestedSegments">
-                  <ng-container *ngTemplateOutlet="segmentTemp; context: {segment: nestedSegment}"></ng-container>
-                </ng-container>
-            </div>
-        </mat-card>
-    </div>
-</ng-template>

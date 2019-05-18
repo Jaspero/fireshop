@@ -122,7 +122,7 @@
 
         <!--Empty state-->
         <p class="ta-center p-y-l" *ngIf="emptyState$ | async">
-          No modules yet. <button mat-button color="primary" routerLink=",,/single/new">Add module</button>
+          No {{data.name}} yet. <button mat-button color="primary" [routerLink]="['../single/new']">Add {{data.name}}</button>
         </p>
       </mat-card>
     </div>

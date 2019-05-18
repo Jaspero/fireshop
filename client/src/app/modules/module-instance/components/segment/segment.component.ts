@@ -1,4 +1,4 @@
-import {Component, Inject, Injector, OnInit} from '@angular/core';
+import {Component, HostBinding, Inject, Injector, OnInit} from '@angular/core';
 import {ModuleDefinitions} from '../../../../shared/interfaces/module.interface';
 import {CompiledSegment} from '../../pages/instance-single/instance-single.component';
 import {compileSegment} from '../../utils/compile-segment';
@@ -24,8 +24,12 @@ export class SegmentComponent implements OnInit {
   segment: CompiledSegment;
   nestedSegments: CompiledSegment[];
 
+  @HostBinding('class')
+  classes: string;
+
   ngOnInit() {
     this.segment = this.sData.segment;
+    this.classes = this.sData.segment.classes.join(' ');
 
     /**
      * Each segment compiles all nested segments
