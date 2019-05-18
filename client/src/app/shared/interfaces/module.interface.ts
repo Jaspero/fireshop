@@ -25,6 +25,8 @@ export interface InstanceSegment {
   columnsTablet?: number;
   columnsMobile?: number;
   configuration?: any;
+  classes?: string[];
+  id?: string;
 }
 
 export interface TableSort {

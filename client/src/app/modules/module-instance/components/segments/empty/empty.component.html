@@ -1,7 +1,10 @@
-<h6>{{segment.title || ''}}</h6>
-<div class="p-y-m">
-  <mat-divider></mat-divider>
-</div>
+<ng-container *ngIf="segment.title">
+  <h6>{{segment.title}}</h6>
+  <div class="p-y-m">
+    <mat-divider></mat-divider>
+  </div>
+</ng-container>
+
 <div class="segment-wrapper">
   <ng-container *ngFor="let field of segment.fields">
     <ng-template [cdkPortalOutlet]="field.portal"></ng-template>
@@ -10,5 +13,4 @@
   <ng-container *ngFor="let nested of (segment.nestedSegments || [])">
     <ng-template [cdkPortalOutlet]="nested.component"></ng-template>
   </ng-container>
-
 </div>

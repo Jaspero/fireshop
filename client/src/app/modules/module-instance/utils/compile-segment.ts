@@ -39,6 +39,10 @@ export function compileSegment(
     classes.push('col-12');
   }
 
+  if (segment.classes) {
+    classes.push(...segment.classes);
+  }
+
   const compiledSegment = {
     ...segment,
     classes,

@@ -10,6 +10,7 @@ interface SegmentAccord {
   description?: string;
   fields?: string[];
   nestedSegments?: InstanceSegment[];
+  expanded?: boolean;
 }
 
 interface CompiledSegmentAccord {
@@ -17,6 +18,7 @@ interface CompiledSegmentAccord {
   description?: string;
   fields?: CompiledField[];
   nestedSegments?: CompiledSegment[];
+  expanded?: boolean;
 }
 
 @Component({

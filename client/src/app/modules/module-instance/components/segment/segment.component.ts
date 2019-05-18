@@ -27,9 +27,13 @@ export class SegmentComponent implements OnInit {
   @HostBinding('class')
   classes: string;
 
+  @HostBinding('id')
+  id: string;
+
   ngOnInit() {
     this.segment = this.sData.segment;
     this.classes = this.sData.segment.classes.join(' ');
+    this.id = this.sData.segment.id || '';
 
     /**
      * Each segment compiles all nested segments
