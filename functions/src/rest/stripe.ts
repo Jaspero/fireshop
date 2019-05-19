@@ -7,6 +7,20 @@ import {ENV_CONFIG} from '../consts/env-config.const';
 import {HttpStatus} from '../enums/http-status.enum';
 import {parseEmail} from '../utils/parse-email';
 
+interface OrderItem {
+  id: string;
+  quantity: number;
+  identifier: string;
+  attributes: any;
+}
+
+interface GeneralSettings {
+  allowOutOfQuantityPurchase: boolean;
+  inactiveForQuantity: boolean;
+  autoReduceQuantity: boolean;
+  errorNotificationEmail: string;
+}
+
 class CheckoutError extends Error {
   constructor(
     public data: Array<{
@@ -20,13 +34,6 @@ class CheckoutError extends Error {
   }
 }
 
-interface OrderItem {
-  id: string;
-  quantity: number;
-  identifier: string;
-  attributes: any;
-}
-
 const app = express();
 const si = stripeLib(ENV_CONFIG.stripe.token);
 
@@ -36,7 +43,11 @@ function getLookUp(orderItem: OrderItem) {
   return orderItem.identifier.replace(orderItem.id + '_', '');
 }
 
-async function getItems(orderItems: OrderItem[], lang: string) {
+async function getItems(
+  orderItems: OrderItem[],
+  lang: string,
+  generalSettings: GeneralSettings
+) {
   const snapshots: any[] = await Promise.all(
     orderItems.map(item => {
       const doc = admin
@@ -91,7 +102,10 @@ async function getItems(orderItems: OrderItem[], lang: string) {
       /**
        * Product exists but quantity isn't sufficient
        */
-      if (snapshots[i].quantity < orderItems[i].quantity) {
+      if (
+        !generalSettings.allowOutOfQuantityPurchase &&
+        snapshots[i].quantity < orderItems[i].quantity
+      ) {
         error.push({
           message: `We currently don't have enough of ${
             snapshots[i].name
@@ -131,33 +145,39 @@ async function getItems(orderItems: OrderItem[], lang: string) {
 
 app.post('/checkout', (req, res) => {
   async function exec() {
-    let [currency, description, items, stripeCustomer]: any = await Promise.all(
-      [
-        admin
-          .firestore()
-          .collection('settings')
-          .doc('currency')
-          .get(),
-        admin
-          .firestore()
-          .collection('settings')
-          .doc('general-settings')
-          .get(),
-        getItems(req.body.orderItems, req.body.lang),
+    let [currency, generalSettings, stripeCustomer]: any = await Promise.all([
+      admin
+        .firestore()
+        .collection('settings')
+        .doc('currency')
+        .get(),
+      admin
+        .firestore()
+        .collection('settings')
+        .doc('general-settings')
+        .get(),
 
-        /**
-         * Try to retrieve a customer if the
-         * checkout is from a logged in user
-         */
-        ...(req.body.customer
-          ? [
-              si.customers.list({
-                email: req.body.customer.email,
-                limit: 1
-              })
-            ]
-          : [])
-      ]
+      /**
+       * Try to retrieve a customer if the
+       * checkout is from a logged in user
+       */
+      ...(req.body.customer
+        ? [
+            si.customers.list({
+              email: req.body.customer.email,
+              limit: 1
+            })
+          ]
+        : [])
+    ]);
+
+    currency = currency.data();
+    generalSettings = generalSettings.data();
+
+    const items = await getItems(
+      req.body.orderItems,
+      req.body.lang,
+      generalSettings
     );
 
     /**
@@ -177,19 +197,11 @@ app.post('/checkout', (req, res) => {
       }
     }
 
-    currency = currency.data();
-    description = description.data();
-
-    console.log(items);
-    console.log('order', req.body.orderItems);
-
     const amount = items.reduce(
       (acc, cur, curIndex) =>
         acc + req.body.orderItems[curIndex].quantity * cur.price,
       currency.shippingCost || 0
     );
-
-    console.log('amount', amount);
 
     const paymentIntent = await si.paymentIntents.create({
       amount,
@@ -197,8 +209,8 @@ app.post('/checkout', (req, res) => {
       metadata: {
         lang: req.body.lang
       },
-      description: description.description,
-      statement_descriptor: description.statementDescription,
+      description: generalSettings.description,
+      statement_descriptor: generalSettings.statementDescription,
 
       /**
        * Attach customer if it was created
@@ -271,11 +283,7 @@ app.post('/webhook', async (req, res) => {
       .get()
       .then(snapshot => ({
         id: snapshot.id,
-        ...(snapshot.data() as {
-          inactiveForQuantity: boolean;
-          autoReduceQuantity: boolean;
-          errorNotificationEmail: string;
-        })
+        ...(snapshot.data() as GeneralSettings)
       }))
   ]);
 
@@ -289,7 +297,8 @@ app.post('/webhook', async (req, res) => {
         ...order.orderItemsData[index]
       };
     }),
-    intent.metadata.lang
+    intent.metadata.lang,
+    settings
   );
 
   let exec;
