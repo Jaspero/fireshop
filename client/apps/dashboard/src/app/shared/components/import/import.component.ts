@@ -13,7 +13,7 @@ import {environment} from '../../../../environments/environment';
 
 interface ImportResponse {
   errors?: any;
-  success?: number;
+  created?: number;
 }
 
 @Component({
