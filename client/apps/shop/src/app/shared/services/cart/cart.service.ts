@@ -56,6 +56,7 @@ export class CartService {
           productId: item.id,
           image: item.gallery[0],
           quantity: 1,
+          allowOutOfQuantityPurchase: item.allowOutOfQuantityPurchase,
           price: filter ? item.inventory[filter].price : item.price,
           maxQuantity: filter ? item.inventory[filter].quantity : item.quantity,
           identifier: finalId ? finalId : item.id,
