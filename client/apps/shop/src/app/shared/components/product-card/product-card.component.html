@@ -19,7 +19,7 @@
     [attr.alt]="product.name"
   />
   <mat-card-content>
-    <p>{{ product.price | sp }}</p>
+    <p>{{price | sp}}</p>
   </mat-card-content>
   <mat-card-actions>
     <div class="flex fd-row-rev">
@@ -27,7 +27,7 @@
         [disabled]="(canAddToCart$ | async) === false"
         [id]="'btn-add-c-' + uniqueId"
         mat-button
-        (jpStopPropagation)="cart.add(product)">
+        (jpStopPropagation)="cart.add(product, filters)">
         Add to cart <span *ngIf="cartQuantity$ | async as quantity">({{quantity}})</span>
       </button>
       <ng-container *ngIf="wishList$ | async as ws">

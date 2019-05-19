@@ -90,16 +90,12 @@ export class ProfileComponent implements OnInit {
 
     if (fileToUpload) {
       from(
-        this.afs.upload(
-          '/users/' + userID + '/profilePicture.png',
-          fileToUpload,
-          {
-            contentType: fileToUpload['type'],
-            customMetadata: {
-              skipDelete: 'true'
-            }
+        this.afs.upload(`/users/${userID}/profilePicture`, fileToUpload, {
+          contentType: fileToUpload['type'],
+          customMetadata: {
+            skipDelete: 'true'
           }
-        )
+        })
       )
         .pipe(
           switchMap(res => res.ref.getDownloadURL()),

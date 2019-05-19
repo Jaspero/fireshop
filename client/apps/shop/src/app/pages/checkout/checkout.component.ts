@@ -126,11 +126,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
                 quantity: val.quantity,
                 price: val.price,
                 name: val.name,
-
-                /**
-                 * TODO: Connect attributes if necessary
-                 */
-                attributes: {}
+                attributes: val.filters,
+                identifier: val.identifier
               }));
 
               return this.http
