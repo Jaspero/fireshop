@@ -7,6 +7,20 @@ import {ENV_CONFIG} from '../consts/env-config.const';
 import {HttpStatus} from '../enums/http-status.enum';
 import {parseEmail} from '../utils/parse-email';
 
+interface OrderItem {
+  id: string;
+  quantity: number;
+  identifier: string;
+  attributes: any;
+}
+
+interface GeneralSettings {
+  allowOutOfQuantityPurchase: boolean;
+  inactiveForQuantity: boolean;
+  autoReduceQuantity: boolean;
+  errorNotificationEmail: string;
+}
+
 class CheckoutError extends Error {
   constructor(
     public data: Array<{
@@ -20,17 +34,20 @@ class CheckoutError extends Error {
   }
 }
 
-interface OrderItem {
-  id: string;
-  quantity: number;
-}
-
 const app = express();
 const si = stripeLib(ENV_CONFIG.stripe.token);
 
 app.use(cors());
 
-async function getItems(orderItems: OrderItem[], lang: string) {
+function getLookUp(orderItem: OrderItem) {
+  return orderItem.identifier.replace(orderItem.id + '_', '');
+}
+
+async function getItems(
+  orderItems: OrderItem[],
+  lang: string,
+  generalSettings: GeneralSettings
+) {
   const snapshots: any[] = await Promise.all(
     orderItems.map(item => {
       const doc = admin
@@ -41,14 +58,54 @@ async function getItems(orderItems: OrderItem[], lang: string) {
       return doc.get();
     })
   );
+
   const error = [];
+
   for (let i = 0; i < snapshots.length; i++) {
     if (snapshots[i].exists) {
       snapshots[i] = {
         id: snapshots[i].id,
         ...snapshots[i].data()
       };
-      if (snapshots[i].quantity < orderItems[i].quantity) {
+
+      let lookUp = orderItems[i].id;
+
+      /**
+       * If the identifier is different from id than this is
+       * a product with attributes
+       */
+      if (orderItems[i].identifier !== orderItems[i].id) {
+        lookUp = getLookUp(orderItems[i]);
+
+        /**
+         * Product with these attributes doesn't exist
+         */
+        if (!snapshots[i].inventory[lookUp]) {
+          error.push({
+            message: `${
+              snapshots[i].name
+            } with these attributes no longer exists`,
+            type: 'product_missing',
+            data: {
+              id: snapshots[i].id,
+              quantity: snapshots[i].quantity,
+              name: snapshots[i].name,
+              identifier: orderItems[i].identifier
+            }
+          });
+          break;
+        }
+
+        snapshots[i].quantity = snapshots[i].inventory[lookUp].quantity;
+        snapshots[i].price = snapshots[i].inventory[lookUp].price;
+      }
+      /**
+       * Product exists but quantity isn't sufficient
+       */
+      if (
+        !generalSettings.allowOutOfQuantityPurchase &&
+        snapshots[i].quantity < orderItems[i].quantity
+      ) {
         error.push({
           message: `We currently don't have enough of ${
             snapshots[i].name
@@ -56,18 +113,23 @@ async function getItems(orderItems: OrderItem[], lang: string) {
           data: {
             id: snapshots[i].id,
             quantity: snapshots[i].quantity,
-            name: snapshots[i].name
+            name: snapshots[i].name,
+            identifier: orderItems[i].identifier
           },
           type: 'quantity_insufficient'
         });
       }
     } else {
+      /**
+       * Product doesn't exist
+       */
       error.push({
         message: `item ${snapshots[i].name} is currently unavailable`,
         data: {
           id: snapshots[i].id,
           quantity: snapshots[i].quantity,
-          name: snapshots[i].name
+          name: snapshots[i].name,
+          identifier: orderItems[i].identifier
         },
         type: 'product_missing'
       });
@@ -83,36 +145,40 @@ async function getItems(orderItems: OrderItem[], lang: string) {
 
 app.post('/checkout', (req, res) => {
   async function exec() {
-    let [currency, description, items, stripeCustomer]: any = await Promise.all(
-      [
-        admin
-          .firestore()
-          .collection('settings')
-          .doc('currency')
-          .get(),
-        admin
-          .firestore()
-          .collection('settings')
-          .doc('general-settings')
-          .get(),
-        getItems(req.body.orderItems, req.body.lang),
+    let [currency, generalSettings, stripeCustomer]: any = await Promise.all([
+      admin
+        .firestore()
+        .collection('settings')
+        .doc('currency')
+        .get(),
+      admin
+        .firestore()
+        .collection('settings')
+        .doc('general-settings')
+        .get(),
 
-        /**
-         * Try to retrieve a customer if the
-         * checkout is from a logged in user
-         */
-        ...(req.body.customer
-          ? [
-              si.customers.list({
-                email: req.body.customer.email,
-                limit: 1
-              })
-            ]
-          : [])
-      ]
+      /**
+       * Try to retrieve a customer if the
+       * checkout is from a logged in user
+       */
+      ...(req.body.customer
+        ? [
+            si.customers.list({
+              email: req.body.customer.email,
+              limit: 1
+            })
+          ]
+        : [])
+    ]);
+
+    currency = currency.data();
+    generalSettings = generalSettings.data();
+
+    const items = await getItems(
+      req.body.orderItems,
+      req.body.lang,
+      generalSettings
     );
-
-    console.log(1, stripeCustomer);
 
     /**
      * Create the customer if it doesn't exist
@@ -131,14 +197,9 @@ app.post('/checkout', (req, res) => {
       }
     }
 
-    console.log(2, stripeCustomer);
-
-    currency = currency.data();
-    description = description.data();
-
     const amount = items.reduce(
       (acc, cur, curIndex) =>
-        req.body.orderItems[curIndex].quantity * cur.price,
+        acc + req.body.orderItems[curIndex].quantity * cur.price,
       currency.shippingCost || 0
     );
 
@@ -148,8 +209,8 @@ app.post('/checkout', (req, res) => {
       metadata: {
         lang: req.body.lang
       },
-      description: description.description,
-      statement_descriptor: description.statementDescription,
+      description: generalSettings.description,
+      statement_descriptor: generalSettings.statementDescription,
 
       /**
        * Attach customer if it was created
@@ -206,7 +267,8 @@ app.post('/webhook', async (req, res) => {
         const docs = snapshots.docs.map(d => ({
           ...(d.data() as {
             email: string;
-            orderItems: OrderItem[];
+            orderItems: string[];
+            orderItemsData: OrderItem[];
           }),
           id: d.id
         }));
@@ -221,14 +283,23 @@ app.post('/webhook', async (req, res) => {
       .get()
       .then(snapshot => ({
         id: snapshot.id,
-        ...(snapshot.data() as {
-          inactiveForQuantity: boolean;
-          autoReduceQuantity: boolean;
-          errorNotificationEmail: string;
-        })
+        ...(snapshot.data() as GeneralSettings)
       }))
   ]);
-  const items = await getItems(order.orderItems, intent.metadata.lang);
+
+  /**
+   * Join orderItems[] and orderItemsData[]
+   */
+  const items = await getItems(
+    order.orderItems.map((id, index) => {
+      return {
+        id,
+        ...order.orderItemsData[index]
+      };
+    }),
+    intent.metadata.lang,
+    settings
+  );
 
   let exec;
 
@@ -254,30 +325,61 @@ app.post('/webhook', async (req, res) => {
       if (settings.autoReduceQuantity) {
         exec.push(
           ...items.map((item, itemIndex) => {
-            const quantity =
-              item.quantity - order.orderItems[itemIndex].quantity;
-
-            let active = item.active;
+            const current = order.orderItemsData[itemIndex];
+            const toUpdate: any = {};
 
             /**
-             * If the quantity drops to 0 and the shop is configured to set
-             * items to inactive when that happens, mark the product inactive
+             * Product has attributes
              */
-            if (item.quantity <= 0 && settings.inactiveForQuantity) {
-              active = false;
+            if (current.id !== current.identifier) {
+              const lookUp = getLookUp(current);
+              const inventory = item.inventory[lookUp];
+
+              item.inventory[lookUp].quantity -= current.quantity;
+
+              toUpdate.inventory = {
+                [inventory]: {
+                  quantity: item.inventory[lookUp].quantity
+                }
+              };
+
+              let hasQuantity = false;
+
+              /**
+               * If the shop is configured to set items to inactive
+               * when out of quantity, loop over the inventory and check
+               * if we should deactive the product
+               */
+              if (settings.inactiveForQuantity) {
+                for (const inventoryItem of item.inventory) {
+                  if (inventoryItem.quantity) {
+                    hasQuantity = true;
+                    break;
+                  }
+                }
+
+                if (!hasQuantity) {
+                  toUpdate.active = false;
+                }
+              }
+            } else {
+              toUpdate.quantity =
+                item.quantity - order.orderItemsData[itemIndex].quantity;
+
+              /**
+               * If the quantity drops to 0 and the shop is configured to set
+               * items to inactive when that happens, mark the product inactive
+               */
+              if (item.quantity <= 0 && settings.inactiveForQuantity) {
+                toUpdate.active = false;
+              }
             }
 
             return admin
               .firestore()
               .collection(`products-${intent.metadata.lang}`)
               .doc(item.id)
-              .set(
-                {
-                  quantity,
-                  active
-                },
-                {merge: true}
-              );
+              .set(toUpdate, {merge: true});
           })
         );
       }

@@ -51,13 +51,13 @@ export class CustomerLookupComponent implements OnInit, ControlValueAccessor {
         })
       );
 
-    this.filteredCustomers$ = combineLatest(
+    this.filteredCustomers$ = combineLatest([
       this.customers$,
       this.search.valueChanges.pipe(
         startWith(this.search.value || ''),
         map(value => value.toLowerCase())
       )
-    ).pipe(
+    ]).pipe(
       map(([customers, value]) =>
         customers.filter(customer =>
           (customer.name || '').toLowerCase().includes(value)

@@ -124,7 +124,13 @@
 
           <ng-container matColumnDef="customerName">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
-            <td mat-cell *matCellDef="let element">{{element.customerName}}</td>
+            <td
+              [class.cs-pointer]="element.customerId"
+              mat-cell *matCellDef="let element"
+              [routerLink]="element.customerId ?
+              ['/customers/' + element.customerId] : []">
+              {{element.customerId ? element.customerName : 'Anonymous'}}
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="createdOn">
@@ -148,6 +154,11 @@
                 <span>{{element.price.total | sp}}</span>
               </div>
             </td>
+          </ng-container>
+
+          <ng-container matColumnDef="stripe">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Stripe</th>
+            <td mat-cell *matCellDef="let element">{{element.paymentIntentId ? element.paymentIntentId : '-'}}</td>
           </ng-container>
 
           <ng-container matColumnDef="status">

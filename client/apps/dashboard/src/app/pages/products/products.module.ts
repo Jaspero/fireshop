@@ -4,6 +4,7 @@ import {CanDeactivateGuard} from '@jf/guards/can-deactivate.guard';
 import {FileUploadModule} from '../../shared/modules/file-upload/file-upload.module';
 import {SharedModule} from '../../shared/shared.module';
 import {ProductsListComponent} from './pages/list/products-list.component';
+import {ProductsOverviewComponent} from './pages/overview/products-overview.component';
 import {ProductsSinglePageComponent} from './pages/single-page/products-single-page.component';
 import {ProductsComponent} from './products.component';
 
@@ -17,6 +18,11 @@ const routes: Routes = [
         path: ':id',
         component: ProductsSinglePageComponent,
         canDeactivate: [CanDeactivateGuard]
+      },
+      {
+        path: 'overview/:id',
+        component: ProductsOverviewComponent,
+        canDeactivate: [CanDeactivateGuard]
       }
     ]
   }
@@ -26,7 +32,8 @@ const routes: Routes = [
   declarations: [
     ProductsComponent,
     ProductsListComponent,
-    ProductsSinglePageComponent
+    ProductsSinglePageComponent,
+    ProductsOverviewComponent
   ],
   imports: [SharedModule, FileUploadModule, RouterModule.forChild(routes)],
   providers: []

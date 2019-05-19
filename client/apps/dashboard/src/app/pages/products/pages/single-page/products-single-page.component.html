@@ -7,6 +7,7 @@
       <span>Products</span>
     </mat-toolbar>
   </section>
+
   <section class="p-y-m">
     <div class="grid">
       <div class="col-12" [ngSwitch]="currentState">
@@ -31,13 +32,14 @@
             <span>&nbsp;View</span>
           </button>
         </ng-container>
-        <h5 *ngSwitchCase="viewState.New">New Product</h5>
 
+        <h5 *ngSwitchCase="viewState.New">New Product</h5>
 
         <h5 *ngSwitchCase="viewState.Copy">Copy of {{form.get('name').value}}</h5>
 
       </div>
     </div>
+
     <div class="grid grid-no-gutter">
       <div class="col-8 col-s-10 col-xs-12">
         <div class="grid">
@@ -65,6 +67,7 @@
               </div>
             </mat-card>
           </div>
+
           <div class="col-12">
             <mat-card>
               <h6 class="p-y-xs">Images</h6>
@@ -76,8 +79,86 @@
               </div>
             </mat-card>
           </div>
+
+          <div class="col-12">
+            <mat-card>
+              <div class="p-y-xs flex jc-between ai-center">
+                <h6>Description Variants</h6>
+                <button mat-button color="primary" (click)="addAttribute()">New attribute</button>
+              </div>
+
+              <div formArrayName="attributes">
+                <div *ngFor="let attribute of attributesForms.controls; index as attributeIndex" [formGroupName]="attributeIndex">
+                  <div class="p-b-xs">
+                    <mat-divider></mat-divider>
+                  </div>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Key</mat-label>
+                    <input matInput formControlName="key">
+                    <mat-icon class="cs-pointer" matSuffix (click)="deleteAttribute(attributeIndex)">cancel</mat-icon>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="w-full">
+                    <mat-chip-list #chipList>
+                      <mat-chip
+                        *ngFor="let items of attribute.get('list').value; index as valueIndex"
+                        [selectable]="true"
+                        (removed)="removeAttributeValue(attributeIndex, valueIndex, items)">
+                        {{items}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                      </mat-chip>
+                      <input
+                        placeholder="Add attribute"
+                        [matChipInputFor]="chipList"
+                        [matChipInputAddOnBlur]="true"
+                        (matChipInputTokenEnd)="addAttributeValue($event, attributeIndex)">
+                    </mat-chip-list>
+                  </mat-form-field>
+                </div>
+              </div>
+            </mat-card>
+          </div>
+
+          <div class="col-12" *ngIf="inventoryKeys.length">
+            <mat-card>
+              <div class="p-y-xs flex jc-between ai-center">
+                <h6>Items in stock</h6>
+
+                <p class="flex fd-col ai-end">
+                  <span class="fs-small c-d-secondary">Default</span>
+                  <span [innerHtml]="labelFormat(form.get('default').value)"></span>
+                </p>
+              </div>
+
+              <mat-radio-group formControlName="default">
+                <div formGroupName="inventory">
+                  <div *ngFor="let item of inventoryKeys; index as i" [formGroupName]="item">
+                    <div class="p-b-xs">
+                      <mat-divider></mat-divider>
+                    </div>
+                    <p class="m-b-xs fw-bold" [innerHtml]="labelFormat(item)"></p>
+
+                    <mat-form-field class="m-r-xs" appearance="outline">
+                      <mat-label>Items in stock</mat-label>
+                      <input type="number" matInput formControlName="quantity">
+                    </mat-form-field>
+
+                    <mat-form-field class="m-r-xs" appearance="outline">
+                      <mat-label>Price</mat-label>
+                      <span matPrefix>{{currency}}&nbsp;</span>
+                      <input formControlName="price" matInput type="number">
+                    </mat-form-field>
+
+                    <mat-radio-button [value]="item"><span class="c-d-secondary">Default</span></mat-radio-button>
+                  </div>
+              </div>
+              </mat-radio-group>
+            </mat-card>
+          </div>
         </div>
       </div>
+
       <div class="col-4 col-s-10 col-xs-12">
         <div class="grid">
           <div class="col-12">
@@ -112,7 +193,7 @@
               </div>
               <div class="p-y-xs">
                 <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Quantity</mat-label>
+                  <mat-label>Items in stock</mat-label>
                   <input matInput type="number"  formControlName="quantity">
                 </mat-form-field>
               </div>
@@ -167,5 +248,4 @@
       {{currentState === viewState.Edit ? 'Save changes' : 'Save'}}
     </button>
   </div>
-
 </form>
