@@ -35,7 +35,6 @@ export class ColumnPipe implements PipeTransform {
       return value;
     }
 
-    console.log(type);
     return this.pipes[type].transform(value, ...(args || []));
   }
 }
