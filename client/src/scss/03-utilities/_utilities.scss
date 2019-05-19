@@ -302,3 +302,7 @@
 .m-l-m  { margin-left: 20px; }
 .m-l-l  { margin-left: 40px; }
 .m-l-xl { margin-left: 80px; }
+
+.disabled {
+  pointer-events: none;
+}
