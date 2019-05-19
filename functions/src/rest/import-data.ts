@@ -43,17 +43,17 @@ app.post('/', (req, res) => {
           if (validator.errors) {
             const err = validator.errors[0];
             err['object'] = cur;
-            errors.push(err);
+            acc.errors.push(err);
           } else {
             const {id, ...data} = cur;
-            created.push(
+            acc.created.push(
               admin
                 .firestore()
                 .collection(req.query.collection)
                 .doc(id || nanoid())
                 .set({
                   ...data,
-                  ...{createdOn: Date.now()}
+                  ...(data.createdOn ? {} : {createdOn: Date.now()})
                 })
             );
           }
@@ -69,6 +69,11 @@ app.post('/', (req, res) => {
       if (created.length) {
         await Promise.all(created);
       }
+
+      return {
+        created: created.length,
+        errors
+      };
     }
 
     exec()

@@ -7,11 +7,11 @@
 
 <ng-template #overview>
   <div *ngIf="data">
-    <div *ngIf="data.success">
+    <div *ngIf="data.created">
       <h4 mat-dialog-title>Success</h4>
-      <p mat-dialog-content>You have successfully uploaded {{data.success}} items</p>
+      <p mat-dialog-content>You have successfully uploaded {{data.created}} items</p>
     </div>
-    <div *ngIf="data.errors">
+    <div *ngIf="data.errors && data.errors.length">
       <h4 mat-dialog-title>Error</h4>
       <div mat-dialog-content>
         <p class="m-b-xs" *ngFor="let error of data.errors">Problem uploading {{error.object | json}}: <b>missing {{error.params.missingProperty}}</b></p>
