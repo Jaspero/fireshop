@@ -7,6 +7,7 @@
       <a mat-button (click)="back()">Cancel</a>
       <button
         mat-flat-button
+        fDisable
         [disabled]="form.invalid"
         [jpLoadClick]="save(form)">
         Save

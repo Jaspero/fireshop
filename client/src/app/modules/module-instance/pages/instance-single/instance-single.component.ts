@@ -10,6 +10,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {defer, from, Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
+import {Role} from '../../../../shared/enums/role.enum';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
 import {
   InstanceSegment,

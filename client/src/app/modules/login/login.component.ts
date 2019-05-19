@@ -42,9 +42,6 @@ export class LoginComponent implements OnInit {
         switchMap(user => user.getIdTokenResult())
       )
       .subscribe(res => {
-        // TODO: Remove
-        res.claims.role = Role.Admin;
-
         /**
          * If the user has any kind of role we allow
          * access to the dashboard

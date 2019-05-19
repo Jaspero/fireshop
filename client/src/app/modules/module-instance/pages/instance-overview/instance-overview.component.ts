@@ -13,6 +13,8 @@ import {
 import {FormControl} from '@angular/forms';
 import {MatSort} from '@angular/material';
 import {get, has} from 'json-pointer';
+// @ts-ignore
+import * as nanoid from 'nanoid';
 import {
   BehaviorSubject,
   combineLatest,
@@ -42,8 +44,7 @@ import {StateService} from '../../../../shared/services/state/state.service';
 import {confirmation} from '../../../../shared/utils/confirmation';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {ModuleInstanceComponent} from '../../module-instance.component';
-// @ts-ignore
-import * as nanoid from 'nanoid';
+import {ColumnPipe} from '../../pipes/column.pipe';
 
 interface InstanceOverview {
   id: string;
@@ -79,6 +80,7 @@ export class InstanceOverviewComponent implements OnInit {
 
   selection = new SelectionModel<string>(true, []);
   pageSizes = PAGE_SIZES;
+  columnPipe: ColumnPipe;
   pageSize: FormControl;
   options: RouteData;
 
@@ -87,6 +89,7 @@ export class InstanceOverviewComponent implements OnInit {
       pageSize: 10
     });
     this.pageSize = new FormControl(this.options.pageSize);
+    this.columnPipe = new ColumnPipe();
 
     this.data$ = this.moduleInstance.module$.pipe(
       map(data => {
@@ -245,11 +248,19 @@ export class InstanceOverviewComponent implements OnInit {
         .join(column.hasOwnProperty('join') ? column.join : ', ');
     } else {
       if (has(rowData, column.key)) {
-        return get(rowData, column.key);
+        return this.columnPipe.transform(
+          get(rowData, column.key),
+          column.pipe,
+          column.pipeArguments
+        );
       } else {
         return '';
       }
     }
+  }
+
+  trackById(index, item) {
+    return item.id;
   }
 
   masterToggle() {

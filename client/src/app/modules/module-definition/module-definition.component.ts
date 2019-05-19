@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 @Component({
   selector: 'jms-module-definition',
@@ -6,8 +6,4 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
   styleUrls: ['./module-definition.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ModuleDefinitionComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit() {}
-}
+export class ModuleDefinitionComponent {}

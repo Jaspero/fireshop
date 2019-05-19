@@ -55,6 +55,8 @@ import {CardComponent} from './modules/module-instance/components/segments/card/
 import {AccordionComponent} from './modules/module-instance/components/segments/accordion/accordion.component';
 import {TabsComponent} from './modules/module-instance/components/segments/tabs/tabs.component';
 import {StepperComponent} from './modules/module-instance/components/segments/stepper/stepper.component';
+import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
+import {ColumnPipe} from './modules/module-instance/pipes/column.pipe';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -90,8 +92,19 @@ const ENTRY_COMPONENTS = [
   StepperComponent
 ];
 
+const DIRECTIVES = [ForceDisableDirective];
+
+const PIPES = [ColumnPipe];
+
 @NgModule({
-  declarations: [AppComponent, ...PAGES, ...COMPONENTS, ...ENTRY_COMPONENTS],
+  declarations: [
+    AppComponent,
+    ...PAGES,
+    ...COMPONENTS,
+    ...ENTRY_COMPONENTS,
+    ...DIRECTIVES,
+    ...PIPES
+  ],
   entryComponents: ENTRY_COMPONENTS,
   imports: [
     BrowserModule,

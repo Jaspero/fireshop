@@ -1,12 +1,14 @@
 import {SortDirection} from '@angular/material';
 import {JSONSchema7} from 'json-schema';
-import {ComponentType} from './component-type.enum';
 import {SegmentType} from '../../modules/module-instance/enums/segment-type.enum';
+import {PipeType} from '../enums/pipe-type.enum';
+import {ComponentType} from './component-type.enum';
 
 export interface TableColumn {
   key: string | string[];
   label?: string;
-  pipe?: string;
+  pipe?: PipeType;
+  pipeArguments?: any[];
   sortable?: boolean;
   join?: string;
   nestedColumns?: NestedTableColumn[];
