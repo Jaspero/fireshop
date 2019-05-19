@@ -115,7 +115,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   ngOnInit() {
     this.data$ = this.state.user$.pipe(
       switchMap(user =>
-        combineLatest(
+        combineLatest([
           this.cartService.totalPrice$.pipe(take(1)),
 
           this.cartService.items$.pipe(
@@ -150,7 +150,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
                 .pipe(map(({clientSecret}) => ({clientSecret, orderItems})));
             })
           )
-        ).pipe(
+        ]).pipe(
           map(([total, {clientSecret, orderItems}]) => {
             /**
              * Connect stripe

@@ -6,5 +6,6 @@ export interface CartItem {
   image: string;
   quantity: number;
   maxQuantity: number;
+  allowOutOfQuantityPurchase?: boolean;
   filters?: any;
 }

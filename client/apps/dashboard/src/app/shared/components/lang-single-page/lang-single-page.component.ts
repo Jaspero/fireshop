@@ -16,7 +16,7 @@ import {
 export class LangSinglePageComponent extends SinglePageComponent
   implements OnInit {
   ngOnInit() {
-    combineLatest(this.activatedRoute.params, this.state.language$)
+    combineLatest([this.activatedRoute.params, this.state.language$])
       .pipe(
         switchMap(([params, lang]) => {
           if (params.id === 'new') {
