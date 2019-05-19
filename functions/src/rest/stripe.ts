@@ -23,12 +23,18 @@ class CheckoutError extends Error {
 interface OrderItem {
   id: string;
   quantity: number;
+  identifier: string;
+  attributes: any;
 }
 
 const app = express();
 const si = stripeLib(ENV_CONFIG.stripe.token);
 
 app.use(cors());
+
+function getLookUp(orderItem: OrderItem) {
+  return orderItem.identifier.replace(orderItem.id + '_', '');
+}
 
 async function getItems(orderItems: OrderItem[], lang: string) {
   const snapshots: any[] = await Promise.all(
@@ -50,6 +56,41 @@ async function getItems(orderItems: OrderItem[], lang: string) {
         id: snapshots[i].id,
         ...snapshots[i].data()
       };
+
+      let lookUp = orderItems[i].id;
+
+      /**
+       * If the identifier is different from id than this is
+       * a product with attributes
+       */
+      if (orderItems[i].identifier !== orderItems[i].id) {
+        lookUp = getLookUp(orderItems[i]);
+
+        /**
+         * Product with these attributes doesn't exist
+         */
+        if (!snapshots[i].inventory[lookUp]) {
+          error.push({
+            message: `${
+              snapshots[i].name
+            } with these attributes no longer exists`,
+            type: 'product_missing',
+            data: {
+              id: snapshots[i].id,
+              quantity: snapshots[i].quantity,
+              name: snapshots[i].name,
+              identifier: orderItems[i].identifier
+            }
+          });
+          break;
+        }
+
+        snapshots[i].quantity = snapshots[i].inventory[lookUp].quantity;
+        snapshots[i].price = snapshots[i].inventory[lookUp].price;
+      }
+      /**
+       * Product exists but quantity isn't sufficient
+       */
       if (snapshots[i].quantity < orderItems[i].quantity) {
         error.push({
           message: `We currently don't have enough of ${
@@ -58,18 +99,23 @@ async function getItems(orderItems: OrderItem[], lang: string) {
           data: {
             id: snapshots[i].id,
             quantity: snapshots[i].quantity,
-            name: snapshots[i].name
+            name: snapshots[i].name,
+            identifier: orderItems[i].identifier
           },
           type: 'quantity_insufficient'
         });
       }
     } else {
+      /**
+       * Product doesn't exist
+       */
       error.push({
         message: `item ${snapshots[i].name} is currently unavailable`,
         data: {
           id: snapshots[i].id,
           quantity: snapshots[i].quantity,
-          name: snapshots[i].name
+          name: snapshots[i].name,
+          identifier: orderItems[i].identifier
         },
         type: 'product_missing'
       });
@@ -134,11 +180,16 @@ app.post('/checkout', (req, res) => {
     currency = currency.data();
     description = description.data();
 
+    console.log(items);
+    console.log('order', req.body.orderItems);
+
     const amount = items.reduce(
       (acc, cur, curIndex) =>
-        req.body.orderItems[curIndex].quantity * cur.price,
+        acc + req.body.orderItems[curIndex].quantity * cur.price,
       currency.shippingCost || 0
     );
+
+    console.log('amount', amount);
 
     const paymentIntent = await si.paymentIntents.create({
       amount,
@@ -265,30 +316,61 @@ app.post('/webhook', async (req, res) => {
       if (settings.autoReduceQuantity) {
         exec.push(
           ...items.map((item, itemIndex) => {
-            const quantity =
-              item.quantity - order.orderItemsData[itemIndex].quantity;
-
-            let active = item.active;
+            const current = order.orderItemsData[itemIndex];
+            const toUpdate: any = {};
 
             /**
-             * If the quantity drops to 0 and the shop is configured to set
-             * items to inactive when that happens, mark the product inactive
+             * Product has attributes
              */
-            if (item.quantity <= 0 && settings.inactiveForQuantity) {
-              active = false;
+            if (current.id !== current.identifier) {
+              const lookUp = getLookUp(current);
+              const inventory = item.inventory[lookUp];
+
+              item.inventory[lookUp].quantity -= current.quantity;
+
+              toUpdate.inventory = {
+                [inventory]: {
+                  quantity: item.inventory[lookUp].quantity
+                }
+              };
+
+              let hasQuantity = false;
+
+              /**
+               * If the shop is configured to set items to inactive
+               * when out of quantity, loop over the inventory and check
+               * if we should deactive the product
+               */
+              if (settings.inactiveForQuantity) {
+                for (const inventoryItem of item.inventory) {
+                  if (inventoryItem.quantity) {
+                    hasQuantity = true;
+                    break;
+                  }
+                }
+
+                if (!hasQuantity) {
+                  toUpdate.active = false;
+                }
+              }
+            } else {
+              toUpdate.quantity =
+                item.quantity - order.orderItemsData[itemIndex].quantity;
+
+              /**
+               * If the quantity drops to 0 and the shop is configured to set
+               * items to inactive when that happens, mark the product inactive
+               */
+              if (item.quantity <= 0 && settings.inactiveForQuantity) {
+                toUpdate.active = false;
+              }
             }
 
             return admin
               .firestore()
               .collection(`products-${intent.metadata.lang}`)
               .doc(item.id)
-              .set(
-                {
-                  quantity,
-                  active
-                },
-                {merge: true}
-              );
+              .set(toUpdate, {merge: true});
           })
         );
       }

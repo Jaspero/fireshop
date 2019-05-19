@@ -40,6 +40,7 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
   form: FormGroup;
   viewState = ViewState;
   currentState: ViewState;
+  createdOn: number;
 
   ngOnInit() {
     this.activatedRoute.params
@@ -80,8 +81,10 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
         }),
         takeUntil(this.destroyed$)
       )
-      .subscribe(data => {
+      .subscribe((data: any) => {
         this.buildForm(data);
+
+        this.createdOn = data.createdOn || Date.now();
 
         if (this.state.role === Role.Read) {
           this.form.disable();
@@ -126,15 +129,10 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
         this.afs
           .collection(this.collection)
           .doc(id || this.createId())
-          .set(
-            {
-              ...item,
-              ...(this.currentState === this.viewState.Edit
-                ? {}
-                : {createdOn: Date.now()})
-            },
-            {merge: true}
-          )
+          .set({
+            ...item,
+            createdOn: this.createdOn
+          })
       );
     });
   }
