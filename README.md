@@ -27,6 +27,17 @@ the [Angular](https://angular.io/) framework.
 - Create a firebase project
 - Replace environment variables in [firebase](https://firebase.google.com/docs/functions/config-env)
 
+## CMS
+
+An example deployment of the cms can be found [here](https://fireshop.admin.jaspero.co/dashboard).
+You can use the credentials below to login with a read only account.
+
+| Property | Value                             |
+| -------- | --------------------------------- |
+| Site     | https://fireshop.admin.jaspero.co |
+| Email    | example@jaspero.co                |
+| Password | example                           |
+
 ## Project Structure
 
 ### Client

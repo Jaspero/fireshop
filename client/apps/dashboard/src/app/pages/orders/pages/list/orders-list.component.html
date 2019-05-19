@@ -188,11 +188,15 @@
               <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="goToSingle(element.id)">
                   <mat-icon>info</mat-icon>
-                  <span>View order</span>
+                  <span>Statistics</span>
+                </button>
+                <button mat-menu-item [routerLink]="[element.id]">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
                 </button>
                 <button mat-menu-item fDisable (click)="deleteOne(element)">
                   <mat-icon>delete_forever</mat-icon>
-                  <span>Delete product</span>
+                  <span>Delete</span>
                 </button>
               </mat-menu>
             </td>

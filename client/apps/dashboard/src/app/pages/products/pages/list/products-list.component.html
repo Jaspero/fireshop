@@ -196,15 +196,15 @@
               <mat-menu #menu="matMenu">
                 <button mat-menu-item [routerLink]="['overview/' + element.id]">
                   <mat-icon>info</mat-icon>
-                  <span>Product statistics</span>
+                  <span>Statistics</span>
                 </button>
                 <button mat-menu-item [routerLink]="[element.id]">
                   <mat-icon>edit</mat-icon>
-                  <span>Edit product</span>
+                  <span>Edit</span>
                 </button>
                 <button mat-menu-item fDisable (click)="deleteOne(element)">
                   <mat-icon>delete_forever</mat-icon>
-                  <span>Delete product</span>
+                  <span>Delete</span>
                 </button>
               </mat-menu>
             </td>
