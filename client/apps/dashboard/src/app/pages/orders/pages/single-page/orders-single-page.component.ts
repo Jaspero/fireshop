@@ -5,7 +5,7 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
 import {Product} from '@jf/interfaces/product.interface';
@@ -63,10 +63,10 @@ export class OrdersSinglePageComponent extends SinglePageComponent
   }
 
   selectedProduct(event) {
-    console.log('event', event.option);
     this.productForm.get('product').setValue({
       id: event.option.id,
-      name: event.option.value
+      name: event.option.value,
+      price: Number(event.option._element.nativeElement.dataset.price)
     });
   }
 
@@ -75,6 +75,7 @@ export class OrdersSinglePageComponent extends SinglePageComponent
       data: val,
       id: data.orderItems[ind]
     }));
+
     this.form = this.fb.group({
       billing: this.checkForm(data.billing ? data.billing : {}),
       shippingInfo: data.shippingInfo || true,
@@ -116,6 +117,12 @@ export class OrdersSinglePageComponent extends SinglePageComponent
       args[1]['customerName'] = args[1].customerInfo.name;
       args[1]['customerId'] = args[1].customerInfo.id;
     }
+    args[1]['orderItems'] = [];
+    args[1]['orderItemsData'] = [];
+    this.orderItems.forEach(item => {
+      args[1]['orderItems'].push(item.id);
+      args[1]['orderItemsData'].push(item.data);
+    });
     delete args[1].customerInfo;
     return super.getSaveData(...args);
   }
@@ -135,17 +142,26 @@ export class OrdersSinglePageComponent extends SinglePageComponent
   }
 
   openProductDialog(product = null) {
-    console.log('ind', product);
     this.productForm = this.fb.group({
-      product: product.data
-        ? {
-            id: product.id,
-            name: product.data.name
-          }
-        : {},
-      quantity: product.data ? product.data.quantity : ''
+      product: product
+        ? this.fb.group({
+            id: [product.id, Validators.required],
+            name: [product.data.name, Validators.required],
+            price: [Number(product.data.quantity), Validators.required]
+          })
+        : this.fb.group({
+            id: ['', Validators.required],
+            name: ['', Validators.required],
+            price: ['', Validators.required]
+          }),
+      quantity: [
+        product ? Number(product.data.quantity) : '',
+        Validators.required
+      ]
     });
-
+    product
+      ? this.search.setValue(product.data.name)
+      : this.search.setValue('');
     this.dialog
       .open(this.addProduct, {
         width: '400px'
@@ -153,7 +169,23 @@ export class OrdersSinglePageComponent extends SinglePageComponent
       .afterClosed()
       .pipe(filter(val => !!val))
       .subscribe(() => {
-        console.log('The dialog was closed');
+        const itemToAdd = this.productForm.getRawValue();
+        const ind = this.orderItems.findIndex(
+          val => val.id === itemToAdd.product.id
+        );
+        if (ind === -1) {
+          this.orderItems.push({
+            data: {
+              name: itemToAdd.product.name,
+              quantity: itemToAdd.quantity,
+              price: itemToAdd.product.price
+            },
+            id: itemToAdd.product.id
+          });
+        } else {
+          this.orderItems[ind].data.quantity += itemToAdd.quantity;
+        }
+        this.cdr.detectChanges();
       });
   }
 
@@ -164,10 +196,6 @@ export class OrdersSinglePageComponent extends SinglePageComponent
       price: data.price || '',
       name: data.name || ''
     };
-  }
-
-  testera() {
-    console.log(this.productForm.getRawValue());
   }
 
   deleteItem(i) {
