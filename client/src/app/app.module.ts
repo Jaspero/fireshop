@@ -59,6 +59,7 @@ import {StepperComponent} from './modules/module-instance/components/segments/st
 import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
 import {ColumnPipe} from './modules/module-instance/pipes/column.pipe';
 import {ToggleComponent} from './modules/module-instance/components/fields/toggle/toggle.component';
+import {CheckboxComponent} from './modules/module-instance/components/fields/checkbox/checkbox.component';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -85,6 +86,7 @@ const ENTRY_COMPONENTS = [
   ImageComponent,
   GalleryComponent,
   ToggleComponent,
+  CheckboxComponent,
 
   // Segments
   SegmentComponent,

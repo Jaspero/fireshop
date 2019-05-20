@@ -4,4 +4,5 @@ export enum ComponentType {
   Image = 'image',
   Gallery = 'gallery',
   Toggle = 'toggle'
+  Checkbox = 'checkbox'
 }
