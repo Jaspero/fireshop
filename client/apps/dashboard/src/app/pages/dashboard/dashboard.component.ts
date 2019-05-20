@@ -71,19 +71,22 @@ export class DashboardComponent implements OnInit {
         forkJoin([
           this.afs
             .collection<Category>(
-              `${FirestoreCollections.Categories}-${STATIC_CONFIG.lang}`
+              `${FirestoreCollections.Categories}-${STATIC_CONFIG.lang}`,
+              ref => ref.limit(1)
             )
             .get()
             .pipe(map(actions => !!actions.docs.length)),
           this.afs
             .collection<Product>(
-              `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}`
+              `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}`,
+              ref => ref.limit(1)
             )
             .get()
             .pipe(map(actions => !!actions.docs.length)),
           this.afs
             .collection<Discount>(
-              `${FirestoreCollections.Discounts}-${STATIC_CONFIG.lang}`
+              `${FirestoreCollections.Discounts}-${STATIC_CONFIG.lang}`,
+              ref => ref.limit(1)
             )
             .get()
             .pipe(map(actions => !!actions.docs.length))
