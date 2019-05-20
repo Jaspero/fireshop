@@ -57,6 +57,7 @@ import {TabsComponent} from './modules/module-instance/components/segments/tabs/
 import {StepperComponent} from './modules/module-instance/components/segments/stepper/stepper.component';
 import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
 import {ColumnPipe} from './modules/module-instance/pipes/column.pipe';
+import {DateFieldComponent} from './modules/module-instance/components/fields/date-field/date-field.component';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -82,6 +83,7 @@ const ENTRY_COMPONENTS = [
   SelectComponent,
   ImageComponent,
   GalleryComponent,
+  DateFieldComponent,
 
   // Segments
   SegmentComponent,
