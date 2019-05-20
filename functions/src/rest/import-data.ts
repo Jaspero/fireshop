@@ -6,6 +6,7 @@ import * as functions from 'firebase-functions';
 import * as ajv from 'ajv';
 import * as schemas from '../consts/schemas.const';
 import * as admin from 'firebase-admin';
+import {HttpStatus} from '../enums/http-status.enum';
 import nanoid = require('nanoid');
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(cors());
 
 app.post('/', (req, res) => {
   let collection = req.query.collection;
+
   if (collection.includes('-')) {
     collection = collection.substring(0, collection.length - 3);
   }
@@ -31,44 +33,56 @@ app.post('/', (req, res) => {
   });
 
   busboy.on('finish', () => {
-    csv()
-      .fromString(fileData)
-      .then(jsonObj => {
-        const errors = [];
-        const created = [];
+    async function exec() {
+      const jsonObj = await csv().fromString(fileData);
 
-        jsonObj.forEach(obj => {
-          validator(obj);
+      const {errors, created} = jsonObj.reduce(
+        (acc, cur) => {
+          validator(cur);
+
           if (validator.errors) {
             const err = validator.errors[0];
-            err['object'] = obj;
-            errors.push(err);
+            err['object'] = cur;
+            acc.errors.push(err);
           } else {
-            const {id, ...data} = obj;
-            const objToUpload = admin
-              .firestore()
-              .collection(req.query.collection)
-              .doc(id || nanoid())
-              .set({
-                ...data,
-                ...{createdOn: Date.now()}
-              });
-            created.push(objToUpload);
+            const {id, ...data} = cur;
+            acc.created.push(
+              admin
+                .firestore()
+                .collection(req.query.collection)
+                .doc(id || nanoid())
+                .set({
+                  ...data,
+                  ...(data.createdOn ? {} : {createdOn: Date.now()})
+                })
+            );
           }
-        });
 
-        if (created.length) {
-          Promise.all(created)
-            .then(result => {
-              console.log('result', result);
-            })
-            .catch(err => {
-              console.log('error', err);
-            });
+          return acc;
+        },
+        {
+          errors: [],
+          created: []
         }
+      );
 
-        res.json({errors, success: created.length});
-      });
+      if (created.length) {
+        await Promise.all(created);
+      }
+
+      return {
+        created: created.length,
+        errors
+      };
+    }
+
+    exec()
+      .then(data => res.json(data))
+      .catch(error =>
+        res
+          .status(HttpStatus.InternalServerError)
+          .send({error: error.toString()})
+      );
   });
 
   busboy.end(req['rawBody']);

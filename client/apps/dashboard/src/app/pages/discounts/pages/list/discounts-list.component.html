@@ -87,10 +87,7 @@
             <span>Export</span>
           </button>
 
-          <button mat-button (click)="import()">
-            <mat-icon>vertical_align_bottom</mat-icon>
-            <span>Import</span>
-          </button>
+          <jfsc-import [collection]="collectionRef | async"></jfsc-import>
         </div>
 
         <table

@@ -37,7 +37,6 @@ import {Role} from '../../enums/role.enum';
 import {RouteData} from '../../interfaces/route-data.interface';
 import {StateService} from '../../services/state/state.service';
 import {ExportComponent} from '../export/export.component';
-import {OverviewComponent} from '../overview/overview.component';
 
 @Component({
   selector: 'jfsc-list',
@@ -109,10 +108,10 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
       shareReplay(1)
     );
 
-    this.allChecked$ = combineLatest(
+    this.allChecked$ = combineLatest([
       this.items$,
       this.selection.changed.pipe(startWith(null))
-    ).pipe(
+    ]).pipe(
       map(([items]) => ({
         checked: this.selection.selected.length === items.length
       }))
@@ -317,7 +316,7 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
   }
 
   masterToggle() {
-    combineLatest(this.allChecked$, this.items$)
+    combineLatest([this.allChecked$, this.items$])
       .pipe(take(1))
       .subscribe(([check, items]) => {
         if (check.checked) {
@@ -378,12 +377,5 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
 
   resetAll() {
     this.filters.reset();
-  }
-
-  addData(event) {
-    this.dialog.open(OverviewComponent, {
-      width: '500px',
-      data: {event}
-    });
   }
 }

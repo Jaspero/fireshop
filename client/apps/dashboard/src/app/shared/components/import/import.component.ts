@@ -3,13 +3,18 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  EventEmitter,
   Input,
-  OnInit,
-  Output,
+  TemplateRef,
   ViewChild
 } from '@angular/core';
+import {MatDialog} from '@angular/material';
+import {notify} from '@jf/utils/notify.operator';
 import {environment} from '../../../../environments/environment';
+
+interface ImportResponse {
+  errors?: any;
+  created?: number;
+}
 
 @Component({
   selector: 'jfsc-import',
@@ -18,16 +23,15 @@ import {environment} from '../../../../environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImportComponent {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, public dialog: MatDialog) {}
 
-  @Output()
-  importedData = new EventEmitter<any>();
+  @ViewChild('file') fileEl: ElementRef<HTMLInputElement>;
+  @ViewChild('overview') overview: TemplateRef<any>;
 
   @Input()
-  collection: any;
+  collection: string;
 
-  @ViewChild('file')
-  fileEl: ElementRef<HTMLInputElement>;
+  data: ImportResponse;
 
   selectFile(event) {
     const file = event.target.files[0];
@@ -39,8 +43,17 @@ export class ImportComponent {
           collection: this.collection
         }
       })
-      .subscribe((val: {errors: any}) => {
-        this.importedData.emit(val);
+      .pipe(
+        notify({
+          success: null,
+          error: 'There was an error while importing data.'
+        })
+      )
+      .subscribe((res: ImportResponse) => {
+        this.data = res;
+        this.dialog.open(this.overview, {
+          width: '500px'
+        });
       });
   }
 }

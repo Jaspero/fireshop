@@ -50,6 +50,10 @@ import {
   StateService
 } from '../../shared/services/state/state.service';
 
+interface OrderItemWithId extends OrderItem {
+  id: string;
+}
+
 interface CheckoutState {
   price: OrderPrice;
   form: FormGroup;
@@ -60,7 +64,7 @@ interface CheckoutState {
     cardChanges$: Observable<stripe.elements.ElementChangeResponse>;
     clientSecret: string;
   };
-  orderItems: OrderItem[];
+  orderItems: OrderItemWithId[];
   user?: LoggedInUser;
 }
 
@@ -111,7 +115,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   ngOnInit() {
     this.data$ = this.state.user$.pipe(
       switchMap(user =>
-        combineLatest(
+        combineLatest([
           this.cartService.totalPrice$.pipe(take(1)),
 
           this.cartService.items$.pipe(
@@ -122,11 +126,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
                 quantity: val.quantity,
                 price: val.price,
                 name: val.name,
-
-                /**
-                 * TODO: Connect attributes if necessary
-                 */
-                attributes: {}
+                attributes: val.filters,
+                identifier: val.identifier
               }));
 
               return this.http
@@ -149,7 +150,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
                 .pipe(map(({clientSecret}) => ({clientSecret, orderItems})));
             })
           )
-        ).pipe(
+        ]).pipe(
           map(([total, {clientSecret, orderItems}]) => {
             /**
              * Connect stripe
@@ -318,7 +319,6 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
               status: OrderStatus.Ordered,
               paymentIntentId: paymentIntent.id,
               billing: data.billing,
-              orderItems: state.orderItems,
               createdOn: Date.now(),
 
               ...(data.shippingInfo ? {} : {shipping: data.shipping}),
@@ -328,7 +328,26 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
                     customerName: state.user.customerData.name,
                     email: state.user.authData.email
                   }
-                : {})
+                : {}),
+
+              /**
+               * Format ExtendedOrderItem[] in to the
+               * appropriate order format
+               */
+              ...state.orderItems.reduce(
+                (acc, cur) => {
+                  const {id, ...data} = cur;
+
+                  acc.orderItems.push(cur.id);
+                  acc.orderItemsData.push(data);
+
+                  return acc;
+                },
+                {
+                  orderItems: [],
+                  orderItemsData: []
+                }
+              )
             });
         }),
         finalize(() => this.checkoutLoading$.next(false))

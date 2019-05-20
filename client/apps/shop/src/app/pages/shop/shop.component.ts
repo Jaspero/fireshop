@@ -28,6 +28,7 @@ import {
   tap
 } from 'rxjs/operators';
 import {CartService} from '../../shared/services/cart/cart.service';
+import {StateService} from '../../shared/services/state/state.service';
 
 @Component({
   selector: 'jfs-products',
@@ -41,7 +42,8 @@ export class ShopComponent extends RxDestroy implements OnInit {
     public dialog: MatDialog,
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private state: StateService
   ) {
     super();
   }
@@ -53,7 +55,6 @@ export class ShopComponent extends RxDestroy implements OnInit {
   @ViewChild('filterDialog') filterDialog: TemplateRef<any>;
 
   products$: Observable<Product[]>;
-  loading$ = new BehaviorSubject(true);
   loadMore$ = new BehaviorSubject(null);
   hasMore$ = new BehaviorSubject(true);
 
@@ -61,17 +62,16 @@ export class ShopComponent extends RxDestroy implements OnInit {
   cursor: any = null;
   orderName = 'Price High - Low';
   orderList = [
-    // todo(kole): should we uncomment
-    // {
-    //   name: 'Latest',
-    //   type: 'createdOn',
-    //   direction: 'desc'
-    // },
-    // {
-    //   name: 'Oldest',
-    //   type: 'createdOn',
-    //   direction: 'asc'
-    // },
+    {
+      name: 'Latest',
+      type: 'createdOn',
+      direction: 'desc'
+    },
+    {
+      name: 'Oldest',
+      type: 'createdOn',
+      direction: 'asc'
+    },
     {
       name: 'Price High - Low',
       type: 'price',
@@ -134,7 +134,7 @@ export class ShopComponent extends RxDestroy implements OnInit {
 
         return this.loadMore$.pipe(
           debounceTime(300),
-          tap(() => this.loading$.next(true)),
+          tap(() => this.state.loading$.next(true)),
           switchMap(() =>
             this.afs
               .collection<Product>(
@@ -207,7 +207,7 @@ export class ShopComponent extends RxDestroy implements OnInit {
         );
       }),
       tap(() => {
-        this.loading$.next(false);
+        this.state.loading$.next(false);
         setTimeout(() => {
           if (
             !this.viewPort.measureScrollOffset('bottom') &&

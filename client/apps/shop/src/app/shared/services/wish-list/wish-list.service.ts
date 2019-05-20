@@ -2,10 +2,10 @@ import {Injectable} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {MatDialog} from '@angular/material';
+import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {CustomerWishList} from '@jf/interfaces/customer.interface';
 import {Observable} from 'rxjs';
-import {filter, map, startWith, take} from 'rxjs/operators';
-import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {filter, map, take} from 'rxjs/operators';
 import {LoginSignupDialogComponent} from '../../components/login-signup-dialog/login-signup-dialog.component';
 import {StateService} from '../state/state.service';
 
@@ -21,16 +21,21 @@ export class WishListService {
   ) {
     this.wishList$ = this.state.user$.pipe(
       filter(user => !!(user && user.customerData)),
-      map(user => user.customerData.wishList || [])
+      map(user => ({
+        wishList: user.customerData.wishList || [],
+        wishListSnippets: user.customerData.wishListSnippets || []
+      }))
     );
   }
 
-  wishList$: Observable<CustomerWishList[]>;
+  wishList$: Observable<{
+    wishList: string[];
+    wishListSnippets: CustomerWishList[];
+  }>;
 
   includes(productId): Observable<boolean> {
     return this.wishList$.pipe(
-      startWith([]),
-      map(wishList => wishList.some(x => x.productId === productId))
+      map(wishList => wishList.wishList.some(x => x === productId))
     );
   }
 
@@ -41,15 +46,16 @@ export class WishListService {
   toggle(data) {
     if (this.afAuth.auth.currentUser) {
       this.wishList$.pipe(take(1)).subscribe(wishList => {
-        const index = wishList.findIndex(x => x.productId === data.id);
+        const index = wishList.wishList.findIndex(x => x === data.id);
 
         if (index !== -1) {
-          wishList.splice(index, 1);
+          wishList.wishList.splice(index, 1);
+          wishList.wishListSnippets.splice(index, 1);
         } else {
-          wishList.push({
-            productId: data.id,
-            addedOn: Date.now(),
-            name: data.name
+          wishList.wishList.push(data.id);
+          wishList.wishListSnippets.push({
+            name: data.name,
+            addedOn: Date.now()
           });
         }
         this.afs
@@ -58,7 +64,9 @@ export class WishListService {
               this.afAuth.auth.currentUser.uid
             }`
           )
-          .update({wishList});
+          .update({
+            ...wishList
+          });
       });
     } else {
       this.dialog.open(LoginSignupDialogComponent);

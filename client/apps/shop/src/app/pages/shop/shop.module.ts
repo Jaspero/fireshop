@@ -1,9 +1,10 @@
 import {NgModule} from '@angular/core';
+import {MatInputModule} from '@angular/material';
 import {RouterModule} from '@angular/router';
 import {MetaResolver} from '../../shared/resolvers/meta.resolver';
+import {StructuredDataResolver} from '../../shared/resolvers/structured-data.resolver';
 import {SharedModule} from '../../shared/shared.module';
 import {ShopComponent} from './shop.component';
-import {MatInputModule} from '@angular/material';
 
 @NgModule({
   declarations: [ShopComponent],
@@ -18,10 +19,16 @@ import {MatInputModule} from '@angular/material';
           meta: {
             title: 'Shop',
             description: 'ListComponent of the products in our shop'
+          },
+          structuredData: {
+            '@type': 'WebSite',
+            name: 'Shop',
+            description: 'List component of the products in our shop'
           }
         },
         resolve: {
-          meta: MetaResolver
+          meta: MetaResolver,
+          structuredData: StructuredDataResolver
         }
       }
     ])

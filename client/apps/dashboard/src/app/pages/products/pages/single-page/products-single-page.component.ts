@@ -4,7 +4,7 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {Validators} from '@angular/forms';
+import {FormArray, FormGroup, Validators} from '@angular/forms';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
@@ -31,6 +31,8 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   categories$: Observable<Category[]>;
   collection = FirestoreCollections.Products;
   currency: string;
+  inventoryKeys: string[] = [];
+  colors = ['c-warm', 'c-primary', 'c-accent', 'c-primary'];
 
   ngOnInit() {
     super.ngOnInit();
@@ -52,6 +54,10 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       }),
       shareReplay(1)
     );
+  }
+
+  get attributesForms() {
+    return this.form.get('attributes') as FormArray;
   }
 
   // TODO: I think this can be done in a better way
@@ -109,6 +115,26 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
           }
         }
 
+        /**
+         * Format inventory price
+         */
+        if (args[1].inventory) {
+          for (const key in args[1].inventory) {
+            args[1].inventory[key].price = toStripeFormat(
+              args[1].inventory[key].price
+            );
+          }
+        }
+
+        /**
+         * Don't store empty objects in database
+         */
+        if (!Object.keys(args[1].attributes).length) {
+          delete args[1].attributes;
+          delete args[1].inventory;
+          delete args[1].default;
+        }
+
         return this.galleryUploadComponent.save().pipe(
           switchMap(() => {
             args[1].gallery = this.form.get('gallery').value;
@@ -137,14 +163,178 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
         ? data.showingQuantity
         : DYNAMIC_CONFIG.generalSettings.showingQuantity,
       allowOutOfQuantityPurchase: data.hasOwnProperty(
-        'allowOutOfQuantityPurchase '
+        'allowOutOfQuantityPurchase'
       )
         ? data.allowOutOfQuantityPurchase
-        : DYNAMIC_CONFIG.generalSettings.allowOutOfQuantityPurchase
+        : DYNAMIC_CONFIG.generalSettings.allowOutOfQuantityPurchase,
+      attributes: this.fb.array(
+        data.attributes
+          ? data.attributes.map(x =>
+              this.fb.group({
+                key: x.key || '',
+                list: [x.list || []]
+              })
+            )
+          : []
+      ),
+      inventory: this.fb.group(
+        data.inventory ? this.formatInventory(data.inventory, true) : {}
+      ),
+      default: data.default || ''
     });
   }
 
   view(form) {
     window.open(environment.websiteUrl + '/product/' + form.controls.id.value);
+  }
+
+  filterData() {
+    const price = this.form.get('price').value;
+    const attributesData = this.attributesForms.getRawValue();
+
+    return {
+      ...attributesData.reduce((acc, cur) => {
+        if (Object.keys(acc).length && cur.list.length) {
+          for (const key in acc) {
+            cur.list.forEach(y => {
+              acc[`${key}_${y}`] = {
+                quantity: 0,
+                price: price || 0
+              };
+            });
+          }
+        } else {
+          cur.list.forEach(x => {
+            acc[x] = {
+              quantity: 0,
+              price: price || 0
+            };
+          });
+        }
+        return acc;
+      }, {}),
+      ...this.form.get('inventory').value
+    };
+  }
+
+  formatInventory(data: any, adjustPrice?: boolean) {
+    const obj = {};
+    this.inventoryKeys = [];
+    for (const key in data) {
+      this.inventoryKeys.push(key);
+      obj[key] = this.fb.group({
+        ...data[key],
+        price: adjustPrice ? fromStripeFormat(data[key].price) : data[key].price
+      });
+    }
+    return obj;
+  }
+
+  addAttribute() {
+    this.attributesForms.push(
+      this.fb.group({
+        key: '',
+        list: [[]]
+      })
+    );
+  }
+
+  deleteAttribute(i) {
+    this.attributesForms.removeAt(i);
+    const obj = this.filterData();
+    const listLength = this.attributesForms.value.length;
+
+    let firstKey;
+
+    for (const key in obj) {
+      const splitArr = key.split('_');
+
+      if (!firstKey) {
+        firstKey = key;
+      }
+
+      if (splitArr.length !== listLength) {
+        delete obj[key];
+      }
+    }
+
+    this.form.get('default').setValue(Object.keys(obj)[0]);
+    this.form.setControl('inventory', this.fb.group(this.formatInventory(obj)));
+  }
+
+  addAttributeValue(item, ind) {
+    if (item.value) {
+      const list = this.attributesForms.at(ind).get('list').value;
+
+      list.push(item.value);
+
+      this.attributesForms
+        .at(ind)
+        .get('list')
+        .setValue(list);
+
+      item.input.value = '';
+
+      const obj = this.filterData();
+      const listLength = this.attributesForms.value.length;
+      const def = this.form.get('default');
+
+      let valuesLength = 0;
+      let firstKey;
+
+      for (const key in obj) {
+        if (!firstKey) {
+          firstKey = key;
+        }
+
+        valuesLength++;
+
+        const splitArr = key.split('_');
+
+        if (splitArr.length < listLength) {
+          delete obj[key];
+        }
+      }
+
+      if (valuesLength && !def.value) {
+        def.setValue(firstKey);
+      }
+
+      this.form.setControl(
+        'inventory',
+        this.fb.group(this.formatInventory(obj))
+      );
+    }
+  }
+
+  removeAttributeValue(attributeIndex: number, itemIndex: number, item) {
+    const list = this.attributesForms.at(attributeIndex).get('list').value;
+    list.splice(itemIndex, 1);
+    this.attributesForms
+      .at(attributeIndex)
+      .get('list')
+      .setValue(list);
+    let obj = this.form.get('inventory').value;
+    for (const key in obj) {
+      const arr = key.split('_');
+      if (arr[attributeIndex] === item) {
+        delete obj[key];
+      }
+    }
+    if (!obj[this.form.get('default').value]) {
+      this.form.get('default').setValue(Object.keys(obj)[0]);
+    }
+    obj = this.formatInventory(obj);
+    this.form.setControl('inventory', this.fb.group(obj));
+  }
+
+  labelFormat(key: string) {
+    return key
+      .split('_')
+      .reduce(
+        (acc, cur, ind) =>
+          acc + ` <span class="${this.colors[ind]}">  ${cur}</span>`,
+        ''
+      );
   }
 }

@@ -93,10 +93,7 @@
             <span>Export</span>
           </button>
 
-          <button mat-button (click)="import()">
-            <mat-icon>vertical_align_bottom</mat-icon>
-            <span>Import</span>
-          </button>
+          <jfsc-import [collection]="collectionRef | async"></jfsc-import>
         </div>
 
         <table
@@ -127,7 +124,13 @@
 
           <ng-container matColumnDef="customerName">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
-            <td mat-cell *matCellDef="let element">{{element.customerName}}</td>
+            <td
+              [class.cs-pointer]="element.customerId"
+              mat-cell *matCellDef="let element"
+              [routerLink]="element.customerId ?
+              ['/customers/' + element.customerId] : []">
+              {{element.customerId ? element.customerName : 'Anonymous'}}
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="createdOn">
@@ -151,6 +154,11 @@
                 <span>{{element.price.total | sp}}</span>
               </div>
             </td>
+          </ng-container>
+
+          <ng-container matColumnDef="stripe">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Stripe</th>
+            <td mat-cell *matCellDef="let element">{{element.paymentIntentId ? element.paymentIntentId : '-'}}</td>
           </ng-container>
 
           <ng-container matColumnDef="status">
@@ -180,11 +188,15 @@
               <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="goToSingle(element.id)">
                   <mat-icon>info</mat-icon>
-                  <span>View order</span>
+                  <span>Statistics</span>
+                </button>
+                <button mat-menu-item [routerLink]="[element.id]">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
                 </button>
                 <button mat-menu-item fDisable (click)="deleteOne(element)">
                   <mat-icon>delete_forever</mat-icon>
-                  <span>Delete product</span>
+                  <span>Delete</span>
                 </button>
               </mat-menu>
             </td>
