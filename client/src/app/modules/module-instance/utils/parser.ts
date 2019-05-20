@@ -189,19 +189,22 @@ export class Parser {
 
   field(pointer: string, definitions: ModuleDefinitions = {}): CompiledField {
     const {key, type, control} = this.pointers[pointer];
-    const {component, ...definition} = {
+    const definition = {
       label: key,
-      component: schemaToComponent(type),
       ...definitions[pointer]
     };
 
+    if (!definition.component) {
+      definition.component = schemaToComponent(type);
+    }
+
     const portal = new ComponentPortal<FieldComponent<any>>(
-      COMPONENT_TYPE_COMPONENT_MAP[component.type],
+      COMPONENT_TYPE_COMPONENT_MAP[definition.component.type],
       null,
       createComponentInjector(this.injector, {
         control,
         ...definition,
-        ...(component.configuration || {})
+        ...(definition.component.configuration || {})
       })
     );
 

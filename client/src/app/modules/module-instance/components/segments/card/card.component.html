@@ -1,13 +1,17 @@
 <mat-card>
 
-  <ng-container *ngIf="segment.title">
-    <h6>{{segment.title}}</h6>
+  <ng-container *ngIf="segment.title || segment.subTitle">
+    <h4 *ngIf="segment.title">{{segment.title}}</h4>
+    <h5 *ngIf="segment.subTitle">{{segment.subTitle}}</h5>
     <div class="p-y-m">
       <mat-divider></mat-divider>
     </div>
   </ng-container>
 
   <div class="segment-wrapper">
+
+    <p *ngIf="segment.description">{{segment.description}}</p>
+
     <ng-container *ngFor="let field of segment.fields">
       <ng-template [cdkPortalOutlet]="field.portal"></ng-template>
     </ng-container>
