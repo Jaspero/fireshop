@@ -338,6 +338,10 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
                 (acc, cur) => {
                   const {id, ...data} = cur;
 
+                  if (!data.attributes) {
+                    delete data.attributes;
+                  }
+
                   acc.orderItems.push(cur.id);
                   acc.orderItemsData.push(data);
 
@@ -365,7 +369,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
           );
           this.router.navigate(['checkout/success']);
         },
-        () => {
+        err => {
+          console.log('err', err);
           this.router.navigate(['checkout/error']);
         }
       );

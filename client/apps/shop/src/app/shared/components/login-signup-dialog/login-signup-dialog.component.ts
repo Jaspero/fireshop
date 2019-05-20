@@ -18,8 +18,17 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Customer} from '@jf/interfaces/customer.interface';
 import {notify} from '@jf/utils/notify.operator';
 import {auth, firestore, User} from 'firebase/app';
-import {from} from 'rxjs';
-import {filter, map, skip, switchMap, take, takeUntil} from 'rxjs/operators';
+import {from, throwError} from 'rxjs';
+import {
+  catchError,
+  filter,
+  map,
+  skip,
+  switchMap,
+  take,
+  takeUntil,
+  tap
+} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
 import {RepeatPasswordValidator} from '../../helpers/compare-passwords';
 import {StateService} from '../../services/state/state.service';
@@ -158,15 +167,15 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
   }
 
   signUpWithEmail() {
-    const data = this.signUpForm.getRawValue();
+    return () => {
+      const data = this.signUpForm.getRawValue();
 
-    from(
-      this.afAuth.auth.createUserWithEmailAndPassword(
-        data.email,
-        data.pg.password
-      )
-    )
-      .pipe(
+      return from(
+        this.afAuth.auth.createUserWithEmailAndPassword(
+          data.email,
+          data.pg.password
+        )
+      ).pipe(
         switchMap(() => {
           return this.afAuth.auth.signInWithEmailAndPassword(
             data.email,
@@ -177,48 +186,48 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
           success: 'Your account is successfully created',
           error: 'Your email is invalid or already in use'
         })
-      )
-      .subscribe();
+      );
+    };
   }
 
   loginWithEmail() {
-    const dataLogin = this.logInForm.getRawValue();
+    return () => {
+      const dataLogin = this.logInForm.getRawValue();
 
-    from(
-      this.afAuth.auth.signInWithEmailAndPassword(
-        dataLogin.email,
-        dataLogin.password
-      )
-    )
-      .pipe(
+      return from(
+        this.afAuth.auth.signInWithEmailAndPassword(
+          dataLogin.email,
+          dataLogin.password
+        )
+      ).pipe(
         notify({
           success: 'You are now logged in',
           error: 'The email and password you entered did not match our records.'
         }),
-        takeUntil(this.destroyed$)
-      )
-      .subscribe(
-        () => {},
-        () => {
+        catchError(error => {
           this.logInForm.get('password').reset();
           this.passwordField.nativeElement.focus();
-        }
+
+          return throwError(error);
+        })
       );
+    };
   }
 
   resetPassword() {
-    from(
-      this.afAuth.auth.sendPasswordResetEmail(this.resetPasswordControl.value)
-    )
-      .pipe(notify())
-      .subscribe(
-        () => {
-          this.dialogRef.close();
-        },
-        () => {
+    return () => {
+      return from(
+        this.afAuth.auth.sendPasswordResetEmail(this.resetPasswordControl.value)
+      ).pipe(
+        notify(),
+        tap(() => this.dialogRef.close()),
+        catchError(error => {
           this.resetPasswordControl.value.reset();
-        }
+
+          return throwError(error);
+        })
       );
+    };
   }
 
   toggleState(newView: LoginSignUpView) {

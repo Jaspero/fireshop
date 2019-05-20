@@ -7,7 +7,7 @@ import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {notify} from '@jf/utils/notify.operator';
 import * as nanoid from 'nanoid';
-import {defer, from, Observable, of} from 'rxjs';
+import {from, Observable, of} from 'rxjs';
 import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {Role} from '../../enums/role.enum';
 import {StateService} from '../../services/state/state.service';
@@ -106,10 +106,7 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
   }
 
   save() {
-    /**
-     * TODO(Filip): clean this up
-     */
-    return defer(() => {
+    return () => {
       const {id, ...item} = this.form.getRawValue();
       this.initialValue = this.form.getRawValue();
 
@@ -119,7 +116,7 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
           this.back();
         })
       );
-    });
+    };
   }
 
   buildForm(data: any) {}
@@ -129,19 +126,17 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
   }
 
   getSaveData(...args): Observable<any> {
-    return defer(() => {
-      const [id, item] = args;
+    const [id, item] = args;
 
-      return from(
-        this.afs
-          .collection(this.collection)
-          .doc(id || this.createId())
-          .set({
-            ...item,
-            createdOn: this.createdOn
-          })
-      );
-    });
+    return from(
+      this.afs
+        .collection(this.collection)
+        .doc(id || this.createId())
+        .set({
+          ...item,
+          createdOn: this.createdOn
+        })
+    );
   }
 
   back() {

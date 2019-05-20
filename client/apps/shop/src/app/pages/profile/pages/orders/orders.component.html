@@ -14,13 +14,13 @@
       <ng-container *ngSwitchCase="dataState.Loaded">
         <div class="col-6 col-m-8 col-s-10 col-xs-12">
           <mat-accordion [multi]="true">
-            <mat-expansion-panel *ngFor="let order of st.data; let i = index">
+            <mat-expansion-panel *ngFor="let order of st.data; index as index">
               <mat-expansion-panel-header>
-                <mat-panel-title>Order number {{ i + 1 }}</mat-panel-title>
-                <mat-panel-description>Status: {{ order.status }}</mat-panel-description>
+                <mat-panel-title>Order number {{index + 1}}</mat-panel-title>
+                <mat-panel-description>Status: {{order.status}}</mat-panel-description>
               </mat-expansion-panel-header>
               <div class="flex ai-center p-y-xs" *ngFor="let item of order.orderItems">
-                <p class="m-l-xs">{{ item.name }}, {{ item.quantity }}x (${{ item.price }})</p>
+                <p class="m-l-xs">{{ item.name }}, {{ item.quantity }}x (${{item.price}})</p>
                 <button [id]="'btn-sub-rev-' + uniqueId" mat-button (click)="submitReview(item)">
                   Submit review
                 </button>

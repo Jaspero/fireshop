@@ -74,32 +74,32 @@ export class LangSinglePageComponent extends SinglePageComponent
       });
   }
   save() {
-    const {id, ...item} = this.form.getRawValue();
-    this.initialValue = this.form.getRawValue();
-    return this.state.language$.pipe(
-      take(1),
-      switchMap(lang => this.getSaveData(id, item, lang)),
-      notify(),
-      tap(() => {
-        this.back();
-      })
-    );
+    return () => {
+      const {id, ...item} = this.form.getRawValue();
+      this.initialValue = this.form.getRawValue();
+      return this.state.language$.pipe(
+        take(1),
+        switchMap(lang => this.getSaveData(id, item, lang)),
+        notify(),
+        tap(() => {
+          this.back();
+        })
+      );
+    };
   }
 
   getSaveData(...args) {
-    return defer(() => {
-      const [id, item, lang] = args;
+    const [id, item, lang] = args;
 
-      return from(
-        this.afs
-          .collection(`${this.collection}-${lang}`)
-          .doc(id || this.createId())
-          .set({
-            ...item,
-            createdOn: this.createdOn
-          })
-      );
-    });
+    return from(
+      this.afs
+        .collection(`${this.collection}-${lang}`)
+        .doc(id || this.createId())
+        .set({
+          ...item,
+          createdOn: this.createdOn
+        })
+    );
   }
 
   buildForm(data: any) {}

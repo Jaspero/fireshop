@@ -13,6 +13,7 @@ import {Review} from '@jf/interfaces/review.interface';
 import {notify} from '@jf/utils/notify.operator';
 import * as nanoid from 'nanoid';
 import {from} from 'rxjs';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'jfs-reviews',
@@ -37,23 +38,26 @@ export class ReviewsDialogComponent implements OnInit {
   }
 
   submit() {
-    const {comment, rating} = this.form.getRawValue();
+    return () => {
+      console.log(123);
 
-    from(
-      this.afs
-        .collection(FirestoreCollections.Reviews)
-        .doc(this.data.id ? this.data.id : nanoid())
-        .set({
-          ...this.data,
-          comment,
-          rating,
-          ...(this.data.createdOn ? {} : {createdOn: Date.now()})
-        })
-    )
-      .pipe(notify())
-      .subscribe(() => {
-        this.dialog.close();
-      });
+      const {comment, rating} = this.form.getRawValue();
+
+      return from(
+        this.afs
+          .collection(FirestoreCollections.Reviews)
+          .doc(this.data.id ? this.data.id : nanoid())
+          .set({
+            ...this.data,
+            comment,
+            rating,
+            ...(this.data.createdOn ? {} : {createdOn: Date.now()})
+          })
+      ).pipe(
+        notify(),
+        tap(() => this.dialog.close())
+      );
+    };
   }
 
   private buildForm() {

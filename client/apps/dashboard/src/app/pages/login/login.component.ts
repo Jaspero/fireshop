@@ -11,7 +11,7 @@ import {MatSnackBar} from '@angular/material';
 import {Router} from '@angular/router';
 import {notify} from '@jf/utils/notify.operator';
 import {auth} from 'firebase/app';
-import {defer, from, throwError} from 'rxjs';
+import {from, throwError} from 'rxjs';
 import {catchError, filter, switchMap} from 'rxjs/operators';
 import {environment} from '../../../../../shop/src/environments/environment';
 import {StateService} from '../../shared/services/state/state.service';
@@ -83,7 +83,7 @@ export class LoginComponent implements OnInit {
   }
 
   loginEmail() {
-    return defer(() => {
+    return () => {
       const data = this.loginForm.getRawValue();
 
       return from(
@@ -103,7 +103,7 @@ export class LoginComponent implements OnInit {
           return throwError(error);
         })
       );
-    });
+    };
   }
 
   private buildForm() {

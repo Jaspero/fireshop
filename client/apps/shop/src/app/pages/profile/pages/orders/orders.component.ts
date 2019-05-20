@@ -75,8 +75,7 @@ export class OrdersComponent extends RxDestroy implements OnInit {
           name: item.name
         },
         orderId: item.orderId,
-        productId: item.identifier,
-        createdOn: Date.now()
+        productId: item.identifier
       }
     });
   }

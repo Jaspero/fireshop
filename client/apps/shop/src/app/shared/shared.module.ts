@@ -35,6 +35,7 @@ import {
   EnumKeyFormatModule,
   EnumModule,
   FormTouchOnHoverModule,
+  LoadClickModule,
   SanitizeModule,
   StopPropagationModule
 } from '@jaspero/ng-helpers';
@@ -98,10 +99,9 @@ const MODULES = [
   EnumModule,
   EnumKeyFormatModule,
   SanitizeModule,
+  LoadClickModule,
 
   JpImagePreloadModule,
-
-  // other helpers
   NgxJsonLdModule
 ];
 const ENTRY_COMPONENTS = [
