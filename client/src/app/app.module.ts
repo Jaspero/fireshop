@@ -20,6 +20,7 @@ import {
   MatNativeDateModule,
   MatProgressSpinnerModule,
   MatSelectModule,
+  MatSliderModule,
   MatSlideToggleModule,
   MatSnackBarModule,
   MatSortModule,
@@ -64,6 +65,7 @@ import {ColumnPipe} from './modules/module-instance/pipes/column.pipe';
 import {ToggleComponent} from './modules/module-instance/components/fields/toggle/toggle.component';
 import {CheckboxComponent} from './modules/module-instance/components/fields/checkbox/checkbox.component';
 import {DateFieldComponent} from './modules/module-instance/components/fields/date-field/date-field.component';
+import {SliderComponent} from './modules/module-instance/components/fields/slider/slider.component';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -92,6 +94,7 @@ const ENTRY_COMPONENTS = [
   ToggleComponent,
   CheckboxComponent,
   DateFieldComponent,
+  SliderComponent,
 
   // Segments
   SegmentComponent,
@@ -152,6 +155,7 @@ const PIPES = [ColumnPipe];
     MatSlideToggleModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatSliderModule,
 
     // Ng Helpers
     LoadClickModule
