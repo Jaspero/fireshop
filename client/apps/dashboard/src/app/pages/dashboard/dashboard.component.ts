@@ -1,14 +1,15 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {ActivatedRoute} from '@angular/router';
+import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {Discount} from '@jf/interfaces/discount.interface';
 import {Order} from '@jf/interfaces/order.interface';
 import {Product} from '@jf/interfaces/product.interface';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {forkJoin, Observable} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
 import {firstOfMonth} from '../../shared/utils/first-date-month';
 
 @Component({
@@ -27,9 +28,9 @@ export class DashboardComponent implements OnInit {
   orders$: Observable<Order[]>;
   ordersInMonth$: Observable<Order[]>;
   data$: Observable<{
-    category: Category[];
-    products: Product[];
-    discounts: Discount[];
+    categories: boolean;
+    products: boolean;
+    discounts: boolean;
   }>;
 
   ngOnInit() {
@@ -64,5 +65,35 @@ export class DashboardComponent implements OnInit {
           }))
         )
       );
+
+    this.data$ = this.activatedRoute.params.pipe(
+      switchMap(() =>
+        forkJoin([
+          this.afs
+            .collection<Category>(
+              `${FirestoreCollections.Categories}-${STATIC_CONFIG.lang}`
+            )
+            .get()
+            .pipe(map(actions => !!actions.docs.length)),
+          this.afs
+            .collection<Product>(
+              `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}`
+            )
+            .get()
+            .pipe(map(actions => !!actions.docs.length)),
+          this.afs
+            .collection<Discount>(
+              `${FirestoreCollections.Discounts}-${STATIC_CONFIG.lang}`
+            )
+            .get()
+            .pipe(map(actions => !!actions.docs.length))
+        ])
+      ),
+      map(data => ({
+        categories: data[0],
+        products: data[1],
+        discounts: data[2]
+      }))
+    );
   }
 }
