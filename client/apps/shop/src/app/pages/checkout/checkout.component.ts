@@ -369,8 +369,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
           );
           this.router.navigate(['checkout/success']);
         },
-        err => {
-          console.log('err', err);
+        () => {
           this.router.navigate(['checkout/error']);
         }
       );

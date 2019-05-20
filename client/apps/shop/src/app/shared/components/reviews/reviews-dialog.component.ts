@@ -39,8 +39,6 @@ export class ReviewsDialogComponent implements OnInit {
 
   submit() {
     return () => {
-      console.log(123);
-
       const {comment, rating} = this.form.getRawValue();
 
       return from(
