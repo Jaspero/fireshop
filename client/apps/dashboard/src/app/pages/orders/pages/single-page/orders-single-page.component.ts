@@ -71,10 +71,12 @@ export class OrdersSinglePageComponent extends SinglePageComponent
   }
 
   buildForm(data: any) {
-    this.orderItems = data.orderItemsData.map((val, ind) => ({
-      data: val,
-      id: data.orderItems[ind]
-    }));
+    if (data.orderItemsData) {
+      this.orderItems = data.orderItemsData.map((val, ind) => ({
+        data: val,
+        id: data.orderItems[ind]
+      }));
+    }
 
     this.form = this.fb.group({
       billing: this.checkForm(data.billing ? data.billing : {}),
