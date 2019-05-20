@@ -9,217 +9,236 @@
     </mat-toolbar>
   </section>
 
-  <section class="p-y-m">
-    <div class="grid">
-      <div class="col-8 col-s-10 col-xs-12" [ngSwitch]="currentState">
-        <ng-container *ngSwitchCase="viewState.Edit">
-          <div class="flex ai-center jc-between">
-            <h5>{{form.get('id').value}}</h5>
-            <div>
-              <button mat-icon-button aria-label="Previous product" matTooltip="Previous order" (click)="move(false, form)">
-                <mat-icon>arrow_back</mat-icon>
-              </button>
-              <button mat-icon-button aria-label="Next product" matTooltip="Next order" (click)="move(true, form)">
-                <mat-icon>arrow_forward</mat-icon>
-              </button>
-            </div>
+  <section class="grid p-y-m">
+    <div class="col-12" [ngSwitch]="currentState">
+      <ng-container *ngSwitchCase="viewState.Edit">
+        <div class="flex ai-center jc-between">
+          <h5>{{form.get('id').value}}</h5>
+          <div>
+            <button mat-icon-button aria-label="Previous product" matTooltip="Previous order" (click)="move(false, form)">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+            <button mat-icon-button aria-label="Next product" matTooltip="Next order" (click)="move(true, form)">
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
           </div>
-          <button mat-button (click)="duplicate(form)">
-            <mat-icon>filter_none</mat-icon>
-            <span>&nbsp;Duplicate</span>
-          </button>
-        </ng-container>
-        <h5 *ngSwitchCase="viewState.New">New Order</h5>
+        </div>
+        <button mat-button (click)="duplicate(form)">
+          <mat-icon>filter_none</mat-icon>
+          <span>&nbsp;Duplicate</span>
+        </button>
+      </ng-container>
+      <h5 *ngSwitchCase="viewState.New">New Order</h5>
 
-        <h5 *ngSwitchCase="viewState.Copy">{{form.get('id').value}}</h5>
-      </div>
+      <h5 *ngSwitchCase="viewState.Copy">{{form.get('id').value}}</h5>
     </div>
   </section>
 
-  <div class="grid grid-no-gutter p-b-m">
+  <div class="grid grid-no-gutter">
     <div class="col-8 col-s-10 col-xs-12">
-      <div>
-        <div class="gird">
-          <div class="col-12">
-            <mat-card>
-              <h6 class="p-y-xs">Order info</h6>
+      <div class="grid">
+        <div class="col-12">
+          <mat-card>
+            <h6 class="p-y-xs">Order info</h6>
 
-              <ng-container formGroupName="billing">
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>First Name</mat-label>
-                    <input matInput type="tel" formControlName="firstName">
-                  </mat-form-field>
-                </div>
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>Last Name</mat-label>
-                    <input matInput formControlName="lastName">
-                  </mat-form-field>
-                </div>
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>Email</mat-label>
-                    <input matInput type="tel" formControlName="email">
-                  </mat-form-field>
-                </div>
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>Phone</mat-label>
-                    <input matInput formControlName="phone">
-                  </mat-form-field>
-                </div>
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>City</mat-label>
-                    <input matInput type="tel" formControlName="city">
-                  </mat-form-field>
-                </div>
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>Zip</mat-label>
-                    <input matInput formControlName="zip">
-                  </mat-form-field>
-                </div>
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>Country</mat-label>
-                    <input matInput type="tel" formControlName="country">
-                  </mat-form-field>
-                </div>
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>Billing Address</mat-label>
-                    <input matInput formControlName="line1">
-                  </mat-form-field>
-                </div>
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>Billing Address</mat-label>
-                    <input matInput type="tel" formControlName="line2">
-                  </mat-form-field>
-                </div>
-              </ng-container>
-              <h6 class="m-b-xs m-t-s">Shipping info</h6>
-              <ng-container formGroupName="shipping" *ngIf="form.get('shipping')">
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>First Name</mat-label>
-                    <input matInput type="tel" formControlName="firstName">
-                  </mat-form-field>
-                </div>
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>Last Name</mat-label>
-                    <input matInput formControlName="lastName">
-                  </mat-form-field>
-                </div>
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>Email</mat-label>
-                    <input matInput type="tel" formControlName="email">
-                  </mat-form-field>
-                </div>
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>Phone</mat-label>
-                    <input matInput formControlName="phone">
-                  </mat-form-field>
-                </div>
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>City</mat-label>
-                    <input matInput type="tel" formControlName="city">
-                  </mat-form-field>
-                </div>
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>Zip</mat-label>
-                    <input matInput formControlName="zip">
-                  </mat-form-field>
-                </div>
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>Country</mat-label>
-                    <input matInput type="tel" formControlName="country">
-                  </mat-form-field>
-                </div>
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>Billing Address</mat-label>
-                    <input matInput formControlName="line1">
-                  </mat-form-field>
-                </div>
-                <div class="p-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>Billing Address</mat-label>
-                    <input matInput type="tel" formControlName="line2">
-                  </mat-form-field>
-                </div>
-              </ng-container>
+            <div class="p-y-xs">
+              <mat-divider></mat-divider>
+            </div>
+
+            <ng-container formGroupName="billing">
+              <mat-form-field class="col-6 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>First Name</mat-label>
+                <input matInput type="tel" formControlName="firstName">
+              </mat-form-field>
+              <mat-form-field class="col-6 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>Last Name</mat-label>
+                <input matInput formControlName="lastName">
+              </mat-form-field>
+              <mat-form-field class="col-6 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput type="tel" formControlName="email">
+              </mat-form-field>
+              <mat-form-field class="col-6 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>Phone</mat-label>
+                <input matInput formControlName="phone">
+              </mat-form-field>
+              <mat-form-field class="col-4 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>City</mat-label>
+                <input matInput type="tel" formControlName="city">
+              </mat-form-field>
+              <mat-form-field class="col-4 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>Zip</mat-label>
+                <input matInput formControlName="zip">
+              </mat-form-field>
+              <mat-form-field class="col-4 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>Country</mat-label>
+                <input matInput type="tel" formControlName="country">
+              </mat-form-field>
+              <mat-form-field class="col-6 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>Billing Address 1</mat-label>
+                <input matInput formControlName="line1">
+              </mat-form-field>
+              <mat-form-field class="col-6 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>Billing Address 2</mat-label>
+                <input matInput type="tel" formControlName="line2">
+              </mat-form-field>
+            </ng-container>
+          </mat-card>
+        </div>
+
+        <div class="col-12">
+          <mat-card>
+            <h6 class="p-y-xs">Shipping info</h6>
+
+            <div class="p-y-xs">
+              <mat-divider></mat-divider>
+            </div>
+
+            <div class="p-y-s">
               <mat-checkbox color="primary" formControlName="shippingInfo">My shipping address is same as my billing address</mat-checkbox>
+            </div>
 
-              <div class="p-y-xs">
-                <mat-divider></mat-divider>
-              </div>
-              <div class="p-y-xs">
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Customer Name</mat-label>
-                  <input matInput formControlName="customerName">
-                </mat-form-field>
-              </div>
-              <div class="p-y-xs">
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Email</mat-label>
-                  <textarea matInput formControlName="email"></textarea>
-                </mat-form-field>
-              </div>
-              <div class="p-y-xs">
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Price</mat-label>
-                  <textarea matInput formControlName="price"></textarea>
-                </mat-form-field>
-              </div>
-              <div class="p-y-xs">
+            <ng-container formGroupName="shipping" *ngIf="form.get('shipping')">
+              <mat-form-field class="col-6 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>First Name</mat-label>
+                <input matInput type="tel" formControlName="firstName">
+              </mat-form-field>
+              <mat-form-field class="col-6 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>Last Name</mat-label>
+                <input matInput formControlName="lastName">
+              </mat-form-field>
+              <mat-form-field class="col-6 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput type="tel" formControlName="email">
+              </mat-form-field>
+              <mat-form-field class="col-6 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>Phone</mat-label>
+                <input matInput formControlName="phone">
+              </mat-form-field>
+              <mat-form-field class="col-4 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>City</mat-label>
+                <input matInput type="tel" formControlName="city">
+              </mat-form-field>
+              <mat-form-field class="col-4 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>Zip</mat-label>
+                <input matInput formControlName="zip">
+              </mat-form-field>
+              <mat-form-field class="col-4 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>Country</mat-label>
+                <input matInput type="tel" formControlName="country">
+              </mat-form-field>
+              <mat-form-field class="col-6 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>Billing Address 1</mat-label>
+                <input matInput formControlName="line1">
+              </mat-form-field>
+              <mat-form-field class="col-6 col-xs-12 p-r-xs" appearance="outline">
+                <mat-label>Billing Address 2</mat-label>
+                <input matInput type="tel" formControlName="line2">
+              </mat-form-field>
+            </ng-container>
+          </mat-card>
+        </div>
+      </div>
+    </div>
 
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Status</mat-label>
-                  <mat-select formControlName="status">
-                    <mat-option
-                      *ngFor="let stat of (deliveryStatus | keyvalue)"
-                      [value]="stat.value">
-                      {{stat.value}}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
+    <div class="col-4 col-s-10 col-xs-12">
+      <div class="grid">
+        <div class="col-12">
+          <mat-card>
+            <h6 class="p-y-xs">Customer info</h6>
 
-              <div formArrayName="ordersItems">
+            <div class="p-y-xs">
+              <mat-divider></mat-divider>
+            </div>
 
-                <h6 class="p-y-xs">Items:</h6>
-                <div *ngFor="let order of ordersItemForms.controls; let i=index"
-                     [formGroupName]="i">
+            <jfsc-customer-lookup formControlName="customerInfo"></jfsc-customer-lookup>
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Price</mat-label>
+              <input matInput formControlName="price">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Payment intent id</mat-label>
+              <input matInput formControlName="paymentIntentId">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status">
+                <mat-option
+                  *ngFor="let stat of (deliveryStatus | keyvalue)"
+                  [value]="stat.value">
+                  {{stat.value}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-card>
+        </div>
+        <div class="col-12">
+          <mat-card>
+            <h6 class="p-y-xs">Items</h6>
 
-                  <div class="p-y-xs">
-                    <mat-form-field appearance="outline" class="w-full">
-                      <mat-label>Name</mat-label>
-                      <input matInput formControlName="name">
+            <div class="p-y-xs">
+              <mat-divider></mat-divider>
+            </div>
+
+            <ng-container *ngIf="orderItems">
+              <mat-list>
+                <mat-list-item *ngFor="let order of orderItems; let i=index">
+                  <p matLine>{{order.data.quantity}}x {{order.data.name}}</p>
+                  <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon>more_horiz</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="openProductDialog(order)">Edit</button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item (click)="deleteItem(i)">Delete</button>
+                  </mat-menu>
+                </mat-list-item>
+              </mat-list>
+
+              <ng-container *ngIf="filteredProducts$ | async as prod">
+                <ng-template #addProduct>
+                  <form [formGroup]="productForm">
+                    <mat-form-field class="w-full" appearance="outline">
+                      <mat-label>Product name</mat-label>
+                      <input
+                        matInput
+                        [matAutocomplete]="auto"
+                        [formControl]="search">
+                      <mat-autocomplete (optionSelected)="selectedProduct($event)" #auto="matAutocomplete">
+                        <mat-option
+                          *ngFor="let item of prod"
+                          [id]="item.id"
+                          [attr.data-price]="item.price"
+                          [value]="item.name">
+                          {{item.name}}
+                        </mat-option>
+                      </mat-autocomplete>
                     </mat-form-field>
-                  </div>
-                  <div class="p-y-xs">
                     <mat-form-field appearance="outline" class="w-full">
                       <mat-label>Quantity</mat-label>
-                      <input matInput formControlName="quantity">
+                      <input matInput type="number" formControlName="quantity">
                     </mat-form-field>
+                  </form>
+                  <div class="ta-right">
+                    <button mat-button mat-dialog-close>Cancel</button>&nbsp;
+                    <button mat-flat-button color="primary" [mat-dialog-close]="true" [disabled]="productForm.invalid">Add item</button>
                   </div>
+                </ng-template>
+              </ng-container>
 
-                  <button mat-flat-button (click)="deleteItem(i)">Delete</button>
-
-                </div>
-                <button  mat-flat-button (click)="addItem()">Add item in order</button>
+              <div class="p-y-xs" *ngIf="orderItems.length">
+                <mat-divider></mat-divider>
               </div>
-            </mat-card>
-          </div>
+            </ng-container>
+
+            <div class="ta-right">
+              <button mat-flat-button (click)="openProductDialog()">New item</button>
+            </div>
+          </mat-card>
         </div>
       </div>
     </div>
