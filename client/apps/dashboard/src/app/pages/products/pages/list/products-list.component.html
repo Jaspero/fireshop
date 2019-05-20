@@ -131,10 +131,7 @@
             <span>Export</span>
           </button>
 
-          <button mat-button (click)="import()">
-            <mat-icon>vertical_align_bottom</mat-icon>
-            <span>Import</span>
-          </button>
+          <jfsc-import [collection]="collectionRef | async"></jfsc-import>
         </div>
 
         <!--Product table-->
@@ -199,15 +196,15 @@
               <mat-menu #menu="matMenu">
                 <button mat-menu-item [routerLink]="['overview/' + element.id]">
                   <mat-icon>info</mat-icon>
-                  <span>Product statistics</span>
+                  <span>Statistics</span>
                 </button>
                 <button mat-menu-item [routerLink]="[element.id]">
                   <mat-icon>edit</mat-icon>
-                  <span>Edit product</span>
+                  <span>Edit</span>
                 </button>
                 <button mat-menu-item fDisable (click)="deleteOne(element)">
                   <mat-icon>delete_forever</mat-icon>
-                  <span>Delete product</span>
+                  <span>Delete</span>
                 </button>
               </mat-menu>
             </td>

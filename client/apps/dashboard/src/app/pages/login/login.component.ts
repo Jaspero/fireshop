@@ -11,8 +11,8 @@ import {MatSnackBar} from '@angular/material';
 import {Router} from '@angular/router';
 import {notify} from '@jf/utils/notify.operator';
 import {auth} from 'firebase/app';
-import {from} from 'rxjs';
-import {filter, switchMap} from 'rxjs/operators';
+import {defer, from, throwError} from 'rxjs';
+import {catchError, filter, switchMap} from 'rxjs/operators';
 import {environment} from '../../../../../shop/src/environments/environment';
 import {StateService} from '../../shared/services/state/state.service';
 
@@ -83,27 +83,27 @@ export class LoginComponent implements OnInit {
   }
 
   loginEmail() {
-    const data = this.loginForm.getRawValue();
-    from(
-      this.afAuth.auth.signInWithEmailAndPassword(
-        data.emailLogin,
-        data.passwordLogin
-      )
-    )
-      .pipe(
+    return defer(() => {
+      const data = this.loginForm.getRawValue();
+
+      return from(
+        this.afAuth.auth.signInWithEmailAndPassword(
+          data.emailLogin,
+          data.passwordLogin
+        )
+      ).pipe(
         notify({
           success: 'You are now logged in',
           error:
             'The email and password you entered did not match our records. Please double-check and try again.'
-        })
-      )
-      .subscribe(
-        () => {},
-        () => {
+        }),
+        catchError(error => {
           this.loginForm.get('passwordLogin').reset();
           this.passwordField.nativeElement.focus();
-        }
+          return throwError(error);
+        })
       );
+    });
   }
 
   private buildForm() {

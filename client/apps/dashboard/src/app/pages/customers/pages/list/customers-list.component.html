@@ -48,11 +48,6 @@
             <mat-icon>vertical_align_top</mat-icon>
             <span>Export</span>
           </button>
-
-          <button mat-button (click)="import()">
-            <mat-icon>vertical_align_bottom</mat-icon>
-            <span>Import</span>
-          </button>
         </div>
 
         <table
@@ -108,7 +103,7 @@
               <mat-menu #menu="matMenu">
                 <button mat-menu-item [routerLink]="['overview/' + element.id]">
                   <mat-icon>info</mat-icon>
-                  <span>Customer stats</span>
+                  <span>Statistics</span>
                 </button>
                 <button mat-menu-item (click)="goToSingle(element.id)">
                   <mat-icon>edit</mat-icon>

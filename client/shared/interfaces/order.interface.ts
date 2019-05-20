@@ -11,10 +11,8 @@ export interface OrderItem {
   quantity: number;
   name: string;
   price: number;
-  /**
-   * Any attributes that can differ
-   */
   attributes: any;
+  identifier: string;
 }
 
 export interface Order {

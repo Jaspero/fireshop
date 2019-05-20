@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {ActivatedRoute} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
@@ -17,11 +18,13 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Product} from '@jf/interfaces/product.interface';
 import {Review} from '@jf/interfaces/review.interface';
 import {combineLatest, Observable} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {map, startWith, switchMap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
+import {CartItem} from '../../shared/interfaces/cart-item.interface';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {StateService} from '../../shared/services/state/state.service';
 import {WishListService} from '../../shared/services/wish-list/wish-list.service';
+import {getProductFilters} from '../../shared/utils/get-product-filters';
 
 @Component({
   selector: 'jfs-product',
@@ -38,55 +41,100 @@ export class ProductComponent extends RxDestroy implements OnInit {
     private afs: AngularFirestore,
     private state: StateService,
     private activatedRoute: ActivatedRoute,
-    private http: HttpClient
+    private http: HttpClient,
+    private fb: FormBuilder
   ) {
     super();
   }
+
   rews$: Observable<[Review[], number]>;
   data$: Observable<{
     product: Product;
+    itemsInCart: number;
     quantity: number;
+    price: number;
     wishList: {
       label: string;
+      tooltip: string;
       icon: string;
     };
+    isDisabled: boolean;
   }>;
   similar$: Observable<any>;
   imgIndex = 0;
+  filters: FormGroup;
 
   @ViewChild('reviewsDialog') reviewsDialog: TemplateRef<any>;
 
   ngOnInit() {
-    this.data$ = this.activatedRoute.params.pipe(
-      switchMap(params => {
-        return combineLatest([
-          this.activatedRoute.data.pipe(
-            tap(val => {
-              this.similar$ = this.http.get(
-                `${environment.restApi}/similarProducts`,
-                {
-                  params: {
-                    category: val.product.category,
-                    id: val.product.id,
-                    num: '3',
-                    lang: STATIC_CONFIG.lang
-                  }
-                }
-              );
-            })
-          ),
+    this.data$ = this.activatedRoute.data.pipe(
+      switchMap(data => {
+        this.similar$ = this.http.get(
+          `${environment.restApi}/similarProducts`,
+          {
+            params: {
+              category: data.product.category,
+              id: data.product.id,
+              num: '3',
+              lang: STATIC_CONFIG.lang
+            }
+          }
+        );
+
+        const toCombine = [
           this.cart.items$,
-          this.wishList.includes(params.id)
-        ]).pipe(
-          map(([routeData, cartData, inWishList]) => {
-            const cart = cartData.find(c => params.id === c.identifier);
+          this.wishList.includes(data.product.id)
+        ];
+
+        if (data.product.attributes) {
+          this.filters = this.fb.group(getProductFilters(data.product));
+
+          toCombine.push(
+            this.filters.valueChanges.pipe(
+              startWith(this.filters.getRawValue())
+            )
+          );
+        } else {
+          this.filters = null;
+        }
+
+        return combineLatest(toCombine).pipe(
+          map(([cartData, inWishList, filters]: [CartItem[], boolean, any]) => {
+            let cart: CartItem;
+            let price = data.product.price;
+            let quantity = data.product.quantity;
+
+            if (data.product.attributes) {
+              if (this.filters.valid) {
+                let statId = '';
+
+                for (const key in filters) {
+                  statId = statId
+                    ? `${statId}_${filters[key]}`
+                    : `${data.product.id}_${filters[key]}`;
+                }
+
+                cart = cartData.find(c => statId === c.identifier);
+                statId = statId.replace(`${data.product.id}_`, '');
+                price = data.product.inventory[statId].price;
+                quantity = data.product.inventory[statId].quantity;
+              }
+            } else {
+              cart = cartData.find(c => data.product.id === c.identifier);
+            }
+
+            if (cart) {
+              quantity -= cart.quantity;
+            }
 
             return {
-              product: {
-                id: params.id,
-                ...routeData.product
-              } as Product,
-              quantity: cart ? cart.quantity : 0,
+              quantity,
+              price,
+              itemsInCart: cart ? cart.quantity : 0,
+              isDisabled: data.product.allowOutOfQuantityPurchase
+                ? false
+                : quantity <= 0,
+              product: data.product as Product,
               wishList: inWishList
                 ? {
                     label: 'Already on wishlist',

@@ -48,11 +48,6 @@
             <mat-icon>vertical_align_top</mat-icon>
             <span>Export</span>
           </button>
-
-          <button mat-button (click)="import()">
-            <mat-icon>vertical_align_bottom</mat-icon>
-            <span>Import</span>
-          </button>
         </div>
 
         <div class="of-x-auto">
@@ -109,7 +104,7 @@
                   <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                  <button mat-menu-item (click)="deleteOne(element)">
+                  <button mat-menu-item fDisable (click)="deleteOne(element)">
                     <mat-icon>delete_forever</mat-icon>
                     <span>Delete</span>
                   </button>
