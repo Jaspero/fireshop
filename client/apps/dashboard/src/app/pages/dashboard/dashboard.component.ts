@@ -48,23 +48,24 @@ export class DashboardComponent implements OnInit {
         )
       );
 
-    this.ordersInMonth$ = this.afs
-      .collection<Order>(FirestoreCollections.Orders, ref => {
-        return ref.where(
-          'createdOn',
-          FirebaseOperator.LargerThenOrEqual,
-          firstOfMonth()
-        );
-      })
-      .snapshotChanges()
-      .pipe(
-        map(actions =>
-          actions.map(action => ({
-            id: action.payload.doc.id,
-            ...action.payload.doc.data()
-          }))
-        )
-      );
+    // TODO: Uncomment for income chart
+    // this.ordersInMonth$ = this.afs
+    //   .collection<Order>(FirestoreCollections.Orders, ref => {
+    //     return ref.where(
+    //       'createdOn',
+    //       FirebaseOperator.LargerThenOrEqual,
+    //       firstOfMonth()
+    //     );
+    //   })
+    //   .snapshotChanges()
+    //   .pipe(
+    //     map(actions =>
+    //       actions.map(action => ({
+    //         id: action.payload.doc.id,
+    //         ...action.payload.doc.data()
+    //       }))
+    //     )
+    //   );
 
     this.data$ = this.activatedRoute.params.pipe(
       switchMap(() =>

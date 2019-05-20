@@ -19,7 +19,7 @@ service cloud.firestore {
     }
 
     match /products-en/{product} {
-  	  allow read: if resource.data.active == true || readOrWrite()
+  	  allow read: if readOrWrite() || resource.data.active == true;
   	  allow write, delete: if write()
     }
 
@@ -34,12 +34,12 @@ service cloud.firestore {
     }
 
     match /orders/{order} {
-      allow read: if readWrite() || resource.data.customerId == auth.uid;
+      allow read: if readOrWrite() || resource.data.customerId == auth.uid;
       allow write, delete: if write() || resource.data.customerId == auth.uid;
     }
 
     match /customers/{customer} {
-      allow read: if readWrite() || resource.id == auth.uid;
+      allow read: if readOrWrite() || resource.id == auth.uid;
       allow write, delete: if write() || resource.id == auth.uid;
     }
 
