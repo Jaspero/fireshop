@@ -1,4 +1,5 @@
 import {ComponentType} from '../../../shared/interfaces/component-type.enum';
+import {AutocompleteComponent} from '../components/fields/autocomplete/autocomplete.component';
 import {CheckboxComponent} from '../components/fields/checkbox/checkbox.component';
 import {GalleryComponent} from '../components/fields/gallery/gallery.component';
 import {ImageComponent} from '../components/fields/image/image.component';
@@ -12,5 +13,6 @@ export const COMPONENT_TYPE_COMPONENT_MAP = {
   [ComponentType.Select]: SelectComponent,
   [ComponentType.Image]: ImageComponent,
   [ComponentType.Gallery]: GalleryComponent,
-  [ComponentType.Checkbox]: CheckboxComponent
+  [ComponentType.Checkbox]: CheckboxComponent,
+  [ComponentType.Autocomplete]: AutocompleteComponent
 };

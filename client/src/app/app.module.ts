@@ -5,6 +5,7 @@ import {AngularFireAuthModule} from '@angular/fire/auth';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {ReactiveFormsModule} from '@angular/forms';
 import {
+  MatAutocompleteModule,
   MatButtonModule,
   MatCardModule,
   MatCheckboxModule,
@@ -28,13 +29,14 @@ import {
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {LoadClickModule} from '@jaspero/ng-helpers';
-import {ENV_CONFIG} from '../../env-config';
+import {ENV_CONFIG} from '../env-config';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {LoginComponent} from './modules/login/login.component';
 import {ModuleDefinitionComponent} from './modules/module-definition/module-definition.component';
 import {DefinitionInstanceComponent} from './modules/module-definition/pages/definition-instance/definition-instance.component';
 import {DefinitionOverviewComponent} from './modules/module-definition/pages/definition-overview/definition-overview.component';
+import {AutocompleteComponent} from './modules/module-instance/components/fields/autocomplete/autocomplete.component';
 import {ModuleInstanceComponent} from './modules/module-instance/module-instance.component';
 import {InstanceOverviewComponent} from './modules/module-instance/pages/instance-overview/instance-overview.component';
 import {InstanceSingleComponent} from './modules/module-instance/pages/instance-single/instance-single.component';
@@ -87,6 +89,7 @@ const ENTRY_COMPONENTS = [
   GalleryComponent,
   ToggleComponent,
   CheckboxComponent,
+  AutocompleteComponent,
 
   // Segments
   SegmentComponent,
@@ -145,6 +148,7 @@ const PIPES = [ColumnPipe];
     PortalModule,
     MatExpansionModule,
     MatSlideToggleModule,
+    MatAutocompleteModule,
 
     // Ng Helpers
     LoadClickModule
