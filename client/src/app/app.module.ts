@@ -17,6 +17,7 @@ import {
   MatMenuModule,
   MatProgressSpinnerModule,
   MatSelectModule,
+  MatSlideToggleModule,
   MatSnackBarModule,
   MatSortModule,
   MatTableModule,
@@ -27,7 +28,7 @@ import {
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {LoadClickModule} from '@jaspero/ng-helpers';
-import {ENV_CONFIG} from '../env-config';
+import {ENV_CONFIG} from '../../env-config';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {LoginComponent} from './modules/login/login.component';
@@ -57,6 +58,7 @@ import {TabsComponent} from './modules/module-instance/components/segments/tabs/
 import {StepperComponent} from './modules/module-instance/components/segments/stepper/stepper.component';
 import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
 import {ColumnPipe} from './modules/module-instance/pipes/column.pipe';
+import {ToggleComponent} from './modules/module-instance/components/fields/toggle/toggle.component';
 import {CheckboxComponent} from './modules/module-instance/components/fields/checkbox/checkbox.component';
 
 const PAGES = [
@@ -83,6 +85,7 @@ const ENTRY_COMPONENTS = [
   SelectComponent,
   ImageComponent,
   GalleryComponent,
+  ToggleComponent,
   CheckboxComponent,
 
   // Segments
@@ -141,6 +144,7 @@ const PIPES = [ColumnPipe];
     MatSelectModule,
     PortalModule,
     MatExpansionModule,
+    MatSlideToggleModule,
 
     // Ng Helpers
     LoadClickModule
