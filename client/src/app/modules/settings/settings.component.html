@@ -1,12 +1,29 @@
 <section class="primary bg p-x-s p-y-m flex jc-between ai-center">
   <h6>Settings</h6>
-  <button mat-flat-button>Do something</button>
+  <button (click)="save()" mat-flat-button>Do something</button>
 </section>
 
 <section class="grid">
   <div class="col-12">
     <mat-card>
       <p class="p-b-xl">Settings</p>
+
+      <form [formGroup]="form">
+
+        <h5>Admin</h5>
+
+        <mat-form-field appearance="outline" class="w-full m-r-xs">
+          <mat-label>Email</mat-label>
+          <input type="email" formControlName="email" matInput>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full m-r-xs">
+          <mat-label>Role</mat-label>
+          <mat-select formControlName="role">
+            <mat-option *ngFor="let option of role" [value]="option">{{option}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
     </mat-card>
   </div>
 </section>
