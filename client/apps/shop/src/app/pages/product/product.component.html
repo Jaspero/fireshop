@@ -104,13 +104,10 @@
     <section class="grid p-t-m" *ngIf="similarProducts.length">
       <div class="col-12">
         <h5>Similar products</h5>
-        <div>
-          <ng-container *ngFor="let next of similarProducts">
-            <jfs-product-card [product]="next"></jfs-product-card>
-          </ng-container>
-        </div>
+      </div>
+      <div class="col-4 col-s-6 col-xs-12" *ngFor="let next of similarProducts">
+        <jfs-product-card [product]="next"></jfs-product-card>
       </div>
     </section>
   </ng-container>
-
 </ng-container>
