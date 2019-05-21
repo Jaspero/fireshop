@@ -62,6 +62,8 @@ export class LangSinglePageComponent extends SinglePageComponent
         } else {
           this.initialValue = this.form.getRawValue();
           this.currentValue = this.form.getRawValue();
+          delete this.initialValue.id;
+          delete this.currentValue.id;
 
           this.form.valueChanges
             .pipe(takeUntil(this.destroyed$))
@@ -77,6 +79,7 @@ export class LangSinglePageComponent extends SinglePageComponent
     return () => {
       const {id, ...item} = this.form.getRawValue();
       this.initialValue = this.form.getRawValue();
+      delete this.initialValue.id;
       return this.state.language$.pipe(
         take(1),
         switchMap(lang => this.getSaveData(id, item, lang)),
