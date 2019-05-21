@@ -2,7 +2,9 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {FieldComponent, FieldData} from '../../field/field.component';
 
 interface DateData extends FieldData {
-  attribute: 'touchUi';
+  startYear: number;
+  startAt: number;
+  touchUi: boolean;
 }
 
 @Component({
@@ -12,5 +14,5 @@ interface DateData extends FieldData {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DateFieldComponent extends FieldComponent<DateData> {
-  startDate = new Date(1995, 0, 1);
+  dateNow = Date.now();
 }
