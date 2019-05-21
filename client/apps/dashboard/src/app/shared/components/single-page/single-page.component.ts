@@ -93,6 +93,8 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
         } else {
           this.initialValue = this.form.getRawValue();
           this.currentValue = this.form.getRawValue();
+          delete this.initialValue.id;
+          delete this.currentValue.id;
 
           this.form.valueChanges
             .pipe(takeUntil(this.destroyed$))
@@ -109,7 +111,7 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
     return () => {
       const {id, ...item} = this.form.getRawValue();
       this.initialValue = this.form.getRawValue();
-
+      delete this.initialValue.id;
       return this.getSaveData(id, item).pipe(
         notify(),
         tap(() => {
