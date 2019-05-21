@@ -12,6 +12,7 @@ import {map, shareReplay} from 'rxjs/operators';
 import {CartService} from '../../services/cart/cart.service';
 import {WishListService} from '../../services/wish-list/wish-list.service';
 import {getProductFilters} from '../../utils/get-product-filters';
+import {OnChange} from '@jaspero/ng-helpers';
 
 @Component({
   selector: 'jfs-product-card',
@@ -29,9 +30,9 @@ export class ProductCardComponent implements OnInit {
   ) {}
 
   // TODO: @onChange is broken. Strangely it links all the product-cards together
-  // @OnChange(function() {
-  //   this.connectProperties();
-  // })
+  @OnChange(function() {
+    this.connectProperties();
+  })
   @Input()
   product: Product;
   price: number;
