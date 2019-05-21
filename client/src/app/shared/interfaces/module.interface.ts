@@ -22,6 +22,8 @@ export interface InstanceSegment {
   fields: string[] | any[];
   type?: SegmentType;
   title?: string;
+  subTitle?: string;
+  description?: string;
   nestedSegments?: InstanceSegment[];
   columnsDesktop?: number;
   columnsTablet?: number;
