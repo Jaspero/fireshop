@@ -5,7 +5,7 @@ import {MatDialog} from '@angular/material';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {CustomerWishList} from '@jf/interfaces/customer.interface';
 import {Observable} from 'rxjs';
-import {filter, map, take} from 'rxjs/operators';
+import {filter, map, startWith, take} from 'rxjs/operators';
 import {LoginSignupDialogComponent} from '../../components/login-signup-dialog/login-signup-dialog.component';
 import {StateService} from '../state/state.service';
 
@@ -35,6 +35,7 @@ export class WishListService {
 
   includes(productId): Observable<boolean> {
     return this.wishList$.pipe(
+      startWith({wishList: [], wishListSnippets: []}),
       map(wishList => wishList.wishList.some(x => x === productId))
     );
   }
