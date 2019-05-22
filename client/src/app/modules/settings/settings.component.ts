@@ -1,11 +1,10 @@
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import * as firebase from 'firebase';
-import {Observable, ObservedValueOf} from 'rxjs';
-import {map, shareReplay} from 'rxjs/operators';
+import {from} from 'rxjs';
 import {FirestoreCollection} from '../../shared/enums/firestore-collection.enum';
-import {Module} from '../../shared/interfaces/module.interface';
+import {notify} from '../../shared/utils/notify.operator';
 
 @Component({
   selector: 'jms-settings',
@@ -18,22 +17,17 @@ export class SettingsComponent implements OnInit {
 
   role = ['write', 'read'];
   form: FormGroup;
-  userData$: Observable<[]>;
+  users = [];
 
   ngOnInit() {
-    this.userData$ = this.afs
+    this.afs
       .collection(FirestoreCollection.Settings)
       .doc('user')
-      .snapshotChanges()
-      .pipe(
-        map(actions => {
-          return actions.map(action => ({
-            id: action.payload.doc.id,
-            ...(action.payload.doc.data() as Module)
-          }));
-        }),
-        shareReplay(1)
-      );
+      .get()
+      .subscribe(val => {
+        this.users.push(val.data());
+        console.log(this.users, 'user');
+      });
 
     this.buildForm();
   }
@@ -47,12 +41,15 @@ export class SettingsComponent implements OnInit {
 
   save() {
     const data = this.form.getRawValue();
-
-    this.afs
-      .collection(FirestoreCollection.Settings)
-      .doc('user')
-      .update({
-        roles: firebase.firestore.FieldValue.arrayUnion(data)
-      });
+    from(
+      this.afs
+        .collection(FirestoreCollection.Settings)
+        .doc('user')
+        .update({
+          roles: firebase.firestore.FieldValue.arrayUnion(data)
+        })
+    )
+      .pipe(notify())
+      .subscribe();
   }
 }
