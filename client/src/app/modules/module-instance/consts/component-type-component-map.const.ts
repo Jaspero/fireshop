@@ -1,4 +1,5 @@
 import {ComponentType} from '../../../shared/interfaces/component-type.enum';
+import {ChipsComponent} from '../components/fields/chips/chips.component';
 import {DateFieldComponent} from '../components/fields/date-field/date-field.component';
 import {CheckboxComponent} from '../components/fields/checkbox/checkbox.component';
 import {GalleryComponent} from '../components/fields/gallery/gallery.component';
@@ -16,5 +17,6 @@ export const COMPONENT_TYPE_COMPONENT_MAP = {
   [ComponentType.Gallery]: GalleryComponent,
   [ComponentType.Checkbox]: CheckboxComponent,
   [ComponentType.Date]: DateFieldComponent,
-  [ComponentType.Slider]: SliderComponent
+  [ComponentType.Slider]: SliderComponent,
+  [ComponentType.Chips]: ChipsComponent
 };

@@ -9,6 +9,7 @@ import {
   MatButtonModule,
   MatCardModule,
   MatCheckboxModule,
+  MatChipsModule,
   MatDatepickerModule,
   MatDialogModule,
   MatExpansionModule,
@@ -66,6 +67,7 @@ import {ToggleComponent} from './modules/module-instance/components/fields/toggl
 import {CheckboxComponent} from './modules/module-instance/components/fields/checkbox/checkbox.component';
 import {DateFieldComponent} from './modules/module-instance/components/fields/date-field/date-field.component';
 import {SliderComponent} from './modules/module-instance/components/fields/slider/slider.component';
+import {ChipsComponent} from './modules/module-instance/components/fields/chips/chips.component';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -95,6 +97,7 @@ const ENTRY_COMPONENTS = [
   CheckboxComponent,
   DateFieldComponent,
   SliderComponent,
+  ChipsComponent,
 
   // Segments
   SegmentComponent,
@@ -156,6 +159,7 @@ const PIPES = [ColumnPipe];
     MatDatepickerModule,
     MatNativeDateModule,
     MatSliderModule,
+    MatChipsModule,
 
     // Ng Helpers
     LoadClickModule
