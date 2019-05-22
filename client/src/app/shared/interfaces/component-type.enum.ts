@@ -6,5 +6,6 @@ export enum ComponentType {
   Toggle = 'toggle',
   Checkbox = 'checkbox',
   Date = 'date',
-  Slider = 'slider'
+  Slider = 'slider',
+  Radio = 'radio'
 }

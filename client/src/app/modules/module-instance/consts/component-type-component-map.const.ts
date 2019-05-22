@@ -4,6 +4,7 @@ import {CheckboxComponent} from '../components/fields/checkbox/checkbox.componen
 import {GalleryComponent} from '../components/fields/gallery/gallery.component';
 import {ImageComponent} from '../components/fields/image/image.component';
 import {InputComponent} from '../components/fields/input/input.component';
+import {RadioComponent} from '../components/fields/radio/radio.component';
 import {SelectComponent} from '../components/fields/select/select.component';
 import {SliderComponent} from '../components/fields/slider/slider.component';
 import {ToggleComponent} from '../components/fields/toggle/toggle.component';
@@ -16,5 +17,6 @@ export const COMPONENT_TYPE_COMPONENT_MAP = {
   [ComponentType.Gallery]: GalleryComponent,
   [ComponentType.Checkbox]: CheckboxComponent,
   [ComponentType.Date]: DateFieldComponent,
-  [ComponentType.Slider]: SliderComponent
+  [ComponentType.Slider]: SliderComponent,
+  [ComponentType.Radio]: RadioComponent
 };
