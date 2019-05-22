@@ -20,12 +20,13 @@ export class WysiwygComponent extends FieldComponent<FieldData>
   @ViewChild('textarea')
   textarea: ElementRef;
 
+  editor: any;
+
   ngAfterViewInit() {
     this.registerTiny();
   }
 
   private registerTiny() {
-    this.cData.control.setValue('');
     tinymce.init({
       selector: 'textarea',
       target: this.textarea.nativeElement,
@@ -39,7 +40,14 @@ export class WysiwygComponent extends FieldComponent<FieldData>
         'alignleft aligncenter alignright alignjustify',
         'bullist numlist outdent indent',
         'mediaLibrary'
-      ].join(' | ')
+      ].join(' | '),
+      setup: editor => {
+        this.editor = editor;
+        editor.on('keyup change', () => {
+          const tinyContent = editor.getContent();
+          this.cData.control.setValue(tinyContent);
+        });
+      }
     });
   }
 }
