@@ -1,4 +1,5 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {formatDate} from '@angular/common';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FieldComponent, FieldData} from '../../field/field.component';
 
 interface DateData extends FieldData {
@@ -13,6 +14,11 @@ interface DateData extends FieldData {
   styleUrls: ['./date-field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DateFieldComponent extends FieldComponent<DateData> {
-  dateNow = Date.now();
+export class DateFieldComponent extends FieldComponent<DateData>
+  implements OnInit {
+  startDate: any;
+
+  ngOnInit() {
+    this.startDate = this.cData.startAt || new Date();
+  }
 }
