@@ -18,6 +18,8 @@ export class DateFieldComponent extends FieldComponent<DateData>
   startDate: Date;
 
   ngOnInit() {
-    this.startDate = new Date(this.cData.startAt) || new Date();
+    this.startDate = this.cData.startAt
+      ? new Date(this.cData.startAt)
+      : new Date();
   }
 }
