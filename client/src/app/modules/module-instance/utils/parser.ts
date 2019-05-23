@@ -58,6 +58,7 @@ export class Parser {
       key: string;
       type: SchemaType;
       control: FormControl;
+      validation: any;
     };
   } = {};
 
@@ -65,71 +66,90 @@ export class Parser {
     definition: StringPropertyDefinition,
     required: boolean
   ) {
-    const validation = [];
+    const controlValidation = [];
+    const validation: any = {};
 
     if (required) {
-      validation.push(Validators.required);
+      controlValidation.push(Validators.required);
+      validation.required = true;
     }
 
     if (definition.maxLength) {
-      validation.push(Validators.maxLength(definition.maxLength));
+      controlValidation.push(Validators.maxLength(definition.maxLength));
+      validation.maxLength = definition.maxLength;
     }
 
     if (definition.minLength) {
-      validation.push(Validators.minLength(definition.minLength));
+      controlValidation.push(Validators.minLength(definition.minLength));
+      validation.minLength = definition.minLength;
     }
 
     if (definition.pattern) {
-      validation.push(Validators.pattern(definition.pattern));
+      controlValidation.push(Validators.pattern(definition.pattern));
+      validation.patter = definition.pattern;
     }
 
-    return new FormControl(definition.default || '', validation);
+    return {
+      control: new FormControl(definition.default || '', controlValidation),
+      validation
+    };
   }
 
   static numberControl(
     definition: NumberPropertyDefinition,
     required: boolean
   ) {
-    const validation = [];
+    const validation: any = {};
+    const controlValidation = [];
 
     if (required) {
-      validation.push(Validators.required);
+      controlValidation.push(Validators.required);
+      validation.required = true;
     }
 
     if (definition.minimum) {
-      validation.push(
-        Validators.min(
-          definition.minimum + (definition.exclusiveMinimum ? 1 : 0)
-        )
-      );
+      const minimum =
+        definition.minimum + (definition.exclusiveMinimum ? 1 : 0);
+      controlValidation.push(Validators.min(minimum));
+      validation.minimum = minimum;
     }
 
     if (definition.maximum) {
-      validation.push(
-        Validators.max(
-          definition.maximum - (definition.exclusiveMaximum ? 1 : 0)
-        )
-      );
+      const maximum =
+        definition.maximum - (definition.exclusiveMaximum ? 1 : 0);
+      controlValidation.push(Validators.max(maximum));
+      validation.maximum = maximum;
     }
 
     if (definition.multipleOf) {
-      validation.push(SchemaValidators.multipleOf(definition.multipleOf));
+      controlValidation.push(
+        SchemaValidators.multipleOf(definition.multipleOf)
+      );
+      validation.multipleOf = definition.multipleOf;
     }
 
-    return new FormControl(definition.default || null, validation);
+    return {
+      control: new FormControl(definition.default || null, controlValidation),
+      validation
+    };
   }
 
   static booleanControl(
     definition: BooleanPropertyDefinition,
     required: boolean
   ) {
-    const validation = [];
+    const controlValidation = [];
+    const validation: any = {};
 
     if (required) {
-      validation.push(Validators.required);
+      controlValidation.push(Validators.required);
+      validation.required = true;
     }
 
-    return new FormControl(definition.default || false, validation);
+    return {
+      control: new FormControl(definition.default || false, controlValidation),
+      validation
+    };
   }
 
   buildForm(value?: any) {
@@ -148,39 +168,54 @@ export class Parser {
       Object.entries(properties).reduce((group, [key, value]) => {
         const isRequired = required.includes(key);
 
+        let validation: any = {};
+        let control: any;
+        let parsed: {
+          control: any;
+          validation: any;
+        };
+
         switch (value.type) {
           case SchemaType.String:
-            group[key] = Parser.stringControl(value, isRequired);
+            parsed = Parser.stringControl(value, isRequired);
+            validation = parsed.validation;
+            control = parsed.control;
             break;
 
           case SchemaType.Number:
           case SchemaType.Integer:
-            group[key] = Parser.numberControl(value, isRequired);
+            parsed = Parser.numberControl(value, isRequired);
+            validation = parsed.validation;
+            control = parsed.control;
             break;
 
           case SchemaType.Boolean:
-            group[key] = Parser.booleanControl(value, isRequired);
+            parsed = Parser.booleanControl(value, isRequired);
+            validation = parsed.validation;
+            control = parsed.control;
             break;
 
           case SchemaType.Object:
-            group[key] = this.buildProperties(
+            control = this.buildProperties(
               value.properties,
               value.required,
               base + key + '/'
             );
-
             break;
 
           case SchemaType.Array:
-            group[key] = this.buildArray(base, value);
+            control = this.buildArray(base, value);
             break;
         }
+
+        group[key] = control;
 
         if (base) {
           this.pointers[base + key] = {
             key,
             type: value.type,
-            control: group[key]
+            control,
+            validation
           };
         }
 
@@ -190,7 +225,7 @@ export class Parser {
   }
 
   field(pointer: string, definitions: ModuleDefinitions = {}): CompiledField {
-    const {key, type, control} = this.pointers[pointer];
+    const {key, type, control, validation} = this.pointers[pointer];
     const definition = {
       label: key,
       ...definitions[pointer]
@@ -205,6 +240,7 @@ export class Parser {
       null,
       createComponentInjector(this.injector, {
         control,
+        validation,
         ...definition,
         ...(definition.component.configuration || {})
       })
@@ -214,6 +250,7 @@ export class Parser {
       pointer,
       control,
       portal,
+      validation,
       label: definition.label
     };
   }
