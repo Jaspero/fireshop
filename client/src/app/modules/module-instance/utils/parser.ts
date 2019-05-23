@@ -43,6 +43,12 @@ export interface BooleanPropertyDefinition extends PropertyDefinition {
   default?: boolean;
 }
 
+export interface ArrayPropertyDefinition extends PropertyDefinition {
+  type: SchemaType.Array;
+  items?: any;
+  contains?: any;
+}
+
 export class Parser {
   constructor(public schema: any, public injector: Injector) {}
 
@@ -145,18 +151,15 @@ export class Parser {
         switch (value.type) {
           case SchemaType.String:
             group[key] = Parser.stringControl(value, isRequired);
-
             break;
 
           case SchemaType.Number:
           case SchemaType.Integer:
             group[key] = Parser.numberControl(value, isRequired);
-
             break;
 
           case SchemaType.Boolean:
             group[key] = Parser.booleanControl(value, isRequired);
-
             break;
 
           case SchemaType.Object:
@@ -169,8 +172,7 @@ export class Parser {
             break;
 
           case SchemaType.Array:
-            group[key] = new FormArray([]);
-
+            group[key] = this.buildArray(base, value);
             break;
         }
 
@@ -214,5 +216,21 @@ export class Parser {
       portal,
       label: definition.label
     };
+  }
+
+  /**
+   * TODO:
+   * - Handle contains case
+   * - Handle items or contains as array not object
+   */
+  private buildArray(base: string, definition: ArrayPropertyDefinition) {
+    if (
+      !definition.items ||
+      (definition.items.type !== SchemaType.Array && SchemaType.Boolean)
+    ) {
+      return new FormControl([]);
+    } else {
+      return new FormArray([]);
+    }
   }
 }
