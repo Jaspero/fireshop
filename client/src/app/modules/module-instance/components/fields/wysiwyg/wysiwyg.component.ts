@@ -23,6 +23,7 @@ export class WysiwygComponent extends FieldComponent<FieldData>
   editor: any;
 
   ngAfterViewInit() {
+    console.log(this.cData);
     this.registerTiny();
   }
 
