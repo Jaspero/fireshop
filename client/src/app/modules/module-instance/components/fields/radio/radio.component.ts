@@ -1,5 +1,13 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {FieldComponent, FieldData} from '../../field/field.component';
+
+interface RadioData extends FieldData {
+  options: Array<{
+    disabled: boolean;
+    value: any;
+    label: string;
+  }>;
+}
 
 @Component({
   selector: 'jms-radio',
@@ -7,9 +15,4 @@ import {FieldComponent, FieldData} from '../../field/field.component';
   styleUrls: ['./radio.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RadioComponent extends FieldComponent<FieldData>
-  implements OnInit {
-  ngOnInit() {
-    console.log(this.cData.control.value);
-  }
-}
+export class RadioComponent extends FieldComponent<RadioData> {}
