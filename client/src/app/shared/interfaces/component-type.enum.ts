@@ -8,6 +8,5 @@ export enum ComponentType {
   Date = 'date',
   Slider = 'slider',
   Autocomplete = 'autocomplete',
-  Slider = 'slider',
   Wysiwyg = 'wysiwyg'
 }
