@@ -31,6 +31,10 @@ const routes: Routes = [
         loadChildren: './pages/customers/customers.module#CustomersModule'
       },
       {
+        path: 'sales',
+        loadChildren: './pages/sale/sale.module#SaleModule'
+      },
+      {
         path: 'discounts',
         loadChildren: './pages/discounts/discounts.module#DiscountsModule'
       },
