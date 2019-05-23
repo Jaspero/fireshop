@@ -5,7 +5,6 @@ import {
   ViewChild
 } from '@angular/core';
 import {CollectionReference} from '@angular/fire/firestore';
-import {Validators} from '@angular/forms';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FormArray, FormGroup, Validators} from '@angular/forms';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
@@ -207,8 +206,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       inventory: this.fb.group(
         data.inventory ? this.formatInventory(data.inventory, true) : {}
       ),
-      default: data.default || ''
-      category: data.category,
+      default: data.default || '',
       activeDiscount: data.activeDiscount || ''
     });
   }

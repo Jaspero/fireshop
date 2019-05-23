@@ -19,6 +19,7 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
         [Validators.required, Validators.pattern(URL_REGEX)]
       ],
       name: [data.name || '', Validators.required],
+      code: [data.code || '', Validators.required],
       description: [data.description || ''],
       discountValue: ['', Validators.required],
       startingDate: [data.startingDate || ''],
