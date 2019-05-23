@@ -1,4 +1,3 @@
-import {formatDate} from '@angular/common';
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FieldComponent, FieldData} from '../../field/field.component';
 
@@ -16,9 +15,9 @@ interface DateData extends FieldData {
 })
 export class DateFieldComponent extends FieldComponent<DateData>
   implements OnInit {
-  startDate: any;
+  startDate: Date;
 
   ngOnInit() {
-    this.startDate = this.cData.startAt || new Date();
+    this.startDate = new Date(this.cData.startAt) || new Date();
   }
 }
