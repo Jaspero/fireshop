@@ -18,5 +18,5 @@ export const COMPONENT_TYPE_COMPONENT_MAP = {
   [ComponentType.Checkbox]: CheckboxComponent,
   [ComponentType.Date]: DateFieldComponent,
   [ComponentType.Slider]: SliderComponent,
-  [ComponentType.Wysiswyg]: WysiwygComponent
+  [ComponentType.Wysiwyg]: WysiwygComponent
 };
