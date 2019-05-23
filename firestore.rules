@@ -1,42 +1,46 @@
 service cloud.firestore {
-  function admin() {
-    return request.auth.token.admin == true
+  function write() {
+    return request.auth.token.role == 'write'
+  }
+
+  function read() {
+    return request.auth.token.role == 'read'
+  }
+
+  function readOrWrite() {
+    return write() || read()
   }
 
   match /databases/{database}/documents {
 
     match /settings/{setting} {
       allow read: if true
-      allow write, delete: if admin()
+      allow write, delete: if write()
     }
 
     match /products-en/{product} {
-  	  allow read: if resource.data.active == true
-      allow read: if admin()
+  	  allow read: if readOrWrite() || resource.data.active == true;
+  	  allow write, delete: if write()
     }
 
-    // Add for other languages
-    match /products-en/{product} {
-      allow write, delete: if admin()
-    }
-
-    // Add for other languages
     match /categories-en/{category} {
       allow read: if true
-      allow write, delete: if admin()
+      allow write, delete: if write()
     }
 
     match /discounts-en/{discount} {
       allow read: if true
-      allow write, delete: if admin()
+      allow write, delete: if write()
     }
 
     match /orders/{order} {
-      allow read, write: if admin() || resource.data.customerId == auth.uid;
+      allow read: if readOrWrite() || resource.data.customerId == auth.uid;
+      allow write, delete: if write() || resource.data.customerId == auth.uid;
     }
 
     match /customers/{customer} {
-      allow read, write, delete: if admin() || resource.data.customerId == auth.uid;
+      allow read: if readOrWrite() || resource.id == auth.uid;
+      allow write, delete: if write() || resource.id == auth.uid;
     }
 
     match /reviews/{review} {

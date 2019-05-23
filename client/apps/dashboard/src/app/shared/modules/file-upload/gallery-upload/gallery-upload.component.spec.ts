@@ -1,19 +1,19 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {OverviewComponent} from './overview.component';
+import {GalleryUploadComponent} from './gallery-upload.component';
 
-describe('OverviewComponent', () => {
-  let component: OverviewComponent;
-  let fixture: ComponentFixture<OverviewComponent>;
+describe('GalleryUploadComponent', () => {
+  let component: GalleryUploadComponent;
+  let fixture: ComponentFixture<GalleryUploadComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [OverviewComponent]
+      declarations: [GalleryUploadComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OverviewComponent);
+    fixture = TestBed.createComponent(GalleryUploadComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

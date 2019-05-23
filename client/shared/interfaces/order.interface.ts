@@ -3,18 +3,16 @@ import {Address} from './address.interface';
 
 export interface OrderPrice {
   total: number;
+  shipping?: number;
   subTotal: number;
 }
 
 export interface OrderItem {
-  id: string;
   quantity: number;
   name: string;
   price: number;
-  /**
-   * Any attributes that can differ
-   */
   attributes: any;
+  identifier: string;
 }
 
 export interface Order {
@@ -25,9 +23,16 @@ export interface Order {
   billing: Address;
   shipping?: Address;
   createdOn: number;
-  orderItems: OrderItem[];
+  orderItems: string[];
+  orderItemsData: OrderItem[];
   email: string;
   customerId?: string;
   customerName?: string;
   error?: string;
+}
+
+export interface Errors {
+  data: {id: string; name: string; quantity: number};
+  message: string;
+  type: string;
 }

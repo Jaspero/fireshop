@@ -1,6 +1,7 @@
 export interface Discount {
   id: string;
   name: string;
+  createdOn: number;
   description: string;
   discountValue: string;
   startingDate: number;

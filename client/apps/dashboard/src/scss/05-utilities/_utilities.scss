@@ -192,6 +192,16 @@
   font-size: 1.2em;
 }
 
+/* Overflow
+ *============================================================================*/
+
+.of-x-auto {
+  overflow-x: auto;
+}
+.of-y-auto {
+  overflow-y: auto;
+}
+
 /* Cursor
  *============================================================================*/
 
@@ -644,4 +654,9 @@
 }
 .m-l-xxl {
   @include fluid(320px, 160px, margin-left);
+}
+
+.disabled {
+  cursor: default;
+  pointer-events: none;
 }

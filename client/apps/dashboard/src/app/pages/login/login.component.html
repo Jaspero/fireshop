@@ -21,6 +21,11 @@
             Log in with Twitter
           </button>
         </div>
+        <div class="m-y-xs">
+          <button class="w-full" mat-raised-button (click)="logInWithInstagram()">
+            Log in with Instagram
+          </button>
+        </div>
 
         <!--Divider-->
         <div class="p-t-s p-b-s">
@@ -36,7 +41,6 @@
               type="email"
               formControlName="emailLogin"
             />
-            <mat-error>Error message</mat-error>
           </mat-form-field>
           <mat-form-field class="w-full mat-hint">
             <input
@@ -46,14 +50,13 @@
               type="password"
               formControlName="passwordLogin"
             />
-            <mat-error>Error message</mat-error>
           </mat-form-field>
           <button
             mat-raised-button
             color="primary"
             class="w-full"
             [disabled]="loginForm.invalid"
-            (click)="loginEmail()">
+            [jpLoadClick]="loginEmail()">
             Login
           </button>
         </form>

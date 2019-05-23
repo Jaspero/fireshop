@@ -5,6 +5,10 @@
   </a>
 </h5>
 
+<div *ngIf="pageLoading$ | async" class="flex jc-center m-t-l">
+  <mat-spinner [diameter]="40"></mat-spinner>
+</div>
+
 <div class="grid grid-no-gutter" *ngIf="data$ | async as data">
   <div class="col-12">
     <mat-horizontal-stepper linear class="bg-l-primary">
@@ -19,7 +23,7 @@
                 <div class="grid grid-no-gutter jc-start">
                   <div class="col-12" *ngIf="!data.user">
                     <p class="bg-l-secondary p-y-s ta-center">
-                      You're doing checkout as a guest. You can <a class="link c-primary" (click)="logInSignUp()">login</a> or <a class="link c-primary" (click)="logInSignUp(true)">sign-up</a> now.<br>Your data or cart won't be lost.
+                      You're doing checkout as a guest. You can <a class="link c-primary" (click)="logInSignUp()">login</a> or <a class="link c-primary" (click)="logInSignUp(false)">sign-up</a> now.<br>Your data or cart won't be lost.
                     </p>
                   </div>
                   <div class="col-12">
@@ -193,6 +197,13 @@
                   <tr>
                     <td colspan="2"><hr></td>
                   </tr>
+                  <tr>
+                    <td class="w-half p-a-xs">Shipping:</td>
+                    <td class="w-half p-a-xs">{{data.price.shipping ? (data.price.shipping | sp) : 'Free'}}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"><hr></td>
+                  </tr>
                   <tr class="fw-bold">
                     <td class="w-half p-a-xs">Total:</td>
                     <td class="w-half p-a-xs">{{data.price.total | sp}}</td>
@@ -231,7 +242,7 @@
                   mat-flat-button
                   color="primary"
                   id="btn-purchase"
-                  [class.loading]="loading$ | async"
+                  [class.loading]="checkoutLoading$ | async"
                   [disabled]="!data.termsControl.value"
                   (click)="checkOut(data, val)">
                   Purchase

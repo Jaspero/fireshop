@@ -25,16 +25,12 @@
     <div class="grid grid-no-gutter">
       <div class="col-8 col-s-10 col-xs-12">
         <div class="grid">
+
           <div class="col-12">
             <mat-card formGroupName="general-settings">
               <h6 class="p-y-xs">General</h6>
               <div class="p-y-xs">
                 <mat-divider></mat-divider>
-              </div>
-              <!--TODO: Add info bubbles-->
-              <div class="p-y-xs flex jc-between">
-                <span>Real Time Data</span>
-                <mat-slide-toggle formControlName="realTimeData"></mat-slide-toggle>
               </div>
               <div class="p-y-xs flex jc-between">
                 <span>Automatically reduce item quantity</span>
@@ -45,38 +41,84 @@
                 <mat-slide-toggle formControlName="inactiveForQuantity"></mat-slide-toggle>
               </div>
 
-              <mat-form-field appearance="outline" class="w-full p-y-xs">
-                <mat-label>Error Notification Email</mat-label>
-                <input type="email" formControlName="errorNotificationEmail" matInput>
-              </mat-form-field>
+              <div class="p-y-xs flex jc-between">
+                <mat-form-field appearance="outline" class="w-full p-y-xs">
+                  <mat-label>Order Description</mat-label>
+                  <input type="email" formControlName="description" matInput>
+                  <mat-hint>This description will show up on the stripe dashboard</mat-hint>
+                </mat-form-field>
+              </div>
+              <div class="p-y-xs flex jc-between">
+                <mat-form-field appearance="outline" class="w-full p-y-xs">
+                  <mat-label>Statement Description</mat-label>
+                  <input type="email" formControlName="statementDescription" matInput>
+                  <mat-hint>This description will show up on users receipt</mat-hint>
+                </mat-form-field>
+              </div>
+              <div class="p-y-xs flex jc-between">
+                <span>Show quantity on products?</span>
+                <mat-slide-toggle formControlName="showingQuantity"></mat-slide-toggle>
+              </div>
+              <div class="p-y-xs flex jc-between">
+                <span>Allow out of quantity purchase?</span>
+                <mat-slide-toggle formControlName="allowOutOfQuantityPurchase"></mat-slide-toggle>
+              </div>
             </mat-card>
           </div>
+
           <div class="col-12">
-            <mat-card>
-              <h6 class="p-y-xs">Admin</h6>
+            <mat-card formGroupName="general-settings">
+              <h6 class="p-y-xs">Notifications</h6>
               <div class="p-y-xs">
                 <mat-divider></mat-divider>
               </div>
-              <div class="p-y-xs">
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Admins</mat-label>
-                  <mat-chip-list #chipList>
-                    <mat-chip
-                      *ngFor="let admin of adminEmails.value; index as index"
-                      [removable]="true"
-                      (removed)="removeAdmin(index)">
-                      {{admin}}
-                      <mat-icon matChipRemove>cancel</mat-icon>
-                    </mat-chip>
-                    <input
-                      [formControl]="emailControl"
-                      [matChipInputFor]="chipList"
-                      (matChipInputTokenEnd)="emailControl.valid  ? addAdmin($event) : ''">
-                    <mat-error *ngIf="emailControl.invalid && emailControl.value">Please enter valid email</mat-error>
-                    <mat-error *ngIf="alreadyAdmin">This email is already an admin</mat-error>
-                  </mat-chip-list>
+              <div class="p-y-xs flex jc-between">
+                <span>Notify customers when an order is <b>shipped</b></span>
+                <mat-slide-toggle formControlName="notifyOnShipped"></mat-slide-toggle>
+              </div>
+              <div class="p-y-xs flex jc-between">
+                <span>Notify customers when an order is <b>delivered</b></span>
+                <mat-slide-toggle formControlName="notifyOnDelivered"></mat-slide-toggle>
+              </div>
+              <div class="p-y-xs flex jc-between">
+                <mat-form-field appearance="outline" class="w-full p-y-xs">
+                  <mat-label>Error Notification Email</mat-label>
+                  <input type="email" formControlName="errorNotificationEmail" matInput>
                 </mat-form-field>
               </div>
+            </mat-card>
+          </div>
+
+          <div class="col-12">
+            <mat-card>
+              <h6 class="p-y-xs">Roles</h6>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+
+              <div class="p-y-xs flex" *ngFor="let control of roles.controls; index as index" [formGroup]="control">
+
+                <mat-form-field appearance="outline" class="w-full m-r-xs">
+                  <mat-label>Email</mat-label>
+                  <input type="email" formControlName="email" matInput>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="w-full m-r-xs">
+                  <mat-label>Role</mat-label>
+                  <mat-select formControlName="role">
+                    <mat-option *ngFor="let option of role | keyvalue" [value]="option.value">{{option.key}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <button mat-icon-button color="warn" (click)="roles.removeAt(index)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+
+              <div class="flex jc-end">
+                <button mat-raised-button color="primary" (click)="roles.push(createRole())">Add role</button>
+              </div>
+
             </mat-card>
           </div>
         </div>
@@ -97,6 +139,13 @@
                       {{cur.value}} ({{cur.symbol}})
                     </mat-option>
                   </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="p-y-xs">
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Shipping cost</mat-label>
+                  <input type="number" matInput formControlName="shippingCost">
+                  <span matPrefix>{{currencySymbol}}&nbsp;</span>
                 </mat-form-field>
               </div>
             </mat-card>

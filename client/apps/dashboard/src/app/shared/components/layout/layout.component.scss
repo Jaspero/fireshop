@@ -1,5 +1,3 @@
-@import "../../../../scss/variables";
-
 .jfsc-layout-header {
   position: fixed;
   z-index: 2;
@@ -13,4 +11,9 @@
 
 .jfsc-layout-main {
   padding-top: 64px; // Header height
+}
+
+.mat-menu-item.active {
+  font-weight: bold;
+  color: var(--primary);
 }

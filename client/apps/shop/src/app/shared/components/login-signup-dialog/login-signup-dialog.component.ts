@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  Inject,
   OnInit,
   ViewChild
 } from '@angular/core';
@@ -11,18 +12,28 @@ import {
   AngularFirestoreDocument
 } from '@angular/fire/firestore';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {MatDialogRef, MatSnackBar} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef, MatSnackBar} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Customer} from '@jf/interfaces/customer.interface';
 import {notify} from '@jf/utils/notify.operator';
-import {auth, firestore, User} from 'firebase';
-import {from} from 'rxjs';
-import {filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {auth, firestore, User} from 'firebase/app';
+import {from, throwError} from 'rxjs';
+import {
+  catchError,
+  filter,
+  map,
+  skip,
+  switchMap,
+  take,
+  takeUntil,
+  tap
+} from 'rxjs/operators';
+import {environment} from '../../../../environments/environment';
 import {RepeatPasswordValidator} from '../../helpers/compare-passwords';
 import {StateService} from '../../services/state/state.service';
 
-enum View {
+export enum LoginSignUpView {
   LogIn,
   SignUp,
   Reset
@@ -41,7 +52,9 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
     public dialogRef: MatDialogRef<LoginSignupDialogComponent>,
     private afs: AngularFirestore,
     private fb: FormBuilder,
-    private state: StateService
+    private state: StateService,
+    @Inject(MAT_DIALOG_DATA)
+    private options: {view: LoginSignUpView}
   ) {
     super();
   }
@@ -51,11 +64,11 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
   logInForm: FormGroup;
   resetPasswordControl: FormControl;
   signUpForm: FormGroup;
-  view = View;
-  currentView: View = View.LogIn;
+  view = LoginSignUpView;
+  currentView: LoginSignUpView = LoginSignUpView.LogIn;
 
   validation = {
-    [View.LogIn]: (
+    [LoginSignUpView.LogIn]: (
       docRef: AngularFirestoreDocument<Customer>,
       doc: firestore.DocumentSnapshot
     ) => {
@@ -77,7 +90,7 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
         this.connectListener();
       }
     },
-    [View.SignUp]: (
+    [LoginSignUpView.SignUp]: (
       docRef: AngularFirestoreDocument<Customer>,
       doc: firestore.DocumentSnapshot,
       user: User
@@ -90,7 +103,8 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
       } else {
         // TODO: Map for different providers
         const signUpData: any = {
-          createdOn: Date.now()
+          createdOn: Date.now(),
+          email: user.email
         };
 
         if (user.displayName) {
@@ -122,6 +136,10 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
      */
     this.state.logInValid$.next(false);
 
+    if (this.options && this.options.hasOwnProperty('view')) {
+      this.currentView = this.options.view;
+    }
+
     this.buildForms();
     this.connectListener();
   }
@@ -140,16 +158,24 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
     this.afAuth.auth.signInWithPopup(new auth.TwitterAuthProvider());
   }
 
-  signUpWithEmail() {
-    const data = this.signUpForm.getRawValue();
+  logInWithInstagram() {
+    window.open(
+      `${environment.restApi}/instagram/redirect`,
+      'firebaseAuth',
+      'height=315,width=400'
+    );
+  }
 
-    from(
-      this.afAuth.auth.createUserWithEmailAndPassword(
-        data.email,
-        data.pg.password
-      )
-    )
-      .pipe(
+  signUpWithEmail() {
+    return () => {
+      const data = this.signUpForm.getRawValue();
+
+      return from(
+        this.afAuth.auth.createUserWithEmailAndPassword(
+          data.email,
+          data.pg.password
+        )
+      ).pipe(
         switchMap(() => {
           return this.afAuth.auth.signInWithEmailAndPassword(
             data.email,
@@ -160,51 +186,51 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
           success: 'Your account is successfully created',
           error: 'Your email is invalid or already in use'
         })
-      )
-      .subscribe();
+      );
+    };
   }
 
   loginWithEmail() {
-    const dataLogin = this.logInForm.getRawValue();
+    return () => {
+      const dataLogin = this.logInForm.getRawValue();
 
-    from(
-      this.afAuth.auth.signInWithEmailAndPassword(
-        dataLogin.email,
-        dataLogin.password
-      )
-    )
-      .pipe(
+      return from(
+        this.afAuth.auth.signInWithEmailAndPassword(
+          dataLogin.email,
+          dataLogin.password
+        )
+      ).pipe(
         notify({
           success: 'You are now logged in',
           error: 'The email and password you entered did not match our records.'
         }),
-        takeUntil(this.destroyed$)
-      )
-      .subscribe(
-        () => {},
-        () => {
+        catchError(error => {
           this.logInForm.get('password').reset();
           this.passwordField.nativeElement.focus();
-        }
+
+          return throwError(error);
+        })
       );
+    };
   }
 
   resetPassword() {
-    from(
-      this.afAuth.auth.sendPasswordResetEmail(this.resetPasswordControl.value)
-    )
-      .pipe(notify())
-      .subscribe(
-        () => {
-          this.dialogRef.close();
-        },
-        () => {
+    return () => {
+      return from(
+        this.afAuth.auth.sendPasswordResetEmail(this.resetPasswordControl.value)
+      ).pipe(
+        notify(),
+        tap(() => this.dialogRef.close()),
+        catchError(error => {
           this.resetPasswordControl.value.reset();
-        }
+
+          return throwError(error);
+        })
       );
+    };
   }
 
-  toggleState(newView: View) {
+  toggleState(newView: LoginSignUpView) {
     this.currentView = newView;
   }
 
@@ -236,6 +262,7 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
 
     this.afAuth.user
       .pipe(
+        skip(1),
         filter(user => !!user),
         switchMap(user => {
           docRef = this.afs.doc(

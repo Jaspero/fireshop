@@ -8,4 +8,8 @@ export const ENV_CONFIG = functions.config() as {
     token: string;
     webhook: string;
   };
+  instagram: {
+    clientid: string;
+    clientsecret: string;
+  };
 };

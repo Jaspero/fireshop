@@ -9,10 +9,12 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material';
 import {Router} from '@angular/router';
-import {auth} from 'firebase';
-import {from} from 'rxjs';
-import {filter, switchMap} from 'rxjs/operators';
 import {notify} from '@jf/utils/notify.operator';
+import {auth} from 'firebase/app';
+import {from, throwError} from 'rxjs';
+import {catchError, filter, switchMap} from 'rxjs/operators';
+import {environment} from '../../../../../shop/src/environments/environment';
+import {StateService} from '../../shared/services/state/state.service';
 
 @Component({
   selector: 'jfsc-login',
@@ -25,7 +27,8 @@ export class LoginComponent implements OnInit {
     public router: Router,
     public afAuth: AngularFireAuth,
     public fb: FormBuilder,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private state: StateService
   ) {}
 
   @ViewChild('password') passwordField: ElementRef;
@@ -39,7 +42,12 @@ export class LoginComponent implements OnInit {
         switchMap(user => user.getIdTokenResult())
       )
       .subscribe(res => {
-        if (res.claims.admin) {
+        /**
+         * If the user has any kind of role we allow
+         * access to the dashboard
+         */
+        if (res.claims.role) {
+          this.state.role = res.claims.role;
           this.router.navigate(['/dashboard']);
         } else {
           this.afAuth.auth.signOut();
@@ -66,28 +74,36 @@ export class LoginComponent implements OnInit {
     this.afAuth.auth.signInWithPopup(new auth.TwitterAuthProvider());
   }
 
+  logInWithInstagram() {
+    window.open(
+      `${environment.restApi}/instagram/redirect`,
+      'firebaseAuth',
+      'height=315,width=400'
+    );
+  }
+
   loginEmail() {
-    const data = this.loginForm.getRawValue();
-    from(
-      this.afAuth.auth.signInWithEmailAndPassword(
-        data.emailLogin,
-        data.passwordLogin
-      )
-    )
-      .pipe(
+    return () => {
+      const data = this.loginForm.getRawValue();
+
+      return from(
+        this.afAuth.auth.signInWithEmailAndPassword(
+          data.emailLogin,
+          data.passwordLogin
+        )
+      ).pipe(
         notify({
           success: 'You are now logged in',
           error:
             'The email and password you entered did not match our records. Please double-check and try again.'
-        })
-      )
-      .subscribe(
-        () => {},
-        () => {
+        }),
+        catchError(error => {
           this.loginForm.get('passwordLogin').reset();
           this.passwordField.nativeElement.focus();
-        }
+          return throwError(error);
+        })
       );
+    };
   }
 
   private buildForm() {

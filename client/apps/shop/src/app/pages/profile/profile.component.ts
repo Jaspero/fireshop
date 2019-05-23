@@ -1,18 +1,18 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ElementRef,
   OnInit,
   ViewChild
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {Router} from '@angular/router';
-import {AngularFireStorage} from '@angular/fire/storage';
-import {from} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
 import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFireStorage} from '@angular/fire/storage';
+import {Router} from '@angular/router';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {BehaviorSubject, from, Observable} from 'rxjs';
+import {map, switchMap, take} from 'rxjs/operators';
+import {StateService} from '../../shared/services/state/state.service';
 
 @Component({
   selector: 'jfs-profile',
@@ -26,7 +26,7 @@ export class ProfileComponent implements OnInit {
     private router: Router,
     private afs: AngularFireStorage,
     private angularFireStore: AngularFirestore,
-    private cdr: ChangeDetectorRef
+    private state: StateService
   ) {}
 
   @ViewChild('file')
@@ -48,28 +48,34 @@ export class ProfileComponent implements OnInit {
     {
       label: 'Reviews',
       route: 'reviews'
+    },
+    {
+      label: 'Change password',
+      route: 'change-password'
     }
   ];
 
   activeLink: any;
-  downloadURL = 'assets/images/profile-placeholder.svg';
-  loadImg: boolean;
+  downloadURL$: Observable<string>;
+  loading$ = new BehaviorSubject(false);
 
   ngOnInit() {
+    // showing change password tab only for user who are sign in with email and password
+    if (
+      this.afAuth.auth.currentUser.providerData[0].providerId !== 'password'
+    ) {
+      this.links.splice(4, 1);
+    }
+
+    this.downloadURL$ = this.state.user$.pipe(
+      map(
+        ({customerData}) =>
+          customerData.profileImage || 'assets/images/profile-placeholder.svg'
+      )
+    );
+
     const url = this.router.url.replace('/my-profile/', '');
     this.activeLink = this.links.find(val => val.route === url);
-    this.angularFireStore
-      .doc(
-        `${FirestoreCollections.Customers}/${this.afAuth.auth.currentUser.uid}`
-      )
-      .snapshotChanges()
-      .subscribe(rex => {
-        if (rex.payload.data() && rex.payload.data()['profileImage']) {
-          this.downloadURL = rex.payload.data()['profileImage'];
-        }
-        this.loadImg = true;
-        this.cdr.detectChanges();
-      });
   }
 
   openFileUpload() {
@@ -77,23 +83,32 @@ export class ProfileComponent implements OnInit {
   }
 
   filesImage(file) {
+    this.loading$.next(true);
+
     const fileToUpload = Array.from(file)[0];
     const userID = this.afAuth.auth.currentUser.uid;
-    from(
-      this.afs.upload(userID, fileToUpload, {
-        contentType: fileToUpload['type']
-      })
-    )
-      .pipe(
-        switchMap(res => res.ref.getDownloadURL()),
-        switchMap(res => {
-          this.downloadURL = res;
-          this.cdr.detectChanges();
-          return this.angularFireStore
-            .doc(`${FirestoreCollections.Customers}/${userID}`)
-            .update({profileImage: res});
+
+    if (fileToUpload) {
+      from(
+        this.afs.upload(`/users/${userID}/profilePicture`, fileToUpload, {
+          contentType: fileToUpload['type'],
+          customMetadata: {
+            skipDelete: 'true'
+          }
         })
       )
-      .subscribe();
+        .pipe(
+          switchMap(res => res.ref.getDownloadURL()),
+          switchMap(profileImage =>
+            this.angularFireStore
+              .doc(`${FirestoreCollections.Customers}/${userID}`)
+              .update({profileImage})
+          ),
+          take(1)
+        )
+        .subscribe(() => {
+          this.loading$.next(false);
+        });
+    }
   }
 }

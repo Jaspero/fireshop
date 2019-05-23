@@ -2,8 +2,12 @@ import {Component, OnInit} from '@angular/core';
 import {notify} from '@jf/utils/notify.operator';
 import {combineLatest, defer, from, of} from 'rxjs';
 import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import {Role} from '../../enums/role.enum';
 import {queue} from '../../utils/queue.operator';
-import {SinglePageComponent} from '../single-page/single-page.component';
+import {
+  SinglePageComponent,
+  ViewState
+} from '../single-page/single-page.component';
 
 @Component({
   selector: 'jfsc-lang-single-page',
@@ -12,14 +16,27 @@ import {SinglePageComponent} from '../single-page/single-page.component';
 export class LangSinglePageComponent extends SinglePageComponent
   implements OnInit {
   ngOnInit() {
-    combineLatest(this.activatedRoute.params, this.state.language$)
+    combineLatest([this.activatedRoute.params, this.state.language$])
       .pipe(
         switchMap(([params, lang]) => {
           if (params.id === 'new') {
-            this.isEdit = '';
+            this.currentState = ViewState.New;
             return of({});
+          } else if (params.id.includes('copy')) {
+            this.currentState = ViewState.Copy;
+            return this.afs
+              .collection(`${this.collection}-${lang}`)
+              .doc(this.form.controls.id.value)
+              .valueChanges()
+              .pipe(
+                take(1),
+                map(value => ({
+                  ...value
+                })),
+                queue()
+              );
           } else {
-            this.isEdit = params.id;
+            this.currentState = ViewState.Edit;
             return this.afs
               .collection(`${this.collection}-${lang}`)
               .doc(params.id)
@@ -36,52 +53,56 @@ export class LangSinglePageComponent extends SinglePageComponent
         }),
         takeUntil(this.destroyed$)
       )
-      .subscribe(data => {
+      .subscribe((data: any) => {
         this.buildForm(data);
+        this.createdOn = data.createdOn || Date.now();
 
-        this.initialValue = this.form.getRawValue();
-        this.currentValue = this.form.getRawValue();
+        if (this.state.role === Role.Read) {
+          this.form.disable();
+        } else {
+          this.initialValue = this.form.getRawValue();
+          this.currentValue = this.form.getRawValue();
+          delete this.initialValue.id;
+          delete this.currentValue.id;
 
-        this.form.valueChanges
-          .pipe(takeUntil(this.destroyed$))
-          .subscribe(value => {
-            this.currentValue = value;
-          });
+          this.form.valueChanges
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe(value => {
+              this.currentValue = value;
+            });
+        }
+
         this.cdr.detectChanges();
       });
   }
-
   save() {
-    const {id, ...item} = this.form.getRawValue();
-    this.initialValue = this.form.getRawValue();
-
-    return this.state.language$.pipe(
-      take(1),
-      switchMap(lang => this.getSaveData(id, item, lang)),
-      notify(),
-      tap(() => {
-        this.back();
-      })
-    );
+    return () => {
+      const {id, ...item} = this.form.getRawValue();
+      this.initialValue = this.form.getRawValue();
+      delete this.initialValue.id;
+      return this.state.language$.pipe(
+        take(1),
+        switchMap(lang => this.getSaveData(id, item, lang)),
+        notify(),
+        tap(() => {
+          this.back();
+        })
+      );
+    };
   }
 
   getSaveData(...args) {
-    return defer(() => {
-      const [id, item, lang] = args;
+    const [id, item, lang] = args;
 
-      return from(
-        this.afs
-          .collection(`${this.collection}-${lang}`)
-          .doc(id || this.createId())
-          .set(
-            {
-              ...item,
-              ...(this.isEdit ? {} : {createdOn: Date.now()})
-            },
-            {merge: true}
-          )
-      );
-    });
+    return from(
+      this.afs
+        .collection(`${this.collection}-${lang}`)
+        .doc(id || this.createId())
+        .set({
+          ...item,
+          createdOn: this.createdOn
+        })
+    );
   }
 
   buildForm(data: any) {}

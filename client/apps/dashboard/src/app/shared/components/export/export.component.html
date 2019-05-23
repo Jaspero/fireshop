@@ -1,16 +1,5 @@
-<p>
-  Export product!
-</p>
-<mat-list class="cursor">
-  <div (click)="exportToCsv()">
-    <mat-list-item>CSV</mat-list-item>
-  </div>
-  <mat-divider></mat-divider>
-  <div (click)="exportToXls()">
-    <mat-list-item>XLS</mat-list-item>
-  </div>
-  <mat-divider></mat-divider>
-  <div (click)="exportToPdf()">
-    <mat-list-item>PDF</mat-list-item>
-  </div>
-</mat-list>
+<mat-action-list class="cursor">
+  <button mat-list-item *ngFor="let type of types | keyvalue" (click)="export(type.value)">
+    {{type.key}}
+  </button>
+</mat-action-list>

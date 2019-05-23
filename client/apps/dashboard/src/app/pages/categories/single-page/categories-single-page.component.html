@@ -9,18 +9,36 @@
     </mat-toolbar>
   </section>
 
-  <section class="p-y-m">
-    <div class="grid">
-      <div class="col-8">
-        <h5>New Category</h5>
-      </div>
-    </div>
-  </section>
+  <div class="grid">
+    <div class="col-8 col-s-10 col-xs-12" [ngSwitch]="currentState">
+      <ng-container *ngSwitchCase="viewState.Edit">
+        <div class="flex ai-center jc-between">
+          <h5>{{form.get('name').value}}</h5>
+          <div>
+            <button mat-icon-button aria-label="Previous category" matTooltip="Previous category" (click)="move(false, form)">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+            <button mat-icon-button aria-label="Next category" matTooltip="Next category" (click)="move(true, form)">
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </div>
+        <button mat-button (click)="duplicate(form)">
+          <mat-icon>filter_none</mat-icon>
+          <span>&nbsp;Duplicate</span>
+        </button>
+      </ng-container>
+      <h5 *ngSwitchCase="viewState.New">New Category</h5>
 
-  <div class="grid grid-no-gutter">
+      <h5 *ngSwitchCase="viewState.Copy">Copy of {{form.get('name').value}}</h5>
+
+    </div>
+  </div>
+
+  <div class="grid grid-no-gutter p-b-m">
     <div class="col-8 col-s-10 col-xs-12">
       <div>
-        <div class="gird">
+        <div class="grid">
           <div class="col-12">
             <mat-card>
               <h6 class="p-y-xs">Category info</h6>
@@ -54,18 +72,21 @@
 
   <div class="jfsc-actions-header">
     <button
+      type="button"
+      tabindex="-1"
       mat-flat-button
       color="primary"
       (click)="back()">
-      {{isEdit ? 'Discard changes' : 'Cancel'}}
+      {{currentState === viewState.Edit ? 'Discard changes' : 'Cancel'}}
     </button> &nbsp;
 
     <button
       mat-flat-button
       type="submit"
+      fDisable
       [disabled]="form.invalid"
       [jpLoadClick]="save()">
-      {{isEdit ? 'Save changes' : 'Save'}}
+      {{currentState === viewState.Edit ? 'Save changes' : 'Save'}}
     </button>
   </div>
 

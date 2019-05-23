@@ -6,7 +6,7 @@
   "hosting": [
     {
       "target": "shop",
-      "public": "dist/public/shop",
+      "public": "functions/dist/public/shop",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [
         {
@@ -17,7 +17,7 @@
     },
     {
       "target": "admin",
-      "public": "dist/public/dashboard",
+      "public": "functions/dist/public/dashboard",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [
         {

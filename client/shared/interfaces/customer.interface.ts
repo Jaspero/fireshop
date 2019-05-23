@@ -1,14 +1,8 @@
 import {Address} from '@jf/interfaces/address.interface';
-import {Order} from '@jf/interfaces/order.interface';
 
-export interface CustomerReview {
-  productId: string;
-  review: {
-    title: string;
-    snippet: string;
-    rating: number;
-  };
-  createdOn: number;
+export interface CustomerWishList {
+  name: string;
+  addedOn: number;
 }
 
 export interface Customer {
@@ -19,7 +13,12 @@ export interface Customer {
   billing?: Address;
   shippingInfo?: boolean;
   shipping?: Address;
+
+  /**
+   * wishList is a list of product ids
+   * matching a wishListSnippets that
+   * are a list of product snippets
+   */
   wishList?: string[];
-  orders?: Order[];
-  reviews?: CustomerReview[];
+  wishListSnippets?: CustomerWishList[];
 }

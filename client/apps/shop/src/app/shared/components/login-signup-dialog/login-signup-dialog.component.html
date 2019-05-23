@@ -40,6 +40,15 @@
           Login with Facebook
         </button>
       </div>
+      <div class="m-y-xs">
+        <button
+          id="btn-i-log"
+          mat-raised-button
+          class="w-full"
+          (click)="logInWithInstagram()">
+          Login with Instagram
+        </button>
+      </div>
     </div>
 
     <!--Divider-->
@@ -73,7 +82,7 @@
         type="submit"
         class="w-full"
         [disabled]="logInForm.invalid"
-        (click)="loginWithEmail()">
+        [jpLoadClick]="loginWithEmail()">
         Login
       </button>
     </form>
@@ -113,8 +122,7 @@
           id="btn-g-sig"
           mat-raised-button
           class="w-full"
-          (click)="logInWithGoogle()"
-        >
+          (click)="logInWithGoogle()">
           Sign up with Google
         </button>
       </div>
@@ -123,8 +131,7 @@
           id="btn-t-sig"
           mat-raised-button
           class="w-full"
-          (click)="logInWithTwitter()"
-        >
+          (click)="logInWithTwitter()">
           Sign up with Twitter
         </button>
       </div>
@@ -133,8 +140,7 @@
           id="btn-f-sig"
           mat-raised-button
           class="w-full"
-          (click)="logInWithFacebook()"
-        >
+          (click)="logInWithFacebook()">
           Sign up with Facebook
         </button>
       </div>
@@ -192,7 +198,7 @@
         type="submit"
         class="w-full"
         [disabled]="signUpForm.invalid"
-        (click)="signUpWithEmail()">
+        [jpLoadClick]="signUpWithEmail()">
         Sign up
       </button>
     </form>
@@ -238,7 +244,7 @@
         color="primary"
         class="w-full"
         [disabled]="resetPasswordControl.invalid"
-        (click)="resetPassword()">
+        [jpLoadClick]="resetPassword()">
         Send link and reset
       </button>
     </form>

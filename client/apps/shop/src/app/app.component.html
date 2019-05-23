@@ -1,3 +1,4 @@
+<ngx-json-ld [json]="state.structuredData"></ngx-json-ld>
 <ng-container *ngIf="showLayout$ | async">
   <!--Header-->
   <header class="jfs-app-header bg-primary flex ai-center">
@@ -73,7 +74,7 @@
       matTooltip="Cart"
       aria-label="Your cart"
       (click)="openCheckout()">
-      <mat-icon [matBadge]="cart.numOfItems$ | async" matBadgeColor="accent">
+      <mat-icon [matBadge]="cartBadge$ | async" matBadgeColor="accent">
         shopping_cart
       </mat-icon>
     </button>
@@ -88,3 +89,8 @@
 </main>
 
 <jfs-color-picker *ngIf="showLayout$ | async"></jfs-color-picker>
+
+<!--Loading-->
+<div class="jfs-shop-loading" *ngIf="state.loading$ | async">
+  <mat-progress-bar mode="query"></mat-progress-bar>
+</div>

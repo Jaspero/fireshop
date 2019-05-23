@@ -1,0 +1,74 @@
+<section>
+  <mat-toolbar color="primary">
+    <a mat-icon-button routerLink="/customers" aria-label="Back" matTooltip="Back">
+      <mat-icon>arrow_back</mat-icon>
+    </a>
+    <span>Customers</span>
+  </mat-toolbar>
+</section>
+<ng-container *ngIf="data$ | async as data">
+  <section class="p-y-m">
+    <div class="grid">
+      <div class="col-8 col-s-10 col-xs-12 flex ai-center jc-between">
+        <h5>{{data.customer.name}} stats</h5>
+        <button mat-button [routerLink]="['/customers/', data.customer.id]">Customer info</button>
+      </div>
+    </div>
+  </section>
+  <div class="grid grid-no-gutter p-b-m">
+    <div class="col-8 col-s-10 col-xs-12">
+      <div>
+        <div class="grid">
+          <div class="col-12">
+            <mat-card>
+              <mat-nav-list>
+                <h3 mat-subheader>Wishlist</h3>
+                <ng-container *ngIf="data.customer.wishList && data.customer.wishList.length; else noWishList">
+                  <mat-list-item *ngFor="let wish of data.customer.wishListSnippets; index as index" [routerLink]="['/products/' + data.customer.wishList[index]]">
+                    <mat-icon mat-list-icon>favorite</mat-icon>
+                    <h4 mat-line>{{wish.name}}</h4>
+                    <p mat-line>Added on {{wish.addedOn | date}}</p>
+                  </mat-list-item>
+                </ng-container>
+                <ng-template #noWishList>
+                  <mat-list-item>
+                    <h4 mat-line>No products on wishlist yet.</h4>
+                  </mat-list-item>
+                </ng-template>
+                <mat-divider></mat-divider>
+                <h3 mat-subheader>Orders</h3>
+                <ng-container *ngIf="data.orders.length; else noOrders">
+                  <mat-list-item *ngFor="let order of data.orders" [routerLink]="['/products/' + order.id]">
+                    <mat-icon mat-list-icon>shopping_cart</mat-icon>
+                    <h4 mat-line>{{order.createdOn}}</h4>
+                    <p mat-line>{{order.createdOn | date: 'yyyy/MM/dd'}}</p>
+                  </mat-list-item>
+                </ng-container>
+                <ng-template #noOrders>
+                  <mat-list-item>
+                    <h4 mat-line>No orders yet.</h4>
+                  </mat-list-item>
+                </ng-template>
+                <mat-divider></mat-divider>
+                <ng-container *ngIf="data.reviews.length; else noReviews">
+                <h3 mat-subheader>Reviews</h3>
+                <mat-list-item *ngFor="let rait of data.reviews">
+                  <mat-icon mat-list-icon>rate_review</mat-icon>
+                  <h4 mat-line><mat-icon *ngFor="let i of [].constructor(rait.rating)">star</mat-icon></h4>
+                  <p mat-line>{{rait.comment}}</p>
+                  <p mat-line>{{rait.createdOn | date: 'yyyy/MM/dd'}}</p>
+                </mat-list-item>
+                </ng-container>
+                <ng-template #noReviews>
+                  <mat-list-item>
+                    <h4 mat-line>No reviews yet.</h4>
+                  </mat-list-item>
+                </ng-template>
+              </mat-nav-list>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

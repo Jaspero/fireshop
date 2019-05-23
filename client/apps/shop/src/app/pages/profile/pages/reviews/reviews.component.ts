@@ -1,20 +1,21 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
-  Inject,
   OnInit
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {MatDialog} from '@angular/material';
+import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {LoadState} from '@jf/enums/load-state.enum';
 import {Review} from '@jf/interfaces/review.interface';
 import {confirmation} from '@jf/utils/confirmation';
-import {UNIQUE_ID, UNIQUE_ID_PROVIDER} from '@jf/utils/id.provider';
 import {notify} from '@jf/utils/notify.operator';
-import {from, Observable} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {BehaviorSubject, from} from 'rxjs';
+import {switchMap, takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'jfs-reviews',
@@ -22,37 +23,44 @@ import {map, switchMap} from 'rxjs/operators';
   styleUrls: ['./reviews.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReviewsComponent implements OnInit {
+export class ReviewsComponent extends RxDestroy implements OnInit {
   constructor(
     private dialog: MatDialog,
     private afs: AngularFirestore,
+    private cdr: ChangeDetectorRef,
     private afAuth: AngularFireAuth
-  ) {}
+  ) {
+    super();
+  }
 
-  myReviews$: Observable<Review[]>;
+  dataState = LoadState;
+  state$ = new BehaviorSubject<{
+    state: LoadState;
+    data: any;
+  }>({
+    state: LoadState.Loading,
+    data: []
+  });
 
   ngOnInit() {
-    this.myReviews$ = this.afs
-      .collection<Review>(FirestoreCollections.Reviews, ref =>
-        ref.where(
+    this.afs
+      .collection<Review>(FirestoreCollections.Reviews, ref => {
+        return ref.where(
           'customerId',
           FirebaseOperator.Equal,
           this.afAuth.auth.currentUser.uid
-        )
-      )
-      .snapshotChanges()
-      .pipe(
-        map(actions =>
-          actions.map(action => {
-            const data = action.payload.doc.data();
+        );
+      })
+      .valueChanges()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(value => {
+        this.state$.next({
+          state: value.length ? LoadState.Loaded : LoadState.Empty,
+          data: value
+        });
 
-            return {
-              id: action.payload.doc.id,
-              ...data
-            };
-          })
-        )
-      );
+        this.cdr.detectChanges();
+      });
   }
 
   delete(id: string) {

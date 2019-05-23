@@ -1,4 +1,12 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output
+} from '@angular/core';
+import {MatAutocompleteSelectedEvent} from '@angular/material';
+import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
 import {Order} from '@jf/interfaces/order.interface';
@@ -10,26 +18,56 @@ import {ListComponent} from '../../../../shared/components/list/list.component';
   styleUrls: ['./orders-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OrdersListComponent extends ListComponent<Order> {
+export class OrdersListComponent extends ListComponent<Order>
+  implements OnInit {
   displayedColumns = [
     'checkBox',
-    'customer',
-    'email',
+    'id',
+    'createdOn',
+    'customerName',
     'price',
-    'time',
-    'statusChange',
+    'stripe',
+    'status',
     'actions'
   ];
 
+  @Output()
+  optionSelected: EventEmitter<MatAutocompleteSelectedEvent>;
+
   collection = FirestoreCollections.Orders;
   deliveryStatus = OrderStatus;
+  additionalRouteData = {
+    filters: {
+      search: '',
+      customers: '',
+      status: ''
+    }
+  };
 
-  changeClient(val, element) {
+  runFilters(ref): any {
+    if (this.options.filters.customers) {
+      ref = ref.where(
+        'customerId',
+        FirebaseOperator.Equal,
+        this.options.filters.customers
+      );
+    }
+
+    if (this.options.filters.status) {
+      ref = ref.where(
+        'status',
+        FirebaseOperator.Equal,
+        this.options.filters.status
+      );
+    }
+
+    return super.runFilters(ref);
+  }
+
+  statusChanged(status: OrderStatus, id: string) {
     this.afs
       .collection(FirestoreCollections.Orders)
-      .doc(element)
-      .update({
-        status: val
-      });
+      .doc(id)
+      .set({status}, {merge: true});
   }
 }

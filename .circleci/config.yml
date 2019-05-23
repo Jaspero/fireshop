@@ -13,7 +13,7 @@ jobs:
           command: echo export const ENV_CONFIG=$DEV_PUBLIC_CONFIG > client/shared/consts/env-config.const.ts
       - run:
           name: Set Private Environment
-          command: firebase functions:config:set sendgrid.token=$SENDGRID_TOKEN stripe.token=$STRIPE_DEV_TOKEN stripe.webhook=$STRIPE_DEV_WEBHOOK --project=jaspero-site --token $FIREBASE_CI_TOKEN
+          command: firebase functions:config:set sendgrid.token=$SENDGRID_TOKEN stripe.token=$STRIPE_DEV_TOKEN stripe.webhook=$STRIPE_DEV_WEBHOOK instagram.clientid=$INSTAGRAM_CLIENT_ID instagram.clientsecret=$INSTAGRAM_CLIENT_SECRET --project=jaspero-site --token $FIREBASE_CI_TOKEN
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package-lock.json" }}-{{ checksum "client/package-lock.json" }}-{{ checksum "functions/package-lock.json" }}
@@ -39,7 +39,7 @@ jobs:
           name: Building
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                npm run build
+                npm run build && npm run build-indexes
             fi
       - save_cache:
           key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
@@ -50,7 +50,7 @@ jobs:
             - package-lock.json
             - firebase.json
             - functions/node_modules
-            - dist
+            - functions/dist
             - functions/lib
             - firestore.indexes.json
             - firestore.rules

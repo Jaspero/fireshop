@@ -1,12 +1,12 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
+import {CanDeactivateGuard} from '@jf/guards/can-deactivate.guard';
 import {FileUploadModule} from '../../shared/modules/file-upload/file-upload.module';
 import {SharedModule} from '../../shared/shared.module';
 import {ProductsListComponent} from './pages/list/products-list.component';
+import {ProductsOverviewComponent} from './pages/overview/products-overview.component';
 import {ProductsSinglePageComponent} from './pages/single-page/products-single-page.component';
 import {ProductsComponent} from './products.component';
-import {OverviewComponent} from './pages/overview/overview.component';
-import {CanDeactivateGuard} from '@jf/guards/can-deactivate.guard';
 
 const routes: Routes = [
   {
@@ -19,7 +19,11 @@ const routes: Routes = [
         component: ProductsSinglePageComponent,
         canDeactivate: [CanDeactivateGuard]
       },
-      {path: 'single/:id', component: OverviewComponent}
+      {
+        path: 'overview/:id',
+        component: ProductsOverviewComponent,
+        canDeactivate: [CanDeactivateGuard]
+      }
     ]
   }
 ];
@@ -29,7 +33,7 @@ const routes: Routes = [
     ProductsComponent,
     ProductsListComponent,
     ProductsSinglePageComponent,
-    OverviewComponent
+    ProductsOverviewComponent
   ],
   imports: [SharedModule, FileUploadModule, RouterModule.forChild(routes)],
   providers: []

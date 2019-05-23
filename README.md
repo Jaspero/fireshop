@@ -8,9 +8,9 @@ the [Angular](https://angular.io/) framework.
 ## Supports
 
 - [x] Multilingual
-- [ ] Universal Rendering (SSR)
+- [x] Universal Rendering ([SSR](https://angular.io/guide/universal))
 - [x] PWA
-- [ ] [Stripe Checkout](https://stripe.com/docs)
+- [x] [Stripe Checkout](https://stripe.com/docs)
 - [x] Offline
   - [x] Browsing
   - [ ] Cart
@@ -26,6 +26,17 @@ the [Angular](https://angular.io/) framework.
 - Fork this repository
 - Create a firebase project
 - Replace environment variables in [firebase](https://firebase.google.com/docs/functions/config-env)
+
+## CMS
+
+An example deployment of the cms can be found [here](https://fireshop.admin.jaspero.co/dashboard).
+You can use the credentials below to login with a read only account.
+
+| Property | Value                             |
+| -------- | --------------------------------- |
+| Site     | https://fireshop.admin.jaspero.co |
+| Email    | example@jaspero.co                |
+| Password | example                           |
 
 ## Project Structure
 
@@ -59,3 +70,10 @@ To add an admin claim to an account add it to the `email` property of the `setti
 2. Connect `payment_intent.succeeded` and `payment_intent.payment_failed`
    events for the webhook.
 3. Added the stripe webhook secret to your integrations environment variables.
+
+## Feature Branches
+
+### feature/mail-chimp
+
+Creates a MailChimp account for every new user if the users
+email isn't listed already.

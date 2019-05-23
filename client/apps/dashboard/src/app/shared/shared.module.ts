@@ -7,6 +7,7 @@ import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {
   MAT_DATE_LOCALE,
+  MatAutocompleteModule,
   MatBottomSheetModule,
   MatButtonModule,
   MatCardModule,
@@ -48,13 +49,17 @@ import {ColorPickerComponent} from '@jf/components/color-picker/color-picker.com
 import {ConfirmationComponent} from '@jf/components/confirmation/confirmation.component';
 import {StripePipe} from '@jf/pipes/stripe.pipe';
 import {ChipsComponent} from './components/chips/chips.component';
+import {CustomerLookupComponent} from './components/customer-lookup/customer-lookup.component';
 import {ExportComponent} from './components/export/export.component';
 import {LangListComponent} from './components/lang-list/lang-list.component';
 import {LangSinglePageComponent} from './components/lang-single-page/lang-single-page.component';
 import {ListComponent} from './components/list/list.component';
+import {SearchInputComponent} from './components/search-input/search-input.component';
 import {SinglePageComponent} from './components/single-page/single-page.component';
 import {WysiwygComponent} from './components/wysiwyg/wysiwyg.component';
 import {FileUploadModule} from './modules/file-upload/file-upload.module';
+import {ImportComponent} from './components/import/import.component';
+import {ForceDisableDirective} from './directives/force-disable/force-disable.directive';
 
 const IMPORTS = [
   CommonModule,
@@ -94,6 +99,7 @@ const IMPORTS = [
   MatChipsModule,
   MatToolbarModule,
   MatProgressBarModule,
+  MatAutocompleteModule,
   MatRadioModule,
 
   // AngularFire
@@ -112,7 +118,13 @@ const IMPORTS = [
   FileUploadModule
 ];
 
-const COMPONENTS = [WysiwygComponent, ChipsComponent];
+const COMPONENTS = [
+  WysiwygComponent,
+  ChipsComponent,
+  SearchInputComponent,
+  ImportComponent,
+  CustomerLookupComponent
+];
 
 const ENTRY_COMPONENTS = [
   ConfirmationComponent,
@@ -124,12 +136,14 @@ const ENTRY_COMPONENTS = [
   LangSinglePageComponent
 ];
 
+const DIRECTIVES = [ForceDisableDirective];
+
 const PIPES = [StripePipe];
 
 @NgModule({
-  declarations: [...ENTRY_COMPONENTS, ...COMPONENTS, ...PIPES],
+  declarations: [...ENTRY_COMPONENTS, ...COMPONENTS, ...PIPES, ...DIRECTIVES],
   imports: [...IMPORTS],
-  exports: [...IMPORTS, ...COMPONENTS, ...PIPES],
+  exports: [...IMPORTS, ...COMPONENTS, ...PIPES, ...DIRECTIVES],
   entryComponents: ENTRY_COMPONENTS,
   providers: [{provide: MAT_DATE_LOCALE, useValue: 'en-GB'}]
 })

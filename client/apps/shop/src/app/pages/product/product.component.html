@@ -2,31 +2,28 @@
 
   <!--Product name-->
   <section class="bg-primary c-l-primary jfs-product-header">
-    <div class="grid">
+    <div class="grid jc-start">
       <div class="col-6 col-xs-12">
         <h3 class="fw-reg c-l-primary m-b-xs">{{data.product.name}}</h3>
         <p>{{data.product.shortDescription}}</p>
       </div>
 
-      <ng-container *ngIf="rews$ | async as rec">
+      <ng-container *ngIf="rews$ | async as rec;">
 
         <ng-template #reviewsDialog>
           <h6 mat-dialog-title="">Reviews</h6>
-          <ng-container *ngIf="rec[0].length; else empty">
-            <div class="m-b-s" *ngFor="let review of rec[0]">
-              <jfs-review-card [review]="review"></jfs-review-card>
-            </div>
-          </ng-container>
+          <div class="m-b-s" *ngFor="let review of rec[0]">
+            <jfs-review-card [review]="review"></jfs-review-card>
+          </div>
         </ng-template>
 
-        <div class="col-6 col-xs-12 ws-nowrap ta-right">
+        <div *ngIf="rec[0].length" class="col-6 col-xs-12 ws-nowrap ta-right">
           <p>
             <a class="link" (click)="openReviews()">{{rec[0].length}} reviews</a>
           </p>
           <jfs-rating-scale [value]="rec[1]" color="default"></jfs-rating-scale>
         </div>
       </ng-container>
-
     </div>
   </section>
 
@@ -37,26 +34,32 @@
         <div class="grid">
           <div class="col-6 col-s-12">
             <h5 class="p-t-s p-b-xs">Description</h5>
-            <div [innerHtml]="data.product.description"></div>
-            <h2 class="m-t-m m-b-xs">{{data.product.price | sp}}</h2>
-            <ng-container *ngIf="data.quantity; else notInCart">
-              <button
-                id="btn-add-more-prod-0"
-                mat-flat-button
-                color="accent"
-                (click)="cart.add(data.product)">
-                <span class="iblock p-x-s">Add more to cart (currently {{data.quantity}})</span>
-              </button>
-            </ng-container>
-            <ng-template #notInCart>
-              <button
-                id="btn-add-cart-prod-1"
-                mat-flat-button
-                color="accent"
-                (click)="cart.add(data.product)">
-                <span class="iblock p-x-m">Add to cart</span>
-              </button>
-            </ng-template>
+            <div class="m-b-s" [innerHtml]="data.product.description"></div>
+            <div class="m-b-s" *ngIf="data.product.attributes">
+              <form [formGroup]="filters">
+                <div *ngFor="let attribute of data.product.attributes">
+                  <mat-form-field appearance="outline">
+                    <mat-label>{{attribute.key}}</mat-label>
+                    <mat-select [formControlName]="attribute.key">
+                      <mat-option *ngFor="let option of attribute.list" [value]="option">{{option}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </form>
+            </div>
+            <h2 class="m-b-xs">{{data.price | sp}}</h2>
+            <p class="m-t-s" *ngIf="data.product.showingQuantity">
+              {{data.quantity ? data.quantity + ' in stock' : 'There are no more items in stock'}}
+            </p>
+            <button
+              id="btn-add-cart-prod-1"
+              mat-flat-button
+              type="button"
+              color="accent"
+              [disabled]="data.isDisabled"
+              (click)="cart.add(data.product, filters ? filters.getRawValue() : {})">
+              <span class="iblock p-x-m">{{data.itemsInCart ? 'Add more to cart (currently ' + data.itemsInCart + ')' : 'Add to cart'}} </span>
+            </button>
             <div class="m-y-m flex fd-col ai-start">
               <p class="m-b-xs"><b>Share this product:</b></p>
               <button mat-button (click)="facebookShare(data)">Share on Facebook</button>
@@ -88,7 +91,7 @@
           color="accent"
           [matTooltip]="data.wishList.tooltip"
           [attr.aria-label]="data.wishList.tooltip"
-          (click)="wishList.toggle(data.product.id)">
+          (click)="wishList.toggle(data.product)">
           <mat-icon>{{data.wishList.icon}}</mat-icon>
         </button>
       </mat-card>
@@ -97,15 +100,14 @@
   </section>
 
   <!--Similar products-->
-  <section class="grid p-t-m">
-    <div class="col-12">
-      <h5>Similar products</h5>
-      <div *ngIf="similar$ | async as similarProducts">
-        <ng-container *ngFor="let next of similarProducts">
-          <jfs-product-card [product]="next"></jfs-product-card>
-        </ng-container>
+  <ng-container *ngIf="similar$ | async as similarProducts">
+    <section class="grid p-t-m" *ngIf="similarProducts.length">
+      <div class="col-12">
+        <h5>Similar products</h5>
       </div>
-    </div>
-  </section>
-
+      <div class="col-4 col-s-6 col-xs-12" *ngFor="let next of similarProducts">
+        <jfs-product-card [product]="next"></jfs-product-card>
+      </div>
+    </section>
+  </ng-container>
 </ng-container>

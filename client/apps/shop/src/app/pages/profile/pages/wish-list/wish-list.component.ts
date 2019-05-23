@@ -38,7 +38,7 @@ export class WishListComponent implements OnInit {
            * If the user has items in his wish list
            * we populate them with products from
            */
-          if (user.customerData.wishList) {
+          if (user.customerData.wishList && user.customerData.wishList.length) {
             return forkJoin(
               user.customerData.wishList.map(id =>
                 this.afs
@@ -49,9 +49,9 @@ export class WishListComponent implements OnInit {
                   )
                   .get()
                   .pipe(
-                    map(product => ({
-                      id,
-                      ...product.data()
+                    map(doc => ({
+                      id: doc.id,
+                      ...doc.data()
                     }))
                   )
               )
@@ -61,10 +61,10 @@ export class WishListComponent implements OnInit {
           }
         })
       )
-      .subscribe(res => {
+      .subscribe(data => {
         this.state$.next({
-          state: res.length ? LoadState.Loaded : LoadState.Empty,
-          data: res
+          state: data.length ? LoadState.Loaded : LoadState.Empty,
+          data
         });
       });
   }

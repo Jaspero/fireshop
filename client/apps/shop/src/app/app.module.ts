@@ -1,7 +1,11 @@
 import {APP_INITIALIZER, Injector, NgModule, PLATFORM_ID} from '@angular/core';
 import {AngularFireModule} from '@angular/fire';
 import {AngularFireAuthModule} from '@angular/fire/auth';
-import {AngularFirestoreModule} from '@angular/fire/firestore';
+import {
+  AngularFirestore,
+  AngularFirestoreModule
+} from '@angular/fire/firestore';
+import {MatProgressBarModule} from '@angular/material';
 import {
   BrowserModule,
   BrowserTransferStateModule
@@ -27,7 +31,8 @@ export function init(injector: Injector) {
     return appInit(
       injector.get(PLATFORM_ID),
       injector.get(NetworkService),
-      injector.get(JpPreloadService)
+      injector.get(JpPreloadService),
+      injector.get(AngularFirestore)
     );
   };
 }
@@ -55,7 +60,7 @@ const ENTRY_COMPONENTS = [UpdateAvailableComponent];
     AngularFireModule.initializeApp(ENV_CONFIG.firebase),
     AngularFirestoreModule.enablePersistence(),
     AngularFireAuthModule,
-
+    MatProgressBarModule,
     JpImagePreloadModule.forRoot()
   ],
   providers: [
