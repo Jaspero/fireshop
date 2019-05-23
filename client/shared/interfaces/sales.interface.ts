@@ -8,4 +8,7 @@ export interface Sales {
   active: boolean;
   ribbonProduct: boolean;
   limitedNumber: boolean;
+  saleValue: string;
+  percentageValue?: number;
+  fixedValue?: number;
 }

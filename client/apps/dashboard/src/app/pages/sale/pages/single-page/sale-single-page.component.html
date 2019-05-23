@@ -63,21 +63,21 @@
               </mat-form-field>
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Sale value</mat-label>
-                <mat-select formControlName="discountValue">
+                <mat-select formControlName="saleValue">
                   <mat-option value="fixedAmount">Fixed amount</mat-option>
                   <mat-option value="percentage">Percentage</mat-option>
                 </mat-select>
               </mat-form-field>
-              <ng-container *ngIf="form.get('discountValue').value === 'percentage'" class="w-full" appearance="outline">
+              <ng-container *ngIf="form.get('saleValue').value === 'percentage'" class="w-full" appearance="outline">
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Percentage value</mat-label>
-                  <input matInput type="number">
+                  <input matInput type="number" formControlName="percentageValue">
                 </mat-form-field>
               </ng-container>
-              <ng-container *ngIf="form.get('discountValue').value === 'fixedAmount'" class="w-full" appearance="outline">
+              <ng-container *ngIf="form.get('saleValue').value === 'fixedAmount'" class="w-full" appearance="outline">
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Fixed value</mat-label>
-                  <input matInput type="number">
+                  <input matInput type="number" formControlName="fixedValue">
                 </mat-form-field>
               </ng-container>
 

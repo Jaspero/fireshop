@@ -221,6 +221,16 @@
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Sale</mat-label>
+                  <mat-select formControlName="sale">
+                    <mat-option
+                      *ngFor="let sale of sales$ | async"
+                      [value]="sale.id">
+                      {{sale.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
             </mat-card>
           </div>
