@@ -1,4 +1,5 @@
 import {ComponentType} from '../../../shared/interfaces/component-type.enum';
+import {ChipsComponent} from '../components/fields/chips/chips.component';
 import {DateFieldComponent} from '../components/fields/date-field/date-field.component';
 import {CheckboxComponent} from '../components/fields/checkbox/checkbox.component';
 import {DraggableListComponent} from '../components/fields/draggable-list/draggable-list.component';
@@ -22,5 +23,6 @@ export const COMPONENT_TYPE_COMPONENT_MAP = {
   [ComponentType.Slider]: SliderComponent,
   [ComponentType.Wysiwyg]: WysiwygComponent,
   [ComponentType.Draggable]: DraggableListComponent,
-  [ComponentType.Radio]: RadioComponent
+  [ComponentType.Radio]: RadioComponent,
+  [ComponentType.Chips]: ChipsComponent
 };

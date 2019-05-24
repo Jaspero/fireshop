@@ -9,5 +9,6 @@ export enum ComponentType {
   Radio = 'radio',
   Slider = 'slider',
   Wysiwyg = 'wysiwyg',
+  Chips = 'chips',
   Draggable = 'draggable'
 }

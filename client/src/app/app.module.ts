@@ -10,6 +10,7 @@ import {
   MatButtonModule,
   MatCardModule,
   MatCheckboxModule,
+  MatChipsModule,
   MatDatepickerModule,
   MatDialogModule,
   MatExpansionModule,
@@ -71,6 +72,7 @@ import {SliderComponent} from './modules/module-instance/components/fields/slide
 import {RadioComponent} from './modules/module-instance/components/fields/radio/radio.component';
 import {WysiwygComponent} from './modules/module-instance/components/fields/wysiwyg/wysiwyg.component';
 import {DraggableListComponent} from './modules/module-instance/components/fields/draggable-list/draggable-list.component';
+import {ChipsComponent} from './modules/module-instance/components/fields/chips/chips.component';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -103,6 +105,7 @@ const ENTRY_COMPONENTS = [
   WysiwygComponent,
   DraggableListComponent,
   RadioComponent,
+  ChipsComponent,
 
   // Segments
   SegmentComponent,
@@ -166,6 +169,7 @@ const PIPES = [ColumnPipe];
     MatSliderModule,
     DragDropModule,
     MatRadioModule,
+    MatChipsModule,
 
     // Ng Helpers
     LoadClickModule
