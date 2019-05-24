@@ -16,10 +16,10 @@ interface ChipsData extends FieldData {
 })
 export class ChipsComponent extends FieldComponent<ChipsData>
   implements OnInit {
-  data = this.cData.control.value;
+  data = [];
 
   ngOnInit() {
-    this.cData.control.setValue([]);
+    this.data = this.cData.control.value;
   }
 
   add(event: MatChipInputEvent) {
@@ -37,12 +37,11 @@ export class ChipsComponent extends FieldComponent<ChipsData>
   }
 
   remove(chip) {
-    this.cData.control.setValue(this.data);
-
     const index = this.cData.control.value.indexOf(chip);
 
     if (index >= 0) {
       this.data.splice(index, 1);
+      this.cData.control.setValue(this.data);
     }
   }
 }
