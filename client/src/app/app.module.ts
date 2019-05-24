@@ -68,6 +68,7 @@ import {CheckboxComponent} from './modules/module-instance/components/fields/che
 import {DateFieldComponent} from './modules/module-instance/components/fields/date-field/date-field.component';
 import {SliderComponent} from './modules/module-instance/components/fields/slider/slider.component';
 import {RadioComponent} from './modules/module-instance/components/fields/radio/radio.component';
+import {WysiwygComponent} from './modules/module-instance/components/fields/wysiwyg/wysiwyg.component';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -97,6 +98,7 @@ const ENTRY_COMPONENTS = [
   CheckboxComponent,
   DateFieldComponent,
   SliderComponent,
+  WysiwygComponent,
   RadioComponent,
 
   // Segments
