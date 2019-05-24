@@ -1,3 +1,4 @@
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import {PortalModule} from '@angular/cdk/portal';
 import {NgModule} from '@angular/core';
 import {AngularFireModule} from '@angular/fire';
@@ -69,6 +70,7 @@ import {DateFieldComponent} from './modules/module-instance/components/fields/da
 import {SliderComponent} from './modules/module-instance/components/fields/slider/slider.component';
 import {RadioComponent} from './modules/module-instance/components/fields/radio/radio.component';
 import {WysiwygComponent} from './modules/module-instance/components/fields/wysiwyg/wysiwyg.component';
+import {DraggableListComponent} from './modules/module-instance/components/fields/draggable-list/draggable-list.component';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -99,6 +101,7 @@ const ENTRY_COMPONENTS = [
   DateFieldComponent,
   SliderComponent,
   WysiwygComponent,
+  DraggableListComponent,
   RadioComponent,
 
   // Segments
@@ -161,6 +164,7 @@ const PIPES = [ColumnPipe];
     MatDatepickerModule,
     MatNativeDateModule,
     MatSliderModule,
+    DragDropModule,
     MatRadioModule,
 
     // Ng Helpers

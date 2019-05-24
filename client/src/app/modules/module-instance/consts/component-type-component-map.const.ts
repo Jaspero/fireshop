@@ -1,6 +1,7 @@
 import {ComponentType} from '../../../shared/interfaces/component-type.enum';
 import {DateFieldComponent} from '../components/fields/date-field/date-field.component';
 import {CheckboxComponent} from '../components/fields/checkbox/checkbox.component';
+import {DraggableListComponent} from '../components/fields/draggable-list/draggable-list.component';
 import {GalleryComponent} from '../components/fields/gallery/gallery.component';
 import {ImageComponent} from '../components/fields/image/image.component';
 import {InputComponent} from '../components/fields/input/input.component';
@@ -19,6 +20,7 @@ export const COMPONENT_TYPE_COMPONENT_MAP = {
   [ComponentType.Checkbox]: CheckboxComponent,
   [ComponentType.Date]: DateFieldComponent,
   [ComponentType.Slider]: SliderComponent,
-  [ComponentType.Radio]: RadioComponent,
-  [ComponentType.Wysiwyg]: WysiwygComponent
+  [ComponentType.Wysiwyg]: WysiwygComponent,
+  [ComponentType.Draggable]: DraggableListComponent,
+  [ComponentType.Radio]: RadioComponent
 };

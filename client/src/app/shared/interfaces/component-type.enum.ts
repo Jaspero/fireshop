@@ -8,5 +8,6 @@ export enum ComponentType {
   Date = 'date',
   Radio = 'radio',
   Slider = 'slider',
-  Wysiwyg = 'wysiwyg'
+  Wysiwyg = 'wysiwyg',
+  Draggable = 'draggable'
 }
