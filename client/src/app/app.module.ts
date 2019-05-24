@@ -1,3 +1,4 @@
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import {PortalModule} from '@angular/cdk/portal';
 import {NgModule} from '@angular/core';
 import {AngularFireModule} from '@angular/fire';
@@ -20,6 +21,7 @@ import {
   MatMenuModule,
   MatNativeDateModule,
   MatProgressSpinnerModule,
+  MatRadioModule,
   MatSelectModule,
   MatSliderModule,
   MatSlideToggleModule,
@@ -67,7 +69,9 @@ import {ToggleComponent} from './modules/module-instance/components/fields/toggl
 import {CheckboxComponent} from './modules/module-instance/components/fields/checkbox/checkbox.component';
 import {DateFieldComponent} from './modules/module-instance/components/fields/date-field/date-field.component';
 import {SliderComponent} from './modules/module-instance/components/fields/slider/slider.component';
+import {RadioComponent} from './modules/module-instance/components/fields/radio/radio.component';
 import {WysiwygComponent} from './modules/module-instance/components/fields/wysiwyg/wysiwyg.component';
+import {DraggableListComponent} from './modules/module-instance/components/fields/draggable-list/draggable-list.component';
 import {ChipsComponent} from './modules/module-instance/components/fields/chips/chips.component';
 
 const PAGES = [
@@ -99,6 +103,8 @@ const ENTRY_COMPONENTS = [
   DateFieldComponent,
   SliderComponent,
   WysiwygComponent,
+  DraggableListComponent,
+  RadioComponent,
   ChipsComponent,
 
   // Segments
@@ -161,6 +167,8 @@ const PIPES = [ColumnPipe];
     MatDatepickerModule,
     MatNativeDateModule,
     MatSliderModule,
+    DragDropModule,
+    MatRadioModule,
     MatChipsModule,
 
     // Ng Helpers
