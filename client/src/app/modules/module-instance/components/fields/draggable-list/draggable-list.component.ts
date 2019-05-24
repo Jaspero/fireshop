@@ -15,15 +15,15 @@ interface DragData extends FieldData {
 export class DraggableListComponent extends FieldComponent<DragData>
   implements OnInit {
   ngOnInit() {
-    this.cData['options'] = this.cData.control.value;
+    this.cData.options = this.cData.control.value;
   }
 
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(
-      this.cData['options'],
+      this.cData.options,
       event.previousIndex,
       event.currentIndex
     );
-    this.cData.control.setValue(this.cData['options']);
+    this.cData.control.setValue(this.cData.options);
   }
 }
