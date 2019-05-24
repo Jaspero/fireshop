@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FieldComponent, FieldData} from '../../field/field.component';
 
 interface SliderData extends FieldData {
@@ -8,8 +8,8 @@ interface SliderData extends FieldData {
   };
   thumbLabel: boolean;
   tickInterval: number;
-  min: number;
-  max: number;
+  starAt: number;
+  endAt: number;
 }
 
 @Component({
@@ -18,4 +18,21 @@ interface SliderData extends FieldData {
   styleUrls: ['./slider.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SliderComponent extends FieldComponent<SliderData> {}
+export class SliderComponent extends FieldComponent<SliderData>
+  implements OnInit {
+  startAt: number;
+  endAt: number;
+
+  ngOnInit() {
+    this.startAt = this.cData.starAt
+      ? this.cData.starAt
+      : this.cData.validation.minimum
+      ? this.cData.validation.minimum
+      : 0;
+    this.endAt = this.cData.endAt
+      ? this.cData.endAt
+      : this.cData.validation.maximum
+      ? this.cData.validation.maximum
+      : 100;
+  }
+}

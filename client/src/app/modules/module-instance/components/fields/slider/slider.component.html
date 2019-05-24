@@ -2,6 +2,6 @@
   [formControl]="cData.control"
   [thumbLabel]="cData['thumbLabel']"
   [tickInterval]="cData['tickInterval']"
-  [min]="cData['min'] ? cData['min'] : (cData['validation'].minimum ? cData['validation'].minimum : 0)"
-  [max]="cData['max'] ? cData['max'] : (cData['validation'].maximum ? cData['validation'].maximum : 100)">
+  [min]="startAt"
+  [max]="endAt">
 </mat-slider>
