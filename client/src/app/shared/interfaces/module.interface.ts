@@ -20,6 +20,7 @@ export interface NestedTableColumn extends TableColumn {
 
 export interface InstanceSegment {
   fields: string[] | any[];
+  array?: string;
   type?: SegmentType;
   title?: string;
   subTitle?: string;

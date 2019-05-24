@@ -1,11 +1,11 @@
 import {ComponentPortal} from '@angular/cdk/portal';
-import {FormControl} from '@angular/forms';
 import {FieldComponent} from '../components/field/field.component';
+import {Control} from './control.type';
 
 export interface CompiledField {
   pointer: string;
   label: string;
-  control: FormControl;
+  control: Control;
   portal: ComponentPortal<FieldComponent<any>>;
   validation: any;
 }

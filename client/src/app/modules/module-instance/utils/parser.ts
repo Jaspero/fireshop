@@ -8,6 +8,7 @@ import {FieldComponent} from '../components/field/field.component';
 import {COMPONENT_TYPE_COMPONENT_MAP} from '../consts/component-type-component-map.const';
 import {SchemaType} from '../enums/schema-type.enum';
 import {CompiledField} from '../interfaces/compiled-field.interface';
+import {Control} from '../interfaces/control.type';
 import {SchemaValidators} from '../validators/schema-validators.class';
 import {createComponentInjector} from './create-component-injector';
 import {schemaToComponent} from './schema-to-component';
@@ -57,8 +58,15 @@ export class Parser {
     [pointer: string]: {
       key: string;
       type: SchemaType;
-      control: FormControl;
+      control: Control;
       validation: any;
+
+      /**
+       * Arrays can have these properties
+       */
+      arrayType?: SchemaType;
+      properties?: any;
+      required?: string[];
     };
   } = {};
 
@@ -163,7 +171,12 @@ export class Parser {
     return this.form;
   }
 
-  buildProperties(properties: object, required: string[] = [], base = '/') {
+  buildProperties(
+    properties: object,
+    required: string[] = [],
+    base = '/',
+    assignPointers = true
+  ) {
     return new FormGroup(
       Object.entries(properties).reduce((group, [key, value]) => {
         const isRequired = required.includes(key);
@@ -173,6 +186,9 @@ export class Parser {
         let parsed: {
           control: any;
           validation: any;
+          arrayType?: SchemaType;
+          properties?: any;
+          required?: string[]
         };
 
         switch (value.type) {
@@ -199,18 +215,20 @@ export class Parser {
             control = this.buildProperties(
               value.properties,
               value.required,
-              base + key + '/'
+              base + key + '/',
+              assignPointers
             );
             break;
 
           case SchemaType.Array:
+            parsed = this.buildArray(base, value);
             control = this.buildArray(base, value);
             break;
         }
 
         group[key] = control;
 
-        if (base) {
+        if (assignPointers) {
           this.pointers[base + key] = {
             key,
             type: value.type,
@@ -255,6 +273,31 @@ export class Parser {
     };
   }
 
+  addArrayItem(pointer: string) {
+
+    const target = this.pointers[pointer];
+    const control = this.pointers[pointer].control as FormArray;
+
+    if (target.arrayType === SchemaType.Array || target.arrayType === SchemaType.Object) {
+      control.push(
+        this.buildProperties(
+          target.properties,
+          target.required,
+          '',
+          false
+        )
+      );
+    } else {
+
+      // TODO: Different SchemaType
+      control.push(new FormControl(''));
+    }
+  }
+
+  removeArrayItem(pointer: string, index: number) {
+    (this.pointers[pointer].control as FormArray).removeAt(index);
+  }
+
   /**
    * TODO:
    * - Handle contains case
@@ -263,11 +306,28 @@ export class Parser {
   private buildArray(base: string, definition: ArrayPropertyDefinition) {
     if (
       !definition.items ||
-      (definition.items.type !== SchemaType.Array && SchemaType.Boolean)
+      (definition.items.type !== SchemaType.Array)
     ) {
-      return new FormControl([]);
+      return {
+        control: new FormControl([]),
+        ...definition.items ? {
+          arrayType: definition.items.type,
+          properties: definition.items.properties,
+          required: definition.items.required,
+          validation: {}
+        } : {
+          arrayType: SchemaType.String,
+          validation: {}
+        }
+      };
     } else {
-      return new FormArray([]);
+      return {
+        arrayType: definition.items.type,
+        properties: definition.items.properties,
+        required: definition.items.required,
+        validation: {},
+        control: new FormArray([])
+      };
     }
   }
 }
