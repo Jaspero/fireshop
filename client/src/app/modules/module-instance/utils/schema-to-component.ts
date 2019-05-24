@@ -19,5 +19,10 @@ export function schemaToComponent(schemaType: SchemaType) {
           type: 'number'
         }
       };
+
+    case SchemaType.Boolean:
+      return {
+        type: ComponentType.Checkbox
+      };
   }
 }

@@ -1,9 +1,12 @@
-<ng-container *ngIf="segment.title">
-  <h6>{{segment.title}}</h6>
+<ng-container *ngIf="segment.title || segment.subTitle">
+  <h4 *ngIf="segment.title">{{segment.title}}</h4>
+  <h5 *ngIf="segment.subTitle">{{segment.subTitle}}</h5>
   <div class="p-y-m">
     <mat-divider></mat-divider>
   </div>
 </ng-container>
+
+<p *ngIf="segment.description">{{segment.description}}</p>
 
 <mat-accordion>
   <mat-expansion-panel *ngFor="let accord of accordions" [expanded]="accord.expanded || false">

@@ -5,5 +5,7 @@ export enum ComponentType {
   Gallery = 'gallery',
   Toggle = 'toggle',
   Checkbox = 'checkbox',
-  Slider = 'slider'
+  Date = 'date',
+  Slider = 'slider',
+  Wysiwyg = 'wysiwyg'
 }

@@ -13,5 +13,5 @@ export interface FieldData {
   template: ''
 })
 export class FieldComponent<T extends FieldData> {
-  constructor(@Inject(COMPONENT_DATA) public cData: FieldData) {}
+  constructor(@Inject(COMPONENT_DATA) public cData: T) {}
 }

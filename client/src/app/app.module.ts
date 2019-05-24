@@ -5,9 +5,11 @@ import {AngularFireAuthModule} from '@angular/fire/auth';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {ReactiveFormsModule} from '@angular/forms';
 import {
+  MAT_DATE_LOCALE,
   MatButtonModule,
   MatCardModule,
   MatCheckboxModule,
+  MatDatepickerModule,
   MatDialogModule,
   MatExpansionModule,
   MatFormFieldModule,
@@ -15,6 +17,7 @@ import {
   MatInputModule,
   MatListModule,
   MatMenuModule,
+  MatNativeDateModule,
   MatProgressSpinnerModule,
   MatSelectModule,
   MatSliderModule,
@@ -61,7 +64,9 @@ import {ForceDisableDirective} from './shared/directives/force-disable/force-dis
 import {ColumnPipe} from './modules/module-instance/pipes/column.pipe';
 import {ToggleComponent} from './modules/module-instance/components/fields/toggle/toggle.component';
 import {CheckboxComponent} from './modules/module-instance/components/fields/checkbox/checkbox.component';
+import {DateFieldComponent} from './modules/module-instance/components/fields/date-field/date-field.component';
 import {SliderComponent} from './modules/module-instance/components/fields/slider/slider.component';
+import {WysiwygComponent} from './modules/module-instance/components/fields/wysiwyg/wysiwyg.component';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -89,7 +94,9 @@ const ENTRY_COMPONENTS = [
   GalleryComponent,
   ToggleComponent,
   CheckboxComponent,
+  DateFieldComponent,
   SliderComponent,
+  WysiwygComponent,
 
   // Segments
   SegmentComponent,
@@ -148,12 +155,14 @@ const PIPES = [ColumnPipe];
     PortalModule,
     MatExpansionModule,
     MatSlideToggleModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatSliderModule,
 
     // Ng Helpers
     LoadClickModule
   ],
-  providers: [],
+  providers: [{provide: MAT_DATE_LOCALE, useValue: 'en-GB'}],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
