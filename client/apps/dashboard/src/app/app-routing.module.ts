@@ -35,6 +35,10 @@ const routes: Routes = [
         loadChildren: './pages/discounts/discounts.module#DiscountsModule'
       },
       {
+        path: 'gift-cards',
+        loadChildren: './pages/gift-card/gift-cards.module#GiftCardsModule'
+      },
+      {
         path: 'reviews',
         loadChildren: './pages/reviews/reviews.module#ReviewsModule'
       },

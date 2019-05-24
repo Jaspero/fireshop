@@ -2,10 +2,10 @@
 
   <section>
     <mat-toolbar color="primary">
-      <a mat-icon-button routerLink="/discounts" aria-label="Back" matTooltip="Back">
+      <a mat-icon-button routerLink="/gift-cards" aria-label="Back" matTooltip="Back">
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <span>Discounts</span>
+      <span>Gift cards</span>
     </mat-toolbar>
   </section>
 
@@ -15,10 +15,10 @@
         <div class="flex ai-center jc-between">
           <h5>{{form.get('name').value}}</h5>
           <div>
-            <button mat-icon-button aria-label="Previous discount" matTooltip="Previous discount" (click)="move(false, form)">
+            <button mat-icon-button aria-label="Previous gift-card" matTooltip="Previous gift-card" (click)="move(false, form)">
               <mat-icon>arrow_back</mat-icon>
             </button>
-            <button mat-icon-button aria-label="Next discount" matTooltip="Next discount" (click)="move(true, form)">
+            <button mat-icon-button aria-label="Next gift-card" matTooltip="Next gift-card" (click)="move(true, form)">
               <mat-icon>arrow_forward</mat-icon>
             </button>
           </div>
@@ -28,9 +28,9 @@
           <span>&nbsp;Duplicate</span>
         </button>
       </ng-container>
-      <h5 *ngSwitchCase="viewState.New">New Discount</h5>
+      <h5 *ngSwitchCase="viewState.New">New gift card</h5>
 
-      <h5 *ngSwitchCase="viewState.Copy">Copy of {{form.get('name').value}}</h5>
+      <h5 *ngSwitchCase="viewState.Copy">{{form.get('id').value}}</h5>
 
     </div>
   </div>
@@ -41,7 +41,7 @@
         <div class="grid">
           <div class="col-12">
             <mat-card>
-              <h6 class="p-y-xs">Discount info</h6>
+              <h6 class="p-y-xs">Gift card info</h6>
               <div class="p-y-xs">
                 <mat-divider></mat-divider>
               </div>
@@ -53,14 +53,12 @@
               </div>
               <div class="p-y-xs">
                 <mat-form-field class="w-full" appearance="outline">
-                  <mat-label>Name</mat-label>
-                  <input matInput formControlName="name">
-                </mat-form-field>
-              </div>
-              <div class="p-y-xs">
-                <mat-form-field class="w-full" appearance="outline">
-                  <mat-label>Description</mat-label>
-                  <textarea matInput  formControlName="description"></textarea>
+                  <mat-label>Value</mat-label>
+                  <mat-select formControlName="value">
+                    <mat-option *ngFor="let val of values" [value]="val">
+                      {{val}}
+                    </mat-option>
+                  </mat-select>
                 </mat-form-field>
               </div>
             </mat-card>
@@ -91,4 +89,5 @@
   </div>
 
 </form>
+
 
