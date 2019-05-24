@@ -7,5 +7,6 @@ export enum ComponentType {
   Checkbox = 'checkbox',
   Date = 'date',
   Slider = 'slider',
-  Wysiwyg = 'wysiwyg'
+  Wysiwyg = 'wysiwyg',
+  Draggable = 'draggable'
 }

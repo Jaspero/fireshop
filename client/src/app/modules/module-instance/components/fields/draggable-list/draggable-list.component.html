@@ -1,0 +1,11 @@
+<mat-list role="list" cdkDropList (cdkDropListDropped)="drop($event)">
+  <div>
+    <mat-list-item
+      *ngFor="let item of cData['options'];
+      index as index"
+      [cdkDragDisabled]="item.cdkDragDisabled"
+      cdkDrag role="listitem">
+      {{index + 1}}. {{item.label}}
+    </mat-list-item>
+  </div>
+</mat-list>
