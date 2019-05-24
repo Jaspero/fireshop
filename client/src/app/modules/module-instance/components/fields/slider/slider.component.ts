@@ -1,9 +1,11 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {pipe} from 'rxjs';
-import {map} from 'rxjs/operators';
 import {FieldComponent, FieldData} from '../../field/field.component';
 
 interface SliderData extends FieldData {
+  validation: {
+    minimum: number;
+    maximum: number;
+  };
   thumbLabel: boolean;
   tickInterval: number;
   min: number;
@@ -16,8 +18,4 @@ interface SliderData extends FieldData {
   styleUrls: ['./slider.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SliderComponent extends FieldComponent<SliderData> {
-  ngOnInit() {
-    console.log(this.cData);
-  }
-}
+export class SliderComponent extends FieldComponent<SliderData> {}
