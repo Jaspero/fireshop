@@ -7,4 +7,5 @@ export interface CompiledField {
   label: string;
   control: FormControl;
   portal: ComponentPortal<FieldComponent<any>>;
+  validation: any;
 }
