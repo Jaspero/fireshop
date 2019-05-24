@@ -20,6 +20,7 @@ import {
   MatMenuModule,
   MatNativeDateModule,
   MatProgressSpinnerModule,
+  MatRadioModule,
   MatSelectModule,
   MatSliderModule,
   MatSlideToggleModule,
@@ -67,6 +68,7 @@ import {ToggleComponent} from './modules/module-instance/components/fields/toggl
 import {CheckboxComponent} from './modules/module-instance/components/fields/checkbox/checkbox.component';
 import {DateFieldComponent} from './modules/module-instance/components/fields/date-field/date-field.component';
 import {SliderComponent} from './modules/module-instance/components/fields/slider/slider.component';
+import {RadioComponent} from './modules/module-instance/components/fields/radio/radio.component';
 import {WysiwygComponent} from './modules/module-instance/components/fields/wysiwyg/wysiwyg.component';
 import {DraggableListComponent} from './modules/module-instance/components/fields/draggable-list/draggable-list.component';
 
@@ -100,6 +102,7 @@ const ENTRY_COMPONENTS = [
   SliderComponent,
   WysiwygComponent,
   DraggableListComponent,
+  RadioComponent,
 
   // Segments
   SegmentComponent,
@@ -162,6 +165,7 @@ const PIPES = [ColumnPipe];
     MatNativeDateModule,
     MatSliderModule,
     DragDropModule,
+    MatRadioModule,
 
     // Ng Helpers
     LoadClickModule
