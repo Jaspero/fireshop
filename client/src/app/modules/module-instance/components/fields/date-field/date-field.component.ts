@@ -1,8 +1,10 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FieldComponent, FieldData} from '../../field/field.component';
 
 interface DateData extends FieldData {
-  attribute: 'touchUi';
+  startYear: number;
+  startAt: number;
+  touchUi: boolean;
 }
 
 @Component({
@@ -11,6 +13,13 @@ interface DateData extends FieldData {
   styleUrls: ['./date-field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DateFieldComponent extends FieldComponent<DateData> {
-  startDate = new Date(1995, 0, 1);
+export class DateFieldComponent extends FieldComponent<DateData>
+  implements OnInit {
+  startDate: Date;
+
+  ngOnInit() {
+    this.startDate = this.cData.startAt
+      ? new Date(this.cData.startAt)
+      : new Date();
+  }
 }

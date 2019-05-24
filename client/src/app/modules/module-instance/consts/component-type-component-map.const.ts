@@ -8,6 +8,7 @@ import {InputComponent} from '../components/fields/input/input.component';
 import {SelectComponent} from '../components/fields/select/select.component';
 import {SliderComponent} from '../components/fields/slider/slider.component';
 import {ToggleComponent} from '../components/fields/toggle/toggle.component';
+import {WysiwygComponent} from '../components/fields/wysiwyg/wysiwyg.component';
 
 export const COMPONENT_TYPE_COMPONENT_MAP = {
   [ComponentType.Input]: InputComponent,
@@ -18,5 +19,6 @@ export const COMPONENT_TYPE_COMPONENT_MAP = {
   [ComponentType.Checkbox]: CheckboxComponent,
   [ComponentType.Date]: DateFieldComponent,
   [ComponentType.Slider]: SliderComponent,
+  [ComponentType.Wysiwyg]: WysiwygComponent,
   [ComponentType.Chips]: ChipsComponent
 };
