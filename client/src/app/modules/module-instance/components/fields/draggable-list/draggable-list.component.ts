@@ -1,6 +1,10 @@
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FieldComponent, FieldData} from '../../field/field.component';
+
+interface DragData extends FieldData {
+  options: Array<string>;
+}
 
 @Component({
   selector: 'jms-draggable-list',
@@ -8,7 +12,12 @@ import {FieldComponent, FieldData} from '../../field/field.component';
   styleUrls: ['./draggable-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DraggableListComponent extends FieldComponent<FieldData> {
+export class DraggableListComponent extends FieldComponent<DragData>
+  implements OnInit {
+  ngOnInit() {
+    this.cData['options'] = this.cData.control.value;
+  }
+
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(
       this.cData['options'],
