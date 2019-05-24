@@ -3,8 +3,8 @@
     <mat-list-item
       *ngFor="let item of cData['options'];
       index as index"
-      cdkDrag role="listitem">
       [cdkDragDisabled]="item.cdkDragDisabled"
+      cdkDrag role="listitem">
       {{index + 1}}. {{item.label}}
     </mat-list-item>
   </div>
