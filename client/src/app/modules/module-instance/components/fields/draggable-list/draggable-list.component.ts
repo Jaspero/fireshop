@@ -3,7 +3,11 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FieldComponent, FieldData} from '../../field/field.component';
 
 interface DragData extends FieldData {
-  options: Array<string>;
+  options: Array<{
+    value: any;
+    label: string;
+    cdkDragDisabled: boolean;
+  }>;
 }
 
 @Component({
@@ -15,7 +19,13 @@ interface DragData extends FieldData {
 export class DraggableListComponent extends FieldComponent<DragData>
   implements OnInit {
   ngOnInit() {
-    this.cData.options = this.cData.control.value;
+    if (this.cData.control.value.length) {
+      this.cData.options.sort((optionOne, optionTwo) => {
+        const indexOne = this.cData.control.value.indexOf(optionOne);
+        const indexTwo = this.cData.control.value.indexOf(optionTwo);
+        return indexTwo - indexOne;
+      });
+    }
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -24,6 +34,11 @@ export class DraggableListComponent extends FieldComponent<DragData>
       event.previousIndex,
       event.currentIndex
     );
-    this.cData.control.setValue(this.cData.options);
+
+    this.cData.control.setValue(
+      this.cData.options.map(val => {
+        return val.value;
+      })
+    );
   }
 }
