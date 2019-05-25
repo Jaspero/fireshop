@@ -27,6 +27,7 @@ import {
 import {
   map,
   shareReplay,
+  skip,
   startWith,
   switchMap,
   take,
@@ -208,7 +209,44 @@ export class InstanceOverviewComponent implements OnInit {
                       })
                     );
                 })
-              )
+              ),
+
+              this.getCollection(data.id, null, null)
+                .stateChanges()
+                .pipe(
+                  skip(1),
+                  tap(snaps => {
+                    snaps.forEach(snap => {
+                      const index = docs.findIndex(
+                        doc => doc.id === snap.payload.doc.id
+                      );
+
+                      switch (snap.type) {
+                        case 'added':
+                          if (index === -1) {
+                            docs.push({
+                              id: snap.payload.doc.id,
+                              ...snap.payload.doc.data()
+                            });
+                          }
+                          break;
+                        case 'modified':
+                          if (index !== -1) {
+                            docs[index] = {
+                              id: snap.payload.doc.id,
+                              ...snap.payload.doc.data()
+                            };
+                          }
+                          break;
+                        case 'removed':
+                          if (index !== -1) {
+                            docs.splice(index, 1);
+                          }
+                          break;
+                      }
+                    });
+                  })
+                )
             ).pipe(
               startWith(null),
               map(() => [...docs])
