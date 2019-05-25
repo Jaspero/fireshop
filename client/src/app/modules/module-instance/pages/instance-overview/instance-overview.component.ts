@@ -33,9 +33,7 @@ import {
   tap
 } from 'rxjs/operators';
 import {PAGE_SIZES} from '../../../../shared/consts/page-sizes.const';
-import {FirestoreCollection} from '../../../../shared/enums/firestore-collection.enum';
 import {
-  Module,
   TableColumn,
   TableSort
 } from '../../../../shared/interfaces/module.interface';
@@ -275,23 +273,28 @@ export class InstanceOverviewComponent implements OnInit {
       });
   }
 
-  deleteOne(item: Module) {
-    confirmation([switchMap(() => this.delete(item.id)), notify()]);
+  deleteOne(instance: InstanceOverview, item: any) {
+    confirmation([
+      switchMap(() => this.delete(instance.id, item.id)),
+      notify()
+    ]);
   }
 
-  deleteSelection() {
+  deleteSelection(instance: InstanceOverview) {
     confirmation([
       switchMap(() =>
-        forkJoin(this.selection.selected.map(id => this.delete(id)))
+        forkJoin(
+          this.selection.selected.map(id => this.delete(instance.id, id))
+        )
       ),
       notify()
     ]);
   }
 
-  delete(id: string): Observable<any> {
+  delete(collection: string, id: string) {
     return from(
       this.afs
-        .collection(FirestoreCollection.Modules)
+        .collection(collection)
         .doc(id)
         .delete()
     );

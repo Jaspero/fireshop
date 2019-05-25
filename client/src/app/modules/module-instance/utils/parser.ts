@@ -181,59 +181,52 @@ export class Parser {
       Object.entries(properties).reduce((group, [key, value]) => {
         const isRequired = required.includes(key);
 
-        let validation: any = {};
-        let control: any;
         let parsed: {
           control: any;
           validation: any;
           arrayType?: SchemaType;
           properties?: any;
-          required?: string[]
+          required?: string[];
         };
 
         switch (value.type) {
           case SchemaType.String:
             parsed = Parser.stringControl(value, isRequired);
-            validation = parsed.validation;
-            control = parsed.control;
             break;
 
           case SchemaType.Number:
           case SchemaType.Integer:
             parsed = Parser.numberControl(value, isRequired);
-            validation = parsed.validation;
-            control = parsed.control;
             break;
 
           case SchemaType.Boolean:
             parsed = Parser.booleanControl(value, isRequired);
-            validation = parsed.validation;
-            control = parsed.control;
             break;
 
           case SchemaType.Object:
-            control = this.buildProperties(
-              value.properties,
-              value.required,
-              base + key + '/',
-              assignPointers
-            );
+            parsed = {
+              control: this.buildProperties(
+                value.properties,
+                value.required,
+                base + key + '/',
+                assignPointers
+              ),
+              validation: {}
+            };
             break;
 
           case SchemaType.Array:
             parsed = this.buildArray(base, value);
-            control = this.buildArray(base, value);
             break;
         }
 
-        group[key] = control;
+        group[key] = parsed.control;
 
         if (assignPointers) {
           this.pointers[base + key] = {
             key,
             type: value.type,
-            control,
-            validation
+            ...parsed
           };
         }
 
@@ -274,21 +267,17 @@ export class Parser {
   }
 
   addArrayItem(pointer: string) {
-
     const target = this.pointers[pointer];
     const control = this.pointers[pointer].control as FormArray;
 
-    if (target.arrayType === SchemaType.Array || target.arrayType === SchemaType.Object) {
+    if (
+      target.arrayType === SchemaType.Array ||
+      target.arrayType === SchemaType.Object
+    ) {
       control.push(
-        this.buildProperties(
-          target.properties,
-          target.required,
-          '',
-          false
-        )
+        this.buildProperties(target.properties, target.required, '', false)
       );
     } else {
-
       // TODO: Different SchemaType
       control.push(new FormControl(''));
     }
@@ -304,21 +293,20 @@ export class Parser {
    * - Handle items or contains as array not object
    */
   private buildArray(base: string, definition: ArrayPropertyDefinition) {
-    if (
-      !definition.items ||
-      (definition.items.type !== SchemaType.Array)
-    ) {
+    if (!definition.items || definition.items.type !== SchemaType.Array) {
       return {
         control: new FormControl([]),
-        ...definition.items ? {
-          arrayType: definition.items.type,
-          properties: definition.items.properties,
-          required: definition.items.required,
-          validation: {}
-        } : {
-          arrayType: SchemaType.String,
-          validation: {}
-        }
+        ...(definition.items
+          ? {
+              arrayType: definition.items.type,
+              properties: definition.items.properties,
+              required: definition.items.required,
+              validation: {}
+            }
+          : {
+              arrayType: SchemaType.String,
+              validation: {}
+            })
       };
     } else {
       return {

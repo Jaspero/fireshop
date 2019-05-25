@@ -33,7 +33,7 @@
               mat-icon-button
               matTooltip="Remove {{selection.selected.length}} items"
               *ngIf="selection.hasValue()"
-              (click)="deleteSelection()">
+              (click)="deleteSelection(data)">
             <mat-icon>delete_forever</mat-icon>
           </button>
         </mat-toolbar>
@@ -90,7 +90,7 @@
                   <mat-icon>edit</mat-icon>
                   <span>Edit</span>
                 </button>
-                <button mat-menu-item fDisable (click)="deleteOne(element)">
+                <button mat-menu-item fDisable (click)="deleteOne(data, element)">
                   <mat-icon>delete_forever</mat-icon>
                   <span>Delete</span>
                 </button>
