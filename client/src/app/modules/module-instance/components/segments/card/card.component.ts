@@ -7,9 +7,4 @@ import {SegmentComponent} from '../../segment/segment.component';
   styleUrls: ['./card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CardComponent extends SegmentComponent {
-  ngOnInit() {
-    super.ngOnInit();
-    console.log('t', this.sData);
-  }
-}
+export class CardComponent extends SegmentComponent {}

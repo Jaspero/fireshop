@@ -37,7 +37,11 @@ export class AccordionComponent extends SegmentComponent implements OnInit {
       (accord: SegmentAccord) => ({
         title: accord.title,
         fields: (accord.fields || []).map(key =>
-          this.sData.parser.field(key, this.sData.definitions)
+          this.sData.parser.field(
+            key,
+            this.pointers[key],
+            this.sData.definitions
+          )
         ),
         nestedSegments: (accord.nestedSegments || []).map(segment =>
           compileSegment(

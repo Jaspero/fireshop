@@ -1,5 +1,6 @@
 import {Component, HostBinding, Inject, Injector, OnInit} from '@angular/core';
 import {ModuleDefinitions} from '../../../../shared/interfaces/module.interface';
+import {CompiledField} from '../../interfaces/compiled-field.interface';
 import {CompiledSegment} from '../../pages/instance-single/instance-single.component';
 import {compileSegment} from '../../utils/compile-segment';
 import {SEGMENT_DATA} from '../../utils/create-segment-injector';
@@ -24,6 +25,7 @@ export class SegmentComponent implements OnInit {
   segment: CompiledSegment;
   pointers: Pointers;
   nestedSegments: CompiledSegment[];
+  arrayFields: Array<CompiledField[]> = [];
 
   @HostBinding('class')
   classes: string;
@@ -53,10 +55,23 @@ export class SegmentComponent implements OnInit {
 
   addArrayItem() {
     this.sData.parser.addArrayItem(this.segment.array);
-    console.log('test', this.pointers);
+
+    const arrayPointers = this.pointers[this.segment.array].arrayPointers;
+
+    this.arrayFields.push(
+      Object.entries(arrayPointers[arrayPointers.length - 1]).map(
+        ([key, pointer]) =>
+          this.sData.parser.field(
+            this.segment.array + '/' + key,
+            pointer,
+            this.sData.definitions
+          )
+      )
+    );
   }
 
   removeArrayItem(index: number) {
     this.sData.parser.removeArrayItem(this.segment.array, index);
+    this.arrayFields.splice(index, 1);
   }
 }

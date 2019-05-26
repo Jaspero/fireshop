@@ -50,7 +50,9 @@ export function compileSegment(
    * If it's an array fields are parsed
    */
   if (segment.fields && !segment.array) {
-    fields = (segment.fields || []).map(key => parser.field(key, definitions));
+    fields = (segment.fields || []).map(key =>
+      parser.field(key, parser.pointers[key], definitions)
+    );
   }
 
   const compiledSegment = {

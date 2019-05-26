@@ -20,9 +20,9 @@
     <p *ngIf="segment.description">{{segment.description}}</p>
 
     <ng-container *ngIf="segment.array; else regular">
-      <div *ngFor="let control of pointers[segment.array].control.controls; index as index;" class="flex jc-between">
+      <div *ngFor="let fields of arrayFields; index as index;" class="flex jc-between">
         <div>
-          <ng-container *ngFor="let field of segment.fields">
+          <ng-container *ngFor="let field of fields">
             <ng-template [cdkPortalOutlet]="field.portal"></ng-template>
           </ng-container>
         </div>

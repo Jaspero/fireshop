@@ -62,7 +62,7 @@ export interface Pointer {
   arrayType?: SchemaType;
   properties?: any;
   required?: string[];
-  arrayPointers?: Pointer[];
+  arrayPointers?: Pointers[];
 }
 
 export interface Pointers {
@@ -166,7 +166,10 @@ export class Parser {
   }
 
   buildForm(value?: any) {
-    this.form = this.buildProperties(this.schema.properties || {});
+    const properties = this.buildProperties(this.schema.properties || {});
+
+    this.form = properties.form;
+    this.pointers = properties.pointers;
     this.form.addControl('id', new FormControl(value ? value.id : nanoid()));
 
     if (value) {
@@ -176,14 +179,9 @@ export class Parser {
     return this.form;
   }
 
-  buildProperties(
-    properties: object,
-    required: string[] = [],
-    base = '/',
-    assignPointers = true
-  ) {
-    return new FormGroup(
-      Object.entries(properties).reduce((group, [key, value]) => {
+  buildProperties(properties: object, required: string[] = [], base = '/') {
+    const {form, pointers} = Object.entries(properties).reduce(
+      (group, [key, value]) => {
         const isRequired = required.includes(key);
 
         let parsed: {
@@ -209,13 +207,20 @@ export class Parser {
             break;
 
           case SchemaType.Object:
+            const objectProperties = this.buildProperties(
+              value.properties,
+              value.required,
+              base + key + '/'
+            );
+
+            for (const added in objectProperties.pointers) {
+              if (objectProperties.pointers.hasOwnProperty(added)) {
+                group.pointers[added] = objectProperties.pointers[added];
+              }
+            }
+
             parsed = {
-              control: this.buildProperties(
-                value.properties,
-                value.required,
-                base + key + '/',
-                assignPointers
-              ),
+              control: objectProperties.form,
               validation: {}
             };
             break;
@@ -225,26 +230,36 @@ export class Parser {
             break;
         }
 
-        group[key] = parsed.control;
-
-        if (assignPointers) {
-          this.pointers[base + key] = {
-            key,
-            type: value.type,
-            ...parsed
-          };
-        }
+        group.form[key] = parsed.control;
+        group.pointers[base + key] = {
+          key,
+          type: value.type,
+          ...parsed
+        };
 
         return group;
-      }, {})
+      },
+      {
+        form: {},
+        pointers: {}
+      }
     );
+
+    return {
+      pointers,
+      form: new FormGroup(form)
+    };
   }
 
-  field(pointer: string, definitions: ModuleDefinitions = {}): CompiledField {
-    const {key, type, control, validation} = this.pointers[pointer];
+  field(
+    pointerKey: string,
+    pointer: Pointer,
+    definitions: ModuleDefinitions = {}
+  ): CompiledField {
+    const {key, type, control, validation} = pointer;
     const definition = {
       label: key,
-      ...definitions[pointer]
+      ...definitions[key]
     };
 
     if (!definition.component) {
@@ -263,7 +278,7 @@ export class Parser {
     );
 
     return {
-      pointer,
+      pointer: pointerKey,
       control,
       portal,
       validation,
@@ -279,9 +294,14 @@ export class Parser {
       target.arrayType === SchemaType.Array ||
       target.arrayType === SchemaType.Object
     ) {
-      control.push(
-        this.buildProperties(target.properties, target.required, '', false)
+      const properties = this.buildProperties(
+        target.properties,
+        target.required,
+        ''
       );
+
+      target.arrayPointers.push(properties.pointers);
+      control.push(properties.form);
     } else {
       // TODO: Different SchemaType
       control.push(new FormControl(''));
@@ -324,7 +344,8 @@ export class Parser {
         properties: definition.items.properties,
         required: definition.items.required,
         validation: {},
-        control: new FormArray([])
+        control: new FormArray([]),
+        arrayPointers: []
       };
     }
   }
