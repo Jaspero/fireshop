@@ -107,7 +107,12 @@ export class InstanceSingleComponent implements OnInit {
             const parser = new Parser(module.schema, this.injector);
             const form = parser.buildForm(value);
 
+            console.log('parser', parser);
             console.log('form', form);
+
+            form.valueChanges.subscribe(change => {
+              console.log('form', form);
+            });
 
             this.initialValue = JSON.stringify(form.getRawValue());
             this.currentValue = JSON.stringify(this.initialValue);

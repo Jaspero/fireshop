@@ -3,7 +3,7 @@ import {ModuleDefinitions} from '../../../../shared/interfaces/module.interface'
 import {CompiledSegment} from '../../pages/instance-single/instance-single.component';
 import {compileSegment} from '../../utils/compile-segment';
 import {SEGMENT_DATA} from '../../utils/create-segment-injector';
-import {Parser} from '../../utils/parser';
+import {Parser, Pointers} from '../../utils/parser';
 
 export interface SegmentData {
   segment: CompiledSegment;
@@ -22,6 +22,7 @@ export class SegmentComponent implements OnInit {
   ) {}
 
   segment: CompiledSegment;
+  pointers: Pointers;
   nestedSegments: CompiledSegment[];
 
   @HostBinding('class')
@@ -33,6 +34,7 @@ export class SegmentComponent implements OnInit {
   ngOnInit() {
     this.segment = this.sData.segment;
     this.classes = this.sData.segment.classes.join(' ');
+    this.pointers = this.sData.parser.pointers;
     this.id = this.sData.segment.id || '';
 
     /**
@@ -47,5 +49,14 @@ export class SegmentComponent implements OnInit {
           this.injector
         )
     );
+  }
+
+  addArrayItem() {
+    this.sData.parser.addArrayItem(this.segment.array);
+    console.log('test', this.pointers);
+  }
+
+  removeArrayItem(index: number) {
+    this.sData.parser.removeArrayItem(this.segment.array, index);
   }
 }

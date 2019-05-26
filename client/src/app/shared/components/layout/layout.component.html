@@ -7,11 +7,11 @@
 
 <aside class="jms-aside sidebar bg shadow-s of-x-hidden of-y-auto" [class.sidebar-expanded]="sidebarExpanded">
   <mat-nav-list>
-    <mat-list-item class="jms-nav-item ws-nowrap" routerLink="/dashboard" routerLinkActive="active">
+    <mat-list-item class="jms-nav-item ws-nowrap" routerLink="/dashboard" routerLinkActive="active" (click)="expandSidebar()">
       <mat-icon>dashboard</mat-icon>
       <a>&nbsp;Dashboard</a>
     </mat-list-item>
-    <mat-list-item class="jms-nav-item ws-nowrap" routerLink="/settings" routerLinkActive="active">
+    <mat-list-item class="jms-nav-item ws-nowrap" routerLink="/settings" routerLinkActive="active" (click)="expandSidebar()">
       <mat-icon>settings</mat-icon>
       <a>&nbsp;Settings</a>
     </mat-list-item>
@@ -19,13 +19,13 @@
     <mat-list-item
       class="jms-nav-item ws-nowrap"
       [routerLink]="['/m', module.id, 'overview']"
-      routerLinkActive="active"
+      routerLinkActive="active" (click)="expandSidebar()"
       *ngFor="let module of state.modules$ | async">
       <mat-icon>{{module.layout?.icon || 'folder_open'}}</mat-icon>
       <a>&nbsp;{{module.name}}</a>
     </mat-list-item>
     <mat-divider></mat-divider>
-    <mat-list-item class="jms-nav-item ws-nowrap" routerLink="/module-definition/overview" routerLinkActive="active">
+    <mat-list-item class="jms-nav-item ws-nowrap" routerLink="/module-definition/overview" routerLinkActive="active" (click)="expandSidebar()">
       <mat-icon>view_module</mat-icon>
       <a>&nbsp;Modules</a>
     </mat-list-item>

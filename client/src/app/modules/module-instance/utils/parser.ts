@@ -50,25 +50,30 @@ export interface ArrayPropertyDefinition extends PropertyDefinition {
   contains?: any;
 }
 
+export interface Pointer {
+  key: string;
+  type: SchemaType;
+  control: Control;
+  validation: any;
+
+  /**
+   * Arrays can have these properties
+   */
+  arrayType?: SchemaType;
+  properties?: any;
+  required?: string[];
+  arrayPointers?: Pointer[];
+}
+
+export interface Pointers {
+  [key: string]: Pointer;
+}
+
 export class Parser {
   constructor(public schema: any, public injector: Injector) {}
 
   form: FormGroup;
-  pointers: {
-    [pointer: string]: {
-      key: string;
-      type: SchemaType;
-      control: Control;
-      validation: any;
-
-      /**
-       * Arrays can have these properties
-       */
-      arrayType?: SchemaType;
-      properties?: any;
-      required?: string[];
-    };
-  } = {};
+  pointers: Pointers = {};
 
   static stringControl(
     definition: StringPropertyDefinition,
@@ -284,6 +289,7 @@ export class Parser {
   }
 
   removeArrayItem(pointer: string, index: number) {
+    this.pointers[pointer].arrayPointers.splice(index, 1);
     (this.pointers[pointer].control as FormArray).removeAt(index);
   }
 
@@ -293,7 +299,11 @@ export class Parser {
    * - Handle items or contains as array not object
    */
   private buildArray(base: string, definition: ArrayPropertyDefinition) {
-    if (!definition.items || definition.items.type !== SchemaType.Array) {
+    if (
+      !definition.items ||
+      (definition.items.type !== SchemaType.Array &&
+        definition.items.type !== SchemaType.Object)
+    ) {
       return {
         control: new FormControl([]),
         ...(definition.items
