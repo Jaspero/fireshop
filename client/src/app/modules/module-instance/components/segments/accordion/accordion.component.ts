@@ -48,7 +48,8 @@ export class AccordionComponent extends SegmentComponent implements OnInit {
             segment,
             this.sData.parser,
             this.sData.definitions,
-            this.injector
+            this.injector,
+            this.segment.entryValue
           )
         )
       })

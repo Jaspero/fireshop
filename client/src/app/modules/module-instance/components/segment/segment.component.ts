@@ -1,4 +1,5 @@
 import {Component, HostBinding, Inject, Injector, OnInit} from '@angular/core';
+import {get} from 'json-pointer';
 import {ModuleDefinitions} from '../../../../shared/interfaces/module.interface';
 import {CompiledField} from '../../interfaces/compiled-field.interface';
 import {CompiledSegment} from '../../pages/instance-single/instance-single.component';
@@ -48,9 +49,23 @@ export class SegmentComponent implements OnInit {
           segment,
           this.sData.parser,
           this.sData.definitions,
-          this.injector
+          this.injector,
+          this.segment.entryValue
         )
     );
+
+    /**
+     * Add array items if necessary
+     */
+    if (this.segment.array && this.segment.entryValue) {
+      const values = get(this.segment.entryValue, this.segment.array);
+
+      if (values) {
+        values.forEach(() => this.addArrayItem());
+
+        this.pointers[this.segment.array].control.patchValue(values);
+      }
+    }
   }
 
   addArrayItem() {

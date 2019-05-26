@@ -29,6 +29,7 @@ export interface CompiledSegment extends InstanceSegment {
   fields: CompiledField[];
   component?: ComponentPortal<SegmentComponent>;
   nestedSegments?: CompiledSegment[];
+  entryValue: any;
 }
 
 interface Instance {
@@ -110,10 +111,6 @@ export class InstanceSingleComponent implements OnInit {
             console.log('parser', parser);
             console.log('form', form);
 
-            form.valueChanges.subscribe(change => {
-              console.log('form', form);
-            });
-
             this.initialValue = JSON.stringify(form.getRawValue());
             this.currentValue = JSON.stringify(this.initialValue);
 
@@ -142,7 +139,8 @@ export class InstanceSingleComponent implements OnInit {
                   segment,
                   parser,
                   module.definitions,
-                  this.injector
+                  this.injector,
+                  value
                 )
               ),
               module: {

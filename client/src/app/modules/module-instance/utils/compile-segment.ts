@@ -16,7 +16,8 @@ export function compileSegment(
   segment: InstanceSegment,
   parser: Parser,
   definitions: ModuleDefinitions,
-  injector: Injector
+  injector: Injector,
+  entryValue: any
 ) {
   const classes = [];
 
@@ -58,7 +59,8 @@ export function compileSegment(
   const compiledSegment = {
     ...segment,
     classes,
-    fields
+    fields,
+    entryValue
   } as CompiledSegment;
 
   return {
