@@ -1,9 +1,26 @@
+<section>
+  <div class="grid">
+    <div class="col-12">
+      <p>Your gift cards</p>
+      <ng-container *ngIf="giftCardsInstances$ | async as giftCardInstances">
+        <div *ngFor="let gCrdInst of giftCardInstances">
+          <mat-card>
+            <p>{{gCrdInst.value}}</p>
+            <p>Code: 100101010101</p>
+          </mat-card>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</section>
+
+
 <div class="grid">
   <div class="col-12">
-    <button mat-button (click)="dialogOpen()">
+    <button mat-button (click)="dialogBuyOpen()">
       Buy gift card
     </button>
-    <button mat-button>
+    <button mat-button (click)="dialogApplyOpen()">
       Apply gift card
     </button>
   </div>
@@ -11,15 +28,13 @@
 
 <ng-template #giftTemplate>
   List of gift cards you can buy
-  <div *ngIf="giftCards$ | async as giftc">
+  <div *ngIf="giftCards$ | async as giftCard">
 
     <form [formGroup]="form">
       <mat-form-field appearance="outline">
-        <mat-label>
-          Value
-        </mat-label>
+        <mat-label>Value</mat-label>
         <mat-select formControlName="value">
-          <mat-option [value]="gc.value" *ngFor="let gc of giftc">
+          <mat-option [value]="gc.value" *ngFor="let gc of giftCard">
             {{gc.value}}
           </mat-option>
         </mat-select>
@@ -41,6 +56,17 @@
         Buy
       </button>
     </form>
-
   </div>
+</ng-template>
+
+<ng-template #applyTemplate>
+  <mat-form-field appearance="outline">
+    <mat-label>Code</mat-label>
+    <input matInput [formControl]="code">
+  </mat-form-field>
+
+  <button mat-button (click)="apply()">
+    Apply
+  </button>
+
 </ng-template>

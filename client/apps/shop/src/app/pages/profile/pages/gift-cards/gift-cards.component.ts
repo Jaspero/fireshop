@@ -7,8 +7,9 @@ import {
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
+import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {GiftCard} from '@jf/interfaces/gift-card.interface';
 import * as nanoid from 'nanoid';
@@ -30,9 +31,12 @@ export class GiftCardsComponent implements OnInit {
   ) {}
 
   @ViewChild('giftTemplate') giftTemplate: TemplateRef<any>;
+  @ViewChild('applyTemplate') applyTemplate: TemplateRef<any>;
 
   giftCards$: Observable<any>;
+  giftCardsInstances$: Observable<any>;
   form: FormGroup;
+  code: FormControl;
 
   ngOnInit() {
     this.giftCards$ = this.afs
@@ -46,18 +50,43 @@ export class GiftCardsComponent implements OnInit {
           }))
         )
       );
+
+    this.giftCardsInstances$ = this.afs
+      .collection<any>(FirestoreCollections.GiftCardsInstances, ref =>
+        ref.where(
+          'customerId',
+          FirebaseOperator.Equal,
+          this.afAuth.auth.currentUser.uid
+        )
+      )
+      .snapshotChanges()
+      .pipe(
+        map(actions =>
+          actions.map(action => ({
+            id: action.payload.doc.id,
+            ...action.payload.doc.data()
+          }))
+        )
+      );
   }
 
   buildForm() {
     this.form = this.fb.group({
       value: ['', Validators.required],
-      email: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       creditCard: ['', Validators.required]
     });
+
+    this.code = this.fb.control('');
   }
 
-  dialogOpen() {
-    this.dialog.open(this.giftTemplate, {});
+  dialogBuyOpen() {
+    this.dialog.open(this.giftTemplate);
+    this.buildForm();
+  }
+
+  dialogApplyOpen() {
+    this.dialog.open(this.applyTemplate);
     this.buildForm();
   }
 
@@ -69,8 +98,21 @@ export class GiftCardsComponent implements OnInit {
       .collection(FirestoreCollections.GiftCardsInstances)
       .doc(nanoid())
       .set({
-        formData,
-        customerId: customerId
+        ...formData,
+        customerId
+      });
+  }
+
+  apply() {
+    const code = this.code.value;
+    const customerId = this.afAuth.auth.currentUser.uid;
+
+    this.afs
+      .collection(FirestoreCollections.GiftCardsInstances)
+      .doc(nanoid())
+      .set({
+        ...code,
+        customerId
       });
   }
 }
