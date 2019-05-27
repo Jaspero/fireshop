@@ -111,7 +111,7 @@ export class GiftCardsComponent implements OnInit {
       .collection(FirestoreCollections.GiftCardsInstances)
       .doc(nanoid())
       .set({
-        ...code,
+        code,
         customerId
       });
   }
