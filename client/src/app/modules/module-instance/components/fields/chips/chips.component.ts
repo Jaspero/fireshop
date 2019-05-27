@@ -6,6 +6,7 @@ interface ChipsData extends FieldData {
   selectable: boolean;
   removable: boolean;
   addOnBlur: boolean;
+  unique: boolean;
 }
 
 @Component({
@@ -27,8 +28,12 @@ export class ChipsComponent extends FieldComponent<ChipsData>
     const input = event.input;
 
     if ((value || '').trim()) {
-      this.data.push(value.trim());
-      this.cData.control.setValue(this.data);
+      if (this.data.includes(value.trim()) && this.cData.unique === true) {
+        console.log('You can not create two identical chips');
+      } else {
+        this.data.push(value.trim());
+        this.cData.control.setValue(this.data);
+      }
     }
 
     if (input) {
