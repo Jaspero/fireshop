@@ -198,7 +198,8 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
         data.inventory ? this.formatInventory(data.inventory, true) : {}
       ),
       default: data.default || '',
-      sale: data.sale
+      sale: data.sale,
+      ribbonProduct: data.ribbonProduct || false
     });
   }
 

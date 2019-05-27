@@ -71,27 +71,27 @@
               <ng-container *ngIf="form.get('saleValue').value === 'percentage'" class="w-full" appearance="outline">
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Percentage value</mat-label>
-                  <input matInput type="number" formControlName="percentageValue">
+                  <input matInput type="number" formControlName="value">
                 </mat-form-field>
               </ng-container>
               <ng-container *ngIf="form.get('saleValue').value === 'fixedAmount'" class="w-full" appearance="outline">
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Fixed value</mat-label>
-                  <input matInput type="number" formControlName="fixedValue">
+                  <input matInput type="number" formControlName="value">
                 </mat-form-field>
               </ng-container>
 
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Type</mat-label>
                 <mat-select formControlName="type">
-                  <mat-option value="limited">Limited</mat-option>
-                  <mat-option value="unlimited">Unlimited</mat-option>
+                  <mat-option value="limited">{{type.Limited}}</mat-option>
+                  <mat-option value="unlimited">{{type.Unlimited}}</mat-option>
                 </mat-select>
               </mat-form-field>
 
               <ng-container *ngIf="form.get('type').value === 'limited'" class="w-full" appearance="outline">
                 <mat-form-field class="w-full" appearance="outline">
-                  <mat-label>Number of discounts</mat-label>
+                  <mat-label>Number of users</mat-label>
                   <input matInput type="number" formControlName="limitedNumber">
                 </mat-form-field>
               </ng-container>
@@ -109,7 +109,7 @@
               </mat-form-field>
               <div class="p-y-s flex jc-between">
                 <span>Showing on ribbon on a product</span>
-                <mat-slide-toggle formControlName="ribbonProduct"></mat-slide-toggle>
+                <mat-slide-toggle formControlName="showRibbon"></mat-slide-toggle>
               </div>
             </mat-card>
           </div>

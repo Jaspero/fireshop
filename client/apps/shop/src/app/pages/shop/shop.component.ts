@@ -16,12 +16,14 @@ import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {Product} from '@jf/interfaces/product.interface';
+import {Sales} from '@jf/interfaces/sales.interface';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {
   debounceTime,
   filter,
   map,
   scan,
+  shareReplay,
   startWith,
   switchMap,
   takeUntil,
@@ -57,7 +59,7 @@ export class ShopComponent extends RxDestroy implements OnInit {
   products$: Observable<Product[]>;
   loadMore$ = new BehaviorSubject(null);
   hasMore$ = new BehaviorSubject(true);
-
+  sales$: Observable<Sales[]>;
   pageSize = 6;
   cursor: any = null;
   orderName = 'Price High - Low';

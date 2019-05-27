@@ -189,6 +189,9 @@
                 <mat-checkbox color="primary" formControlName="showingQuantity">Show quantity</mat-checkbox>
               </div>
               <div class="p-y-xs">
+                <mat-checkbox color="primary" formControlName="ribbonProduct">Show ribbon</mat-checkbox>
+              </div>
+              <div class="p-y-xs">
                 <mat-checkbox color="primary" formControlName="allowOutOfQuantityPurchase">Allow out of quantity purchase</mat-checkbox>
               </div>
               <div class="p-y-xs">
@@ -226,7 +229,7 @@
                   <mat-select formControlName="sale">
                     <mat-option
                       *ngFor="let sale of sales$ | async"
-                      [value]="sale.id">
+                      [value]="[sale.id, (sale.percentageValue ?  sale.percentageValue : sale.fixedValue)]">
                       {{sale.name}}
                     </mat-option>
                   </mat-select>

@@ -47,7 +47,9 @@
                 </div>
               </form>
             </div>
+            <h2 class="m-b-xs">{{data.product.ribbonProduct ? 'This item is on sale' : ''}}</h2>
             <h2 class="m-b-xs">{{data.price | sp}}</h2>
+<!--            <h2 *ngIf="data.product.sale[1]" class="m-b-xs">{{data.product.sale[1] ? data.price - data.product.sale[1] : data.price | sp}}</h2>-->
             <p class="m-t-s" *ngIf="data.product.showingQuantity">
               {{data.quantity ? data.quantity + ' in stock' : 'There are no more items in stock'}}
             </p>

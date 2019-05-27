@@ -1,8 +1,14 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {fromStripeFormat} from '@jf/utils/stripe-format';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
+
+export enum SaleType {
+  Unlimited = 'Unlimited',
+  Limited = 'Limited'
+}
 
 @Component({
   selector: 'jfsc-sale-single-page',
@@ -12,6 +18,7 @@ import {URL_REGEX} from '../../../../shared/const/url-regex.const';
 })
 export class SaleSinglePageComponent extends LangSinglePageComponent {
   collection = FirestoreCollections.Sales;
+  type = SaleType;
 
   public buildForm(data: any) {
     this.form = this.fb.group({
@@ -22,13 +29,12 @@ export class SaleSinglePageComponent extends LangSinglePageComponent {
       name: [data.name || '', Validators.required],
       description: [data.description || ''],
       saleValue: ['', Validators.required],
-      percentageValue: [data.percentageValue || ''],
-      fixedValue: [data.fixedValue || ''],
+      value: [data.value ? fromStripeFormat(data.value) : 0, Validators.min(0)],
       startingDate: [data.startingDate || ''],
       endingDate: [data.endingDate || ''],
       type: [data.type || ''],
       active: [true, Validators.required],
-      ribbonProduct: [data.ribbonProduct || true],
+      showRibbon: [data.showRibbon || true],
       limitedNumber: [data.limitedNumber || '']
     });
   }

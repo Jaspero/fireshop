@@ -25,4 +25,6 @@ export interface Product {
       quantity: number;
     };
   };
+  sale: [];
+  ribbonProduct: boolean;
 }
