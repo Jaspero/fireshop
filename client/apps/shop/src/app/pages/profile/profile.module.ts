@@ -11,6 +11,7 @@ import {SettingsComponent} from './pages/settings/settings.component';
 import {WishListComponent} from './pages/wish-list/wish-list.component';
 import {ProfileComponent} from './profile.component';
 import {AngularFireStorageModule} from '@angular/fire/storage';
+import {GiftCardsComponent} from './pages/gift-cards/gift-cards.component';
 
 const ENTRY_COMPONENTS = [DeleteUserComponent];
 
@@ -22,7 +23,8 @@ const ENTRY_COMPONENTS = [DeleteUserComponent];
     OrdersComponent,
     ChangePasswordComponent,
     ReviewsComponent,
-    ...ENTRY_COMPONENTS
+    ...ENTRY_COMPONENTS,
+    GiftCardsComponent
   ],
   entryComponents: ENTRY_COMPONENTS,
   imports: [
@@ -96,6 +98,19 @@ const ENTRY_COMPONENTS = [DeleteUserComponent];
               meta: {
                 title: 'Password',
                 description: 'Change your password'
+              }
+            },
+            resolve: {
+              meta: MetaResolver
+            }
+          },
+          {
+            path: 'gift-cards',
+            component: GiftCardsComponent,
+            data: {
+              meta: {
+                title: 'Gift cards',
+                description: 'List of gift cards'
               }
             },
             resolve: {

@@ -1,0 +1,46 @@
+<div class="grid">
+  <div class="col-12">
+    <button mat-button (click)="dialogOpen()">
+      Buy gift card
+    </button>
+    <button mat-button>
+      Apply gift card
+    </button>
+  </div>
+</div>
+
+<ng-template #giftTemplate>
+  List of gift cards you can buy
+  <div *ngIf="giftCards$ | async as giftc">
+
+    <form [formGroup]="form">
+      <mat-form-field appearance="outline">
+        <mat-label>
+          Value
+        </mat-label>
+        <mat-select formControlName="value">
+          <mat-option [value]="gc.value" *ngFor="let gc of giftc">
+            {{gc.value}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br>
+
+      <mat-form-field  appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email">
+      </mat-form-field>
+      <br>
+
+      <mat-form-field  appearance="outline">
+        <mat-label>Credit card</mat-label>
+        <input matInput formControlName="creditCard">
+      </mat-form-field>
+
+      <button mat-button (click)="buy()">
+        Buy
+      </button>
+    </form>
+
+  </div>
+</ng-template>
