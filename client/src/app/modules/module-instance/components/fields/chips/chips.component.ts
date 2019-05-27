@@ -24,10 +24,10 @@ export class ChipsComponent extends FieldComponent<ChipsData>
   }
 
   add(event: MatChipInputEvent) {
-    const value = event.value.trim();
+    const value = (event.value || '').trim();
     const input = event.input;
 
-    if ((value || '') && (!this.data.includes(value) && !this.cData.unique)) {
+    if (value && (this.cData.unique ? !this.data.includes(value) : true)) {
       this.data.push(value);
       this.cData.control.setValue(this.data);
     }
