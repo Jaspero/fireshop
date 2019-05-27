@@ -24,16 +24,12 @@ export class ChipsComponent extends FieldComponent<ChipsData>
   }
 
   add(event: MatChipInputEvent) {
-    const value = event.value;
+    const value = event.value.trim();
     const input = event.input;
 
-    if ((value || '').trim()) {
-      if (this.data.includes(value.trim()) && this.cData.unique === true) {
-        console.log('You can not create two identical chips');
-      } else {
-        this.data.push(value.trim());
-        this.cData.control.setValue(this.data);
-      }
+    if ((value || '') && (!this.data.includes(value) && !this.cData.unique)) {
+      this.data.push(value);
+      this.cData.control.setValue(this.data);
     }
 
     if (input) {
