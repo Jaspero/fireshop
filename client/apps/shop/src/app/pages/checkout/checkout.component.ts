@@ -237,6 +237,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     const group = this.fb.group(
       {
         billing: this.addressForm(value.billing ? value.billing : {}),
+        code: '',
         shippingInfo: value.shippingInfo || true,
         saveInfo: true
       },

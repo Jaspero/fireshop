@@ -159,6 +159,11 @@
                   <div class="col-12 m-y-xs">
                     <p class="bg-l-secondary p-y-s ta-center">You will have a chance to review your order before it's placed</p>
                   </div>
+                  <div class="col-12 m-y-xs">
+                    <mat-form-field class="w-full" appearance="outline">
+                      <input matInput  placeholder="Discount code" formControlName="code">
+                    </mat-form-field>
+                  </div>
                   <div class="col-12 ta-right">
                     <button id="btn-nxt-step-0" mat-flat-button color="primary" matStepperNext [disabled]="!data.form.valid">Continue</button>
                   </div>
