@@ -9,5 +9,5 @@ export interface Sale {
   active: boolean;
   ribbonProduct: boolean;
   limitedNumber: boolean;
-  saleValueType: string;
+  saleValueType: boolean;
 }

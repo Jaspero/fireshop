@@ -85,10 +85,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
 
         this.sale$ = this.state.sales$.pipe(
           map(sales => {
-            console.log('sales', sales, data.product);
-
             const index = sales.findIndex(x => x.id === data.product.sale);
-
             if (index !== -1) {
               return sales[index];
             }

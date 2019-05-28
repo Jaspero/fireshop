@@ -10,11 +10,6 @@ export enum SaleType {
   Limited = 'Limited'
 }
 
-export enum SaleValueType {
-  FixedAmount = 'fixedAmount',
-  Percentage = 'percentage'
-}
-
 @Component({
   selector: 'jfsc-sale-single-page',
   templateUrl: './sale-single-page.component.html',
@@ -24,7 +19,6 @@ export enum SaleValueType {
 export class SaleSinglePageComponent extends LangSinglePageComponent {
   collection = FirestoreCollections.Sales;
   type = SaleType;
-  saleValueType = SaleValueType;
 
   public buildForm(data: any) {
     this.form = this.fb.group({
@@ -34,7 +28,7 @@ export class SaleSinglePageComponent extends LangSinglePageComponent {
       ],
       name: [data.name || '', Validators.required],
       description: [data.description || ''],
-      saleValueType: ['', Validators.required],
+      saleValueType: [false, Validators.required],
       value: [data.value ? fromStripeFormat(data.value) : 0, Validators.min(0)],
       startingDate: [data.startingDate || ''],
       endingDate: [data.endingDate || ''],
