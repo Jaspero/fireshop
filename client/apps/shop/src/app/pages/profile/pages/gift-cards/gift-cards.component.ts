@@ -11,6 +11,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {GiftCardValidator} from '@jf/interfaces/gift-card-validator.interface';
 import {GiftCard} from '@jf/interfaces/gift-card.interface';
 import * as nanoid from 'nanoid';
 import {Observable} from 'rxjs';
@@ -72,7 +73,11 @@ export class GiftCardsComponent implements OnInit {
 
   buildForm() {
     this.form = this.fb.group({
-      value: ['', Validators.required],
+      value: [
+        '',
+        Validators.required,
+        {validator: GiftCardValidator('Code not valid')}
+      ],
       email: ['', [Validators.required, Validators.email]],
       creditCard: ['', Validators.required]
     });
