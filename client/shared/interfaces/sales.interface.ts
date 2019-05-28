@@ -5,10 +5,9 @@ export interface Sales {
   startingDate: Date;
   endingDate: Date;
   type: string;
+  value: number;
   active: boolean;
   ribbonProduct: boolean;
   limitedNumber: boolean;
-  saleValue: string;
-  percentageValue?: number;
-  fixedValue?: number;
+  saleValueType: string;
 }

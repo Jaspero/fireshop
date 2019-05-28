@@ -47,56 +47,60 @@
                 </div>
               </form>
             </div>
-            <h2 class="m-b-xs">{{data.product.ribbonProduct ? 'This item is on sale' : ''}}</h2>
-            <h2 class="m-b-xs">{{data.price | sp}}</h2>
-<!--            <h2 *ngIf="data.product.sale[1]" class="m-b-xs">{{data.product.sale[1] ? data.price - data.product.sale[1] : data.price | sp}}</h2>-->
-            <p class="m-t-s" *ngIf="data.product.showingQuantity">
-              {{data.quantity ? data.quantity + ' in stock' : 'There are no more items in stock'}}
-            </p>
-            <button
-              id="btn-add-cart-prod-1"
-              mat-flat-button
-              type="button"
-              color="accent"
-              [disabled]="data.isDisabled"
-              (click)="cart.add(data.product, filters ? filters.getRawValue() : {})">
-              <span class="iblock p-x-m">{{data.itemsInCart ? 'Add more to cart (currently ' + data.itemsInCart + ')' : 'Add to cart'}} </span>
-            </button>
-            <div class="m-y-m flex fd-col ai-start">
-              <p class="m-b-xs"><b>Share this product:</b></p>
-              <button mat-button (click)="facebookShare(data)">Share on Facebook</button>
-              <button mat-button (click)="twitterShare(data)">Share on Twitter</button>
-              <button mat-button (click)="emailShare(data)">Share via email</button>
-            </div>
-          </div>
-          <div class="col-6 col-s-12">
-            <div class="jfs-gallery">
-              <img
-                *ngFor="let img of data.product.gallery; index as i"
-                class="jfs-gallery-image"
-                src="assets/images/loading.svg"
-                [jpPreload]="img"
-                (click)="changePicture(i)"
-                [class.active]="imgIndex === i"
-              />
-            </div>
-            <img
-              class="w-full"
-              src="assets/images/loading.svg"
-              [jpPreload]="data.product.gallery[imgIndex]"/>
+
+<!--            <div *ngIf="saleProd$ | async as saleProd">-->
+<!--              <div *ngFor="let salpro of saleProd">-->
+<!--                {{salpro.value}}-->
+<!--              </div>-->
+<!--            </div>-->
+          <!--            <h2 *ngIf="data.product.sale[1]" class="m-b-xs">{{data.product.sale[1] ? data.price - data.product.sale[1] : data.price | sp}}</h2>-->
+          <p class="m-t-s" *ngIf="data.product.showingQuantity">
+            {{data.quantity ? data.quantity + ' in stock' : 'There are no more items in stock'}}
+          </p>
+          <button
+            id="btn-add-cart-prod-1"
+            mat-flat-button
+            type="button"
+            color="accent"
+            [disabled]="data.isDisabled"
+            (click)="cart.add(data.product, filters ? filters.getRawValue() : {})">
+            <span class="iblock p-x-m">{{data.itemsInCart ? 'Add more to cart (currently ' + data.itemsInCart + ')' : 'Add to cart'}} </span>
+          </button>
+          <div class="m-y-m flex fd-col ai-start">
+            <p class="m-b-xs"><b>Share this product:</b></p>
+            <button mat-button (click)="facebookShare(data)">Share on Facebook</button>
+            <button mat-button (click)="twitterShare(data)">Share on Twitter</button>
+            <button mat-button (click)="emailShare(data)">Share via email</button>
           </div>
         </div>
-        <button
-          id="btn-wish-list-1"
-          class="jfs-wishlist-button"
-          mat-mini-fab
-          color="accent"
-          [matTooltip]="data.wishList.tooltip"
-          [attr.aria-label]="data.wishList.tooltip"
-          (click)="wishList.toggle(data.product)">
-          <mat-icon>{{data.wishList.icon}}</mat-icon>
-        </button>
-      </mat-card>
+        <div class="col-6 col-s-12">
+          <div class="jfs-gallery">
+            <img
+              *ngFor="let img of data.product.gallery; index as i"
+              class="jfs-gallery-image"
+              src="assets/images/loading.svg"
+              [jpPreload]="img"
+              (click)="changePicture(i)"
+              [class.active]="imgIndex === i"
+            />
+          </div>
+          <img
+            class="w-full"
+            src="assets/images/loading.svg"
+            [jpPreload]="data.product.gallery[imgIndex]"/>
+        </div>
+    </div>
+    <button
+      id="btn-wish-list-1"
+      class="jfs-wishlist-button"
+      mat-mini-fab
+      color="accent"
+      [matTooltip]="data.wishList.tooltip"
+      [attr.aria-label]="data.wishList.tooltip"
+      (click)="wishList.toggle(data.product)">
+      <mat-icon>{{data.wishList.icon}}</mat-icon>
+    </button>
+    </mat-card>
 
     </div>
   </section>

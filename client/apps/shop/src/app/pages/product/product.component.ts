@@ -63,6 +63,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
   similar$: Observable<any>;
   imgIndex = 0;
   filters: FormGroup;
+  saleProd$: Observable<any>;
 
   @ViewChild('reviewsDialog') reviewsDialog: TemplateRef<any>;
 
@@ -187,6 +188,8 @@ export class ProductComponent extends RxDestroy implements OnInit {
           return [allReviews, avgRating] as [Review[], number];
         })
       );
+
+    this.saleProd$ = this.state.sales$;
   }
 
   openReviews() {

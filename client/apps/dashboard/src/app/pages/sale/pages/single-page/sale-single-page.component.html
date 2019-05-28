@@ -63,33 +63,34 @@
               </mat-form-field>
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Sale value</mat-label>
-                <mat-select formControlName="saleValue">
-                  <mat-option value="fixedAmount">Fixed amount</mat-option>
-                  <mat-option value="percentage">Percentage</mat-option>
+                <mat-select formControlName="saleValueType">
+                  <mat-option *ngFor="let option of saleValueType | keyvalue" [value]="option.value">
+                    {{option.key}}
+                  </mat-option>
                 </mat-select>
               </mat-form-field>
-              <ng-container *ngIf="form.get('saleValue').value === 'percentage'" class="w-full" appearance="outline">
+              <ng-container *ngIf="form.get('saleValueType').value === saleValueType.Percentage" class="w-full" appearance="outline">
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Percentage value</mat-label>
                   <input matInput type="number" formControlName="value">
                 </mat-form-field>
               </ng-container>
-              <ng-container *ngIf="form.get('saleValue').value === 'fixedAmount'" class="w-full" appearance="outline">
+              <ng-container *ngIf="form.get('saleValueType').value === saleValueType.FixedAmount" class="w-full" appearance="outline">
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Fixed value</mat-label>
                   <input matInput type="number" formControlName="value">
                 </mat-form-field>
               </ng-container>
-
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Type</mat-label>
                 <mat-select formControlName="type">
-                  <mat-option value="limited">{{type.Limited}}</mat-option>
-                  <mat-option value="unlimited">{{type.Unlimited}}</mat-option>
+                  <mat-option *ngFor="let option of type | keyvalue" [value]="option.value">
+                    {{option.key}}
+                  </mat-option>
                 </mat-select>
               </mat-form-field>
 
-              <ng-container *ngIf="form.get('type').value === 'limited'" class="w-full" appearance="outline">
+              <ng-container *ngIf="form.get('type').value === type.Limited" class="w-full" appearance="outline">
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Number of users</mat-label>
                   <input matInput type="number" formControlName="limitedNumber">
