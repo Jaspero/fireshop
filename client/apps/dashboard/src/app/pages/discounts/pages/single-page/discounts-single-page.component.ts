@@ -5,14 +5,14 @@ import {LangSinglePageComponent} from '../../../../shared/components/lang-single
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
 import * as nanoid from 'nanoid';
 
-export enum DiscountValue {
-  FixedAmount = 'Fixed amount',
-  Percentage = 'Percentage'
+export enum DiscountValueType {
+  FixedAmount = 'fixedAmount',
+  Percentage = 'percentage'
 }
 
 export enum LimitType {
-  Limited = 'Limited',
-  Unlimited = 'Unlimited'
+  Limited = 'limited',
+  Unlimited = 'unlimited'
 }
 
 @Component({
@@ -22,8 +22,8 @@ export enum LimitType {
 })
 export class DiscountsSinglePageComponent extends LangSinglePageComponent {
   collection = FirestoreCollections.Discounts;
-  value = DiscountValue;
-  type = LimitType;
+  discountValueType = DiscountValueType;
+  limitType = LimitType;
 
   public buildForm(data: any) {
     this.form = this.fb.group({
@@ -34,13 +34,15 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
       name: [data.name || '', Validators.required],
       code: [data.code || '', Validators.required],
       description: [data.description || ''],
-      discountValue: ['', Validators.required],
+      valueType: [
+        data.valueType || this.discountValueType.Percentage,
+        Validators.required
+      ],
       startingDate: [data.startingDate || ''],
       endingDate: [data.endingDate || ''],
       value: [data.value || ''],
       type: [data.type || ''],
       active: [true, Validators.required],
-      ribbonProduct: [data.ribbonProduct || true],
       limitedNumber: [data.limitedNumber || '']
     });
   }

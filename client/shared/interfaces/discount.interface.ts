@@ -4,11 +4,11 @@ export interface Discount {
   name: string;
   createdOn: number;
   description: string;
-  discountValue: string;
+  valueType: string;
   startingDate: number;
   endingDate: number;
   type: string;
   active: boolean;
-  ribbonProduct: boolean;
   limitedNumber: number;
+  value: number;
 }

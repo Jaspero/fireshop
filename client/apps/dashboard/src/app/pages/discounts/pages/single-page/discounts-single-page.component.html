@@ -68,26 +68,29 @@
               </mat-form-field>
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Discounts value</mat-label>
-                <mat-select formControlName="discountValue">
-                  <mat-option value="fixedAmount">{{value.FixedAmount}}</mat-option>
-                  <mat-option value="percentage">{{value.Percentage}}</mat-option>
+                <mat-select formControlName="valueType">
+                  <mat-option *ngFor="let option of discountValueType | keyvalue" [value]="option.value">
+                    {{option.key}}
+                  </mat-option>
                 </mat-select>
               </mat-form-field>
               <ng-container class="w-full" appearance="outline">
                 <mat-form-field class="w-full" appearance="outline">
-                  <mat-label>{{form.get('discountValue').value === 'percentage' ? 'Percentage value' : 'Fixed value'  }}</mat-label>
+                  <mat-label>{{form.get('valueType').value === discountValueType.Percentage ? 'Percentage value' : 'Fixed value'}}</mat-label>
                   <input matInput type="number" formControlName="value">
                 </mat-form-field>
               </ng-container>
+
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Type</mat-label>
                 <mat-select formControlName="type">
-                  <mat-option value="limited">{{type.Limited}}</mat-option>
-                  <mat-option value="unlimited">{{type.Unlimited}}</mat-option>
+                  <mat-option *ngFor="let option of limitType | keyvalue" [value]="option.value">
+                    {{option.key}}
+                  </mat-option>
                 </mat-select>
               </mat-form-field>
 
-              <ng-container *ngIf="form.get('type').value === 'limited'" class="w-full" appearance="outline">
+              <ng-container *ngIf="form.get('type').value === limitType.Limited" class="w-full" appearance="outline">
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Number of discounts</mat-label>
                   <input matInput type="number" formControlName="limitedNumber">
@@ -105,10 +108,6 @@
                 <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
                 <mat-datepicker #endDate></mat-datepicker>
               </mat-form-field>
-              <div class="p-y-s flex jc-between">
-                <span>Showing on ribbon on a product</span>
-                <mat-slide-toggle formControlName="ribbonProduct"></mat-slide-toggle>
-              </div>
             </mat-card>
           </div>
         </div>
