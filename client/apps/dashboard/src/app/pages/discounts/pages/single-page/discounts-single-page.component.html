@@ -45,24 +45,69 @@
               <div class="p-y-xs">
                 <mat-divider></mat-divider>
               </div>
-              <div class="p-y-xs">
-                <mat-form-field class="w-full" appearance="outline">
-                  <mat-label>URL</mat-label>
-                  <input matInput formControlName="id">
-                </mat-form-field>
+              <div class="p-y-s flex jc-between">
+                <span>Active</span>
+                <mat-slide-toggle formControlName="active"></mat-slide-toggle>
               </div>
-              <div class="p-y-xs">
+              <mat-form-field class="w-full" appearance="outline">
+                <mat-label>URL</mat-label>
+                <input matInput formControlName="id">
+              </mat-form-field>
                 <mat-form-field class="w-full" appearance="outline">
-                  <mat-label>Name</mat-label>
-                  <input matInput formControlName="name">
+                  <mat-label>Code</mat-label>
+                  <input matInput formControlName="code">
+                  <mat-icon class="cs-pointer" matSuffix (click)="generate()">refresh</mat-icon>
                 </mat-form-field>
-              </div>
-              <div class="p-y-xs">
+              <mat-form-field class="w-full" appearance="outline">
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="name">
+              </mat-form-field>
+              <mat-form-field class="w-full" appearance="outline">
+                <mat-label>Description</mat-label>
+                <textarea matInput  formControlName="description"></textarea>
+              </mat-form-field>
+              <mat-form-field class="w-full" appearance="outline">
+                <mat-label>Discounts value</mat-label>
+                <mat-select formControlName="valueType">
+                  <mat-option *ngFor="let option of discountValueType | keyvalue" [value]="option.value">
+                    {{option.key}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <ng-container class="w-full" appearance="outline">
                 <mat-form-field class="w-full" appearance="outline">
-                  <mat-label>Description</mat-label>
-                  <textarea matInput  formControlName="description"></textarea>
+                  <mat-label>{{form.get('valueType').value === discountValueType.Percentage ? 'Percentage value' : 'Fixed value'}}</mat-label>
+                  <input matInput type="number" formControlName="value">
                 </mat-form-field>
-              </div>
+              </ng-container>
+
+              <mat-form-field class="w-full" appearance="outline">
+                <mat-label>Type</mat-label>
+                <mat-select formControlName="type">
+                  <mat-option *ngFor="let option of limitType | keyvalue" [value]="option.value">
+                    {{option.key}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <ng-container *ngIf="form.get('type').value === limitType.Limited" class="w-full" appearance="outline">
+                <mat-form-field class="w-full" appearance="outline">
+                  <mat-label>Number of discounts</mat-label>
+                  <input matInput type="number" formControlName="limitedNumber">
+                </mat-form-field>
+              </ng-container>
+
+
+              <mat-form-field class="col-6 p-r-xs" appearance="outline">
+                <input matInput [matDatepicker]="startDate" placeholder="Starting date" formControlName="startingDate">
+                <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+                <mat-datepicker #startDate></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field class="col-6" appearance="outline">
+                <input matInput [matDatepicker]="endDate" placeholder="Ending date" formControlName="endingDate">
+                <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+                <mat-datepicker #endDate></mat-datepicker>
+              </mat-form-field>
             </mat-card>
           </div>
         </div>
