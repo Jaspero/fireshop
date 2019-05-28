@@ -53,15 +53,11 @@
                 <mat-label>URL</mat-label>
                 <input matInput formControlName="id">
               </mat-form-field>
-              <div class="flex jc-between">
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Code</mat-label>
                   <input matInput formControlName="code">
+                  <mat-icon class="cs-pointer" matSuffix (click)="generate()">refresh</mat-icon>
                 </mat-form-field>
-                <button mat-button (click)="generate()">
-                  Generate code
-                </button>
-              </div>
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Name</mat-label>
                 <input matInput formControlName="name">
