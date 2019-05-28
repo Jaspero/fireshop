@@ -4,18 +4,14 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {CollectionReference} from '@angular/fire/firestore';
-import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
-import {FormArray, FormGroup, Validators} from '@angular/forms';
+import {FormArray, Validators} from '@angular/forms';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
-import {Discount} from '@jf/interfaces/discount.interface';
-import {Product} from '@jf/interfaces/product.interface';
-import {Sales} from '@jf/interfaces/sales.interface';
+import {Sale} from '@jf/interfaces/sales.interface';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
 import {Observable} from 'rxjs';
-import {map, shareReplay, switchMap, take, takeUntil} from 'rxjs/operators';
+import {map, shareReplay, switchMap, take} from 'rxjs/operators';
 import {environment} from '../../../../../../../shop/src/environments/environment';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {CURRENCIES} from '../../../../shared/const/currency.const';
@@ -34,7 +30,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   galleryUploadComponent: GalleryUploadComponent;
 
   categories$: Observable<Category[]>;
-  sales$: Observable<Sales[]>;
+  sales$: Observable<Sale[]>;
   collection = FirestoreCollections.Products;
   currency: string;
   inventoryKeys: string[] = [];
@@ -64,7 +60,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
     this.sales$ = this.state.language$.pipe(
       switchMap(lang =>
         this.afs
-          .collection<Sales>(`${FirestoreCollections.Sales}-${lang}`)
+          .collection<Sale>(`${FirestoreCollections.Sales}-${lang}`)
           .snapshotChanges()
       ),
       map(actions =>

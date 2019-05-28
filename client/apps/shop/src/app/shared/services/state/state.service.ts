@@ -7,7 +7,7 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Language} from '@jf/enums/language.enum';
 import {Customer} from '@jf/interfaces/customer.interface';
 import {Errors, Order} from '@jf/interfaces/order.interface';
-import {Sales} from '@jf/interfaces/sales.interface';
+import {Sale} from '@jf/interfaces/sales.interface';
 import {User} from 'firebase/app';
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {
@@ -49,7 +49,7 @@ export class StateService {
     this.sales$ = this.language$.pipe(
       switchMap(lang =>
         this.afs
-          .collection<Sales>(`${FirestoreCollections.Sales}-${lang}`, ref => {
+          .collection<Sale>(`${FirestoreCollections.Sales}-${lang}`, ref => {
             ref.where('active', FirebaseOperator.Equal, true);
             ref.where(
               'startingDate',
@@ -80,7 +80,7 @@ export class StateService {
   loading$ = new BehaviorSubject<boolean>(false);
   checkoutResult: Array<Errors> | Partial<Order>;
   language$ = new BehaviorSubject<Language>(STATIC_CONFIG.lang);
-  sales$: Observable<Sales[]>;
+  sales$: Observable<Sale[]>;
   currentDate = Date.now();
 
   currentRoute$ = new BehaviorSubject<{data: any; url: string}>({

@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {ActivatedRoute} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
@@ -17,6 +17,7 @@ import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Product} from '@jf/interfaces/product.interface';
 import {Review} from '@jf/interfaces/review.interface';
+import {Sale} from '@jf/interfaces/sales.interface';
 import {combineLatest, Observable} from 'rxjs';
 import {map, startWith, switchMap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
@@ -63,7 +64,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
   similar$: Observable<any>;
   imgIndex = 0;
   filters: FormGroup;
-  saleProd$: Observable<any>;
+  sale$: Observable<Sale>;
 
   @ViewChild('reviewsDialog') reviewsDialog: TemplateRef<any>;
 
@@ -80,6 +81,18 @@ export class ProductComponent extends RxDestroy implements OnInit {
               lang: STATIC_CONFIG.lang
             }
           }
+        );
+
+        this.sale$ = this.state.sales$.pipe(
+          map(sales => {
+            console.log('sales', sales, data.product);
+
+            const index = sales.findIndex(x => x.id === data.product.sale);
+
+            if (index !== -1) {
+              return sales[index];
+            }
+          })
         );
 
         const toCombine = [
@@ -188,8 +201,6 @@ export class ProductComponent extends RxDestroy implements OnInit {
           return [allReviews, avgRating] as [Review[], number];
         })
       );
-
-    this.saleProd$ = this.state.sales$;
   }
 
   openReviews() {

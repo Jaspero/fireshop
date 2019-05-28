@@ -1,4 +1,4 @@
-export interface Sales {
+export interface Sale {
   id: number;
   name: string;
   createdOn: number;
