@@ -4,14 +4,10 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {CollectionReference} from '@angular/fire/firestore';
-import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
-import {FormArray, FormGroup, Validators} from '@angular/forms';
+import {FormArray, Validators} from '@angular/forms';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
-import {Discount} from '@jf/interfaces/discount.interface';
-import {Product} from '@jf/interfaces/product.interface';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
 import {Observable} from 'rxjs';
 import {map, shareReplay, switchMap, take} from 'rxjs/operators';
@@ -33,7 +29,6 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   galleryUploadComponent: GalleryUploadComponent;
 
   categories$: Observable<Category[]>;
-  discounts$: Observable<Discount[]>;
   collection = FirestoreCollections.Products;
   currency: string;
   inventoryKeys: string[] = [];
