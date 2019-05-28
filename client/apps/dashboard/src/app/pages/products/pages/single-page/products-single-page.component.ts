@@ -4,10 +4,14 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {FormArray, Validators} from '@angular/forms';
+import {CollectionReference} from '@angular/fire/firestore';
+import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
+import {FormArray, FormGroup, Validators} from '@angular/forms';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
+import {Discount} from '@jf/interfaces/discount.interface';
+import {Product} from '@jf/interfaces/product.interface';
 import {Sales} from '@jf/interfaces/sales.interface';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
 import {Observable} from 'rxjs';
