@@ -53,10 +53,15 @@
                 <mat-label>URL</mat-label>
                 <input matInput formControlName="id">
               </mat-form-field>
-              <mat-form-field class="w-full" appearance="outline">
-                <mat-label>Code</mat-label>
-                <input matInput formControlName="code">
-              </mat-form-field>
+              <div class="flex jc-between">
+                <mat-form-field class="w-full" appearance="outline">
+                  <mat-label>Code</mat-label>
+                  <input matInput formControlName="code">
+                </mat-form-field>
+                <button mat-button (click)="generate()">
+                  Generate code
+                </button>
+              </div>
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Name</mat-label>
                 <input matInput formControlName="name">
@@ -68,28 +73,21 @@
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Discounts value</mat-label>
                 <mat-select formControlName="discountValue">
-                  <mat-option value="fixedAmount">Fixed amount</mat-option>
-                  <mat-option value="percentage">Percentage</mat-option>
+                  <mat-option value="fixedAmount">{{value.FixedAmount}}</mat-option>
+                  <mat-option value="percentage">{{value.Percentage}}</mat-option>
                 </mat-select>
               </mat-form-field>
-              <ng-container *ngIf="form.get('discountValue').value === 'percentage'" class="w-full" appearance="outline">
+              <ng-container class="w-full" appearance="outline">
                 <mat-form-field class="w-full" appearance="outline">
-                  <mat-label>Percentage value</mat-label>
-                  <input matInput type="number">
+                  <mat-label>{{form.get('discountValue').value === 'percentage' ? 'Percentage value' : 'Fixed value'  }}</mat-label>
+                  <input matInput type="number" formControlName="value">
                 </mat-form-field>
               </ng-container>
-              <ng-container *ngIf="form.get('discountValue').value === 'fixedAmount'" class="w-full" appearance="outline">
-                <mat-form-field class="w-full" appearance="outline">
-                  <mat-label>Fixed value</mat-label>
-                  <input matInput type="number">
-                </mat-form-field>
-              </ng-container>
-
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Type</mat-label>
                 <mat-select formControlName="type">
-                  <mat-option value="limited">Limited</mat-option>
-                  <mat-option value="unlimited">Unlimited</mat-option>
+                  <mat-option value="limited">{{type.Limited}}</mat-option>
+                  <mat-option value="unlimited">{{type.Unlimited}}</mat-option>
                 </mat-select>
               </mat-form-field>
 

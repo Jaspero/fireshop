@@ -221,16 +221,6 @@
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Active discounts</mat-label>
-                  <mat-select formControlName="activeDiscount" appearance="outline" class="w-full">
-                    <mat-option
-                      *ngFor="let dis of discounts$ | async"
-                      [value]="dis.id">
-                      {{dis.name}}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
               </div>
             </mat-card>
           </div>

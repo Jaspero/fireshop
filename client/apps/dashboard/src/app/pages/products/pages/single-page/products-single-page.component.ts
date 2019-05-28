@@ -59,27 +59,6 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       }),
       shareReplay(1)
     );
-
-    this.discounts$ = this.state.language$.pipe(
-      switchMap(lang => {
-        return this.afs
-          .collection(`${FirestoreCollections.Discounts}-${lang}`, ref => {
-            ref = <CollectionReference>(
-              ref.where('active', FirebaseOperator.Equal, true)
-            );
-            return ref;
-          })
-          .snapshotChanges()
-          .pipe(
-            map(actions => {
-              return actions.map(action => ({
-                id: action.payload.doc.id,
-                ...(action.payload.doc.data() as Discount)
-              }));
-            })
-          );
-      })
-    );
   }
 
   get attributesForms() {
@@ -206,8 +185,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       inventory: this.fb.group(
         data.inventory ? this.formatInventory(data.inventory, true) : {}
       ),
-      default: data.default || '',
-      activeDiscount: data.activeDiscount || ''
+      default: data.default || ''
     });
   }
 
