@@ -5,7 +5,7 @@
       <ng-container *ngIf="giftCardsInstances$ | async as giftCardInstances">
         <div *ngFor="let gCrdInst of giftCardInstances">
           <mat-card>
-            <p>{{gCrdInst.value}}</p>
+            <p>{{gCrdInst.giftCardId}}</p>
           </mat-card>
         </div>
       </ng-container>
@@ -32,8 +32,8 @@
     <form [formGroup]="form">
       <mat-form-field appearance="outline">
         <mat-label>Value</mat-label>
-        <mat-select formControlName="value">
-          <mat-option [value]="gc.value" *ngFor="let gc of giftCard">
+        <mat-select formControlName="giftCardId">
+          <mat-option [value]="gc.id" *ngFor="let gc of giftCard">
             {{gc.value}}
           </mat-option>
         </mat-select>
@@ -52,7 +52,7 @@
       </mat-form-field>
 
       <button mat-button (click)="buy()">
-        Buy for yourself
+        Buy
       </button>
 
     </form>

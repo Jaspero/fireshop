@@ -4,6 +4,7 @@ import {CanDeactivateGuard} from '@jf/guards/can-deactivate.guard';
 import {SharedModule} from '../../shared/shared.module';
 import {GiftCardComponent} from './gift-card.component';
 import {GiftCardListComponent} from './pages/list/gift-card-list.component';
+import {GiftCardOverviewComponent} from './pages/overview/gift-card-overview.component';
 import {GiftCardSinglePageComponent} from './pages/single-page/gift-card-single-page.component';
 
 const routes: Routes = [
@@ -16,6 +17,11 @@ const routes: Routes = [
         path: ':id',
         component: GiftCardSinglePageComponent,
         canDeactivate: [CanDeactivateGuard]
+      },
+      {
+        path: 'overview/:id',
+        component: GiftCardOverviewComponent,
+        canDeactivate: [CanDeactivateGuard]
       }
     ]
   }
@@ -25,7 +31,8 @@ const routes: Routes = [
   declarations: [
     GiftCardComponent,
     GiftCardListComponent,
-    GiftCardSinglePageComponent
+    GiftCardSinglePageComponent,
+    GiftCardOverviewComponent
   ],
   imports: [SharedModule, RouterModule.forChild(routes)]
 })

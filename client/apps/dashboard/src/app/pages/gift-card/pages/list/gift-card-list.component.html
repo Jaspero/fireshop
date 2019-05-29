@@ -94,6 +94,10 @@
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
+                <button mat-menu-item fDisable [routerLink]="['overview', element.id]">
+                  <mat-icon>show_chart</mat-icon>
+                  <span>Statistic</span>
+                </button>
                 <button mat-menu-item fDisable (click)="deleteOne(element)">
                   <mat-icon>delete_forever</mat-icon>
                   <span>Delete</span>

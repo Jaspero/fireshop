@@ -73,7 +73,7 @@ export class GiftCardsComponent implements OnInit {
 
   buildForm() {
     this.form = this.fb.group({
-      value: ['', Validators.required],
+      giftCardId: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       creditCard: ['', Validators.required]
     });
