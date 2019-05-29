@@ -1,8 +1,14 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import * as firebase from 'firebase';
-import {from} from 'rxjs';
+import {from, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {FirestoreCollection} from '../../shared/enums/firestore-collection.enum';
 import {notify} from '../../shared/utils/notify.operator';
 
@@ -13,11 +19,16 @@ import {notify} from '../../shared/utils/notify.operator';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsComponent implements OnInit {
-  constructor(private afs: AngularFirestore, private fb: FormBuilder) {}
+  constructor(
+    private afs: AngularFirestore,
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   role = ['write', 'read'];
   form: FormGroup;
   users = [];
+  users$: Observable<any>;
 
   ngOnInit() {
     this.afs
@@ -38,6 +49,8 @@ export class SettingsComponent implements OnInit {
       role: ['', Validators.required]
     });
   }
+
+  addNew() {}
 
   save() {
     const data = this.form.getRawValue();

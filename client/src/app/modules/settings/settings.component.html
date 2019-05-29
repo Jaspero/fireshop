@@ -10,23 +10,26 @@
 
         <h5>Admin</h5>
 
-
-        <p *ngFor="let user of users">
+        <div *ngFor="let user of users">
           {{user | json}}
-        </p>
+        </div>
 
+        <div>
+          <mat-form-field appearance="outline" class="w-full m-r-xs">
+            <mat-label>Email</mat-label>
+            <input type="email" formControlName="email" matInput>
+          </mat-form-field>
 
-        <mat-form-field appearance="outline" class="w-full m-r-xs">
-          <mat-label>Email</mat-label>
-          <input type="email" formControlName="email" matInput>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="w-full m-r-xs">
-          <mat-label>Role</mat-label>
-          <mat-select formControlName="role">
-            <mat-option *ngFor="let option of role" [value]="option">{{option}}</mat-option>
-          </mat-select>
-        </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full m-r-xs">
+            <mat-label>Role</mat-label>
+            <mat-select formControlName="role">
+              <mat-option *ngFor="let option of role" [value]="option">{{option}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+<!--        <button mat-button (click)="addNew()">-->
+<!--          Add new-->
+<!--        </button>-->
       </form>
     </mat-card>
   </div>
