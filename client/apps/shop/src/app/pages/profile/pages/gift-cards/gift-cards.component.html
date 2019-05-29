@@ -6,7 +6,6 @@
         <div *ngFor="let gCrdInst of giftCardInstances">
           <mat-card>
             <p>{{gCrdInst.value}}</p>
-            <p>Code: 100101010101</p>
           </mat-card>
         </div>
       </ng-container>
@@ -53,8 +52,9 @@
       </mat-form-field>
 
       <button mat-button (click)="buy()">
-        Buy
+        Buy for yourself
       </button>
+
     </form>
   </div>
 </ng-template>

@@ -11,11 +11,11 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {GiftCardValidator} from '@jf/interfaces/gift-card-validator.interface';
 import {GiftCard} from '@jf/interfaces/gift-card.interface';
+import {notify} from '@jf/utils/notify.operator';
 import * as nanoid from 'nanoid';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {from, Observable, pipe} from 'rxjs';
+import {filter, map, switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'jfs-gift-cards',
@@ -55,7 +55,7 @@ export class GiftCardsComponent implements OnInit {
     this.giftCardsInstances$ = this.afs
       .collection<any>(FirestoreCollections.GiftCardsInstances, ref =>
         ref.where(
-          'customerId',
+          'usedBy',
           FirebaseOperator.Equal,
           this.afAuth.auth.currentUser.uid
         )
@@ -73,16 +73,12 @@ export class GiftCardsComponent implements OnInit {
 
   buildForm() {
     this.form = this.fb.group({
-      value: [
-        '',
-        Validators.required,
-        {validator: GiftCardValidator('Code not valid')}
-      ],
+      value: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       creditCard: ['', Validators.required]
     });
 
-    this.code = this.fb.control('');
+    this.code = new FormControl('');
   }
 
   dialogBuyOpen() {
@@ -99,13 +95,17 @@ export class GiftCardsComponent implements OnInit {
     const formData = this.form.getRawValue();
     const customerId = this.afAuth.auth.currentUser.uid;
 
-    this.afs
-      .collection(FirestoreCollections.GiftCardsInstances)
-      .doc(nanoid())
-      .set({
-        ...formData,
-        customerId
-      });
+    from(
+      this.afs
+        .collection(FirestoreCollections.GiftCardsInstances)
+        .doc(nanoid())
+        .set({
+          ...formData,
+          customerId
+        })
+    )
+      .pipe(notify())
+      .subscribe();
   }
 
   apply() {
@@ -114,10 +114,27 @@ export class GiftCardsComponent implements OnInit {
 
     this.afs
       .collection(FirestoreCollections.GiftCardsInstances)
-      .doc(nanoid())
-      .set({
-        code,
-        customerId
-      });
+      .doc(code)
+      .get()
+      .pipe(
+        filter(value => value.exists),
+        switchMap(() =>
+          from(
+            this.afs
+              .collection(FirestoreCollections.GiftCardsInstances)
+              .doc(code)
+              .set(
+                {
+                  usedBy: customerId
+                },
+                {
+                  merge: true
+                }
+              )
+          )
+        ),
+        notify()
+      )
+      .subscribe();
   }
 }
