@@ -28,13 +28,13 @@ export class SaleSinglePageComponent extends LangSinglePageComponent {
       ],
       name: [data.name || '', Validators.required],
       description: [data.description || ''],
-      saleValueType: [false, Validators.required],
+      fixed: [false, Validators.required],
       value: [data.value ? fromStripeFormat(data.value) : 0, Validators.min(0)],
       startingDate: [data.startingDate || ''],
       endingDate: [data.endingDate || ''],
       type: [data.type || ''],
       active: [true, Validators.required],
-      showRibbon: [data.showRibbon || true],
+      ribbonProduct: [data.ribbonProduct || true],
       limitedNumber: [data.limitedNumber || '']
     });
   }

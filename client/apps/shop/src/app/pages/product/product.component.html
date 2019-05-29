@@ -48,19 +48,17 @@
               </form>
             </div>
 
-
-
+            <!-- TODO(TRT): STYLE-->
             <div *ngIf="sale$ | async as sale; else elseState">
               <h3>Sale</h3>
               <h4>Old price: {{data.price | sp}}</h4>
               <h4>
                New price:
-                {{sale.saleValueType === true ?
-                data.price - sale.value
-                :
-                data.price - (data.price * sale.value)
-                  | sp}}
+                {{sale.value | sp}}
               </h4>
+              <h3 *ngIf="sale.ribbonProduct">
+                <p>This product is on sale(ribbon)</p>
+              </h3>
             </div>
 
             <ng-template #elseState>

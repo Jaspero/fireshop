@@ -63,7 +63,7 @@
               </mat-form-field>
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Sale value</mat-label>
-                <mat-select formControlName="saleValueType">
+                <mat-select formControlName="fixed">
                   <mat-option [value]="true">
                     Fixed value
                   </mat-option>
@@ -72,13 +72,13 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-              <ng-container *ngIf="form.get('saleValueType').value === false" class="w-full" appearance="outline">
+              <ng-container *ngIf="form.get('fixed').value === false" class="w-full" appearance="outline">
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Percentage value</mat-label>
                   <input matInput type="number" formControlName="value">
                 </mat-form-field>
               </ng-container>
-              <ng-container *ngIf="form.get('saleValueType').value === true" class="w-full" appearance="outline">
+              <ng-container *ngIf="form.get('fixed').value === true" class="w-full" appearance="outline">
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Fixed value</mat-label>
                   <input matInput type="number" formControlName="value">
@@ -113,7 +113,7 @@
               </mat-form-field>
               <div class="p-y-s flex jc-between">
                 <span>Showing on ribbon on a product</span>
-                <mat-slide-toggle formControlName="showRibbon"></mat-slide-toggle>
+                <mat-slide-toggle formControlName="ribbonProduct"></mat-slide-toggle>
               </div>
             </mat-card>
           </div>
