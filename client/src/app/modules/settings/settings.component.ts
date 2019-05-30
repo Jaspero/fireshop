@@ -5,7 +5,7 @@ import {
   OnInit
 } from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import * as firebase from 'firebase';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -28,29 +28,37 @@ export class SettingsComponent implements OnInit {
   role = ['write', 'read'];
   form: FormGroup;
   users = [];
-  users$: Observable<any>;
 
   ngOnInit() {
+    this.form = this.fb.group({
+      roles: this.fb.array([])
+    });
+
     this.afs
       .collection(FirestoreCollection.Settings)
       .doc('user')
       .get()
       .subscribe(val => {
-        this.users.push(val.data());
-        console.log(this.users, 'user');
+        this.cdr.detectChanges();
       });
-
-    this.buildForm();
   }
 
-  buildForm() {
-    this.form = this.fb.group({
+  get userForm() {
+    return this.form.get('roles') as FormArray;
+  }
+
+  add() {
+    const user = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       role: ['', Validators.required]
     });
+
+    this.userForm.push(user);
   }
 
-  addNew() {}
+  delete(index) {
+    this.userForm.removeAt(index);
+  }
 
   save() {
     const data = this.form.getRawValue();

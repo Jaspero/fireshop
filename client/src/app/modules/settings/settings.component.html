@@ -8,28 +8,32 @@
     <mat-card>
       <form [formGroup]="form">
 
-        <h5>Admin</h5>
+        <div formArrayName="roles">
 
-        <div *ngFor="let user of users">
-          {{user | json}}
+          <h5>Admin</h5>
+
+          <div *ngFor="let user of userForm.controls; index as index" [formGroupName]="index">
+            <mat-form-field  appearance="outline" class="w-full m-r-xs">
+              <mat-label>{{user}}</mat-label>
+              <input type="email" formControlName="email" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full m-r-xs">
+              <mat-label>{{user}}</mat-label>
+              <mat-select formControlName="role">
+                <mat-option *ngFor="let option of role" [value]="option">{{option}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <button mat-raised-button color="warn" (click)="delete(index)">Delete</button>
+
+          </div>
+
+          <button mat-button (click)="add()">
+            Add new
+          </button>
         </div>
 
-        <div>
-          <mat-form-field appearance="outline" class="w-full m-r-xs">
-            <mat-label>Email</mat-label>
-            <input type="email" formControlName="email" matInput>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="w-full m-r-xs">
-            <mat-label>Role</mat-label>
-            <mat-select formControlName="role">
-              <mat-option *ngFor="let option of role" [value]="option">{{option}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-<!--        <button mat-button (click)="addNew()">-->
-<!--          Add new-->
-<!--        </button>-->
       </form>
     </mat-card>
   </div>
