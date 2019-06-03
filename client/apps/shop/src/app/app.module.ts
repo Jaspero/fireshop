@@ -6,6 +6,7 @@ import {
   AngularFirestoreModule
 } from '@angular/fire/firestore';
 import {MatProgressBarModule} from '@angular/material';
+import {AngularFirePerformanceModule} from '@angular/fire/performance';
 import {
   BrowserModule,
   BrowserTransferStateModule
@@ -60,6 +61,7 @@ const ENTRY_COMPONENTS = [UpdateAvailableComponent];
     AngularFireModule.initializeApp(ENV_CONFIG.firebase),
     AngularFirestoreModule.enablePersistence(),
     AngularFireAuthModule,
+    AngularFirePerformanceModule,
     MatProgressBarModule,
     JpImagePreloadModule.forRoot()
   ],
