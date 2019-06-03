@@ -5,11 +5,6 @@ import {fromStripeFormat} from '@jf/utils/stripe-format';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {URL_REGEX} from '../../../../shared/const/url-regex.const';
 
-export enum SaleType {
-  Unlimited = 'Unlimited',
-  Limited = 'Limited'
-}
-
 @Component({
   selector: 'jfsc-sale-single-page',
   templateUrl: './sale-single-page.component.html',
@@ -18,7 +13,6 @@ export enum SaleType {
 })
 export class SaleSinglePageComponent extends LangSinglePageComponent {
   collection = FirestoreCollections.Sales;
-  type = SaleType;
 
   public buildForm(data: any) {
     this.form = this.fb.group({
@@ -28,12 +22,12 @@ export class SaleSinglePageComponent extends LangSinglePageComponent {
       ],
       name: [data.name || '', Validators.required],
       description: [data.description || ''],
-      fixed: [false, Validators.required],
+      fixed: [data.fixed || false, Validators.required],
       value: [data.value ? fromStripeFormat(data.value) : 0, Validators.min(0)],
       startingDate: [data.startingDate || ''],
       endingDate: [data.endingDate || ''],
-      type: [data.type || ''],
-      active: [true, Validators.required],
+      limited: [data.limited || ''],
+      active: [data.active || true, Validators.required],
       ribbonProduct: [data.ribbonProduct || true],
       limitedNumber: [data.limitedNumber || '']
     });

@@ -87,10 +87,9 @@ export class ProductComponent extends RxDestroy implements OnInit {
           map(sales => {
             const index = sales.findIndex(x => x.id === data.product.sale);
 
-            sales[index].value =
-              sales[index].fixed === true
-                ? data.product.price - sales[index].value
-                : data.product.price - data.product.price * sales[index].value;
+            sales[index].value = sales[index].fixed
+              ? data.product.price - sales[index].value
+              : data.product.price - data.product.price * sales[index].value;
 
             if (index !== -1) {
               return sales[index];

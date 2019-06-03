@@ -4,10 +4,10 @@ export interface Sale {
   createdOn: number;
   startingDate: any;
   endingDate: any;
-  type: string;
+  limited: boolean;
   value: number;
   active: boolean;
   ribbonProduct: boolean;
-  limitedNumber: boolean;
+  limitedNumber: number;
   fixed: boolean;
 }
