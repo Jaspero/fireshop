@@ -56,10 +56,10 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
     super();
   }
 
-  @ViewChild(MatSort)
+  @ViewChild(MatSort, {static: true})
   sort: MatSort;
 
-  @ViewChild('filterDialog')
+  @ViewChild('filterDialog', {static: true})
   filterDialog: TemplateRef<any>;
 
   items$: Observable<T[]>;

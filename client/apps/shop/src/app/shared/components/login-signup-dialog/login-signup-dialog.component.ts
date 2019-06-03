@@ -12,7 +12,12 @@ import {
   AngularFirestoreDocument
 } from '@angular/fire/firestore';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialogRef, MatSnackBar} from '@angular/material';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatSnackBar,
+  MatSort
+} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Customer} from '@jf/interfaces/customer.interface';
@@ -59,7 +64,7 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
     super();
   }
 
-  @ViewChild('password') passwordField: ElementRef;
+  @ViewChild('password', {static: true}) passwordField: ElementRef;
 
   logInForm: FormGroup;
   resetPasswordControl: FormControl;
