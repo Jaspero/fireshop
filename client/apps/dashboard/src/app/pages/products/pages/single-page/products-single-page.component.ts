@@ -45,14 +45,8 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       switchMap(lang =>
         this.afs
           .collection<Category>(`${FirestoreCollections.Categories}-${lang}`)
-          .snapshotChanges()
+          .valueChanges('id')
       ),
-      map(actions => {
-        return actions.map(action => ({
-          id: action.payload.doc.id,
-          ...action.payload.doc.data()
-        }));
-      }),
       shareReplay(1)
     );
   }
