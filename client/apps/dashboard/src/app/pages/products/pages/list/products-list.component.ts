@@ -44,15 +44,7 @@ export class ProductsListComponent extends LangListComponent<Product>
       .collection<Category>(
         `${FirestoreCollections.Categories}-${STATIC_CONFIG.lang}`
       )
-      .snapshotChanges()
-      .pipe(
-        map(actions =>
-          actions.map(action => ({
-            id: action.payload.doc.id,
-            ...action.payload.doc.data()
-          }))
-        )
-      );
+      .valueChanges('id');
   }
 
   runFilters(ref) {
