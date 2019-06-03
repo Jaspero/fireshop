@@ -12,6 +12,9 @@ import {
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {UNIQUE_ID, UNIQUE_ID_PROVIDER} from '@jf/utils/id.provider';
+import 'tinymce/plugins/code';
+import 'tinymce/plugins/print';
+import 'tinymce/plugins/wordcount';
 
 declare const tinymce: any;
 
@@ -79,6 +82,7 @@ export class WysiwygComponent implements AfterViewInit, ControlValueAccessor {
       target: this.textarea.nativeElement,
       selector: '#' + this.uniqueId,
       height: 420,
+      plugins: ['code', 'print', 'wordcount'],
       toolbar: [
         'undo redo',
         'insert',
