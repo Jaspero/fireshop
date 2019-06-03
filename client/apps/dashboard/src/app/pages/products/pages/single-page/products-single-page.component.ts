@@ -5,6 +5,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {FormArray, Validators} from '@angular/forms';
+import {MatSort} from '@angular/material';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
@@ -26,7 +27,7 @@ import {GalleryUploadComponent} from '../../../../shared/modules/file-upload/gal
 })
 export class ProductsSinglePageComponent extends LangSinglePageComponent
   implements OnInit {
-  @ViewChild(GalleryUploadComponent)
+  @ViewChild(GalleryUploadComponent, {static: true})
   galleryUploadComponent: GalleryUploadComponent;
 
   categories$: Observable<Category[]>;

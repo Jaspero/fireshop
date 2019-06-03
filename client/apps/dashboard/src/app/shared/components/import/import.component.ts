@@ -7,7 +7,7 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import {MatDialog} from '@angular/material';
+import {MatDialog, MatSort} from '@angular/material';
 import {notify} from '@jf/utils/notify.operator';
 import {environment} from '../../../../environments/environment';
 
@@ -25,8 +25,8 @@ interface ImportResponse {
 export class ImportComponent {
   constructor(private http: HttpClient, public dialog: MatDialog) {}
 
-  @ViewChild('file') fileEl: ElementRef<HTMLInputElement>;
-  @ViewChild('overview') overview: TemplateRef<any>;
+  @ViewChild('file', {static: true}) fileEl: ElementRef<HTMLInputElement>;
+  @ViewChild('overview', {static: true}) overview: TemplateRef<any>;
 
   @Input()
   collection: string;
