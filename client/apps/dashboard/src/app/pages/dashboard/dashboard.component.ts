@@ -1,5 +1,12 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
+import {MatDialog} from '@angular/material';
 import {ActivatedRoute} from '@angular/router';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
@@ -21,7 +28,8 @@ import {firstOfMonth} from '../../shared/utils/first-date-month';
 export class DashboardComponent implements OnInit {
   constructor(
     private afs: AngularFirestore,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private dialog: MatDialog
   ) {}
 
   orders = [];
