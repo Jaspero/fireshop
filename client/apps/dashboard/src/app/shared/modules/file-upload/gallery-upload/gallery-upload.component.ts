@@ -16,7 +16,7 @@ import {
   FormControl,
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
-import {MatDialog} from '@angular/material';
+import {MatDialog, MatSort} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {Breakpoint, currentBreakpoint$} from '@jf/consts/breakpoint.const';
 import {ENV_CONFIG} from '@jf/consts/env-config.const';
@@ -52,10 +52,10 @@ export class GalleryUploadComponent extends RxDestroy
     super();
   }
 
-  @ViewChild('urlUploadDialog')
+  @ViewChild('urlUploadDialog', {static: true})
   urlUploadDialog: TemplateRef<any>;
 
-  @ViewChild('file')
+  @ViewChild('file', {static: true})
   fileEl: ElementRef<HTMLInputElement>;
 
   urlControl = new FormControl('');

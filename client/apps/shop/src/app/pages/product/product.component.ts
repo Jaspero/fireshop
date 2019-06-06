@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {ActivatedRoute} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
@@ -64,7 +64,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
   imgIndex = 0;
   filters: FormGroup;
 
-  @ViewChild('reviewsDialog') reviewsDialog: TemplateRef<any>;
+  @ViewChild('reviewsDialog', {static: true}) reviewsDialog: TemplateRef<any>;
 
   ngOnInit() {
     this.data$ = this.activatedRoute.data.pipe(

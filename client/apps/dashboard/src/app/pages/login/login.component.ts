@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
     private state: StateService
   ) {}
 
-  @ViewChild('password') passwordField: ElementRef;
+  @ViewChild('password', {static: true}) passwordField: ElementRef;
 
   loginForm: FormGroup;
 

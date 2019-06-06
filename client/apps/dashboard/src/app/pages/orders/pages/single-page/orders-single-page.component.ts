@@ -6,6 +6,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {MatSort} from '@angular/material';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
 import {Product} from '@jf/interfaces/product.interface';
@@ -27,7 +28,7 @@ export class OrdersSinglePageComponent extends SinglePageComponent
   product$: Observable<Product[]>;
   search = new FormControl('');
   filteredProducts$: Observable<Product[]>;
-  @ViewChild('addProduct')
+  @ViewChild('addProduct', {static: true})
   addProduct: TemplateRef<any>;
   productForm: FormGroup;
   orderItems = [];
@@ -37,15 +38,7 @@ export class OrdersSinglePageComponent extends SinglePageComponent
 
     this.product$ = this.afs
       .collection<Product>(`${FirestoreCollections.Products}-en`)
-      .snapshotChanges()
-      .pipe(
-        map(actions =>
-          actions.map(action => ({
-            id: action.payload.doc.id,
-            ...action.payload.doc.data()
-          }))
-        )
-      );
+      .valueChanges('id');
 
     this.filteredProducts$ = combineLatest(
       this.product$,

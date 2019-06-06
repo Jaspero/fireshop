@@ -47,16 +47,7 @@ export class SearchComponent implements OnInit {
                 );
               }
             )
-            .snapshotChanges()
-            .pipe(
-              map(actions =>
-                actions.map(action => ({
-                  id: action.payload.doc.id,
-                  ...action.payload.doc.data()
-                }))
-              ),
-              tap(() => this.loading$.next(false))
-            );
+            .valueChanges('id');
         } else {
           return of([]);
         }

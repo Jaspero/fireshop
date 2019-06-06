@@ -38,15 +38,7 @@ export class DashboardComponent implements OnInit {
       .collection<Order>(FirestoreCollections.Orders, ref => {
         return ref.orderBy('createdOn', 'desc').limit(3);
       })
-      .snapshotChanges()
-      .pipe(
-        map(actions =>
-          actions.map(action => ({
-            id: action.payload.doc.id,
-            ...action.payload.doc.data()
-          }))
-        )
-      );
+      .valueChanges('id');
 
     // TODO: Uncomment for income chart
     // this.ordersInMonth$ = this.afs
@@ -57,15 +49,7 @@ export class DashboardComponent implements OnInit {
     //       firstOfMonth()
     //     );
     //   })
-    //   .snapshotChanges()
-    //   .pipe(
-    //     map(actions =>
-    //       actions.map(action => ({
-    //         id: action.payload.doc.id,
-    //         ...action.payload.doc.data()
-    //       }))
-    //     )
-    //   );
+    //   .valueChanges('id');
 
     this.data$ = this.activatedRoute.params.pipe(
       switchMap(() =>

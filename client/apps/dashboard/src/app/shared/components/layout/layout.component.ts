@@ -6,7 +6,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {MatDialog} from '@angular/material';
+import {MatDialog, MatSort} from '@angular/material';
 import {Router} from '@angular/router';
 import {LANGUAGES} from '@jf/consts/languages.const';
 import {Observable} from 'rxjs';
@@ -27,7 +27,7 @@ export class LayoutComponent implements OnInit {
     private router: Router
   ) {}
 
-  @ViewChild('logoutDialog') logoutDialog: TemplateRef<any>;
+  @ViewChild('logoutDialog', {static: true}) logoutDialog: TemplateRef<any>;
 
   languages = LANGUAGES;
   languageName$: Observable<string>;

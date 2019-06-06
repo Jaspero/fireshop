@@ -4,6 +4,7 @@ import {
   AngularFirestore,
   AngularFirestoreModule
 } from '@angular/fire/firestore';
+import {AngularFirePerformanceModule} from '@angular/fire/performance';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ENV_CONFIG} from '@jf/consts/env-config.const';
@@ -34,7 +35,8 @@ export function init(injector: Injector) {
      * External
      */
     AngularFireModule.initializeApp(ENV_CONFIG.firebase),
-    AngularFirestoreModule.enablePersistence()
+    AngularFirestoreModule.enablePersistence(),
+    AngularFirePerformanceModule
   ],
   providers: [
     {
