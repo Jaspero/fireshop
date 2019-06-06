@@ -12,35 +12,57 @@ const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadChildren: './pages/dashboard/dashboard.module#DashboardModule'
+        loadChildren: () =>
+          import('./pages/dashboard/dashboard.module').then(
+            mod => mod.DashboardModule
+          )
       },
       {
         path: 'products',
-        loadChildren: './pages/products/products.module#ProductsModule'
+        loadChildren: () =>
+          import('./pages/products/products.module').then(
+            mod => mod.ProductsModule
+          )
       },
       {
         path: 'categories',
-        loadChildren: './pages/categories/categories.module#CategoriesModule'
+        loadChildren: () =>
+          import('./pages/categories/categories.module').then(
+            mod => mod.CategoriesModule
+          )
       },
       {
         path: 'orders',
-        loadChildren: './pages/orders/orders.module#OrdersModule'
+        loadChildren: () =>
+          import('./pages/orders/orders.module').then(mod => mod.OrdersModule)
       },
       {
         path: 'customers',
-        loadChildren: './pages/customers/customers.module#CustomersModule'
+        loadChildren: () =>
+          import('./pages/customers/customers.module').then(
+            mod => mod.CustomersModule
+          )
       },
       {
         path: 'discounts',
-        loadChildren: './pages/discounts/discounts.module#DiscountsModule'
+        loadChildren: () =>
+          import('./pages/discounts/discounts.module').then(
+            mod => mod.DiscountsModule
+          )
       },
       {
         path: 'reviews',
-        loadChildren: './pages/reviews/reviews.module#ReviewsModule'
+        loadChildren: () =>
+          import('./pages/reviews/reviews.module').then(
+            mod => mod.ReviewsModule
+          )
       },
       {
         path: 'settings',
-        loadChildren: './pages/settings/settings.module#SettingsModule'
+        loadChildren: () =>
+          import('./pages/settings/settings.module').then(
+            mod => mod.SettingsModule
+          )
       },
       {
         path: '',
@@ -51,13 +73,16 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: './pages/login/login.module#LoginModule',
+    loadChildren: () =>
+      import('./pages/login/login.module').then(mod => mod.LoginModule),
     canActivate: [LoginGuard]
   },
   {
     path: 'reset-password',
-    loadChildren:
-      './pages/reset-password/reset-password.module#ResetPasswordModule',
+    loadChildren: () =>
+      import('./pages/reset-password/reset-password.module').then(
+        mod => mod.ResetPasswordModule
+      ),
     canActivate: [LoginGuard]
   },
   {

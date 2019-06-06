@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import {AngularFireStorage} from '@angular/fire/storage';
 import {FormControl, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {MatSort} from '@angular/material';
 import {from, of} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 

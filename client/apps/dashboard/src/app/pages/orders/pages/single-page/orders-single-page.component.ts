@@ -6,7 +6,6 @@ import {
   ViewChild
 } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {MatSort} from '@angular/material';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
 import {Product} from '@jf/interfaces/product.interface';

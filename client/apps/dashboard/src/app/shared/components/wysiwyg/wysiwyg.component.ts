@@ -11,7 +11,6 @@ import {
   ViewChild
 } from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {MatSort} from '@angular/material';
 import {UNIQUE_ID, UNIQUE_ID_PROVIDER} from '@jf/utils/id.provider';
 import 'tinymce/plugins/code';
 import 'tinymce/plugins/print';
