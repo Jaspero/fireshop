@@ -41,15 +41,7 @@ export class CustomerLookupComponent implements OnInit, ControlValueAccessor {
   ngOnInit() {
     this.customers$ = this.afs
       .collection<Customer>(FirestoreCollections.Customers)
-      .snapshotChanges()
-      .pipe(
-        map(actions =>
-          actions.map(action => ({
-            id: action.payload.doc.id,
-            ...action.payload.doc.data()
-          }))
-        )
-      );
+      .valueChanges('id');
 
     this.filteredCustomers$ = combineLatest([
       this.customers$,

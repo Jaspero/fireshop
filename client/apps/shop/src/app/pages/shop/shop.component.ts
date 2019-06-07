@@ -120,13 +120,7 @@ export class ShopComponent extends RxDestroy implements OnInit {
       .collection<Category>(
         `${FirestoreCollections.Categories}-${STATIC_CONFIG.lang}`
       )
-      .snapshotChanges()
-      .subscribe(actions => {
-        this.categories = actions.map(action => ({
-          id: action.payload.doc.id,
-          ...action.payload.doc.data()
-        }));
-      });
+      .valueChanges('id');
 
     this.products$ = this.filters.valueChanges.pipe(
       startWith(this.filters.getRawValue()),

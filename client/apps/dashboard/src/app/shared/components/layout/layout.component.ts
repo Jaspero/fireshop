@@ -6,7 +6,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {MatDialog, MatSort} from '@angular/material';
+import {MatDialog} from '@angular/material';
 import {Router} from '@angular/router';
 import {LANGUAGES} from '@jf/consts/languages.const';
 import {Observable} from 'rxjs';

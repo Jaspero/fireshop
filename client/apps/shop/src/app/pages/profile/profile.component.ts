@@ -8,7 +8,6 @@ import {
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {AngularFireStorage} from '@angular/fire/storage';
-import {MatSort} from '@angular/material';
 import {Router} from '@angular/router';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {BehaviorSubject, from, Observable} from 'rxjs';
