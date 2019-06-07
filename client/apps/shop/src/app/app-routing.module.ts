@@ -5,19 +5,25 @@ import {CheckOutGuard} from './shared/guards/check-out.guard';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: './pages/landing/landing.module#LandingModule'
+    loadChildren: () =>
+      import('./pages/landing/landing.module').then(mod => mod.LandingModule)
   },
   {
     path: 'shop',
-    loadChildren: './pages/shop/shop.module#ShopModule'
+    loadChildren: () =>
+      import('./pages/shop/shop.module').then(mod => mod.ShopModule)
   },
   {
     path: 'product',
-    loadChildren: './pages/product/product.module#ProductModule'
+    loadChildren: () =>
+      import('./pages/product/product.module').then(mod => mod.ProductModule)
   },
   {
     path: 'checkout',
-    loadChildren: './pages/checkout/checkout.module#CheckoutModule',
+    loadChildren: () =>
+      import('./pages/checkout/checkout.module').then(
+        mod => mod.CheckoutModule
+      ),
     canActivate: [CheckOutGuard],
     data: {
       hideLayout: true
@@ -25,12 +31,15 @@ const routes: Routes = [
   },
   {
     path: 'my-profile',
-    loadChildren: './pages/profile/profile.module#ProfileModule'
+    loadChildren: () =>
+      import('./pages/profile/profile.module').then(mod => mod.ProfileModule)
   },
   {
     path: '**',
-    loadChildren:
-      './pages/page-not-found/page-not-found.module#PageNotFoundModule'
+    loadChildren: () =>
+      import('./pages/page-not-found/page-not-found.module').then(
+        mod => mod.PageNotFoundModule
+      )
   }
 ];
 
