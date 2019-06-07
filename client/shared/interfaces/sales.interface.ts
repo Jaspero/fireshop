@@ -7,7 +7,7 @@ export interface Sale {
   limited: boolean;
   value: number;
   active: boolean;
-  ribbonProduct: boolean;
+  showRibbon: boolean;
   limitedNumber: number;
   fixed: boolean;
 }

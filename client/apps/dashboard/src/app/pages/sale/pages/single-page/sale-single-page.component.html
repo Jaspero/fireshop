@@ -86,7 +86,7 @@
               </ng-container>
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Limited number of users</mat-label>
-                <mat-select formControlName="limited">
+                <mat-select (valueChange)="limitless($event)" formControlName="limited">
                   <mat-option [value]="false">No</mat-option>
                   <mat-option [value]="true">Yes</mat-option>
                 </mat-select>
@@ -112,7 +112,7 @@
               </mat-form-field>
               <div class="p-y-s flex jc-between">
                 <span>Show ribbon on product</span>
-                <mat-slide-toggle formControlName="ribbonProduct"></mat-slide-toggle>
+                <mat-slide-toggle formControlName="showRibbon"></mat-slide-toggle>
               </div>
             </mat-card>
           </div>

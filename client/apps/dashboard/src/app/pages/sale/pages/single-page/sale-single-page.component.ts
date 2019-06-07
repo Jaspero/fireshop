@@ -28,8 +28,14 @@ export class SaleSinglePageComponent extends LangSinglePageComponent {
       endingDate: [data.endingDate || ''],
       limited: [data.limited || ''],
       active: [data.active || true, Validators.required],
-      ribbonProduct: [data.ribbonProduct || true],
+      showRibbon: [data.showRibbon || true],
       limitedNumber: [data.limitedNumber || '']
     });
+  }
+
+  limitless(value) {
+    if (!value) {
+      this.form.get('limitedNumber').reset();
+    }
   }
 }

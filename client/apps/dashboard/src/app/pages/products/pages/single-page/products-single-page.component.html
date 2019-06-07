@@ -223,7 +223,7 @@
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="w-full">
                   <mat-label>Sale</mat-label>
-                  <mat-select formControlName="sale">
+                  <mat-select formControlName="sale" multiple>
                     <mat-option
                       *ngFor="let sale of sales$ | async"
                       [value]="sale.id">
