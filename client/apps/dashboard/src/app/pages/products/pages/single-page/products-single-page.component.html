@@ -216,7 +216,7 @@
                   <mat-select formControlName="category">
                     <mat-option
                       *ngFor="let category of categories$ | async"
-                      [value]="category.id">
+                      [value]="category.name">
                       {{category.name}}
                     </mat-option>
                   </mat-select>
@@ -226,7 +226,7 @@
                   <mat-select formControlName="sale" multiple>
                     <mat-option
                       *ngFor="let sale of sales$ | async"
-                      [value]="sale.id">
+                      [value]="sale.name">
                       {{sale.name}}
                     </mat-option>
                   </mat-select>

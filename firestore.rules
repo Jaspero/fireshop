@@ -17,6 +17,10 @@ service cloud.firestore {
       allow read: if true
       allow write, delete: if write()
     }
+       match /sales/{sale} {
+          allow read: if true
+          allow write, delete: if write()
+        }
 
     match /products-en/{product} {
   	  allow read: if readOrWrite() || resource.data.active == true;

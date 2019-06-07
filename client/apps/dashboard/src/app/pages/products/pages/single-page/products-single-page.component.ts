@@ -11,7 +11,7 @@ import {Category} from '@jf/interfaces/category.interface';
 import {Sale} from '@jf/interfaces/sales.interface';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
 import {Observable} from 'rxjs';
-import {shareReplay, switchMap, take} from 'rxjs/operators';
+import {map, shareReplay, switchMap, take} from 'rxjs/operators';
 import {environment} from '../../../../../../../shop/src/environments/environment';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {CURRENCIES} from '../../../../shared/const/currency.const';
@@ -26,7 +26,7 @@ import {GalleryUploadComponent} from '../../../../shared/modules/file-upload/gal
 })
 export class ProductsSinglePageComponent extends LangSinglePageComponent
   implements OnInit {
-  @ViewChild(GalleryUploadComponent, {static: true})
+  @ViewChild(GalleryUploadComponent, {static: false})
   galleryUploadComponent: GalleryUploadComponent;
 
   categories$: Observable<Category[]>;
@@ -55,13 +55,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       switchMap(lang =>
         this.afs
           .collection<Sale>(`${FirestoreCollections.Sales}-${lang}`)
-          .snapshotChanges()
-      ),
-      map(actions =>
-        actions.map(action => ({
-          id: action.payload.doc.id,
-          ...action.payload.doc.data()
-        }))
+          .valueChanges('id')
       ),
       shareReplay(1)
     );
@@ -169,7 +163,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       shortDescription: data.shortDescription || '',
       gallery: [data.gallery || []],
       quantity: [data.quantity || 0, Validators.min(0)],
-      category: data.category,
+      category: [data.category || ''],
       showingQuantity: data.hasOwnProperty('showingQuantity')
         ? data.showingQuantity
         : DYNAMIC_CONFIG.generalSettings.showingQuantity,

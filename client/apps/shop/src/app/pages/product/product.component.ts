@@ -19,7 +19,7 @@ import {Product} from '@jf/interfaces/product.interface';
 import {Review} from '@jf/interfaces/review.interface';
 import {Sale} from '@jf/interfaces/sales.interface';
 import {combineLatest, Observable} from 'rxjs';
-import {map, startWith, switchMap} from 'rxjs/operators';
+import {map, startWith, switchMap, throwIfEmpty} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {CartItem} from '../../shared/interfaces/cart-item.interface';
 import {CartService} from '../../shared/services/cart/cart.service';
@@ -65,6 +65,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
   imgIndex = 0;
   filters: FormGroup;
   sale$: Observable<Sale>;
+  totalValue: number;
 
   @ViewChild('reviewsDialog', {static: true}) reviewsDialog: TemplateRef<any>;
 
@@ -83,19 +84,19 @@ export class ProductComponent extends RxDestroy implements OnInit {
           }
         );
 
-        this.sale$ = this.state.sales$.pipe(
-          map(sales => {
-            const index = sales.findIndex(x => x.id === data.product.sale);
+        if (data.product.sale) {
+          this.sale$ = this.state.sales$.pipe(
+            map(sales => {
+              this.totalValue = sales.reduce(
+                (acc, val) =>
+                  val.fixed ? acc - val.value : acc - (val.value * acc) / 100,
+                data.product.price
+              );
 
-            sales[index].value = sales[index].fixed
-              ? data.product.price - sales[index].value
-              : data.product.price - data.product.price * sales[index].value;
-
-            if (index !== -1) {
-              return sales[index];
-            }
-          })
-        );
+              return sales;
+            })
+          );
+        }
 
         const toCombine = [
           this.cart.items$,

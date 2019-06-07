@@ -23,7 +23,7 @@ export class SaleSinglePageComponent extends LangSinglePageComponent {
       name: [data.name || '', Validators.required],
       description: [data.description || ''],
       fixed: [data.fixed || false, Validators.required],
-      value: [data.value ? fromStripeFormat(data.value) : 0, Validators.min(0)],
+      value: [data.value, Validators.min(0)],
       startingDate: [data.startingDate || ''],
       endingDate: [data.endingDate || ''],
       limited: [data.limited || ''],
