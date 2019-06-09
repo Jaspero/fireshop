@@ -11,8 +11,10 @@ import {
   QueryDocumentSnapshot
 } from '@angular/fire/firestore';
 import {FormControl} from '@angular/forms';
-import {MatSort} from '@angular/material';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {MatSort} from '@angular/material/sort';
 import {get, has} from 'json-pointer';
+import {JSONSchema7} from 'json-schema';
 // @ts-ignore
 import * as nanoid from 'nanoid';
 import {
@@ -33,6 +35,7 @@ import {
   take,
   tap
 } from 'rxjs/operators';
+import {ExportComponent} from '../../../../shared/components/export/export.component';
 import {PAGE_SIZES} from '../../../../shared/consts/page-sizes.const';
 import {
   TableColumn,
@@ -50,6 +53,7 @@ interface InstanceOverview {
   name: string;
   displayColumns: string[];
   tableColumns: TableColumn[];
+  schema: JSONSchema7;
   sort?: TableSort;
 }
 
@@ -63,10 +67,11 @@ export class InstanceOverviewComponent implements OnInit {
   constructor(
     private moduleInstance: ModuleInstanceComponent,
     private afs: AngularFirestore,
-    private state: StateService
+    private state: StateService,
+    private bottomSheet: MatBottomSheet
   ) {}
 
-  @ViewChild(MatSort)
+  @ViewChild(MatSort, {static: true})
   sort: MatSort;
 
   data$: Observable<InstanceOverview>;
@@ -139,6 +144,7 @@ export class InstanceOverviewComponent implements OnInit {
         return {
           id: data.id,
           name: data.name,
+          schema: data.schema,
           displayColumns,
           tableColumns
         };
@@ -300,7 +306,7 @@ export class InstanceOverviewComponent implements OnInit {
   }
 
   masterToggle() {
-    combineLatest(this.allChecked$, this.items$)
+    combineLatest([this.allChecked$, this.items$])
       .pipe(take(1))
       .subscribe(([check, items]) => {
         if (check.checked) {
@@ -336,5 +342,14 @@ export class InstanceOverviewComponent implements OnInit {
         .doc(id)
         .delete()
     );
+  }
+
+  export(collection: string) {
+    this.bottomSheet.open(ExportComponent, {
+      data: {
+        collection,
+        ids: this.selection.selected
+      }
+    });
   }
 }

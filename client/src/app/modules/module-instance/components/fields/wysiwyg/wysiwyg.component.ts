@@ -17,7 +17,7 @@ declare const tinymce: any;
 })
 export class WysiwygComponent extends FieldComponent<FieldData>
   implements AfterViewInit {
-  @ViewChild('textarea')
+  @ViewChild('textarea', {static: true})
   textarea: ElementRef;
 
   editor: any;

@@ -4,7 +4,7 @@ import {
   Inject,
   OnInit
 } from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {Color} from '../../enums/color.enum';
 import {ConfirmationOptions} from './confirmation-options.interface';
 

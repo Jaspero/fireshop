@@ -8,7 +8,7 @@ import {
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {defer, from, Observable, of} from 'rxjs';
+import {from, Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
 import {
@@ -156,7 +156,7 @@ export class InstanceSingleComponent implements OnInit {
   }
 
   save(instance: Instance) {
-    return defer(() => {
+    return () => {
       const {id, ...data} = instance.form.getRawValue();
 
       return from(
@@ -168,7 +168,7 @@ export class InstanceSingleComponent implements OnInit {
         notify(),
         tap(() => this.back(instance))
       );
-    });
+    };
   }
 
   back(instance: Instance) {

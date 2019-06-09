@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {MatSort} from '@angular/material';
+import {MatSort} from '@angular/material/sort';
 import {
   BehaviorSubject,
   combineLatest,
@@ -37,7 +37,7 @@ export class DefinitionOverviewComponent implements OnInit {
     private fb: FormBuilder
   ) {}
 
-  @ViewChild(MatSort)
+  @ViewChild(MatSort, {static: true})
   sort: MatSort;
   displayedColumns = ['check', 'name', 'createdOn', 'actions'];
 

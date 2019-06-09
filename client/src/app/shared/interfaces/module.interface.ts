@@ -1,4 +1,4 @@
-import {SortDirection} from '@angular/material';
+import {SortDirection} from '@angular/material/sort';
 import {JSONSchema7} from 'json-schema';
 import {SegmentType} from '../../modules/module-instance/enums/segment-type.enum';
 import {PipeType} from '../enums/pipe-type.enum';

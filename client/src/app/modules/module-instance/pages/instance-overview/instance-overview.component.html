@@ -36,6 +36,13 @@
               (click)="deleteSelection(data)">
             <mat-icon>delete_forever</mat-icon>
           </button>
+
+          <button mat-button (click)="export(data.id)">
+            <mat-icon>vertical_align_top</mat-icon>
+            <span>Export</span>
+          </button>
+
+          <jms-import [collection]="data.id" [schema]="data.schema"></jms-import>
         </mat-toolbar>
 
         <!--Modules list-->

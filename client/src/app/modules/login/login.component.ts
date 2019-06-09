@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatSnackBar} from '@angular/material';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {auth} from 'firebase/app';
 import {from} from 'rxjs';
@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
     private state: StateService
   ) {}
 
-  @ViewChild('password') passwordField: ElementRef;
+  @ViewChild('password', {static: true}) passwordField: ElementRef;
 
   loginForm: FormGroup;
 

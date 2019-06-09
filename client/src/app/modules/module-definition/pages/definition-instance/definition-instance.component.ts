@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatSnackBar} from '@angular/material';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 // @ts-ignore
 import * as nanoid from 'nanoid';
-import {defer, from, Observable, of} from 'rxjs';
+import {from, Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../shared/enums/firestore-collection.enum';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
@@ -84,7 +84,7 @@ export class DefinitionInstanceComponent implements OnInit {
   }
 
   save(form: FormGroup) {
-    return defer(() => {
+    return () => {
       const {id, ...data} = form.getRawValue();
 
       const {error} = this.schemaValidation.validate(data);
@@ -113,7 +113,7 @@ export class DefinitionInstanceComponent implements OnInit {
         notify(),
         tap(() => this.back())
       );
-    });
+    };
   }
 
   back() {
