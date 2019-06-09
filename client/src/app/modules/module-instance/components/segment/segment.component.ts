@@ -1,4 +1,5 @@
 import {Component, HostBinding, Inject, Injector, OnInit} from '@angular/core';
+import {FormControl} from '@angular/forms';
 import {get} from 'json-pointer';
 import {ModuleDefinitions} from '../../../../shared/interfaces/module.interface';
 import {CompiledField} from '../../interfaces/compiled-field.interface';
@@ -63,7 +64,9 @@ export class SegmentComponent implements OnInit {
       if (values) {
         values.forEach(() => this.addArrayItem());
 
-        this.pointers[this.segment.array].control.patchValue(values);
+        (this.pointers[this.segment.array].control as FormControl).patchValue(
+          values
+        );
       }
     }
   }
