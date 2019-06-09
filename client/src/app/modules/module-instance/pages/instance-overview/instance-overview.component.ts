@@ -254,7 +254,7 @@ export class InstanceOverviewComponent implements OnInit {
                   })
                 )
             ).pipe(
-              startWith(null),
+              startWith({}),
               map(() => [...docs])
             );
           })

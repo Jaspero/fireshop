@@ -70,7 +70,7 @@ export class DefinitionOverviewComponent implements OnInit {
         })
       )
     ).pipe(
-      startWith(null),
+      startWith({}),
       switchMap(() => this.state.modules$),
       map(modules => {
         if (this.options.filters.search) {
@@ -94,10 +94,10 @@ export class DefinitionOverviewComponent implements OnInit {
       })
     );
 
-    this.allChecked$ = combineLatest(
+    this.allChecked$ = combineLatest([
       this.items$,
       this.selection.changed.pipe(startWith(null))
-    ).pipe(
+    ]).pipe(
       map(([items]) => ({
         checked: this.selection.selected.length === items.length
       }))
@@ -105,7 +105,7 @@ export class DefinitionOverviewComponent implements OnInit {
   }
 
   masterToggle() {
-    combineLatest(this.allChecked$, this.items$)
+    combineLatest([this.allChecked$, this.items$])
       .pipe(take(1))
       .subscribe(([check, items]) => {
         if (check.checked) {
