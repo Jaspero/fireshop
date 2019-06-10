@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FieldComponent, FieldData} from '../../field/field.component';
 
 interface ImageData extends FieldData {
@@ -12,4 +12,11 @@ interface ImageData extends FieldData {
   styleUrls: ['./image.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImageComponent extends FieldComponent<ImageData> {}
+export class ImageComponent extends FieldComponent<ImageData>
+  implements OnInit {
+  data = [];
+
+  ngOnInit() {
+    console.log(this.cData.control.value);
+  }
+}

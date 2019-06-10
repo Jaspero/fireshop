@@ -1,3 +1,16 @@
-<p>
-  image works!
-</p>
+<div *ngFor="let img of data">
+  <p>{{img}}</p>
+</div>
+
+
+<mat-form-field appearance="outline">
+  <input
+    matInput
+    [formControl]="cData.control"
+    placeholder="image"
+  >
+</mat-form-field>
+
+<button mat-button (click)="browse()">
+  Browse image
+</button>
