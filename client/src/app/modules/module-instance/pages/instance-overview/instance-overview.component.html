@@ -18,7 +18,7 @@
       <mat-card>
 
         <!--Table actions-->
-        <mat-toolbar class="mat-card-inset">
+        <mat-toolbar>
           <ng-container *ngIf="allChecked$ | async as ac">
             <mat-checkbox
                 (change)="$event ? masterToggle() : null"
@@ -33,14 +33,22 @@
               mat-icon-button
               matTooltip="Remove {{selection.selected.length}} items"
               *ngIf="selection.hasValue()"
-              (click)="deleteSelection()">
+              (click)="deleteSelection(data)">
             <mat-icon>delete_forever</mat-icon>
           </button>
+
+          <button mat-button (click)="export(data.id)">
+            <mat-icon>vertical_align_top</mat-icon>
+            <span>Export</span>
+          </button>
+
+          <jms-import [collection]="data.id" [schema]="data.schema"></jms-import>
         </mat-toolbar>
 
         <!--Modules list-->
-        <table
-            class="mat-card-inset"
+        <div class="of-x-auto">
+          <table
+            class="w-full"
             mat-table
             matSort
             matSortDisableClear
@@ -48,59 +56,60 @@
             [dataSource]="items$ | async"
             [matSortActive]="data.sort?.key"
             [matSortDirection]="data.sort?.direction">
-          <ng-container matColumnDef="check">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let row">
-              <mat-checkbox
+            <ng-container matColumnDef="check">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let row">
+                <mat-checkbox
                   (click)="$event.stopPropagation()"
                   (change)="$event ? selection.toggle(row.id) : null"
                   [checked]="selection.isSelected(row.id)"
                   color="primary">
-              </mat-checkbox>
-            </td>
-          </ng-container>
-
-          <ng-container *ngFor="let column of data.tableColumns; index as index" [matColumnDef]="data.displayColumns[index + 1]">
-
-            <ng-container *ngIf="column.sortable; else notSortable">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{column.label}}
-              </th>
+                </mat-checkbox>
+              </td>
             </ng-container>
 
-            <ng-template #notSortable>
-              <th mat-header-cell *matHeaderCellDef>
-                {{column.label}}
-              </th>
-            </ng-template>
+            <ng-container *ngFor="let column of data.tableColumns; index as index" [matColumnDef]="data.displayColumns[index + 1]">
 
-            <td mat-cell *matCellDef="let row">
+              <ng-container *ngIf="column.sortable; else notSortable">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                  {{column.label}}
+                </th>
+              </ng-container>
+
+              <ng-template #notSortable>
+                <th mat-header-cell *matHeaderCellDef>
+                  {{column.label}}
+                </th>
+              </ng-template>
+
+              <td mat-cell *matCellDef="let row">
                 <ng-container *ngTemplateOutlet="columnLayout; context: {row: row, column: column}"></ng-container>
-            </td>
-          </ng-container>
+              </td>
+            </ng-container>
 
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let element" class="ta-right">
-              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions" matTooltip="Actions">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
-                <button mat-menu-item [routerLink]="['..', 'single', element.id]">
-                  <mat-icon>edit</mat-icon>
-                  <span>Edit</span>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element" class="ta-right">
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions" matTooltip="Actions">
+                  <mat-icon>more_vert</mat-icon>
                 </button>
-                <button mat-menu-item fDisable (click)="deleteOne(element)">
-                  <mat-icon>delete_forever</mat-icon>
-                  <span>Delete</span>
-                </button>
-              </mat-menu>
-            </td>
-          </ng-container>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item [routerLink]="['..', 'single', element.id]">
+                    <mat-icon>edit</mat-icon>
+                    <span>Edit</span>
+                  </button>
+                  <button mat-menu-item fDisable (click)="deleteOne(data, element)">
+                    <mat-icon>delete_forever</mat-icon>
+                    <span>Delete</span>
+                  </button>
+                </mat-menu>
+              </td>
+            </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="data.displayColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: data.displayColumns"></tr>
-        </table>
+            <tr mat-header-row *matHeaderRowDef="data.displayColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: data.displayColumns"></tr>
+          </table>
+        </div>
 
         <div class="flex jc-between p-y-s">
           <div class="p-x-m hide-xs"></div>

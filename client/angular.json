@@ -23,14 +23,32 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "assets": ["src/favicon.ico", "src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce/themes/silver",
+                "output": "/themes/silver"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce/skins/ui/oxide",
+                "output": "/skins/ui/oxide"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce/skins/content/default",
+                "output": "/skins/content/default"
+              }
+            ],
             "showCircularDependencies": false,
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "node_modules/jsoneditor/dist/jsoneditor.min.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": ["./node_modules/tinymce/tinymce.min.js"]
           },
           "configurations": {
             "production": {
@@ -40,20 +58,20 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
+              "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
-              "aot": true,
+              "aot": false,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true,
+              "buildOptimizer": false,
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "5mb",
+                  "maximumError": "10mb"
                 }
               ]
             }

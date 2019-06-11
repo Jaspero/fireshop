@@ -8,6 +8,7 @@ import {FieldComponent} from '../components/field/field.component';
 import {COMPONENT_TYPE_COMPONENT_MAP} from '../consts/component-type-component-map.const';
 import {SchemaType} from '../enums/schema-type.enum';
 import {CompiledField} from '../interfaces/compiled-field.interface';
+import {Control} from '../interfaces/control.type';
 import {SchemaValidators} from '../validators/schema-validators.class';
 import {createComponentInjector} from './create-component-injector';
 import {schemaToComponent} from './schema-to-component';
@@ -43,91 +44,132 @@ export interface BooleanPropertyDefinition extends PropertyDefinition {
   default?: boolean;
 }
 
+export interface ArrayPropertyDefinition extends PropertyDefinition {
+  type: SchemaType.Array;
+  items?: any;
+  contains?: any;
+}
+
+export interface Pointer {
+  key: string;
+  type: SchemaType;
+  control: Control;
+  validation: any;
+
+  /**
+   * Arrays can have these properties
+   */
+  arrayType?: SchemaType;
+  properties?: any;
+  required?: string[];
+  arrayPointers?: Pointers[];
+}
+
+export interface Pointers {
+  [key: string]: Pointer;
+}
+
 export class Parser {
   constructor(public schema: any, public injector: Injector) {}
 
   form: FormGroup;
-  pointers: {
-    [pointer: string]: {
-      key: string;
-      type: SchemaType;
-      control: FormControl;
-    };
-  } = {};
+  pointers: Pointers = {};
 
   static stringControl(
     definition: StringPropertyDefinition,
     required: boolean
   ) {
-    const validation = [];
+    const controlValidation = [];
+    const validation: any = {};
 
     if (required) {
-      validation.push(Validators.required);
+      controlValidation.push(Validators.required);
+      validation.required = true;
     }
 
     if (definition.maxLength) {
-      validation.push(Validators.maxLength(definition.maxLength));
+      controlValidation.push(Validators.maxLength(definition.maxLength));
+      validation.maxLength = definition.maxLength;
     }
 
     if (definition.minLength) {
-      validation.push(Validators.minLength(definition.minLength));
+      controlValidation.push(Validators.minLength(definition.minLength));
+      validation.minLength = definition.minLength;
     }
 
     if (definition.pattern) {
-      validation.push(Validators.pattern(definition.pattern));
+      controlValidation.push(Validators.pattern(definition.pattern));
+      validation.patter = definition.pattern;
     }
 
-    return new FormControl(definition.default || '', validation);
+    return {
+      control: new FormControl(definition.default || '', controlValidation),
+      validation
+    };
   }
 
   static numberControl(
     definition: NumberPropertyDefinition,
     required: boolean
   ) {
-    const validation = [];
+    const validation: any = {};
+    const controlValidation = [];
 
     if (required) {
-      validation.push(Validators.required);
+      controlValidation.push(Validators.required);
+      validation.required = true;
     }
 
     if (definition.minimum) {
-      validation.push(
-        Validators.min(
-          definition.minimum + (definition.exclusiveMinimum ? 1 : 0)
-        )
-      );
+      const minimum =
+        definition.minimum + (definition.exclusiveMinimum ? 1 : 0);
+      controlValidation.push(Validators.min(minimum));
+      validation.minimum = minimum;
     }
 
     if (definition.maximum) {
-      validation.push(
-        Validators.max(
-          definition.maximum - (definition.exclusiveMaximum ? 1 : 0)
-        )
-      );
+      const maximum =
+        definition.maximum - (definition.exclusiveMaximum ? 1 : 0);
+      controlValidation.push(Validators.max(maximum));
+      validation.maximum = maximum;
     }
 
     if (definition.multipleOf) {
-      validation.push(SchemaValidators.multipleOf(definition.multipleOf));
+      controlValidation.push(
+        SchemaValidators.multipleOf(definition.multipleOf)
+      );
+      validation.multipleOf = definition.multipleOf;
     }
 
-    return new FormControl(definition.default || null, validation);
+    return {
+      control: new FormControl(definition.default || null, controlValidation),
+      validation
+    };
   }
 
   static booleanControl(
     definition: BooleanPropertyDefinition,
     required: boolean
   ) {
-    const validation = [];
+    const controlValidation = [];
+    const validation: any = {};
 
     if (required) {
-      validation.push(Validators.required);
+      controlValidation.push(Validators.required);
+      validation.required = true;
     }
 
-    return new FormControl(definition.default || false, validation);
+    return {
+      control: new FormControl(definition.default || false, controlValidation),
+      validation
+    };
   }
 
   buildForm(value?: any) {
-    this.form = this.buildProperties(this.schema.properties || {});
+    const properties = this.buildProperties(this.schema.properties || {});
+
+    this.form = properties.form;
+    this.pointers = properties.pointers;
     this.form.addControl('id', new FormControl(value ? value.id : nanoid()));
 
     if (value) {
@@ -138,60 +180,86 @@ export class Parser {
   }
 
   buildProperties(properties: object, required: string[] = [], base = '/') {
-    return new FormGroup(
-      Object.entries(properties).reduce((group, [key, value]) => {
+    const {form, pointers} = Object.entries(properties).reduce(
+      (group, [key, value]) => {
         const isRequired = required.includes(key);
+
+        let parsed: {
+          control: any;
+          validation: any;
+          arrayType?: SchemaType;
+          properties?: any;
+          required?: string[];
+        };
 
         switch (value.type) {
           case SchemaType.String:
-            group[key] = Parser.stringControl(value, isRequired);
-
+            parsed = Parser.stringControl(value, isRequired);
             break;
 
           case SchemaType.Number:
           case SchemaType.Integer:
-            group[key] = Parser.numberControl(value, isRequired);
-
+            parsed = Parser.numberControl(value, isRequired);
             break;
 
           case SchemaType.Boolean:
-            group[key] = Parser.booleanControl(value, isRequired);
-
+            parsed = Parser.booleanControl(value, isRequired);
             break;
 
           case SchemaType.Object:
-            group[key] = this.buildProperties(
+            const objectProperties = this.buildProperties(
               value.properties,
               value.required,
               base + key + '/'
             );
 
+            for (const added in objectProperties.pointers) {
+              if (objectProperties.pointers.hasOwnProperty(added)) {
+                group.pointers[added] = objectProperties.pointers[added];
+              }
+            }
+
+            parsed = {
+              control: objectProperties.form,
+              validation: {}
+            };
             break;
 
           case SchemaType.Array:
-            group[key] = new FormArray([]);
-
+            parsed = this.buildArray(base, value);
             break;
         }
 
-        if (base) {
-          this.pointers[base + key] = {
-            key,
-            type: value.type,
-            control: group[key]
-          };
-        }
+        group.form[key] = parsed.control;
+        group.pointers[base + key] = {
+          key,
+          type: value.type,
+          ...parsed
+        };
 
         return group;
-      }, {})
+      },
+      {
+        form: {},
+        pointers: {}
+      }
     );
+
+    return {
+      pointers,
+      form: new FormGroup(form)
+    };
   }
 
-  field(pointer: string, definitions: ModuleDefinitions = {}): CompiledField {
-    const {key, type, control} = this.pointers[pointer];
+  field(
+    pointerKey: string,
+    pointer: Pointer,
+    definitions: ModuleDefinitions = {}
+  ): CompiledField {
+    const {key, type, control, validation} = pointer;
     const definition = {
       label: key,
-      ...definitions[pointer]
+      ...definitions[key]
     };
 
     if (!definition.component) {
@@ -203,16 +271,82 @@ export class Parser {
       null,
       createComponentInjector(this.injector, {
         control,
+        validation,
         ...definition,
         ...(definition.component.configuration || {})
       })
     );
 
     return {
-      pointer,
+      pointer: pointerKey,
       control,
       portal,
+      validation,
       label: definition.label
     };
+  }
+
+  addArrayItem(pointer: string) {
+    const target = this.pointers[pointer];
+    const control = this.pointers[pointer].control as FormArray;
+
+    if (
+      target.arrayType === SchemaType.Array ||
+      target.arrayType === SchemaType.Object
+    ) {
+      const properties = this.buildProperties(
+        target.properties,
+        target.required,
+        ''
+      );
+
+      target.arrayPointers.push(properties.pointers);
+      control.push(properties.form);
+    } else {
+      // TODO: Different SchemaType
+      control.push(new FormControl(''));
+    }
+  }
+
+  removeArrayItem(pointer: string, index: number) {
+    this.pointers[pointer].arrayPointers.splice(index, 1);
+    (this.pointers[pointer].control as FormArray).removeAt(index);
+  }
+
+  /**
+   * TODO:
+   * - Handle contains case
+   * - Handle items or contains as array not object
+   */
+  private buildArray(base: string, definition: ArrayPropertyDefinition) {
+    if (
+      !definition.items ||
+      (definition.items.type !== SchemaType.Array &&
+        definition.items.type !== SchemaType.Object)
+    ) {
+      return {
+        control: new FormControl([]),
+        ...(definition.items
+          ? {
+              arrayType: definition.items.type,
+              properties: definition.items.properties,
+              required: definition.items.required,
+              validation: {}
+            }
+          : {
+              arrayType: SchemaType.String,
+              validation: {}
+            })
+      };
+    } else {
+      return {
+        arrayType: definition.items.type,
+        properties: definition.items.properties,
+        required: definition.items.required,
+        validation: {},
+        control: new FormArray([]),
+        arrayPointers: []
+      };
+    }
   }
 }

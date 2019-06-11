@@ -12,7 +12,9 @@
   <mat-expansion-panel *ngFor="let accord of accordions" [expanded]="accord.expanded || false">
     <mat-expansion-panel-header>
       <mat-panel-title *ngIf="accord.title">{{accord.title}}</mat-panel-title>
-      <mat-panel-description *ngIf="accord.description">{{accord.description}}</mat-panel-description>
+      <mat-panel-description *ngIf="accord.description">
+        {{accord.description}}
+      </mat-panel-description>
     </mat-expansion-panel-header>
 
     <ng-container *ngFor="let field of accord.fields">

@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {MatSort} from '@angular/material';
+import {MatSort} from '@angular/material/sort';
 import {
   BehaviorSubject,
   combineLatest,
@@ -37,7 +37,7 @@ export class DefinitionOverviewComponent implements OnInit {
     private fb: FormBuilder
   ) {}
 
-  @ViewChild(MatSort)
+  @ViewChild(MatSort, {static: true})
   sort: MatSort;
   displayedColumns = ['check', 'name', 'createdOn', 'actions'];
 
@@ -70,7 +70,7 @@ export class DefinitionOverviewComponent implements OnInit {
         })
       )
     ).pipe(
-      startWith(null),
+      startWith({}),
       switchMap(() => this.state.modules$),
       map(modules => {
         if (this.options.filters.search) {
@@ -94,10 +94,10 @@ export class DefinitionOverviewComponent implements OnInit {
       })
     );
 
-    this.allChecked$ = combineLatest(
+    this.allChecked$ = combineLatest([
       this.items$,
       this.selection.changed.pipe(startWith(null))
-    ).pipe(
+    ]).pipe(
       map(([items]) => ({
         checked: this.selection.selected.length === items.length
       }))
@@ -105,7 +105,7 @@ export class DefinitionOverviewComponent implements OnInit {
   }
 
   masterToggle() {
-    combineLatest(this.allChecked$, this.items$)
+    combineLatest([this.allChecked$, this.items$])
       .pipe(take(1))
       .subscribe(([check, items]) => {
         if (check.checked) {

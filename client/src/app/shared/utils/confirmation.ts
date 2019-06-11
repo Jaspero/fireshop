@@ -1,4 +1,4 @@
-import {MatDialog} from '@angular/material';
+import {MatDialog} from '@angular/material/dialog';
 import {filter} from 'rxjs/operators';
 import {ConfirmationOptions} from '../components/confirmation/confirmation-options.interface';
 import {ConfirmationComponent} from '../components/confirmation/confirmation.component';

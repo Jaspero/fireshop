@@ -1,6 +1,7 @@
 <mat-slider
   [formControl]="cData.control"
-  thumbLabel
-  tickInterval="1"
-  min="1"
-  max="100"></mat-slider>
+  [thumbLabel]="cData['thumbLabel']"
+  [tickInterval]="cData['tickInterval']"
+  [min]="startAt"
+  [max]="endAt">
+</mat-slider>

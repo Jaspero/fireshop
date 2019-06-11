@@ -8,9 +8,8 @@ import {
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {defer, from, Observable, of} from 'rxjs';
+import {from, Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
-import {Role} from '../../../../shared/enums/role.enum';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
 import {
   InstanceSegment,
@@ -30,6 +29,7 @@ export interface CompiledSegment extends InstanceSegment {
   fields: CompiledField[];
   component?: ComponentPortal<SegmentComponent>;
   nestedSegments?: CompiledSegment[];
+  entryValue: any;
 }
 
 interface Instance {
@@ -108,7 +108,8 @@ export class InstanceSingleComponent implements OnInit {
             const parser = new Parser(module.schema, this.injector);
             const form = parser.buildForm(value);
 
-            console.log('form', form.value);
+            console.log('parser', parser);
+            console.log('form', form);
 
             this.initialValue = JSON.stringify(form.getRawValue());
             this.currentValue = JSON.stringify(this.initialValue);
@@ -138,7 +139,8 @@ export class InstanceSingleComponent implements OnInit {
                   segment,
                   parser,
                   module.definitions,
-                  this.injector
+                  this.injector,
+                  value
                 )
               ),
               module: {
@@ -154,7 +156,7 @@ export class InstanceSingleComponent implements OnInit {
   }
 
   save(instance: Instance) {
-    return defer(() => {
+    return () => {
       const {id, ...data} = instance.form.getRawValue();
 
       return from(
@@ -166,7 +168,7 @@ export class InstanceSingleComponent implements OnInit {
         notify(),
         tap(() => this.back(instance))
       );
-    });
+    };
   }
 
   back(instance: Instance) {

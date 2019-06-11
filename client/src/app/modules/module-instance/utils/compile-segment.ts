@@ -7,6 +7,7 @@ import {
 } from '../../../shared/interfaces/module.interface';
 import {SegmentComponent} from '../components/segment/segment.component';
 import {SEGMENT_TYPE_COMPONENT_MAP} from '../consts/segment-type-component-map.const';
+import {CompiledField} from '../interfaces/compiled-field.interface';
 import {CompiledSegment} from '../pages/instance-single/instance-single.component';
 import {createSegmentInjector} from './create-segment-injector';
 import {Parser} from './parser';
@@ -15,9 +16,12 @@ export function compileSegment(
   segment: InstanceSegment,
   parser: Parser,
   definitions: ModuleDefinitions,
-  injector: Injector
+  injector: Injector,
+  entryValue: any
 ) {
   const classes = [];
+
+  let fields: CompiledField[] = [];
 
   if (segment.columnsDesktop) {
     classes.push(`col-${segment.columnsDesktop}`);
@@ -43,10 +47,20 @@ export function compileSegment(
     classes.push(...segment.classes);
   }
 
+  /**
+   * If it's an array fields are parsed
+   */
+  if (segment.fields && !segment.array) {
+    fields = (segment.fields || []).map(key =>
+      parser.field(key, parser.pointers[key], definitions)
+    );
+  }
+
   const compiledSegment = {
     ...segment,
     classes,
-    fields: (segment.fields || []).map(key => parser.field(key, definitions))
+    fields,
+    entryValue
   } as CompiledSegment;
 
   return {

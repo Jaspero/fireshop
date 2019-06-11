@@ -11,8 +11,10 @@ import {
   QueryDocumentSnapshot
 } from '@angular/fire/firestore';
 import {FormControl} from '@angular/forms';
-import {MatSort} from '@angular/material';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {MatSort} from '@angular/material/sort';
 import {get, has} from 'json-pointer';
+import {JSONSchema7} from 'json-schema';
 // @ts-ignore
 import * as nanoid from 'nanoid';
 import {
@@ -27,15 +29,15 @@ import {
 import {
   map,
   shareReplay,
+  skip,
   startWith,
   switchMap,
   take,
   tap
 } from 'rxjs/operators';
+import {ExportComponent} from '../../../../shared/components/export/export.component';
 import {PAGE_SIZES} from '../../../../shared/consts/page-sizes.const';
-import {FirestoreCollection} from '../../../../shared/enums/firestore-collection.enum';
 import {
-  Module,
   TableColumn,
   TableSort
 } from '../../../../shared/interfaces/module.interface';
@@ -51,6 +53,7 @@ interface InstanceOverview {
   name: string;
   displayColumns: string[];
   tableColumns: TableColumn[];
+  schema: JSONSchema7;
   sort?: TableSort;
 }
 
@@ -64,10 +67,11 @@ export class InstanceOverviewComponent implements OnInit {
   constructor(
     private moduleInstance: ModuleInstanceComponent,
     private afs: AngularFirestore,
-    private state: StateService
+    private state: StateService,
+    private bottomSheet: MatBottomSheet
   ) {}
 
-  @ViewChild(MatSort)
+  @ViewChild(MatSort, {static: true})
   sort: MatSort;
 
   data$: Observable<InstanceOverview>;
@@ -140,6 +144,7 @@ export class InstanceOverviewComponent implements OnInit {
         return {
           id: data.id,
           name: data.name,
+          schema: data.schema,
           displayColumns,
           tableColumns
         };
@@ -210,9 +215,46 @@ export class InstanceOverviewComponent implements OnInit {
                       })
                     );
                 })
-              )
+              ),
+
+              this.getCollection(data.id, null, null)
+                .stateChanges()
+                .pipe(
+                  skip(1),
+                  tap(snaps => {
+                    snaps.forEach(snap => {
+                      const index = docs.findIndex(
+                        doc => doc.id === snap.payload.doc.id
+                      );
+
+                      switch (snap.type) {
+                        case 'added':
+                          if (index === -1) {
+                            docs.push({
+                              id: snap.payload.doc.id,
+                              ...snap.payload.doc.data()
+                            });
+                          }
+                          break;
+                        case 'modified':
+                          if (index !== -1) {
+                            docs[index] = {
+                              id: snap.payload.doc.id,
+                              ...snap.payload.doc.data()
+                            };
+                          }
+                          break;
+                        case 'removed':
+                          if (index !== -1) {
+                            docs.splice(index, 1);
+                          }
+                          break;
+                      }
+                    });
+                  })
+                )
             ).pipe(
-              startWith(null),
+              startWith({}),
               map(() => [...docs])
             );
           })
@@ -264,7 +306,7 @@ export class InstanceOverviewComponent implements OnInit {
   }
 
   masterToggle() {
-    combineLatest(this.allChecked$, this.items$)
+    combineLatest([this.allChecked$, this.items$])
       .pipe(take(1))
       .subscribe(([check, items]) => {
         if (check.checked) {
@@ -275,25 +317,39 @@ export class InstanceOverviewComponent implements OnInit {
       });
   }
 
-  deleteOne(item: Module) {
-    confirmation([switchMap(() => this.delete(item.id)), notify()]);
+  deleteOne(instance: InstanceOverview, item: any) {
+    confirmation([
+      switchMap(() => this.delete(instance.id, item.id)),
+      notify()
+    ]);
   }
 
-  deleteSelection() {
+  deleteSelection(instance: InstanceOverview) {
     confirmation([
       switchMap(() =>
-        forkJoin(this.selection.selected.map(id => this.delete(id)))
+        forkJoin(
+          this.selection.selected.map(id => this.delete(instance.id, id))
+        )
       ),
       notify()
     ]);
   }
 
-  delete(id: string): Observable<any> {
+  delete(collection: string, id: string) {
     return from(
       this.afs
-        .collection(FirestoreCollection.Modules)
+        .collection(collection)
         .doc(id)
         .delete()
     );
+  }
+
+  export(collection: string) {
+    this.bottomSheet.open(ExportComponent, {
+      data: {
+        collection,
+        ids: this.selection.selected
+      }
+    });
   }
 }

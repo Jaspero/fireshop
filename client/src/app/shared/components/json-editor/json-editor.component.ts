@@ -27,7 +27,7 @@ export class JsonEditorComponent
   implements AfterViewInit, ControlValueAccessor {
   constructor() {}
 
-  @ViewChild('editor')
+  @ViewChild('editor', {static: true})
   editorEl: ElementRef<HTMLElement>;
 
   @Input()
