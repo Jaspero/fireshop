@@ -1,40 +1,45 @@
-<section class="primary bg p-x-s p-y-m flex jc-between ai-center">
-  <h6>Settings</h6>
-  <button (click)="save()" mat-flat-button>Save</button>
-</section>
+<ng-container *ngIf="form$ | async as form">
+  <section class="primary bg p-x-s p-y-m flex jc-between ai-center">
+    <h6>Settings</h6>
+    <button [jpLoadClick]="save(form)" mat-flat-button>Save</button>
+  </section>
 
-<section class="grid">
-  <div class="col-12">
-    <mat-card>
-      <form [formGroup]="form">
+  <section class="grid">
+    <div class="col-12">
+      <mat-card>
+        <form [formGroup]="form">
 
-        <div formArrayName="roles">
+          <div formArrayName="roles">
 
-          <h5>Admin</h5>
+            <div class="flex jc-between">
+              <h5>Roles</h5>
+              <button mat-button (click)="add(form)">
+                Add new
+              </button>
+            </div>
 
-          <div *ngFor="let user of userForm.controls; index as index" [formGroupName]="index">
-            <mat-form-field  appearance="outline" class="w-full m-r-xs">
-              <mat-label>{{user}}</mat-label>
-              <input type="email" formControlName="email" matInput>
-            </mat-form-field>
+            <hr class="m-b-s">
 
-            <mat-form-field appearance="outline" class="w-full m-r-xs">
-              <mat-label>{{user}}</mat-label>
-              <mat-select formControlName="role">
-                <mat-option *ngFor="let option of role" [value]="option">{{option}}</mat-option>
-              </mat-select>
-            </mat-form-field>
+            <div class="flex" *ngFor="let user of rolesForm(form).controls; index as index" [formGroupName]="index">
+              <mat-form-field  appearance="outline" class="w-full m-r-xs">
+                <mat-label>Email</mat-label>
+                <input type="email" formControlName="email" matInput>
+              </mat-form-field>
 
-            <button mat-raised-button color="warn" (click)="delete(index)">Delete</button>
+              <mat-form-field appearance="outline" class="w-full m-r-xs">
+                <mat-label>Role</mat-label>
+                <mat-select formControlName="role">
+                  <mat-option *ngFor="let option of role | keyvalue" [value]="option.value">{{option.key}}</mat-option>
+                </mat-select>
+              </mat-form-field>
 
+              <button mat-icon-button color="warn" (click)="rolesForm(form).removeAt(index)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
           </div>
-
-          <button mat-button (click)="add()">
-            Add new
-          </button>
-        </div>
-
-      </form>
-    </mat-card>
-  </div>
-</section>
+        </form>
+      </mat-card>
+    </div>
+  </section>
+</ng-container>

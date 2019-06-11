@@ -6,10 +6,11 @@ import {
 } from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import * as firebase from 'firebase';
 import {from, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 import {FirestoreCollection} from '../../shared/enums/firestore-collection.enum';
+import {Role} from '../../shared/enums/role.enum';
+import {Settings} from '../../shared/interfaces/settings.interface';
 import {notify} from '../../shared/utils/notify.operator';
 
 @Component({
@@ -25,52 +26,52 @@ export class SettingsComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-  role = ['write', 'read'];
-  form: FormGroup;
-  users = [];
+  role = Role;
+  form$: Observable<FormGroup>;
 
   ngOnInit() {
-    this.form = this.fb.group({
-      roles: this.fb.array([])
-    });
-
-    this.afs
+    this.form$ = this.afs
       .collection(FirestoreCollection.Settings)
-      .doc('user')
-      .get()
-      .subscribe(val => {
-        this.cdr.detectChanges();
-      });
+      .doc<Settings>('user')
+      .valueChanges()
+      .pipe(
+        take(1),
+        map(value =>
+          this.fb.group({
+            roles: this.fb.array(
+              value.roles.map(role =>
+                this.fb.group({
+                  email: [role.email, [Validators.required, Validators.email]],
+                  role: [role.role, Validators.required]
+                })
+              )
+            )
+          })
+        )
+      );
   }
 
-  get userForm() {
-    return this.form.get('roles') as FormArray;
+  rolesForm(form: FormGroup) {
+    return form.get('roles') as FormArray;
   }
 
-  add() {
-    const user = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      role: ['', Validators.required]
-    });
-
-    this.userForm.push(user);
+  add(form: FormGroup) {
+    this.rolesForm(form).push(
+      this.fb.group({
+        email: ['', [Validators.required, Validators.email]],
+        role: [Role.Read, Validators.required]
+      })
+    );
   }
 
-  delete(index) {
-    this.userForm.removeAt(index);
-  }
-
-  save() {
-    const data = this.form.getRawValue();
-    from(
-      this.afs
-        .collection(FirestoreCollection.Settings)
-        .doc('user')
-        .update({
-          roles: firebase.firestore.FieldValue.arrayUnion(data)
-        })
-    )
-      .pipe(notify())
-      .subscribe();
+  save(form) {
+    return () => {
+      return from(
+        this.afs
+          .collection(FirestoreCollection.Settings)
+          .doc('user')
+          .update(form.getRawValue())
+      ).pipe(notify());
+    };
   }
 }
