@@ -10,8 +10,8 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {auth} from 'firebase/app';
-import {from} from 'rxjs';
-import {filter, switchMap} from 'rxjs/operators';
+import { from, throwError } from 'rxjs';
+import { catchError, filter, switchMap } from 'rxjs/operators';
 import {Role} from '../../shared/enums/role.enum';
 import {StateService} from '../../shared/services/state/state.service';
 import {notify} from '../../shared/utils/notify.operator';
@@ -67,27 +67,29 @@ export class LoginComponent implements OnInit {
   }
 
   loginEmail() {
-    const data = this.loginForm.getRawValue();
-    from(
-      this.afAuth.auth.signInWithEmailAndPassword(
-        data.emailLogin,
-        data.passwordLogin
+    return () => {
+
+      const data = this.loginForm.getRawValue();
+
+      return from(
+        this.afAuth.auth.signInWithEmailAndPassword(
+          data.emailLogin,
+          data.passwordLogin
+        )
       )
-    )
-      .pipe(
-        notify({
-          success: 'You are now logged in',
-          error:
-            'The email and password you entered did not match our records. Please double-check and try again.'
-        })
-      )
-      .subscribe(
-        () => {},
-        () => {
-          this.loginForm.get('passwordLogin').reset();
-          this.passwordField.nativeElement.focus();
-        }
-      );
+        .pipe(
+          notify({
+            success: 'You are now logged in',
+            error:
+              'The email and password you entered did not match our records. Please double-check and try again.'
+          }),
+          catchError(error => {
+            this.loginForm.get('passwordLogin').reset();
+            this.passwordField.nativeElement.focus();
+            return throwError(error);
+          })
+        );
+    };
   }
 
   private buildForm() {
