@@ -1,0 +1,69 @@
+/**
+ * Custom Theming for Angular Material
+ *
+ * For more information: https://material.angular.io/guide/theming
+ *
+ *============================================================================*/
+
+
+
+/* Include the common styles for Angular Material
+ *============================================================================*/
+/**
+ * We include this here so that you only have to load a single css file for
+ * Angular Material in your app. Be sure that you only ever include this mixin
+ * once!
+ */
+
+@import '~@angular/material/theming';
+@include mat-core();
+
+
+
+/* Theme defining
+ *============================================================================*/
+/**
+ * Define the palettes for your theme using the Material Design palettes
+ * available in palette.scss (imported above). For each palette, you can
+ * optionally specify a default, lighter, and darker hue.
+ * Available color palettes: https://material.io/design/color/
+ */
+
+$primary: (
+  100: var(--primary-theme),
+  500: var(--primary-theme),
+  700: var(--primary-theme),
+  contrast: (
+    100: var(--primary-secondary),
+    500: var(--primary-primary),
+    700: var(--primary-primary)
+  )
+);
+$accent: (
+  100: var(--accent-theme),
+  500: var(--accent-theme),
+  700: var(--accent-theme),
+  contrast: (
+    100: var(--accent-secondary),
+    500: var(--accent-primary),
+    700: var(--accent-primary)
+  )
+);
+$warn: (
+  100: var(--warn-theme),
+  500: var(--warn-theme),
+  700: var(--warn-theme),
+  contrast: (
+    100: var(--warn-secondary),
+    500: var(--warn-primary),
+    700: var(--warn-primary)
+  )
+);
+
+$retailer-primary: mat-palette($primary);
+$retailer-accent : mat-palette($accent);
+$retailer-warn   : mat-palette($warn);
+
+$retailer-theme: mat-light-theme($retailer-primary, $retailer-accent, $retailer-warn);
+
+@include angular-material-theme($retailer-theme);
