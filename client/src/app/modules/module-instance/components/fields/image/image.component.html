@@ -1,8 +1,3 @@
-<div *ngFor="let img of data">
-  <p>{{img}}</p>
-</div>
-
-
 <mat-form-field appearance="outline">
   <input
     matInput
@@ -11,6 +6,20 @@
   >
 </mat-form-field>
 
-<button mat-button (click)="browse()">
-  Browse image
+<button
+  mat-button
+  *ngIf="!cData.control.value"
+  (click)="openFilesUploader()">
+  File upload
 </button>
+
+<button
+  mat-button
+  *ngIf="cData.control.value"
+  (click)="urlUploader()">
+  Save URL
+</button>
+
+<input #file type="file" hidden (change)="filesUploader($event.target.files)">
+
+<!--https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg-->
