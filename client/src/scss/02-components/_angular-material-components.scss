@@ -1,0 +1,179 @@
+@import "../breakpoints";
+
+/**
+ * Material Design components for Angular
+ *
+ * Style overrides for Angular Material. Original elements:
+ * https://material.angular.io/
+ *
+ *============================================================================*/
+
+
+
+/* Buttons
+ *============================================================================*/
+
+// Ripple color adjustment
+.mat-flat-button.mat-primary .mat-ripple-element,
+.mat-raised-button.mat-primary .mat-ripple-element,
+.mat-fab.mat-primary .mat-ripple-element,
+.mat-mini-fab.mat-primary .mat-ripple-element {
+  background-color: rgba(255,255,255,.15);
+}
+
+
+
+/* Form field
+ *============================================================================*/
+
+.mat-form-field {
+  font-size: 14px;
+  line-height: 1.15;
+  font-family: inherit;
+}
+
+// Fixes style for untouched form fields that seemed to have invalid style
+.mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid.ng-untouched {
+  .mat-form-field-outline {
+    opacity: 1;
+  }
+
+  .mat-form-field-outline-thick {
+    color: var(--primary);
+    opacity: 0;
+  }
+
+  .mat-form-field-label, .mat-select-arrow {
+    color: var(--secondary);
+  }
+}
+
+// Consistent vertical positioning for appearance="outline"
+.mat-form-field-appearance-outline {
+  .mat-form-field-prefix,
+  .mat-form-field-suffix {
+    align-self: center;
+    transition: .2s;
+  }
+
+  &.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-prefix,
+  &.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-suffix {
+    top: 0.45em;
+  }
+}
+
+.mat-no-hint .mat-form-field-wrapper {
+  padding-bottom: 0;
+}
+
+.form-field-s .mat-form-field-infix {
+  width: 90px;
+}
+
+
+
+/* Material icons
+ *============================================================================*/
+
+.material-icons {
+  font-family: 'Material Icons Outlined', monospace;
+  font-size: 24px;
+  line-height: 24px;
+  text-align: center;
+  white-space: nowrap;
+  word-wrap: normal;
+}
+
+
+
+/* Stepper
+ *============================================================================*/
+
+.mat-stepper-vertical, .mat-stepper-horizontal {
+  font-family: inherit;
+}
+
+.mat-step-icon .mat-icon {
+  line-height: 16px;
+}
+
+
+
+/* Snackbar
+ *============================================================================*/
+
+.mat-snack-bar-container {
+  background: var(--primary-theme);
+  color: var(--primary-secondary);
+
+  .mat-simple-snackbar-action {
+    color: var(--primary-primary);
+  }
+}
+
+.mat-snack-bar-container.snack-bar-error {
+  background: var(--warn-theme);
+  color: var(--warn-secondary);
+
+  .mat-simple-snackbar-action {
+    color: var(--warn-primary);
+  }
+}
+
+
+
+/* Progress bar
+ *============================================================================*/
+
+.mat-progress-bar-buffer {
+  background-color: #ddd;
+}
+
+
+
+/* Card
+ *============================================================================*/
+
+.mat-card.mat-card {
+  font-family: inherit;
+}
+
+
+
+/* Table
+ *============================================================================*/
+
+.mat-table {
+  background: transparent;
+  font-family: inherit;
+
+  .mat-cell,
+  .mat-footer-cell,
+  .mat-header-cell {
+    padding: 0 16px;
+
+    @media (max-width: $screen-s) {
+      padding: 8px;
+    }
+
+    &:first-of-type,
+    &:last-of-type {
+      padding: 0 16px;
+
+      @media (max-width: $screen-s) {
+        padding: 8px;
+      }
+    }
+  }
+}
+
+
+
+/* Paginator
+ *============================================================================*/
+
+.mat-paginator-range-label.mat-paginator-range-label {
+  @media (max-width: $screen-s) {
+    margin: 0 8px;
+  }
+}

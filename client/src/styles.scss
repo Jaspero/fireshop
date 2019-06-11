@@ -1,6 +1,8 @@
 @import "scss/00-setup/theme";
+@import "scss/00-setup/angular-material-theme";
 @import "scss/01-generic/resets";
 @import "scss/01-generic/generic";
-@import "scss/02-components/mat-custom";
+@import "scss/02-components/angular-material-components";
+@import "scss/02-components/loading";
 @import "scss/03-utilities/grid";
 @import "scss/03-utilities/utilities";
