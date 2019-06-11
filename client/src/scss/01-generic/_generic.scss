@@ -32,3 +32,19 @@ h3 { font-size: 32px; }
 h4 { font-size: 28px; }
 h5 { font-size: 24px; }
 h6 { font-size: 20px; }
+
+
+
+/* Horizontal rule
+ *============================================================================*/
+
+hr {
+  border-top: 1px solid rgba(0,0,0,.12);
+  border-right: none;
+  border-bottom: none;
+  border-left: none;
+
+  &[aria-hidden="true"] {
+    border-top: none;
+  }
+}
