@@ -1,32 +1,55 @@
-.jfsc-file-upload-list {
+/* Gallery style
+ *============================================================================*/
+
+.jms-file-upload-list {
   display: flex;
   flex-wrap: wrap;
-  padding-top: 16px;
 }
+
+.jms-file-upload-image-container {
+  position: relative;
+  flex-basis: calc(100% / 3);
+  width: calc(100% / 3);
+  padding-bottom: calc(100% / 3);
+  border: 2px solid white;
+  background: #eee;
+
+  &:hover .jms-file-upload-remove-image {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+.jms-file-upload-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.jms-file-upload-remove-image {
+  position: absolute;
+  top: 0;
+  right: 0;
+  visibility: hidden;
+  background: white;
+  opacity: 0;
+  transition: .2s;
+}
+
+
+
+/* CDK animations
+ *============================================================================*/
 
 .cdk-drop-list {
   position: relative;
 }
 
-.jfsc-file-upload-image {
-  //width: 198px;
-  height: 198px;
-  object-fit: contain;
-  border: 1px solid black;
-  background: red;
-  //margin: 5px;
-}
-
-.image-box:active {
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-  0 8px 10px 1px rgba(0, 0, 0, 0.14),
-  0 3px 14px 2px rgba(0, 0, 0, 0.12);
-  opacity: .6;
-}
-
 .cdk-drag-preview {
   box-sizing: border-box;
-  width: 25%;
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
   0 8px 10px 1px rgba(0, 0, 0, 0.14),
   0 3px 14px 2px rgba(0, 0, 0, 0.12);
