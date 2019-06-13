@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
 import {StateService} from '../../services/state/state.service';
@@ -9,14 +9,21 @@ import {StateService} from '../../services/state/state.service';
   styleUrls: ['./layout.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit {
   constructor(
     public state: StateService,
     private afAuth: AngularFireAuth,
     private router: Router
   ) {}
 
+  currentUser: string;
   navigationExpanded = false;
+
+  ngOnInit() {
+    this.afAuth.user.subscribe(value => {
+      this.currentUser = value.email;
+    });
+  }
 
   toggleMenu() {
     this.navigationExpanded = !this.navigationExpanded;
