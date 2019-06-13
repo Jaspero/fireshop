@@ -42,7 +42,7 @@
           color="primary"
           class="w-full"
           [disabled]="loginForm.invalid"
-          (click)="loginEmail()">
+          [jpLoadClick]="loginEmail()">
           Login
         </button>
         <a routerLink="/reset-password" class="block ta-right fg-secondary fs-small">Forgot password?</a>

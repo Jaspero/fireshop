@@ -34,7 +34,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {LoadClickModule} from '@jaspero/ng-helpers';
+import {LoadClickModule, SanitizeModule} from '@jaspero/ng-helpers';
 import {ENV_CONFIG} from '../env-config';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -185,7 +185,8 @@ const PIPES = [ColumnPipe];
     MatBottomSheetModule,
 
     // Ng Helpers
-    LoadClickModule
+    LoadClickModule,
+    SanitizeModule
   ],
   providers: [{provide: MAT_DATE_LOCALE, useValue: 'en-GB'}],
   bootstrap: [AppComponent]

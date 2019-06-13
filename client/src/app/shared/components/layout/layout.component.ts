@@ -16,10 +16,16 @@ export class LayoutComponent {
     private router: Router
   ) {}
 
-  sidebarExpanded = false;
+  navigationExpanded = false;
 
-  expandSidebar() {
-    this.sidebarExpanded = !this.sidebarExpanded;
+  toggleMenu() {
+    this.navigationExpanded = !this.navigationExpanded;
+  }
+
+  closeMenu() {
+    if (this.navigationExpanded) {
+      this.navigationExpanded = false;
+    }
   }
 
   logOut() {
