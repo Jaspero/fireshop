@@ -1,0 +1,43 @@
+:host {
+  display: flex;
+  padding: 12px 6px 6px;
+  border-radius: 4px;
+  transition: .2s;
+  border: 1px solid #333;
+}
+
+:host:hover {
+  border-color: #3f51b5;
+  box-shadow: 0 0 0 1px #3f51b5;
+}
+
+:host:active, :host:focus, :host:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.disabled{
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.preview-image {
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  max-width: unset;
+  object-fit: contain;
+  background: white;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,.4);
+  visibility: hidden;
+  opacity: 0;
+  transition: .2s;
+}
+
+.preview-button:hover + .preview-image {
+  visibility: visible;
+  opacity: 1;
+}

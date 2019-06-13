@@ -1,23 +1,25 @@
+import {CdkDragEnter, moveItemInArray} from '@angular/cdk/drag-drop';
+import {HttpClient} from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
   Inject,
+  OnInit,
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import {FieldComponent, FieldData} from '../../field/field.component';
-import {COMPONENT_DATA} from '../../../utils/create-component-injector';
+import {AngularFireStorage} from '@angular/fire/storage';
 import {MatDialog} from '@angular/material';
-import {forkJoin} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {readFile} from './read-file';
-import {CdkDragEnter, moveItemInArray} from '@angular/cdk/drag-drop';
-import {HttpClient} from '@angular/common/http';
-import {notify} from '../../../../../shared/utils/notify.operator';
+import {forkJoin, from, of} from 'rxjs';
+import {catchError, map, switchMap, tap} from 'rxjs/operators';
 import {ENV_CONFIG} from '../../../../../../env-config';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {StateService} from '../../../../../shared/services/state/state.service';
+import {notify} from '../../../../../shared/utils/notify.operator';
+import {COMPONENT_DATA} from '../../../utils/create-component-injector';
+import {FieldComponent, FieldData} from '../../field/field.component';
+import {readFile} from './read-file';
 
 interface GalleryData extends FieldData {
   allowUrl?: boolean;
@@ -30,17 +32,19 @@ interface GalleryData extends FieldData {
   styleUrls: ['./gallery.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GalleryComponent extends FieldComponent<GalleryData> {
+export class GalleryComponent extends FieldComponent<GalleryData>
+  implements OnInit {
   static STORAGE_URL =
     'https://firebasestorage.googleapis.com/v0/b/' +
     ENV_CONFIG.firebase.storageBucket;
 
   constructor(
+    @Inject(COMPONENT_DATA) public cData: GalleryData,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef,
     private http: HttpClient,
-    private afs: AngularFirestore,
-    @Inject(COMPONENT_DATA) public cData: GalleryData
+    private storage: AngularFireStorage,
+    private state: StateService
   ) {
     super(cData);
   }
@@ -56,6 +60,10 @@ export class GalleryComponent extends FieldComponent<GalleryData> {
 
   toRemove = [];
 
+  ngOnInit() {
+    this.state.uploadComponents.push(this);
+  }
+
   openUploadDialog() {
     this.dialog.open(this.modalTemplate);
   }
@@ -66,9 +74,7 @@ export class GalleryComponent extends FieldComponent<GalleryData> {
         withCredentials: false,
         responseType: 'blob'
       })
-      .pipe(
-        notify({error: 'Error on uploading image.', success: ''})
-      )
+      .pipe(notify({error: 'Error on uploading image.', success: ''}))
       .subscribe(res => {
         const urlCreator = window.URL || (window as any).webkitURL;
         const value = this.cData.control.value;
@@ -90,14 +96,13 @@ export class GalleryComponent extends FieldComponent<GalleryData> {
   filesUploaded(fileList: FileList) {
     forkJoin(
       Array.from(fileList).map(file =>
-        readFile(file)
-          .pipe(
-            map(data => ({
-              data,
-              pushToLive: file,
-              live: false
-            }))
-          )
+        readFile(file).pipe(
+          map(data => ({
+            data,
+            pushToLive: file,
+            live: false
+          }))
+        )
       )
     ).subscribe(files => {
       const value = this.cData.control.value;
@@ -141,19 +146,19 @@ export class GalleryComponent extends FieldComponent<GalleryData> {
    * the changes on server
    */
   save() {
-    /*/!**
-     * Break if there are no files to remove and there aren't any files to upload
-     *!/
-    if (!this.toRemove.length && !this.cData.control.value.find(val => !val.live)) {
+    if (
+      !this.toRemove.length &&
+      !this.cData.control.value.find(val => !val.live)
+    ) {
       return of([]);
     }
 
     return forkJoin([
       ...this.toRemove.map(file =>
-        from(this.afs.storage.refFromURL(file).delete()).pipe(
-          /!**
+        from(this.storage.storage.refFromURL(file).delete()).pipe(
+          /**
            * Dont' fail if files didn't delete
-           *!/
+           */
           catchError(() => of([]))
         )
       ),
@@ -161,7 +166,7 @@ export class GalleryComponent extends FieldComponent<GalleryData> {
         if (!cur.live) {
           acc.push(
             from(
-              this.afs.upload(cur.pushToLive.name, cur.pushToLive, {
+              this.storage.upload(cur.pushToLive.name, cur.pushToLive, {
                 contentType: cur.pushToLive.type
               })
             ).pipe(
@@ -175,8 +180,6 @@ export class GalleryComponent extends FieldComponent<GalleryData> {
 
         return acc;
       }, [])
-    ]);*/
+    ]);
   }
-
 }
-

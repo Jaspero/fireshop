@@ -31,6 +31,12 @@ export class StateService {
   modules$: Observable<Module[]>;
 
   /**
+   * Array of components that need to
+   * run save() methods on single instance
+   */
+  uploadComponents: any[] = [];
+
+  /**
    * Holds state information for all
    * previously loaded routes
    */

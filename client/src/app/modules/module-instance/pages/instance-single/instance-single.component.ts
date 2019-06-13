@@ -8,7 +8,7 @@ import {
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {from, Observable, of} from 'rxjs';
+import {forkJoin, from, Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
 import {
@@ -66,6 +66,8 @@ export class InstanceSingleComponent implements OnInit {
   data$: Observable<Instance>;
 
   ngOnInit() {
+    this.state.uploadComponents = [];
+
     this.data$ = this.moduleInstance.module$.pipe(
       switchMap(module =>
         this.activatedRoute.params.pipe(
@@ -157,14 +159,23 @@ export class InstanceSingleComponent implements OnInit {
 
   save(instance: Instance) {
     return () => {
-      const {id, ...data} = instance.form.getRawValue();
+      const toExecute = [];
 
-      return from(
-        this.afs
-          .collection(instance.module.id)
-          .doc(id)
-          .set(data, {merge: true})
-      ).pipe(
+      if (this.state.uploadComponents) {
+        toExecute.push(...this.state.uploadComponents.map(comp => comp.save()));
+      }
+
+      return (toExecute.length ? forkJoin(toExecute) : of([])).pipe(
+        switchMap(() => {
+          const {id, ...data} = instance.form.getRawValue();
+
+          return from(
+            this.afs
+              .collection(instance.module.id)
+              .doc(id)
+              .set(data)
+          );
+        }),
         notify(),
         tap(() => this.back(instance))
       );

@@ -1,25 +1,23 @@
-<mat-form-field appearance="outline">
-  <input
-    matInput
-    [formControl]="cData.control"
-    placeholder="image"
-  >
-</mat-form-field>
+<input
+  matInput
+  type="url"
+  [placeholder]="cData.label"
+  [class.disabled]="disInput"
+  [formControl]="imageUrl">
 
-<button
-  mat-button
-  *ngIf="!cData.control.value"
-  (click)="openFilesUploader()">
-  File upload
+<ng-container *ngIf="imageUrl.value">
+  <div class="iblock relative">
+    <button class="preview-button" mat-icon-button>
+      <mat-icon>visibility</mat-icon>
+    </button>
+    <img class="preview-image" [attr.src]="imageUrl.value || value" alt="Image Preview">
+  </div>
+</ng-container>
+<button mat-icon-button *ngIf="!imageUrl.value && !cData['preventServerUpload']">
+  <mat-icon (click)="openFileUpload()">perm_media</mat-icon>
+</button>
+<button mat-icon-button *ngIf="imageUrl.value">
+  <mat-icon (click)="remove()">highlight_off</mat-icon>
 </button>
 
-<button
-  mat-button
-  *ngIf="cData.control.value"
-  (click)="urlUploader()">
-  Save URL
-</button>
-
-<input #file type="file" hidden (change)="filesUploader($event.target.files)">
-
-<!--https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg-->
+<input #file type="file" hidden (change)="filesImage($event.target.files)">
