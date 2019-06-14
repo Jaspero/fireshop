@@ -2,6 +2,7 @@
   <mat-label>{{cData.label}}</mat-label>
   <input
       matInput
+      [placeholder]="cData['placeholder']"
       [attr.type]="cData['type']"
       [formControl]="cData.control">
   <mat-hint *ngIf="cData.hint">

@@ -2,6 +2,7 @@
   <mat-label>{{cData.label}}</mat-label>
   <input
     matInput
+    [placeholder]="cData['placeholder']"
     type="url"
     [class.disabled]="disInput"
     [formControl]="imageUrl">

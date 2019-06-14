@@ -2,7 +2,7 @@
     <mat-label>
       {{cData.label}}
     </mat-label>
-  <mat-select  [formControl]="cData.control">
+  <mat-select [placeholder]="cData['placeholder']"  [formControl]="cData.control">
     <mat-option *ngFor="let data of cData['dataSet']" [value]="data.value">
       {{data.name}}
     </mat-option>
