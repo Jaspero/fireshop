@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
 import {StateService} from '../../services/state/state.service';
 
 @Component({
@@ -16,13 +17,11 @@ export class LayoutComponent implements OnInit {
     private router: Router
   ) {}
 
-  currentUser: string;
+  currentUser$: Observable<any>;
   navigationExpanded = false;
 
   ngOnInit() {
-    this.afAuth.user.subscribe(value => {
-      this.currentUser = value.email;
-    });
+    this.currentUser$ = this.afAuth.user;
   }
 
   toggleMenu() {
