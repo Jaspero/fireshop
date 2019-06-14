@@ -1,5 +1,8 @@
 <mat-form-field class="w-full" appearance="outline">
-  <mat-select [placeholder]="cData.label" [formControl]="cData.control">
+    <mat-label>
+      {{cData.label}}
+    </mat-label>
+  <mat-select  [formControl]="cData.control">
     <mat-option *ngFor="let data of cData['dataSet']" [value]="data.value">
       {{data.name}}
     </mat-option>
