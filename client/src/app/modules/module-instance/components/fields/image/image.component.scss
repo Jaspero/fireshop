@@ -3,7 +3,9 @@
   padding: 12px 6px 6px;
   border-radius: 4px;
   transition: .2s;
-  border: 1px solid #333;
+  border: 1px solid rgba(0,0,0,.12);
+  font-size: 14px;
+  margin-bottom: 1.5em;
 }
 
 :host:hover {
