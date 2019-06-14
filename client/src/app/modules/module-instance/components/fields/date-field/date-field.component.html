@@ -1,5 +1,8 @@
 <mat-form-field>
-  <input matInput [matDatepicker]="picker" [placeholder]="cData.label" [formControl]="cData.control">
+  <mat-label>
+    {{cData.label}}
+  </mat-label>
+  <input matInput [matDatepicker]="picker" [placeholder]="cData['placeholder']" [formControl]="cData.control">
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker
     #picker

@@ -285,6 +285,7 @@ export class Parser {
       control,
       portal,
       validation,
+      placeholder: definition.placeholder || '',
       label: definition.label
     };
   }

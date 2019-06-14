@@ -1,9 +1,12 @@
-<input
-  matInput
-  type="url"
-  [placeholder]="cData.label"
-  [class.disabled]="disInput"
-  [formControl]="imageUrl">
+<mat-form-field appearance="outline">
+  <mat-label>{{cData.label}}</mat-label>
+  <input
+    matInput
+    [placeholder]="cData['placeholder']"
+    type="url"
+    [class.disabled]="disInput"
+    [formControl]="imageUrl">
+</mat-form-field>
 
 <ng-container *ngIf="imageUrl.value">
   <div class="iblock relative">

@@ -60,6 +60,7 @@ export interface ModuleDefinition {
   label?: string;
   hint?: string;
   defaultValue?: any;
+  placeholder?: string;
 }
 
 export interface ModuleDefinitions {
