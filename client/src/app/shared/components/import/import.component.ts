@@ -7,7 +7,9 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
+import {from} from 'rxjs';
 import {environment} from '../../../../environments/environment';
 import {notify} from '../../utils/notify.operator';
 
@@ -23,13 +25,20 @@ interface ImportResponse {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImportComponent {
-  constructor(private http: HttpClient, public dialog: MatDialog) {}
+  constructor(
+    public dialog: MatDialog,
+    private http: HttpClient,
+    private fb: FormBuilder
+  ) {}
 
   @ViewChild('file', {static: true})
   fileEl: ElementRef<HTMLInputElement>;
 
   @ViewChild('overview', {static: true})
   overview: TemplateRef<any>;
+
+  @ViewChild('dialog', {static: true})
+  dialogTemplate: TemplateRef<any>;
 
   @Input()
   collection: string;
@@ -38,6 +47,7 @@ export class ImportComponent {
   schema: any;
 
   data: ImportResponse;
+  delimiter: FormControl;
 
   selectFile(event) {
     const file = event.target.files[0];
@@ -46,6 +56,7 @@ export class ImportComponent {
     formData.append('data', file, file.name);
     formData.append('collection', this.collection);
     formData.append('schema', JSON.stringify(this.schema));
+    formData.append('delimiter', this.delimiter.value);
 
     this.http
       .post(`${environment.restApi}/importData`, formData)
@@ -61,5 +72,10 @@ export class ImportComponent {
           width: '500px'
         });
       });
+  }
+
+  openDialog() {
+    this.delimiter = this.fb.control(',');
+    this.dialog.open(this.dialogTemplate);
   }
 }
