@@ -66,22 +66,23 @@ export class ImageComponent extends FieldComponent<ImageData>
   }
 
   save() {
-    if (this.imageUrl.value && this.imageUrl.value !== this.value.name) {
-      return of(this.imageUrl.value).pipe(
-        tap(() => this.cData.control.setValue(this.imageUrl.value))
-      );
-    } else if (this.value) {
-      return from(
-        this.storage.upload(this.value.name, this.value, {
-          contentType: this.value.type
-        })
-      ).pipe(
-        switchMap(res => res.ref.getDownloadURL()),
-        tap(url => this.cData.control.setValue(url))
-      );
+    if (this.value) {
+      if (this.imageUrl.value && this.imageUrl.value !== this.value.name) {
+        return of(this.imageUrl.value).pipe(
+          tap(() => this.cData.control.setValue(this.imageUrl.value))
+        );
+      } else {
+        return from(
+          this.storage.upload(this.value.name, this.value, {
+            contentType: this.value.type
+          })
+        ).pipe(
+          switchMap(res => res.ref.getDownloadURL()),
+          tap(url => this.cData.control.setValue(url))
+        );
+      }
     } else {
-      this.cData.control.setValue('');
-
+      this.cData.control.setValue(this.imageUrl.value);
       return of({});
     }
   }
