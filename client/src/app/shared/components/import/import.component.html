@@ -28,12 +28,22 @@
 
 <ng-template #dialog>
 
-  <mat-form-field>
-    <input matInput [formControl]="delimiter" [placeholder]="'delimiter'">
-  </mat-form-field>
+  <form [formGroup]="form" (ngSubmit)="file.click()">
+    <mat-form-field class="w-full">
+      <mat-select placeholder="Type" formControlName="type">
+        <mat-option *ngFor="let option of importType | keyvalue" [value]="option.value">{{option.key}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  <button mat-button (click)="file.click()">
-    <mat-icon>vertical_align_bottom</mat-icon>
-    <span>Import</span>
-  </button>
+    <mat-form-field class="w-full" *ngIf="form.get('type').value === importType.CSV">
+      <input matInput formControlName="delimiter" placeholder="delimiter">
+    </mat-form-field>
+
+    <mat-dialog-actions class="jc-end">
+      <button mat-button type="submit">
+        <mat-icon>vertical_align_bottom</mat-icon>
+        <span>Import</span>
+      </button>
+    </mat-dialog-actions>
+  </form>
 </ng-template>

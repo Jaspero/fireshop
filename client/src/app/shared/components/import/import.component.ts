@@ -7,7 +7,7 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import {FormBuilder, FormControl} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {environment} from '../../../../environments/environment';
 import {notify} from '../../utils/notify.operator';
@@ -15,6 +15,11 @@ import {notify} from '../../utils/notify.operator';
 interface ImportResponse {
   errors?: any;
   created?: number;
+}
+
+enum ImportType {
+  JSON = 'json',
+  CSV = 'csv'
 }
 
 @Component({
@@ -45,17 +50,24 @@ export class ImportComponent {
   @Input()
   schema: any;
 
+  importType = ImportType;
   data: ImportResponse;
-  delimiter: FormControl;
+  form: FormGroup;
 
   selectFile(event) {
     const file = event.target.files[0];
     const formData = new FormData();
+    const form = this.form.getRawValue();
 
     formData.append('data', file, file.name);
     formData.append('collection', this.collection);
     formData.append('schema', JSON.stringify(this.schema));
-    formData.append('delimiter', this.delimiter.value);
+
+    for (const key in form) {
+      if (form.hasOwnProperty(key)) {
+        formData.append(key, form[key]);
+      }
+    }
 
     this.http
       .post(`${environment.restApi}/importData`, formData)
@@ -74,7 +86,13 @@ export class ImportComponent {
   }
 
   openDialog() {
-    this.delimiter = this.fb.control(',');
-    this.dialog.open(this.dialogTemplate);
+    this.form = this.fb.group({
+      type: ImportType.CSV,
+      delimiter: ','
+    });
+
+    this.dialog.open(this.dialogTemplate, {
+      width: '500px'
+    });
   }
 }

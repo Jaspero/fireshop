@@ -34,9 +34,20 @@ app.post('/', (req, res) => {
   busboy.on('finish', () => {
     async function exec() {
       const validator = ajvInstance.compile(JSON.parse(parsedData.schema));
-      const jsonObj = await csv({
-        delimiter: parsedData.delimiter || 'auto'
-      }).fromString(fileData);
+      const type = parsedData.type || 'csv';
+
+      let jsonObj: any;
+
+      switch (type) {
+        case 'csv':
+          jsonObj = await csv({
+            delimiter: parsedData.delimiter || 'auto'
+          }).fromString(fileData);
+          break;
+        case 'json':
+          jsonObj = JSON.parse(fileData);
+          break;
+      }
 
       const {errors, created} = jsonObj.reduce(
         (acc, cur, index) => {
