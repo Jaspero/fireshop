@@ -55,6 +55,10 @@ export class ImportComponent {
   form: FormGroup;
 
   selectFile(event) {
+    if (!event.target.files || !event.target.files[0]) {
+      return;
+    }
+
     const file = event.target.files[0];
     const formData = new FormData();
     const form = this.form.getRawValue();
@@ -68,6 +72,8 @@ export class ImportComponent {
         formData.append(key, form[key]);
       }
     }
+
+    this.dialog.closeAll();
 
     this.http
       .post(`${environment.restApi}/importData`, formData)
