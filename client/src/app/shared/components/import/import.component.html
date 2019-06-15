@@ -1,4 +1,4 @@
-<button mat-button (click)="file.click()">
+<button mat-button (click)="openDialog()">
   <mat-icon>vertical_align_bottom</mat-icon>
   <span>Import</span>
 </button>
@@ -24,4 +24,16 @@
       <button mat-button mat-dialog-close>Ok</button>
     </div>
   </div>
+</ng-template>
+
+<ng-template #dialog>
+
+  <mat-form-field>
+    <input matInput [formControl]="delimiter" [placeholder]="'delimiter'">
+  </mat-form-field>
+
+  <button mat-button (click)="file.click()">
+    <mat-icon>vertical_align_bottom</mat-icon>
+    <span>Import</span>
+  </button>
 </ng-template>
