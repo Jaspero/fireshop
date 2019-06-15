@@ -50,7 +50,7 @@ app.post('/', (req, res) => {
       }
 
       const {errors, created} = jsonObj.reduce(
-        (acc, cur, index) => {
+        (acc: any, cur: any, index: number) => {
           validator(cur);
 
           if (validator.errors) {
