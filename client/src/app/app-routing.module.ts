@@ -21,7 +21,7 @@ const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
-    // ...canActivate(redirectUnauthorizedTo(['/login'])),
+    ...canActivate(redirectUnauthorizedTo(['/login'])),
     children: [
       {
         path: 'dashboard',

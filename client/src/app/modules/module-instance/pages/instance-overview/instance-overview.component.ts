@@ -11,6 +11,7 @@ import {
   QueryDocumentSnapshot
 } from '@angular/fire/firestore';
 import {FormControl} from '@angular/forms';
+import {MatDialog} from '@angular/material';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatSort} from '@angular/material/sort';
 import {get, has} from 'json-pointer';
@@ -38,6 +39,7 @@ import {
 import {ExportComponent} from '../../../../shared/components/export/export.component';
 import {PAGE_SIZES} from '../../../../shared/consts/page-sizes.const';
 import {
+  SortModule,
   TableColumn,
   TableSort
 } from '../../../../shared/interfaces/module.interface';
@@ -45,6 +47,7 @@ import {RouteData} from '../../../../shared/interfaces/route-data.interface';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {confirmation} from '../../../../shared/utils/confirmation';
 import {notify} from '../../../../shared/utils/notify.operator';
+import {SortDialogComponent} from '../../components/sort-dialog/sort-dialog.component';
 import {ModuleInstanceComponent} from '../../module-instance.component';
 import {ColumnPipe} from '../../pipes/column.pipe';
 
@@ -55,6 +58,7 @@ interface InstanceOverview {
   tableColumns: TableColumn[];
   schema: JSONSchema7;
   sort?: TableSort;
+  sortModule?: SortModule;
 }
 
 @Component({
@@ -68,7 +72,8 @@ export class InstanceOverviewComponent implements OnInit {
     private moduleInstance: ModuleInstanceComponent,
     private afs: AngularFirestore,
     private state: StateService,
-    private bottomSheet: MatBottomSheet
+    private bottomSheet: MatBottomSheet,
+    private dialog: MatDialog
   ) {}
 
   @ViewChild(MatSort, {static: true})
@@ -146,7 +151,8 @@ export class InstanceOverviewComponent implements OnInit {
           name: data.name,
           schema: data.schema,
           displayColumns,
-          tableColumns
+          tableColumns,
+          sortModule: data.layout.sortModule
         };
       }),
       shareReplay(1)
@@ -349,6 +355,21 @@ export class InstanceOverviewComponent implements OnInit {
       data: {
         collection,
         ids: this.selection.selected
+      }
+    });
+  }
+
+  openSortDialog(
+    collection: string,
+    collectionName: string,
+    options: SortModule
+  ) {
+    this.dialog.open(SortDialogComponent, {
+      width: '800px',
+      data: {
+        options,
+        collection,
+        collectionName
       }
     });
   }

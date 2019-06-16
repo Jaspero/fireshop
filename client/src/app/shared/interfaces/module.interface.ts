@@ -39,12 +39,19 @@ export interface TableSort {
   direction: SortDirection;
 }
 
+export interface SortModule {
+  sortKey: string;
+  sortTitle: string;
+  sortSubTitle: string;
+}
+
 export interface ModuleLayout {
   icon?: string;
   table?: {
     sort?: TableSort;
     tableColumns?: TableColumn[];
   };
+  sortModule?: SortModule;
   instance: {
     segments: InstanceSegment[];
   };

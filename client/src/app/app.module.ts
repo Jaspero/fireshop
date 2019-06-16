@@ -63,6 +63,7 @@ import {CardComponent} from './modules/module-instance/components/segments/card/
 import {EmptyComponent} from './modules/module-instance/components/segments/empty/empty.component';
 import {StepperComponent} from './modules/module-instance/components/segments/stepper/stepper.component';
 import {TabsComponent} from './modules/module-instance/components/segments/tabs/tabs.component';
+import {SortDialogComponent} from './modules/module-instance/components/sort-dialog/sort-dialog.component';
 import {ModuleInstanceComponent} from './modules/module-instance/module-instance.component';
 import {InstanceOverviewComponent} from './modules/module-instance/pages/instance-overview/instance-overview.component';
 import {InstanceSingleComponent} from './modules/module-instance/pages/instance-single/instance-single.component';
@@ -124,7 +125,8 @@ const ENTRY_COMPONENTS = [
   StepperComponent,
 
   // Additional
-  ExportComponent
+  ExportComponent,
+  SortDialogComponent
 ];
 
 const DIRECTIVES = [ForceDisableDirective];

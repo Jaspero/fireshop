@@ -43,6 +43,14 @@
           </button>
 
           <jms-import [collection]="data.id" [schema]="data.schema"></jms-import>
+
+          <button
+            *ngIf="data.sortModule"
+            mat-icon-button
+            [matTooltip]="'Sort ' + data.name"
+            (click)="openSortDialog(data.id, data.name, data.sortModule)">
+            <mat-icon>vertical_split</mat-icon>
+          </button>
         </mat-toolbar>
 
         <!--Modules list-->
