@@ -1,15 +1,15 @@
 <h1 mat-dialog-title>Sort {{data.collectionName}}</h1>
 
-<mat-dialog-content *ngIf="items$ | async as items">
-  <mat-list role="list" cdkDropList (cdkDropListDropped)="drop(items, $event)">
-    <mat-list-item
-      *ngFor="let item of items; index as index; first as first; last as last;"
-      role="listitem"
-      cdkDrag
-      class="jc-between">
+<mat-dialog-content *ngIf="items$ | async as items" cdkDropList (cdkDropListDropped)="drop(items, $event)">
+
+  <mat-card
+    *ngFor="let item of items; index as index; first as first; last as last;"
+    cdkDrag
+    class="m-b-s">
+    <div class="flex jc-between ai-center">
       <div>
-        <h1>{{item[data.options.sortTitle]}}</h1>
-        <h2 *ngIf="data.options.sortSubTitle">{{item[data.options.sortSubTitle]}}</h2>
+        <h5>{{item[data.options.sortTitle]}}</h5>
+        <p *ngIf="data.options.sortSubTitle">{{item[data.options.sortSubTitle]}}</p>
       </div>
       <div>
         <button mat-icon-button [disabled]="first" (click)="move(true, items, index)">
@@ -22,6 +22,6 @@
           <mat-icon>drag_indicator</mat-icon>
         </button>
       </div>
-    </mat-list-item>
-  </mat-list>
+    </div>
+  </mat-card>
 </mat-dialog-content>

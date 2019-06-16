@@ -1,4 +1,4 @@
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {CdkDragDrop} from '@angular/cdk/drag-drop';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,6 +11,7 @@ import {forkJoin, from, Observable} from 'rxjs';
 import {take} from 'rxjs/operators';
 import {SortModule} from '../../../../shared/interfaces/module.interface';
 import {notify} from '../../../../shared/utils/notify.operator';
+import {switchItemLocations} from '../../utils/switch-item-locations';
 
 @Component({
   selector: 'jms-sort-dialog',
@@ -36,22 +37,19 @@ export class SortDialogComponent implements OnInit {
       .collection(this.data.collection, ref =>
         ref.orderBy(this.data.options.sortKey)
       )
-      .valueChanges('id')
+      .valueChanges({idField: 'id'})
       .pipe(take(1));
   }
 
   drop(items: any[], event: CdkDragDrop<string[]>) {
     this.update(items, event.previousIndex, event.currentIndex);
-
-    moveItemInArray(items, event.previousIndex, event.currentIndex);
+    switchItemLocations(items, event.previousIndex, event.currentIndex);
   }
 
   move(up = false, items: any[], index: number) {
     const currentIndex = up ? index - 1 : index + 1;
-
     this.update(items, index, currentIndex);
-
-    moveItemInArray(items, index, currentIndex);
+    switchItemLocations(items, index, currentIndex);
   }
 
   update(items: any[], previousIndex: number, currentIndex: number) {
