@@ -46,10 +46,10 @@
 
           <button
             *ngIf="data.sortModule"
-            mat-icon-button
-            [matTooltip]="'Sort ' + data.name"
+            mat-button
             (click)="openSortDialog(data.id, data.name, data.sortModule)">
             <mat-icon>vertical_split</mat-icon>
+            <span>Sort</span>
           </button>
         </mat-toolbar>
 
