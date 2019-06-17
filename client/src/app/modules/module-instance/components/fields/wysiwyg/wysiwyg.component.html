@@ -1,1 +1,4 @@
-<textarea #textarea role="textarea">{{cData.control.value}}</textarea>
+<textarea #textarea role="textarea">
+  <mat-label>{{cData.label}}</mat-label>
+  {{cData.control.value}}
+</textarea>
