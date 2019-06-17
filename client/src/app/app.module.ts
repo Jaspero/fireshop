@@ -116,6 +116,7 @@ const ENTRY_COMPONENTS = [
   DraggableListComponent,
   RadioComponent,
   ChipsComponent,
+  TextareaComponent,
 
   // Segments
   SegmentComponent,
