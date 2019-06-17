@@ -1,3 +1,4 @@
-<mat-form-field>
-  <textarea matInput [rows]="cData['rows']"  [cols]="cData['cols']"></textarea>
+<mat-form-field class="w-full" appearance="outline">
+  <mat-label>{{cData.label}}</mat-label>
+  <textarea matInput [rows]="cData['rows']" [cols]="cData['cols']"></textarea>
 </mat-form-field>
