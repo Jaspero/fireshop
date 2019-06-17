@@ -77,6 +77,7 @@ import {JsonEditorComponent} from './shared/components/json-editor/json-editor.c
 import {LayoutComponent} from './shared/components/layout/layout.component';
 import {SearchInputComponent} from './shared/components/search-input/search-input.component';
 import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
+import {TextareaComponent} from './modules/module-instance/components/fields/textarea/textarea.component';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -115,6 +116,7 @@ const ENTRY_COMPONENTS = [
   DraggableListComponent,
   RadioComponent,
   ChipsComponent,
+  TextareaComponent,
 
   // Segments
   SegmentComponent,
@@ -140,7 +142,8 @@ const PIPES = [ColumnPipe];
     ...COMPONENTS,
     ...ENTRY_COMPONENTS,
     ...DIRECTIVES,
-    ...PIPES
+    ...PIPES,
+    TextareaComponent
   ],
   entryComponents: ENTRY_COMPONENTS,
   imports: [

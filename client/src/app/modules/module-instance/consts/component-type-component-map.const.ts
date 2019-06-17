@@ -9,6 +9,7 @@ import {InputComponent} from '../components/fields/input/input.component';
 import {RadioComponent} from '../components/fields/radio/radio.component';
 import {SelectComponent} from '../components/fields/select/select.component';
 import {SliderComponent} from '../components/fields/slider/slider.component';
+import {TextareaComponent} from '../components/fields/textarea/textarea.component';
 import {ToggleComponent} from '../components/fields/toggle/toggle.component';
 import {WysiwygComponent} from '../components/fields/wysiwyg/wysiwyg.component';
 
@@ -24,5 +25,6 @@ export const COMPONENT_TYPE_COMPONENT_MAP = {
   [ComponentType.Wysiwyg]: WysiwygComponent,
   [ComponentType.Draggable]: DraggableListComponent,
   [ComponentType.Radio]: RadioComponent,
-  [ComponentType.Chips]: ChipsComponent
+  [ComponentType.Chips]: ChipsComponent,
+  [ComponentType.Textarea]: TextareaComponent
 };
