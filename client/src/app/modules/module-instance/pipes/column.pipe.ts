@@ -35,6 +35,28 @@ export class ColumnPipe implements PipeTransform {
       return value;
     }
 
+    switch (type) {
+      case PipeType.Date:
+        if (!value) {
+          return '';
+        }
+        break;
+      case PipeType.Titlecase:
+      case PipeType.Uppercase:
+      case PipeType.Lowercase:
+        if (typeof value !== 'string') {
+          return '';
+        }
+        break;
+      case PipeType.Number:
+      case PipeType.Currency:
+      case PipeType.Percent:
+        if (typeof value !== 'number') {
+          return '';
+        }
+        break;
+    }
+
     return this.pipes[type].transform(value, ...(args || []));
   }
 }
