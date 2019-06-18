@@ -2,9 +2,10 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FieldComponent, FieldData} from '../../field/field.component';
 
 interface DateData extends FieldData {
-  startYear: number;
-  startAt: number;
-  touchUi: boolean;
+  startYear?: number;
+  startAt?: number;
+  touchUi?: boolean;
+  startView?: 'month' | 'year' | 'multi-year';
 }
 
 @Component({

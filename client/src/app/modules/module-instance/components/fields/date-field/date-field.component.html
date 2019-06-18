@@ -1,4 +1,4 @@
-<mat-form-field>
+<mat-form-field class="w-full" appearance="outline">
   <mat-label>
     {{cData.label}}
   </mat-label>
@@ -6,8 +6,8 @@
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker
     #picker
-    [touchUi]="cData['touchUi']"
-    [startView]="cData['startView']"
+    [touchUi]="cData['touchUi'] || true"
+    [startView]="cData['startView'] || 'month'"
     [startAt]="startDate">
   </mat-datepicker>
 </mat-form-field>

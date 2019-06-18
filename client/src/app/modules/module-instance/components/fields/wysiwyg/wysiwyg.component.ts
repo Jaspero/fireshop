@@ -23,13 +23,11 @@ export class WysiwygComponent extends FieldComponent<FieldData>
   editor: any;
 
   ngAfterViewInit() {
-    console.log(this.cData);
     this.registerTiny();
   }
 
   private registerTiny() {
     tinymce.init({
-      selector: 'textarea',
       target: this.textarea.nativeElement,
       height: 420,
       toolbar: [
