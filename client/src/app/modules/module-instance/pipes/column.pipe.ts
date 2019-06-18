@@ -40,6 +40,13 @@ export class ColumnPipe implements PipeTransform {
         if (!value) {
           return '';
         }
+
+        try {
+          const test = new Date(value);
+        } catch (e) {
+          return '';
+        }
+
         break;
       case PipeType.Titlecase:
       case PipeType.Uppercase:

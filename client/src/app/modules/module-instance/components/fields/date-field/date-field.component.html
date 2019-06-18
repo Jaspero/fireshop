@@ -2,7 +2,7 @@
   <mat-label>
     {{cData.label}}
   </mat-label>
-  <input matInput [matDatepicker]="picker" [placeholder]="cData['placeholder']" [formControl]="cData.control">
+  <input matInput [matDatepicker]="picker" [placeholder]="cData['placeholder']" [formControl]="entryControl">
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker
     #picker
