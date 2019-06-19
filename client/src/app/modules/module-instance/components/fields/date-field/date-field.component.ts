@@ -53,7 +53,10 @@ export class DateFieldComponent extends FieldComponent<DateData>
     /**
      * Dirty hack for getting numbers to display properly might need revisiting
      */
-    if (typeof this.entryControl.value === 'number') {
+    if (
+      typeof this.entryControl.value === 'number' ||
+      typeof this.entryControl.value === 'string'
+    ) {
       this.entryControl.setValue(new Date(this.entryControl.value));
     }
   }
