@@ -1,3 +1,4 @@
+import {DatePipe} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -66,7 +67,9 @@ export class DateFieldComponent extends FieldComponent<DateData>
           if (this.cData.format === 'number') {
             value = value.getTime();
           } else {
-            value = value.toLocaleDateString(this.cData.format);
+            const pipe = new DatePipe('en');
+
+            value = pipe.transform(value, this.cData.format);
           }
         }
 

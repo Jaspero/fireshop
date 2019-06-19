@@ -176,9 +176,7 @@ export class InstanceOverviewComponent implements OnInit {
           switchMap(snapshots => {
             let cursor;
 
-            if (snapshots.length < this.options.pageSize) {
-              this.hasMore$.next(false);
-            }
+            this.hasMore$.next(snapshots.length === this.options.pageSize);
 
             if (snapshots.length) {
               cursor = snapshots[snapshots.length - 1].payload.doc;
