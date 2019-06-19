@@ -259,7 +259,7 @@ export class Parser {
     const {key, type, control, validation} = pointer;
     const definition = {
       label: key,
-      ...definitions[key]
+      ...this.getFromDefinitions(key, definitions)
     };
 
     if (!definition.component) {
@@ -349,5 +349,13 @@ export class Parser {
         arrayPointers: []
       };
     }
+  }
+
+  private getFromDefinitions(key: string, definitions: ModuleDefinitions) {
+    if (key[0] === '/') {
+      key = key.slice(1, key.length);
+    }
+
+    return definitions[key];
   }
 }

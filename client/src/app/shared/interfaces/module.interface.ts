@@ -5,6 +5,14 @@ import {PipeType} from '../enums/pipe-type.enum';
 import {ComponentType} from './component-type.enum';
 
 export interface TableColumn {
+  /**
+   * This flags indicates that the column
+   * should be turned in to a form control
+   * if it's true the key property needs
+   * to be a string
+   */
+  control?: boolean;
+
   key: string | string[];
   label?: string;
   pipe?: PipeType;

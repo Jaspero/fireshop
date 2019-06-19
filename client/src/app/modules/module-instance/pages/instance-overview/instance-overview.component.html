@@ -1,6 +1,6 @@
 <ng-template #columnLayout let-column="column" let-row="row" let-index="index">
   <ng-container *ngIf="row[index]">
-    <p>{{row[index].value}}</p>
+    <ng-template [cdkPortalOutlet]="row[index].value"></ng-template>
 
     <ng-container *ngFor="let nested of (column.nestedColumns || []); index as nestedIndex;">
       <ng-container *ngTemplateOutlet="columnLayout; context: {column: nested, row: row[index].nested, index: nestedIndex}"></ng-container>

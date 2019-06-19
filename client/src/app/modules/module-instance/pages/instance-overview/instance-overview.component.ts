@@ -1,10 +1,13 @@
 import {SelectionModel} from '@angular/cdk/collections';
+import {TemplatePortal} from '@angular/cdk/portal';
 import {
   ChangeDetectionStrategy,
   Component,
+  Injector,
   OnInit,
   TemplateRef,
-  ViewChild
+  ViewChild,
+  ViewContainerRef
 } from '@angular/core';
 import {
   AngularFirestore,
@@ -41,6 +44,7 @@ import {
 import {ExportComponent} from '../../../../shared/components/export/export.component';
 import {PAGE_SIZES} from '../../../../shared/consts/page-sizes.const';
 import {
+  ModuleDefinitions,
   SortModule,
   TableColumn,
   TableSort
@@ -52,11 +56,13 @@ import {notify} from '../../../../shared/utils/notify.operator';
 import {SortDialogComponent} from '../../components/sort-dialog/sort-dialog.component';
 import {ModuleInstanceComponent} from '../../module-instance.component';
 import {ColumnPipe} from '../../pipes/column.pipe';
+import {Parser} from '../../utils/parser';
 
 interface InstanceOverview {
   id: string;
   name: string;
   displayColumns: string[];
+  definitions: ModuleDefinitions;
   tableColumns: TableColumn[];
   schema: JSONSchema7;
   sort?: TableSort;
@@ -75,7 +81,9 @@ export class InstanceOverviewComponent implements OnInit {
     private afs: AngularFirestore,
     private state: StateService,
     private bottomSheet: MatBottomSheet,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private injector: Injector,
+    private viewContainerRef: ViewContainerRef
   ) {}
 
   @ViewChild(MatSort, {static: true})
@@ -97,6 +105,7 @@ export class InstanceOverviewComponent implements OnInit {
   columnPipe: ColumnPipe;
   pageSize: FormControl;
   options: RouteData;
+  parserCache: {[key: string]: Parser} = {};
 
   ngOnInit() {
     this.options = this.state.getRouterData({
@@ -157,6 +166,7 @@ export class InstanceOverviewComponent implements OnInit {
           schema: data.schema,
           displayColumns,
           tableColumns,
+          definitions: data.definitions,
           sortModule: data.layout.sortModule
         };
       }),
@@ -190,11 +200,7 @@ export class InstanceOverviewComponent implements OnInit {
               this.emptyState$.next(true);
             }
 
-            const docs = snapshots.map(item =>
-              this.mapRow(data.tableColumns, item)
-            );
-
-            console.log(222, docs);
+            const docs = snapshots.map(item => this.mapRow(data, item));
 
             return merge(
               this.loadMore$.pipe(
@@ -216,9 +222,7 @@ export class InstanceOverviewComponent implements OnInit {
                           cursor = snaps[snaps.length - 1].payload.doc;
 
                           docs.push(
-                            ...snaps.map(item =>
-                              this.mapRow(data.tableColumns, item)
-                            )
+                            ...snaps.map(item => this.mapRow(data, item))
                           );
                         }
                       })
@@ -239,12 +243,12 @@ export class InstanceOverviewComponent implements OnInit {
                       switch (snap.type) {
                         case 'added':
                           if (index === -1) {
-                            docs.push(this.mapRow(data.tableColumns, snap));
+                            docs.push(this.mapRow(data, snap));
                           }
                           break;
                         case 'modified':
                           if (index !== -1) {
-                            docs[index] = this.mapRow(data.tableColumns, snap);
+                            docs[index] = this.mapRow(data, snap);
                           }
                           break;
                         case 'removed':
@@ -353,22 +357,30 @@ export class InstanceOverviewComponent implements OnInit {
     });
   }
 
-  private mapRow(columns: TableColumn[], rowData: DocumentChangeAction<any>) {
+  private mapRow(
+    overview: InstanceOverview,
+    rowData: DocumentChangeAction<any>
+  ) {
     const data = rowData.payload.doc.data();
+    const id = rowData.payload.doc.id;
+
     return {
       data,
-      id: rowData.payload.doc.id,
-      parsed: this.parseColumns(columns, data)
+      id,
+      parsed: this.parseColumns(overview, {...data, id})
     };
   }
 
-  private parseColumns(columns: TableColumn[], rowData: any) {
-    return columns.reduce((acc, column, index) => {
+  private parseColumns(overview: InstanceOverview, rowData: any) {
+    return overview.tableColumns.reduce((acc, column, index) => {
       acc[index] = {
-        value: this.getColumnValue(column, rowData),
+        value: this.getColumnValue(column, overview, rowData),
         ...(column.nestedColumns
           ? {
-              nested: this.parseColumns(column.nestedColumns, rowData)
+              nested: this.parseColumns(
+                {...overview, tableColumns: column.nestedColumns},
+                rowData
+              )
             }
           : {})
       };
@@ -376,20 +388,55 @@ export class InstanceOverviewComponent implements OnInit {
     }, {});
   }
 
-  private getColumnValue(column: TableColumn, rowData: any) {
-    if (typeof column.key !== 'string') {
-      return column.key
-        .map(key => this.getColumnValue({key}, rowData))
-        .join(column.hasOwnProperty('join') ? column.join : ', ');
-    } else {
-      if (has(rowData, column.key)) {
-        return this.columnPipe.transform(
-          get(rowData, column.key),
-          column.pipe,
-          column.pipeArguments
+  private getColumnValue(
+    column: TableColumn,
+    overview: InstanceOverview,
+    rowData: any,
+    nested = false
+  ) {
+    if (column.control) {
+      const key = column.key as string;
+
+      if (!this.parserCache[rowData.id]) {
+        this.parserCache[rowData.id] = new Parser(
+          overview.schema,
+          this.injector
         );
+        this.parserCache[rowData.id].buildForm(rowData);
+      }
+
+      return this.parserCache[rowData.id].field(
+        key,
+        this.parserCache[rowData.id].pointers[key],
+        overview.definitions
+      ).portal;
+    } else {
+      let value;
+
+      if (typeof column.key !== 'string') {
+        value = column.key
+          .map(key => this.getColumnValue({key}, overview, rowData, true))
+          .join(column.hasOwnProperty('join') ? column.join : ', ');
       } else {
-        return '';
+        if (has(rowData, column.key)) {
+          value = this.columnPipe.transform(
+            get(rowData, column.key),
+            column.pipe,
+            column.pipeArguments
+          );
+        } else {
+          value = '';
+        }
+      }
+
+      if (nested) {
+        return value;
+      } else {
+        return new TemplatePortal(
+          this.simpleColumnTemplate,
+          this.viewContainerRef,
+          {value}
+        );
       }
     }
   }
