@@ -1,10 +1,15 @@
-<ng-template #columnLayout let-column="column" let-row="row">
-    <p>{{getColumnValue(column, row)}}</p>
+<ng-template #columnLayout let-column="column" let-row="row" let-index="index">
+  <ng-container *ngIf="row[index]">
+    <p>{{row[index].value}}</p>
 
-    <ng-container *ngFor="let nested of (column.nestedColumns || [])">
-        <ng-container *ngTemplateOutlet="columnLayout; context: {column: nested, row: row}"></ng-container>
+    <ng-container *ngFor="let nested of (column.nestedColumns || []); index as nestedIndex;">
+      <ng-container *ngTemplateOutlet="columnLayout; context: {column: nested, row: row[index].nested, index: nestedIndex}"></ng-container>
     </ng-container>
+  </ng-container>
+</ng-template>
 
+<ng-template #simpleColumn let-value="value">
+  <p>{{value}}</p>
 </ng-template>
 
 <ng-container *ngIf="data$ | async as data">
@@ -90,8 +95,8 @@
                 </th>
               </ng-template>
 
-              <td mat-cell *matCellDef="let row">
-                <ng-container *ngTemplateOutlet="columnLayout; context: {row: row, column: column}"></ng-container>
+              <td mat-cell *matCellDef="let row;">
+                <ng-container *ngTemplateOutlet="columnLayout; context: {row: row.parsed, column: column, index: index}"></ng-container>
               </td>
             </ng-container>
 

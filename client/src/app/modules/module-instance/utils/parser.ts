@@ -257,13 +257,10 @@ export class Parser {
     definitions: ModuleDefinitions = {}
   ): CompiledField {
     const {key, type, control, validation} = pointer;
-    // console.log(definitions, key);
     const definition = {
       label: key,
       ...definitions[key]
     };
-
-    // console.log(definition.component);
 
     if (!definition.component) {
       definition.component = schemaToComponent(type);

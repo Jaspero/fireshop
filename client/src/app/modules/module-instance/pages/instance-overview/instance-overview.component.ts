@@ -3,11 +3,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
+  TemplateRef,
   ViewChild
 } from '@angular/core';
 import {
   AngularFirestore,
   CollectionReference,
+  DocumentChangeAction,
   QueryDocumentSnapshot
 } from '@angular/fire/firestore';
 import {FormControl} from '@angular/forms';
@@ -78,6 +80,9 @@ export class InstanceOverviewComponent implements OnInit {
 
   @ViewChild(MatSort, {static: true})
   sort: MatSort;
+
+  @ViewChild('simpleColumn', {static: true})
+  simpleColumnTemplate: TemplateRef<any>;
 
   data$: Observable<InstanceOverview>;
   items$: Observable<any[]>;
@@ -185,10 +190,11 @@ export class InstanceOverviewComponent implements OnInit {
               this.emptyState$.next(true);
             }
 
-            const docs = snapshots.map(item => ({
-              id: item.payload.doc.id,
-              ...item.payload.doc.data()
-            }));
+            const docs = snapshots.map(item =>
+              this.mapRow(data.tableColumns, item)
+            );
+
+            console.log(222, docs);
 
             return merge(
               this.loadMore$.pipe(
@@ -210,10 +216,9 @@ export class InstanceOverviewComponent implements OnInit {
                           cursor = snaps[snaps.length - 1].payload.doc;
 
                           docs.push(
-                            ...snaps.map(item => ({
-                              id: item.payload.doc.id,
-                              ...item.payload.doc.data()
-                            }))
+                            ...snaps.map(item =>
+                              this.mapRow(data.tableColumns, item)
+                            )
                           );
                         }
                       })
@@ -234,18 +239,12 @@ export class InstanceOverviewComponent implements OnInit {
                       switch (snap.type) {
                         case 'added':
                           if (index === -1) {
-                            docs.push({
-                              id: snap.payload.doc.id,
-                              ...snap.payload.doc.data()
-                            });
+                            docs.push(this.mapRow(data.tableColumns, snap));
                           }
                           break;
                         case 'modified':
                           if (index !== -1) {
-                            docs[index] = {
-                              id: snap.payload.doc.id,
-                              ...snap.payload.doc.data()
-                            };
+                            docs[index] = this.mapRow(data.tableColumns, snap);
                           }
                           break;
                         case 'removed':
@@ -285,24 +284,6 @@ export class InstanceOverviewComponent implements OnInit {
 
       return final;
     });
-  }
-
-  getColumnValue(column: TableColumn, rowData: any) {
-    if (typeof column.key !== 'string') {
-      return column.key
-        .map(key => this.getColumnValue({key}, rowData))
-        .join(column.hasOwnProperty('join') ? column.join : ', ');
-    } else {
-      if (has(rowData, column.key)) {
-        return this.columnPipe.transform(
-          get(rowData, column.key),
-          column.pipe,
-          column.pipeArguments
-        );
-      } else {
-        return '';
-      }
-    }
   }
 
   trackById(index, item) {
@@ -370,5 +351,46 @@ export class InstanceOverviewComponent implements OnInit {
         collectionName
       }
     });
+  }
+
+  private mapRow(columns: TableColumn[], rowData: DocumentChangeAction<any>) {
+    const data = rowData.payload.doc.data();
+    return {
+      data,
+      id: rowData.payload.doc.id,
+      parsed: this.parseColumns(columns, data)
+    };
+  }
+
+  private parseColumns(columns: TableColumn[], rowData: any) {
+    return columns.reduce((acc, column, index) => {
+      acc[index] = {
+        value: this.getColumnValue(column, rowData),
+        ...(column.nestedColumns
+          ? {
+              nested: this.parseColumns(column.nestedColumns, rowData)
+            }
+          : {})
+      };
+      return acc;
+    }, {});
+  }
+
+  private getColumnValue(column: TableColumn, rowData: any) {
+    if (typeof column.key !== 'string') {
+      return column.key
+        .map(key => this.getColumnValue({key}, rowData))
+        .join(column.hasOwnProperty('join') ? column.join : ', ');
+    } else {
+      if (has(rowData, column.key)) {
+        return this.columnPipe.transform(
+          get(rowData, column.key),
+          column.pipe,
+          column.pipeArguments
+        );
+      } else {
+        return '';
+      }
+    }
   }
 }
