@@ -9,13 +9,15 @@ import {
   UpperCasePipe
 } from '@angular/common';
 import {Pipe, PipeTransform} from '@angular/core';
+import {DomSanitizer} from '@angular/platform-browser';
+import {SanitizePipe} from '@jaspero/ng-helpers';
 import {PipeType} from '../../../shared/enums/pipe-type.enum';
 
 @Pipe({
   name: 'column'
 })
 export class ColumnPipe implements PipeTransform {
-  constructor() {
+  constructor(private sanitizer: DomSanitizer) {
     this.pipes = {
       [PipeType.Number]: new DecimalPipe('en'),
       [PipeType.Currency]: new CurrencyPipe('en'),
@@ -24,7 +26,8 @@ export class ColumnPipe implements PipeTransform {
       [PipeType.Json]: new JsonPipe(),
       [PipeType.Lowercase]: new LowerCasePipe(),
       [PipeType.Uppercase]: new UpperCasePipe(),
-      [PipeType.Titlecase]: new TitleCasePipe()
+      [PipeType.Titlecase]: new TitleCasePipe(),
+      [PipeType.Sanitize]: new SanitizePipe(this.sanitizer)
     };
   }
 

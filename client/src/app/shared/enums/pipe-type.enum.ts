@@ -6,5 +6,6 @@ export enum PipeType {
   Json = 'json',
   Lowercase = 'lowercase',
   Titlecase = 'titlecase',
-  Uppercase = 'uppercase'
+  Uppercase = 'uppercase',
+  Sanitize = 'jpSanitize'
 }
