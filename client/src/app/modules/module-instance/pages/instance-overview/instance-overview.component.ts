@@ -19,6 +19,7 @@ import {FormControl} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatSort} from '@angular/material/sort';
+import {DomSanitizer} from '@angular/platform-browser';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {get, has} from 'json-pointer';
 import {JSONSchema7} from 'json-schema';
@@ -85,7 +86,8 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
     private bottomSheet: MatBottomSheet,
     private dialog: MatDialog,
     private injector: Injector,
-    private viewContainerRef: ViewContainerRef
+    private viewContainerRef: ViewContainerRef,
+    private domSanitizer: DomSanitizer
   ) {
     super();
   }
@@ -116,7 +118,7 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
       pageSize: 10
     });
     this.pageSize = new FormControl(this.options.pageSize);
-    this.columnPipe = new ColumnPipe();
+    this.columnPipe = new ColumnPipe(this.domSanitizer);
 
     this.data$ = this.moduleInstance.module$.pipe(
       map(data => {
