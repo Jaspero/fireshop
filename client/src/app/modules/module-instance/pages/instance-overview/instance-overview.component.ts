@@ -19,6 +19,7 @@ import {FormControl} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatSort} from '@angular/material/sort';
+import {RxDestroy} from '@jaspero/ng-helpers';
 import {get, has} from 'json-pointer';
 import {JSONSchema7} from 'json-schema';
 // @ts-ignore
@@ -39,6 +40,7 @@ import {
   startWith,
   switchMap,
   take,
+  takeUntil,
   tap
 } from 'rxjs/operators';
 import {ExportComponent} from '../../../../shared/components/export/export.component';
@@ -75,7 +77,7 @@ interface InstanceOverview {
   styleUrls: ['./instance-overview.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InstanceOverviewComponent implements OnInit {
+export class InstanceOverviewComponent extends RxDestroy implements OnInit {
   constructor(
     private moduleInstance: ModuleInstanceComponent,
     private afs: AngularFirestore,
@@ -84,7 +86,9 @@ export class InstanceOverviewComponent implements OnInit {
     private dialog: MatDialog,
     private injector: Injector,
     private viewContainerRef: ViewContainerRef
-  ) {}
+  ) {
+    super();
+  }
 
   @ViewChild(MatSort, {static: true})
   sort: MatSort;
@@ -405,11 +409,36 @@ export class InstanceOverviewComponent implements OnInit {
         this.parserCache[rowData.id].buildForm(rowData);
       }
 
-      return this.parserCache[rowData.id].field(
+      const field = this.parserCache[rowData.id].field(
         key,
         this.parserCache[rowData.id].pointers[key],
-        overview.definitions
-      ).portal;
+        overview.definitions,
+        false
+      );
+
+      field.control.valueChanges
+        .pipe(
+          switchMap(value =>
+            from(
+              this.afs
+                .collection(overview.id)
+                .doc(rowData.id)
+                .set(
+                  {
+                    [Parser.standardizeKey(key)]: value
+                  },
+                  {merge: true}
+                )
+            )
+          ),
+          notify({
+            success: null
+          }),
+          takeUntil(this.destroyed$)
+        )
+        .subscribe();
+
+      return field.portal;
     } else {
       let value;
 

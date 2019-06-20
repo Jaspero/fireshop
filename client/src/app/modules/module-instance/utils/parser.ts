@@ -75,6 +75,14 @@ export class Parser {
   form: FormGroup;
   pointers: Pointers = {};
 
+  static standardizeKey(key: string) {
+    if (key[0] === '/') {
+      key = key.slice(1, key.length);
+    }
+
+    return key;
+  }
+
   static stringControl(
     definition: StringPropertyDefinition,
     required: boolean
@@ -254,13 +262,21 @@ export class Parser {
   field(
     pointerKey: string,
     pointer: Pointer,
-    definitions: ModuleDefinitions = {}
+    definitions: ModuleDefinitions = {},
+    single = true
   ): CompiledField {
     const {key, type, control, validation} = pointer;
     const definition = {
       label: key,
       ...this.getFromDefinitions(key, definitions)
     };
+
+    /**
+     * We don't show labels in the table
+     */
+    if (!single) {
+      definition.label = '';
+    }
 
     if (!definition.component) {
       definition.component = schemaToComponent(type);
@@ -352,10 +368,6 @@ export class Parser {
   }
 
   private getFromDefinitions(key: string, definitions: ModuleDefinitions) {
-    if (key[0] === '/') {
-      key = key.slice(1, key.length);
-    }
-
-    return definitions[key];
+    return definitions[Parser.standardizeKey(key)];
   }
 }
