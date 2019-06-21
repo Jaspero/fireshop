@@ -163,7 +163,7 @@ export class GalleryComponent extends FieldComponent<GalleryData>
         )
       ),
       ...this.cData.control.value.reduce((acc, cur) => {
-        if (!cur.live) {
+        if (cur.live !== undefined && !cur.live) {
           acc.push(
             from(
               this.storage.upload(cur.pushToLive.name, cur.pushToLive, {
@@ -176,10 +176,15 @@ export class GalleryComponent extends FieldComponent<GalleryData>
               })
             )
           );
+        } else {
+          acc.push(cur);
         }
 
         return acc;
       }, [])
-    ]);
+    ])
+      .pipe(
+        tap(() => this.cData.control.setValue(this.cData.control.value.map(item => item.data ? item.data : item)))
+      );
   }
 }
