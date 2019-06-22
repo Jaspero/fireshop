@@ -3,6 +3,7 @@ import {TemplatePortal} from '@angular/cdk/portal';
 import {
   ChangeDetectionStrategy,
   Component,
+  Inject,
   Injector,
   OnInit,
   TemplateRef,
@@ -10,7 +11,6 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import {
-  AngularFirestore,
   CollectionReference,
   DocumentChangeAction,
   QueryDocumentSnapshot
@@ -44,8 +44,10 @@ import {
   takeUntil,
   tap
 } from 'rxjs/operators';
+import {DB_SERVICE} from '../../../../app.module';
 import {ExportComponent} from '../../../../shared/components/export/export.component';
 import {PAGE_SIZES} from '../../../../shared/consts/page-sizes.const';
+import {DbService} from '../../../../shared/interfaces/db-service.interface';
 import {
   ModuleDefinitions,
   SortModule,
@@ -80,8 +82,9 @@ interface InstanceOverview {
 })
 export class InstanceOverviewComponent extends RxDestroy implements OnInit {
   constructor(
+    @Inject(DB_SERVICE)
+    private dbService: DbService,
     private moduleInstance: ModuleInstanceComponent,
-    private afs: AngularFirestore,
     private state: StateService,
     private bottomSheet: MatBottomSheet,
     private dialog: MatDialog,
@@ -314,7 +317,7 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
 
   deleteOne(instance: InstanceOverview, item: any) {
     confirmation([
-      switchMap(() => this.delete(instance.id, item.id)),
+      switchMap(() => this.dbService.removeDocument(instance.id, item.id)),
       notify()
     ]);
   }
@@ -323,20 +326,13 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
     confirmation([
       switchMap(() =>
         forkJoin(
-          this.selection.selected.map(id => this.delete(instance.id, id))
+          this.selection.selected.map(id =>
+            this.dbService.removeDocument(instance.id, id)
+          )
         )
       ),
       notify()
     ]);
-  }
-
-  delete(collection: string, id: string) {
-    return from(
-      this.afs
-        .collection(collection)
-        .doc(id)
-        .delete()
-    );
   }
 
   export(collection: string) {
@@ -421,16 +417,13 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
       field.control.valueChanges
         .pipe(
           switchMap(value =>
-            from(
-              this.afs
-                .collection(overview.id)
-                .doc(rowData.id)
-                .set(
-                  {
-                    [Parser.standardizeKey(key)]: value
-                  },
-                  {merge: true}
-                )
+            this.dbService.setDocument(
+              overview.id,
+              rowData.id,
+              {
+                [Parser.standardizeKey(key)]: value
+              },
+              {merge: true}
             )
           ),
           notify({

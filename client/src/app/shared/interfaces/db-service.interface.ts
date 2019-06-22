@@ -16,11 +16,20 @@ export interface DbService {
 
   updateUserSettings(settings: Partial<Settings>): Observable<void>;
 
-  setCollection(
+  getDocuments(
+    moduleId: string,
+    pageSize?: number,
+    cursor?: any
+  ): Observable<any[]>;
+
+  getDocument(moduleId: string, documentId: string): Observable<any>;
+
+  setDocument(
     moduleId: string,
     documentId: string,
-    data: any
+    data: any,
+    options?: any
   ): Observable<void>;
 
-  getCollectionDocument(moduleId: string, documentId: string): Observable<any>;
+  removeDocument(moduleId: string, documentId: string): Observable<void>;
 }

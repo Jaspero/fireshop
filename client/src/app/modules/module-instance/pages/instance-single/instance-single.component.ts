@@ -81,15 +81,12 @@ export class InstanceSingleComponent implements OnInit {
             } else if (params.id.endsWith('--copy')) {
               this.currentState = ViewState.Copy;
               return this.dbService
-                .getCollectionDocument(
-                  module.id,
-                  params.id.replace('--copy', '')
-                )
+                .getDocument(module.id, params.id.replace('--copy', ''))
                 .pipe(queue());
             } else {
               this.currentState = ViewState.Edit;
               return this.dbService
-                .getCollectionDocument(module.id, params.id)
+                .getDocument(module.id, params.id)
                 .pipe(queue());
             }
           }),
@@ -156,7 +153,7 @@ export class InstanceSingleComponent implements OnInit {
         switchMap(() => {
           const {id, ...data} = instance.form.getRawValue();
 
-          return this.dbService.setCollection(instance.module.id, id, data);
+          return this.dbService.setDocument(instance.module.id, id, data);
         }),
         notify(),
         tap(() => this.back(instance))

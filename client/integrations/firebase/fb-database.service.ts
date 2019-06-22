@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore, CollectionReference} from '@angular/fire/firestore';
 // @ts-ignore
 import * as nanoid from 'nanoid';
 import {from} from 'rxjs';
@@ -62,7 +62,23 @@ export class FbDatabaseService implements DbService {
     );
   }
 
-  getCollectionDocument(moduleId, documentId) {
+  getDocuments(moduleId, pageSize, cursor) {
+    return this.afs.collection(moduleId, ref => {
+      let final = ref;
+
+      if (pageSize) {
+        final = final.limit(pageSize) as CollectionReference;
+      }
+
+      if (cursor) {
+        final = final.startAfter(cursor) as CollectionReference;
+      }
+
+      return final;
+    });
+  }
+
+  getDocument(moduleId, documentId) {
     return this.afs
       .collection(moduleId)
       .doc(documentId)
@@ -76,12 +92,21 @@ export class FbDatabaseService implements DbService {
       );
   }
 
-  setCollection(moduleId, documentId, data) {
+  setDocument(moduleId, documentId, data, options) {
     return from(
       this.afs
         .collection(moduleId)
         .doc(documentId)
-        .set(data)
+        .set(data, options || {})
+    );
+  }
+
+  removeDocument(moduleId, documentId) {
+    return from(
+      this.afs
+        .collection(moduleId)
+        .doc(documentId)
+        .delete()
     );
   }
 }
