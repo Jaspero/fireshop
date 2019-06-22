@@ -140,8 +140,7 @@ const PIPES = [ColumnPipe];
     ...COMPONENTS,
     ...ENTRY_COMPONENTS,
     ...DIRECTIVES,
-    ...PIPES,
-    TextareaComponent
+    ...PIPES
   ],
   entryComponents: ENTRY_COMPONENTS,
   imports: [

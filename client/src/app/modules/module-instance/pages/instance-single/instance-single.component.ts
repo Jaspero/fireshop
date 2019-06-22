@@ -2,15 +2,17 @@ import {ComponentPortal} from '@angular/cdk/portal';
 import {
   ChangeDetectionStrategy,
   Component,
+  Inject,
   Injector,
   OnInit
 } from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {forkJoin, from, Observable, of} from 'rxjs';
-import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
+import {forkJoin, Observable, of} from 'rxjs';
+import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
+import {DB_SERVICE} from '../../../../app.module';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
+import {DbService} from '../../../../shared/interfaces/db-service.interface';
 import {
   InstanceSegment,
   Module
@@ -49,8 +51,9 @@ interface Instance {
 })
 export class InstanceSingleComponent implements OnInit {
   constructor(
+    @Inject(DB_SERVICE)
+    private dbService: DbService,
     private router: Router,
-    private afs: AngularFirestore,
     private state: StateService,
     private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
@@ -77,33 +80,17 @@ export class InstanceSingleComponent implements OnInit {
               return of(null);
             } else if (params.id.endsWith('--copy')) {
               this.currentState = ViewState.Copy;
-              const id = params.id.replace('--copy', '');
-              return this.afs
-                .collection(module.id)
-                .doc(id)
-                .valueChanges()
-                .pipe(
-                  take(1),
-                  map(value => ({
-                    ...value,
-                    id
-                  })),
-                  queue()
-                );
+              return this.dbService
+                .getCollectionDocument(
+                  module.id,
+                  params.id.replace('--copy', '')
+                )
+                .pipe(queue());
             } else {
               this.currentState = ViewState.Edit;
-              return this.afs
-                .collection(module.id)
-                .doc(params.id)
-                .valueChanges()
-                .pipe(
-                  take(1),
-                  map(value => ({
-                    ...value,
-                    id: params.id
-                  })),
-                  queue()
-                );
+              return this.dbService
+                .getCollectionDocument(module.id, params.id)
+                .pipe(queue());
             }
           }),
           map((value: Partial<Module>) => {
@@ -169,12 +156,7 @@ export class InstanceSingleComponent implements OnInit {
         switchMap(() => {
           const {id, ...data} = instance.form.getRawValue();
 
-          return from(
-            this.afs
-              .collection(instance.module.id)
-              .doc(id)
-              .set(data)
-          );
+          return this.dbService.setCollection(instance.module.id, id, data);
         }),
         notify(),
         tap(() => this.back(instance))

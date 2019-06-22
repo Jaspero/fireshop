@@ -15,4 +15,12 @@ export interface DbService {
   getUserSettings(): Observable<Settings>;
 
   updateUserSettings(settings: Partial<Settings>): Observable<void>;
+
+  setCollection(
+    moduleId: string,
+    documentId: string,
+    data: any
+  ): Observable<void>;
+
+  getCollectionDocument(moduleId: string, documentId: string): Observable<any>;
 }

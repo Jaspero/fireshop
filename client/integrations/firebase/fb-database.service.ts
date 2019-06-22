@@ -61,4 +61,27 @@ export class FbDatabaseService implements DbService {
         .update(settings)
     );
   }
+
+  getCollectionDocument(moduleId, documentId) {
+    return this.afs
+      .collection(moduleId)
+      .doc(documentId)
+      .valueChanges()
+      .pipe(
+        take(1),
+        map(value => ({
+          ...value,
+          id: documentId
+        }))
+      );
+  }
+
+  setCollection(moduleId, documentId, data) {
+    return from(
+      this.afs
+        .collection(moduleId)
+        .doc(documentId)
+        .set(data)
+    );
+  }
 }
