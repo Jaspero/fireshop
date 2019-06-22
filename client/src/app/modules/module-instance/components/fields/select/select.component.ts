@@ -7,7 +7,6 @@ import {
 import {AngularFirestore} from '@angular/fire/firestore';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
-import {FirebaseOperator} from '../../../../../shared/enums/firebase-operator.enum';
 import {COMPONENT_DATA} from '../../../utils/create-component-injector';
 import {FieldComponent, FieldData} from '../../field/field.component';
 
@@ -20,7 +19,7 @@ interface SelectData extends FieldData {
     orderBy?: string;
     filter?: {
       key: string;
-      operator: FirebaseOperator;
+      operator: string;
       value: any;
     };
   };

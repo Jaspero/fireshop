@@ -1,16 +1,15 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
+  Inject,
   OnInit
 } from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {from, Observable} from 'rxjs';
-import {map, take} from 'rxjs/operators';
-import {FirestoreCollection} from '../../shared/enums/firestore-collection.enum';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {DB_SERVICE} from '../../app.module';
 import {Role} from '../../shared/enums/role.enum';
-import {Settings} from '../../shared/interfaces/settings.interface';
+import {DbService} from '../../shared/interfaces/db-service.interface';
 import {notify} from '../../shared/utils/notify.operator';
 
 @Component({
@@ -21,34 +20,29 @@ import {notify} from '../../shared/utils/notify.operator';
 })
 export class SettingsComponent implements OnInit {
   constructor(
-    private afs: AngularFirestore,
-    private fb: FormBuilder,
-    private cdr: ChangeDetectorRef
+    @Inject(DB_SERVICE)
+    private dbService: DbService,
+    private fb: FormBuilder
   ) {}
 
   role = Role;
   form$: Observable<FormGroup>;
 
   ngOnInit() {
-    this.form$ = this.afs
-      .collection(FirestoreCollection.Settings)
-      .doc<Settings>('user')
-      .valueChanges()
-      .pipe(
-        take(1),
-        map(value =>
-          this.fb.group({
-            roles: this.fb.array(
-              value.roles.map(role =>
-                this.fb.group({
-                  email: [role.email, [Validators.required, Validators.email]],
-                  role: [role.role, Validators.required]
-                })
-              )
+    this.form$ = this.dbService.getUserSettings().pipe(
+      map(value =>
+        this.fb.group({
+          roles: this.fb.array(
+            value.roles.map(role =>
+              this.fb.group({
+                email: [role.email, [Validators.required, Validators.email]],
+                role: [role.role, Validators.required]
+              })
             )
-          })
-        )
-      );
+          )
+        })
+      )
+    );
   }
 
   rolesForm(form: FormGroup) {
@@ -66,12 +60,9 @@ export class SettingsComponent implements OnInit {
 
   save(form) {
     return () => {
-      return from(
-        this.afs
-          .collection(FirestoreCollection.Settings)
-          .doc('user')
-          .update(form.getRawValue())
-      ).pipe(notify());
+      return this.dbService
+        .updateUserSettings(form.getRawValue())
+        .pipe(notify());
     };
   }
 }

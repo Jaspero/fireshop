@@ -1,14 +1,18 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  OnInit
+} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 // @ts-ignore
-import * as nanoid from 'nanoid';
-import {from, Observable, of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
-import {FirestoreCollection} from '../../../../shared/enums/firestore-collection.enum';
+import {DB_SERVICE} from '../../../../app.module';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
+import {DbService} from '../../../../shared/interfaces/db-service.interface';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {notify} from '../../../../shared/utils/notify.operator';
@@ -22,8 +26,9 @@ import {SchemaValidation} from '../../../../shared/utils/schema-validation';
 })
 export class DefinitionInstanceComponent implements OnInit {
   constructor(
+    @Inject(DB_SERVICE)
+    private dbService: DbService,
     private router: Router,
-    private afs: AngularFirestore,
     private state: StateService,
     private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
@@ -104,12 +109,7 @@ export class DefinitionInstanceComponent implements OnInit {
         return of({});
       }
 
-      return from(
-        this.afs
-          .collection(FirestoreCollection.Modules)
-          .doc(id || nanoid())
-          .set(data)
-      ).pipe(
+      return this.dbService.setModule(data, id).pipe(
         notify(),
         tap(() => this.back())
       );

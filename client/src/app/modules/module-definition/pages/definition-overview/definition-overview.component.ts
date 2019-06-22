@@ -2,22 +2,22 @@ import {SelectionModel} from '@angular/cdk/collections';
 import {
   ChangeDetectionStrategy,
   Component,
+  Inject,
   OnInit,
   ViewChild
 } from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatSort} from '@angular/material/sort';
 import {
   BehaviorSubject,
   combineLatest,
   forkJoin,
-  from,
   merge,
   Observable
 } from 'rxjs';
 import {map, startWith, switchMap, take, tap} from 'rxjs/operators';
-import {FirestoreCollection} from '../../../../shared/enums/firestore-collection.enum';
+import {DB_SERVICE} from '../../../../app.module';
+import {DbService} from '../../../../shared/interfaces/db-service.interface';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {RouteData} from '../../../../shared/interfaces/route-data.interface';
 import {StateService} from '../../../../shared/services/state/state.service';
@@ -32,7 +32,8 @@ import {notify} from '../../../../shared/utils/notify.operator';
 })
 export class DefinitionOverviewComponent implements OnInit {
   constructor(
-    private afs: AngularFirestore,
+    @Inject(DB_SERVICE)
+    private dbService: DbService,
     private state: StateService,
     private fb: FormBuilder
   ) {}
@@ -96,7 +97,7 @@ export class DefinitionOverviewComponent implements OnInit {
 
     this.allChecked$ = combineLatest([
       this.items$,
-      this.selection.changed.pipe(startWith(null))
+      this.selection.changed.pipe(startWith({}))
     ]).pipe(
       map(([items]) => ({
         checked: this.selection.selected.length === items.length
@@ -117,24 +118,20 @@ export class DefinitionOverviewComponent implements OnInit {
   }
 
   deleteOne(item: Module) {
-    confirmation([switchMap(() => this.delete(item.id)), notify()]);
+    confirmation([
+      switchMap(() => this.dbService.removeModule(item.id)),
+      notify()
+    ]);
   }
 
   deleteSelection() {
     confirmation([
       switchMap(() =>
-        forkJoin(this.selection.selected.map(id => this.delete(id)))
+        forkJoin(
+          this.selection.selected.map(id => this.dbService.removeModule(id))
+        )
       ),
       notify()
     ]);
-  }
-
-  delete(id: string): Observable<any> {
-    return from(
-      this.afs
-        .collection(FirestoreCollection.Modules)
-        .doc(id)
-        .delete()
-    );
   }
 }

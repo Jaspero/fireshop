@@ -1,29 +1,22 @@
-import {Injectable} from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {Inject, Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable, Subject} from 'rxjs';
-import {map, shareReplay} from 'rxjs/operators';
-import {FirestoreCollection} from '../../enums/firestore-collection.enum';
+import {shareReplay} from 'rxjs/operators';
+import {DB_SERVICE} from '../../../app.module';
 import {Role} from '../../enums/role.enum';
+import {DbService} from '../../interfaces/db-service.interface';
 import {Module} from '../../interfaces/module.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StateService {
-  constructor(private afs: AngularFirestore, private router: Router) {
-    this.modules$ = this.afs
-      .collection(FirestoreCollection.Modules)
-      .snapshotChanges()
-      .pipe(
-        map(actions => {
-          return actions.map(action => ({
-            id: action.payload.doc.id,
-            ...(action.payload.doc.data() as Module)
-          }));
-        }),
-        shareReplay(1)
-      );
+  constructor(
+    @Inject(DB_SERVICE)
+    private dbService: DbService,
+    private router: Router
+  ) {
+    this.modules$ = this.dbService.getModules().pipe(shareReplay(1));
   }
 
   role: Role;

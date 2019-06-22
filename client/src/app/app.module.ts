@@ -1,12 +1,7 @@
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {PortalModule} from '@angular/cdk/portal';
 import {HttpClientModule} from '@angular/common/http';
-import {NgModule} from '@angular/core';
-import {AngularFireModule} from '@angular/fire';
-import {AngularFireAuthModule} from '@angular/fire/auth';
-import {AngularFireAuthGuardModule} from '@angular/fire/auth-guard';
-import {AngularFirestoreModule} from '@angular/fire/firestore';
-import {AngularFireStorageModule} from '@angular/fire/storage';
+import {InjectionToken, NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {MatButtonModule} from '@angular/material/button';
@@ -36,7 +31,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {LoadClickModule, SanitizeModule} from '@jaspero/ng-helpers';
-import {ENV_CONFIG} from '../env-config';
+import {FirebaseModule} from '../../integrations/firebase/fb.module';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {DashboardComponent} from './modules/dashboard/dashboard.component';
@@ -55,6 +50,7 @@ import {InputComponent} from './modules/module-instance/components/fields/input/
 import {RadioComponent} from './modules/module-instance/components/fields/radio/radio.component';
 import {SelectComponent} from './modules/module-instance/components/fields/select/select.component';
 import {SliderComponent} from './modules/module-instance/components/fields/slider/slider.component';
+import {TextareaComponent} from './modules/module-instance/components/fields/textarea/textarea.component';
 import {ToggleComponent} from './modules/module-instance/components/fields/toggle/toggle.component';
 import {WysiwygComponent} from './modules/module-instance/components/fields/wysiwyg/wysiwyg.component';
 import {SegmentComponent} from './modules/module-instance/components/segment/segment.component';
@@ -77,7 +73,9 @@ import {JsonEditorComponent} from './shared/components/json-editor/json-editor.c
 import {LayoutComponent} from './shared/components/layout/layout.component';
 import {SearchInputComponent} from './shared/components/search-input/search-input.component';
 import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
-import {TextareaComponent} from './modules/module-instance/components/fields/textarea/textarea.component';
+import {DbService} from './shared/interfaces/db-service.interface';
+
+export const DB_SERVICE = new InjectionToken<DbService>('DB_SERVICE');
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -153,15 +151,6 @@ const PIPES = [ColumnPipe];
     ReactiveFormsModule,
     HttpClientModule,
 
-    /**
-     * External
-     */
-    AngularFireModule.initializeApp(ENV_CONFIG.firebase),
-    AngularFirestoreModule.enablePersistence(),
-    AngularFireAuthModule,
-    AngularFireStorageModule,
-    AngularFireAuthGuardModule,
-
     // Material
     MatFormFieldModule,
     MatInputModule,
@@ -193,7 +182,13 @@ const PIPES = [ColumnPipe];
 
     // Ng Helpers
     LoadClickModule,
-    SanitizeModule
+    SanitizeModule,
+
+    /**
+     * Replace with another implementation
+     * if necessary
+     */
+    FirebaseModule.forRoot()
   ],
   providers: [{provide: MAT_DATE_LOCALE, useValue: 'en-GB'}],
   bootstrap: [AppComponent]
