@@ -188,8 +188,20 @@ export class Parser {
   }
 
   buildProperties(properties: object, required: string[] = [], base = '/') {
-    const {form, pointers} = Object.entries(properties).reduce(
-      (group, [key, value]) => {
+    const {form, pointers} = [
+      ...Object.entries(properties),
+      /**
+       * Add the id field as a property so that
+       * it can be added to the form if needed
+       */
+      [
+        'id',
+        {
+          type: 'string'
+        }
+      ]
+    ].reduce(
+      (group, [key, value]: [string, any]) => {
         const isRequired = required.includes(key);
 
         let parsed: {
