@@ -1,4 +1,5 @@
 [![CircleCI](https://circleci.com/gh/Jaspero/jms.svg?style=svg)](https://circleci.com/gh/Jaspero/jms)
+[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/jaspero-co/JMS)
 
 # JMS
 
