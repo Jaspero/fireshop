@@ -17,7 +17,7 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
 
-    <ng-container *ngFor="let field of accord.fields">
+    <ng-container *ngFor="let field of accord.fields | showField:sData.parser">
       <ng-template [cdkPortalOutlet]="field.portal"></ng-template>
     </ng-container>
 

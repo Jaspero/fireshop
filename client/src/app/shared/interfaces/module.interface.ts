@@ -1,5 +1,6 @@
 import {SortDirection} from '@angular/material/sort';
 import {JSONSchema7} from 'json-schema';
+import {InstanceSingleState} from '../../modules/module-instance/enums/instance-single-state.enum';
 import {SegmentType} from '../../modules/module-instance/enums/segment-type.enum';
 import {PipeType} from '../enums/pipe-type.enum';
 import {ComponentType} from './component-type.enum';
@@ -76,6 +77,8 @@ export interface ModuleDefinition {
   hint?: string;
   defaultValue?: any;
   placeholder?: string;
+  onlyOn?: InstanceSingleState;
+  disableOn?: InstanceSingleState;
 }
 
 export interface ModuleDefinitions {

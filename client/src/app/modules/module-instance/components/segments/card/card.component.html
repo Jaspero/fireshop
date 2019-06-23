@@ -22,7 +22,7 @@
     <ng-container *ngIf="segment.array; else regular">
       <div *ngFor="let fields of arrayFields; index as index;" class="flex jc-between">
         <div>
-          <ng-container *ngFor="let field of fields">
+          <ng-container *ngFor="let field of fields | showField:sData.parser">
             <ng-template [cdkPortalOutlet]="field.portal"></ng-template>
           </ng-container>
         </div>
@@ -33,7 +33,7 @@
     </ng-container>
 
     <ng-template #regular>
-      <ng-container *ngFor="let field of segment.fields">
+      <ng-container *ngFor="let field of segment.fields | showField:sData.parser">
         <ng-template [cdkPortalOutlet]="field.portal"></ng-template>
       </ng-container>
     </ng-template>

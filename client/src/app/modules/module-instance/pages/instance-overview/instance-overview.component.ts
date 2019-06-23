@@ -52,6 +52,7 @@ import {StateService} from '../../../../shared/services/state/state.service';
 import {confirmation} from '../../../../shared/utils/confirmation';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {SortDialogComponent} from '../../components/sort-dialog/sort-dialog.component';
+import {InstanceSingleState} from '../../enums/instance-single-state.enum';
 import {ModuleInstanceComponent} from '../../module-instance.component';
 import {ColumnPipe} from '../../pipes/column.pipe';
 import {Parser} from '../../utils/parser';
@@ -365,7 +366,8 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
       if (!this.parserCache[rowData.id]) {
         this.parserCache[rowData.id] = new Parser(
           overview.schema,
-          this.injector
+          this.injector,
+          InstanceSingleState.Edit
         );
         this.parserCache[rowData.id].buildForm(rowData);
       }

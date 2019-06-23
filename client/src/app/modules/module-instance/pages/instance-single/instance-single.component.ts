@@ -19,6 +19,7 @@ import {StateService} from '../../../../shared/services/state/state.service';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {queue} from '../../../../shared/utils/queue.operator';
 import {SegmentComponent} from '../../components/segment/segment.component';
+import {InstanceSingleState} from '../../enums/instance-single-state.enum';
 import {CompiledField} from '../../interfaces/compiled-field.interface';
 import {ModuleInstanceComponent} from '../../module-instance.component';
 import {compileSegment} from '../../utils/compile-segment';
@@ -88,7 +89,13 @@ export class InstanceSingleComponent implements OnInit {
             }
           }),
           map((value: Partial<Module>) => {
-            const parser = new Parser(module.schema, this.injector);
+            const parser = new Parser(
+              module.schema,
+              this.injector,
+              this.currentState === ViewState.Edit
+                ? InstanceSingleState.Edit
+                : InstanceSingleState.Create
+            );
             const form = parser.buildForm(value);
 
             console.log('parser', parser);

@@ -73,6 +73,7 @@ import {JsonEditorComponent} from './shared/components/json-editor/json-editor.c
 import {LayoutComponent} from './shared/components/layout/layout.component';
 import {SearchInputComponent} from './shared/components/search-input/search-input.component';
 import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
+import {ShowFieldPipe} from './modules/module-instance/pipes/show-field.pipe';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -128,7 +129,7 @@ const ENTRY_COMPONENTS = [
 
 const DIRECTIVES = [ForceDisableDirective];
 
-const PIPES = [ColumnPipe];
+const PIPES = [ColumnPipe, ShowFieldPipe];
 
 @NgModule({
   declarations: [

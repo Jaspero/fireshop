@@ -6,6 +6,7 @@ import * as nanoid from 'nanoid';
 import {ModuleDefinitions} from '../../../shared/interfaces/module.interface';
 import {FieldComponent} from '../components/field/field.component';
 import {COMPONENT_TYPE_COMPONENT_MAP} from '../consts/component-type-component-map.const';
+import {InstanceSingleState} from '../enums/instance-single-state.enum';
 import {SchemaType} from '../enums/schema-type.enum';
 import {CompiledField} from '../interfaces/compiled-field.interface';
 import {Control} from '../interfaces/control.type';
@@ -70,7 +71,11 @@ export interface Pointers {
 }
 
 export class Parser {
-  constructor(public schema: any, public injector: Injector) {}
+  constructor(
+    public schema: any,
+    public injector: Injector,
+    public state: InstanceSingleState
+  ) {}
 
   form: FormGroup;
   pointers: Pointers = {};
@@ -283,6 +288,10 @@ export class Parser {
       ...this.getFromDefinitions(key, definitions)
     };
 
+    if (definition.disableOn && definition.disableOn === this.state) {
+      control.disable();
+    }
+
     /**
      * We don't show labels in the table
      */
@@ -311,7 +320,8 @@ export class Parser {
       portal,
       validation,
       placeholder: definition.placeholder || '',
-      label: definition.label
+      label: definition.label,
+      onlyOn: definition.onlyOn
     };
   }
 
