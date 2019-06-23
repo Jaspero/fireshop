@@ -6,6 +6,7 @@ export interface FieldData {
   control: FormControl;
   label: string;
   hint?: string;
+  placeholder?: string;
 }
 
 @Component({

@@ -3,6 +3,7 @@ import {PortalModule} from '@angular/cdk/portal';
 import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
@@ -39,8 +40,8 @@ import {LoginComponent} from './modules/login/login.component';
 import {ModuleDefinitionComponent} from './modules/module-definition/module-definition.component';
 import {DefinitionInstanceComponent} from './modules/module-definition/pages/definition-instance/definition-instance.component';
 import {DefinitionOverviewComponent} from './modules/module-definition/pages/definition-overview/definition-overview.component';
-import {AutocompleteComponent} from './modules/module-instance/components/fields/autocomplete/autocomplete.component';
 import {FieldComponent} from './modules/module-instance/components/field/field.component';
+import {AutocompleteComponent} from './modules/module-instance/components/fields/autocomplete/autocomplete.component';
 import {CheckboxComponent} from './modules/module-instance/components/fields/checkbox/checkbox.component';
 import {ChipsComponent} from './modules/module-instance/components/fields/chips/chips.component';
 import {DateFieldComponent} from './modules/module-instance/components/fields/date-field/date-field.component';
@@ -65,6 +66,7 @@ import {ModuleInstanceComponent} from './modules/module-instance/module-instance
 import {InstanceOverviewComponent} from './modules/module-instance/pages/instance-overview/instance-overview.component';
 import {InstanceSingleComponent} from './modules/module-instance/pages/instance-single/instance-single.component';
 import {ColumnPipe} from './modules/module-instance/pipes/column.pipe';
+import {ShowFieldPipe} from './modules/module-instance/pipes/show-field.pipe';
 import {ResetPasswordComponent} from './modules/reset-password/reset-password.component';
 import {SettingsComponent} from './modules/settings/settings.component';
 import {ConfirmationComponent} from './shared/components/confirmation/confirmation.component';
@@ -74,7 +76,6 @@ import {JsonEditorComponent} from './shared/components/json-editor/json-editor.c
 import {LayoutComponent} from './shared/components/layout/layout.component';
 import {SearchInputComponent} from './shared/components/search-input/search-input.component';
 import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
-import {ShowFieldPipe} from './modules/module-instance/pipes/show-field.pipe';
 
 const PAGES = [
   ModuleDefinitionComponent,
