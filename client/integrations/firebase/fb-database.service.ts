@@ -4,14 +4,16 @@ import {AngularFirestore, CollectionReference} from '@angular/fire/firestore';
 import * as nanoid from 'nanoid';
 import {from} from 'rxjs';
 import {map, take} from 'rxjs/operators';
-import {DbService} from '../../src/app/shared/interfaces/db-service.interface';
 import {Module} from '../../src/app/shared/interfaces/module.interface';
 import {Settings} from '../../src/app/shared/interfaces/settings.interface';
+import {DbService} from '../../src/app/shared/services/db/db.service';
 import {FirestoreCollection} from './firestore-collection.enum';
 
 @Injectable()
-export class FbDatabaseService implements DbService {
-  constructor(private afs: AngularFirestore) {}
+export class FbDatabaseService extends DbService {
+  constructor(private afs: AngularFirestore) {
+    super();
+  }
 
   getModules() {
     return this.afs
@@ -62,20 +64,18 @@ export class FbDatabaseService implements DbService {
     );
   }
 
-  getDocuments(moduleId, pageSize, cursor) {
-    return this.afs.collection(moduleId, ref => {
-      let final = ref;
+  getDocuments(moduleId, pageSize, cursor, changes?) {
+    if (!changes) {
+      changes = ['added'];
+    }
 
-      if (pageSize) {
-        final = final.limit(pageSize) as CollectionReference;
-      }
+    return this.collection(moduleId, pageSize, cursor)
+      .snapshotChanges(changes)
+      .pipe(take(1));
+  }
 
-      if (cursor) {
-        final = final.startAfter(cursor) as CollectionReference;
-      }
-
-      return final;
-    });
+  getStateChanges(moduleId, pageSize, cursor) {
+    return this.collection(moduleId, pageSize, cursor).stateChanges();
   }
 
   getDocument(moduleId, documentId) {
@@ -90,6 +90,23 @@ export class FbDatabaseService implements DbService {
           id: documentId
         }))
       );
+  }
+
+  getDocumentsSimple(moduleId, orderBy?, filter?) {
+    return this.afs
+      .collection(moduleId, (ref: any) => {
+        if (orderBy) {
+          ref = ref.orderBy(orderBy);
+        }
+
+        if (filter) {
+          ref = ref.where(filter.key, filter.operator, filter.value);
+        }
+
+        return ref;
+      })
+      .valueChanges({idField: 'id'})
+      .pipe(take(1));
   }
 
   setDocument(moduleId, documentId, data, options) {
@@ -108,5 +125,21 @@ export class FbDatabaseService implements DbService {
         .doc(documentId)
         .delete()
     );
+  }
+
+  private collection(moduleId, pageSize, cursor) {
+    return this.afs.collection(moduleId, ref => {
+      let final = ref;
+
+      if (pageSize) {
+        final = final.limit(pageSize) as CollectionReference;
+      }
+
+      if (cursor) {
+        final = final.startAfter(cursor) as CollectionReference;
+      }
+
+      return final;
+    });
   }
 }

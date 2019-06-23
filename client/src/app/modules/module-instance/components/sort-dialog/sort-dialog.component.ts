@@ -5,11 +5,11 @@ import {
   Inject,
   OnInit
 } from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import {forkJoin, from, Observable} from 'rxjs';
 import {take} from 'rxjs/operators';
 import {SortModule} from '../../../../shared/interfaces/module.interface';
+import {DbService} from '../../../../shared/services/db/db.service';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {switchItemLocations} from '../../utils/switch-item-locations';
 
@@ -27,18 +27,16 @@ export class SortDialogComponent implements OnInit {
       collection: string;
       collectionName: string;
     },
-    private afs: AngularFirestore
+    private dbService: DbService
   ) {}
 
   items$: Observable<any>;
 
   ngOnInit() {
-    this.items$ = this.afs
-      .collection(this.data.collection, ref =>
-        ref.orderBy(this.data.options.sortKey)
-      )
-      .valueChanges({idField: 'id'})
-      .pipe(take(1));
+    this.items$ = this.dbService.getDocumentsSimple(
+      this.data.collection,
+      this.data.options.sortKey
+    );
   }
 
   drop(items: any[], event: CdkDragDrop<string[]>) {
@@ -55,30 +53,28 @@ export class SortDialogComponent implements OnInit {
   update(items: any[], previousIndex: number, currentIndex: number) {
     forkJoin([
       from(
-        this.afs
-          .collection(this.data.collection)
-          .doc(items[previousIndex].id)
-          .set(
-            {
-              [this.data.options.sortKey]: currentIndex
-            },
-            {
-              merge: true
-            }
-          )
+        this.dbService.setDocument(
+          this.data.collection,
+          items[previousIndex].id,
+          {
+            [this.data.options.sortKey]: currentIndex
+          },
+          {
+            merge: true
+          }
+        )
       ),
       from(
-        this.afs
-          .collection(this.data.collection)
-          .doc(items[currentIndex].id)
-          .set(
-            {
-              [this.data.options.sortKey]: previousIndex
-            },
-            {
-              merge: true
-            }
-          )
+        this.dbService.setDocument(
+          this.data.collection,
+          items[currentIndex].id,
+          {
+            [this.data.options.sortKey]: previousIndex
+          },
+          {
+            merge: true
+          }
+        )
       )
     ])
       .pipe(

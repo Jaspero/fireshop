@@ -2,7 +2,6 @@ import {SelectionModel} from '@angular/cdk/collections';
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
   OnInit,
   ViewChild
 } from '@angular/core';
@@ -16,10 +15,9 @@ import {
   Observable
 } from 'rxjs';
 import {map, startWith, switchMap, take, tap} from 'rxjs/operators';
-import {DB_SERVICE} from '../../../../app.module';
-import {DbService} from '../../../../shared/interfaces/db-service.interface';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {RouteData} from '../../../../shared/interfaces/route-data.interface';
+import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {confirmation} from '../../../../shared/utils/confirmation';
 import {notify} from '../../../../shared/utils/notify.operator';
@@ -32,7 +30,6 @@ import {notify} from '../../../../shared/utils/notify.operator';
 })
 export class DefinitionOverviewComponent implements OnInit {
   constructor(
-    @Inject(DB_SERVICE)
     private dbService: DbService,
     private state: StateService,
     private fb: FormBuilder

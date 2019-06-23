@@ -1,15 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  OnInit
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {DB_SERVICE} from '../../app.module';
 import {Role} from '../../shared/enums/role.enum';
-import {DbService} from '../../shared/interfaces/db-service.interface';
+import {DbService} from '../../shared/services/db/db.service';
 import {notify} from '../../shared/utils/notify.operator';
 
 @Component({
@@ -19,11 +13,7 @@ import {notify} from '../../shared/utils/notify.operator';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsComponent implements OnInit {
-  constructor(
-    @Inject(DB_SERVICE)
-    private dbService: DbService,
-    private fb: FormBuilder
-  ) {}
+  constructor(private dbService: DbService, private fb: FormBuilder) {}
 
   role = Role;
   form$: Observable<FormGroup>;

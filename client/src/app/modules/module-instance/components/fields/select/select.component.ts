@@ -1,12 +1,12 @@
 import {
-  Component,
   ChangeDetectionStrategy,
+  Component,
   Inject,
   OnInit
 } from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
+import {DbService} from '../../../../../shared/services/db/db.service';
 import {COMPONENT_DATA} from '../../../utils/create-component-injector';
 import {FieldComponent, FieldData} from '../../field/field.component';
 
@@ -35,7 +35,7 @@ export class SelectComponent extends FieldComponent<SelectData>
   implements OnInit {
   constructor(
     @Inject(COMPONENT_DATA) public cData: SelectData,
-    private afs: AngularFirestore
+    private dbService: DbService
   ) {
     super(cData);
   }
@@ -45,23 +45,12 @@ export class SelectComponent extends FieldComponent<SelectData>
 
   ngOnInit() {
     if (this.cData.populate) {
-      this.dataSet$ = this.afs
-        .collection(this.cData.populate.collection, (ref: any) => {
-          if (this.cData.populate.orderBy) {
-            ref = ref.orderBy(this.cData.populate.orderBy);
-          }
-
-          if (this.cData.populate.filter) {
-            ref = ref.where(
-              this.cData.populate.filter.key,
-              this.cData.populate.filter.operator,
-              this.cData.populate.filter.value
-            );
-          }
-
-          return ref;
-        })
-        .valueChanges({idField: 'id'})
+      this.dataSet$ = this.dbService
+        .getDocumentsSimple(
+          this.cData.populate.collection,
+          this.cData.populate.orderBy,
+          this.cData.populate.filter
+        )
         .pipe(
           map(docs =>
             docs.map(doc => ({

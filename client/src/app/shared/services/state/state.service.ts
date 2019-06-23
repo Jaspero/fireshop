@@ -1,21 +1,16 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable, Subject} from 'rxjs';
 import {shareReplay} from 'rxjs/operators';
-import {DB_SERVICE} from '../../../app.module';
 import {Role} from '../../enums/role.enum';
-import {DbService} from '../../interfaces/db-service.interface';
 import {Module} from '../../interfaces/module.interface';
+import {DbService} from '../db/db.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StateService {
-  constructor(
-    @Inject(DB_SERVICE)
-    private dbService: DbService,
-    private router: Router
-  ) {
+  constructor(private dbService: DbService, private router: Router) {
     this.modules$ = this.dbService.getModules().pipe(shareReplay(1));
   }
 

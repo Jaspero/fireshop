@@ -2,7 +2,6 @@ import {ComponentPortal} from '@angular/cdk/portal';
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
   Injector,
   OnInit
 } from '@angular/core';
@@ -10,13 +9,12 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {forkJoin, Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
-import {DB_SERVICE} from '../../../../app.module';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
-import {DbService} from '../../../../shared/interfaces/db-service.interface';
 import {
   InstanceSegment,
   Module
 } from '../../../../shared/interfaces/module.interface';
+import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {queue} from '../../../../shared/utils/queue.operator';
@@ -51,7 +49,6 @@ interface Instance {
 })
 export class InstanceSingleComponent implements OnInit {
   constructor(
-    @Inject(DB_SERVICE)
     private dbService: DbService,
     private router: Router,
     private state: StateService,

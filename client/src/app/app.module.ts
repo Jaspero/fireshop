@@ -1,7 +1,7 @@
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {PortalModule} from '@angular/cdk/portal';
 import {HttpClientModule} from '@angular/common/http';
-import {InjectionToken, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {MatButtonModule} from '@angular/material/button';
@@ -73,9 +73,6 @@ import {JsonEditorComponent} from './shared/components/json-editor/json-editor.c
 import {LayoutComponent} from './shared/components/layout/layout.component';
 import {SearchInputComponent} from './shared/components/search-input/search-input.component';
 import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
-import {DbService} from './shared/interfaces/db-service.interface';
-
-export const DB_SERVICE = new InjectionToken<DbService>('DB_SERVICE');
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -144,6 +141,12 @@ const PIPES = [ColumnPipe];
   ],
   entryComponents: ENTRY_COMPONENTS,
   imports: [
+    /**
+     * Replace with another implementation
+     * if necessary
+     */
+    FirebaseModule.forRoot(),
+
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -181,13 +184,7 @@ const PIPES = [ColumnPipe];
 
     // Ng Helpers
     LoadClickModule,
-    SanitizeModule,
-
-    /**
-     * Replace with another implementation
-     * if necessary
-     */
-    FirebaseModule.forRoot()
+    SanitizeModule
   ],
   providers: [{provide: MAT_DATE_LOCALE, useValue: 'en-GB'}],
   bootstrap: [AppComponent]

@@ -3,18 +3,13 @@ import {TemplatePortal} from '@angular/cdk/portal';
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
   Injector,
   OnInit,
   TemplateRef,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
-import {
-  CollectionReference,
-  DocumentChangeAction,
-  QueryDocumentSnapshot
-} from '@angular/fire/firestore';
+import {DocumentChangeAction} from '@angular/fire/firestore';
 import {FormControl} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
@@ -29,7 +24,6 @@ import {
   BehaviorSubject,
   combineLatest,
   forkJoin,
-  from,
   merge,
   Observable,
   Subject
@@ -44,10 +38,8 @@ import {
   takeUntil,
   tap
 } from 'rxjs/operators';
-import {DB_SERVICE} from '../../../../app.module';
 import {ExportComponent} from '../../../../shared/components/export/export.component';
 import {PAGE_SIZES} from '../../../../shared/consts/page-sizes.const';
-import {DbService} from '../../../../shared/interfaces/db-service.interface';
 import {
   ModuleDefinitions,
   SortModule,
@@ -55,6 +47,7 @@ import {
   TableSort
 } from '../../../../shared/interfaces/module.interface';
 import {RouteData} from '../../../../shared/interfaces/route-data.interface';
+import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {confirmation} from '../../../../shared/utils/confirmation';
 import {notify} from '../../../../shared/utils/notify.operator';
@@ -82,7 +75,6 @@ interface InstanceOverview {
 })
 export class InstanceOverviewComponent extends RxDestroy implements OnInit {
   constructor(
-    @Inject(DB_SERVICE)
     private dbService: DbService,
     private moduleInstance: ModuleInstanceComponent,
     private state: StateService,
@@ -193,9 +185,7 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
             this.state.setRouteData(this.options);
           }),
           switchMap(pageSize =>
-            this.getCollection(data.id, null, pageSize)
-              .snapshotChanges(['added'])
-              .pipe(take(1))
+            this.dbService.getDocuments(data.id, pageSize, null)
           ),
           switchMap(snapshots => {
             let cursor;
@@ -213,15 +203,10 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
 
             return merge(
               this.loadMore$.pipe(
-                switchMap(() => {
-                  return this.getCollection(
-                    data.id,
-                    cursor,
-                    this.options.pageSize
-                  )
-                    .snapshotChanges(['added'])
+                switchMap(() =>
+                  this.dbService
+                    .getDocuments(data.id, this.options.pageSize, cursor)
                     .pipe(
-                      take(1),
                       tap(snaps => {
                         if (snaps.length < this.options.pageSize) {
                           this.hasMore$.next(false);
@@ -235,40 +220,38 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
                           );
                         }
                       })
-                    );
-                })
+                    )
+                )
               ),
 
-              this.getCollection(data.id, null, null)
-                .stateChanges()
-                .pipe(
-                  skip(1),
-                  tap(snaps => {
-                    snaps.forEach(snap => {
-                      const index = docs.findIndex(
-                        doc => doc.id === snap.payload.doc.id
-                      );
+              this.dbService.getStateChanges(data.id, null, null).pipe(
+                skip(1),
+                tap(snaps => {
+                  snaps.forEach(snap => {
+                    const index = docs.findIndex(
+                      doc => doc.id === snap.payload.doc.id
+                    );
 
-                      switch (snap.type) {
-                        case 'added':
-                          if (index === -1) {
-                            docs.push(this.mapRow(data, snap));
-                          }
-                          break;
-                        case 'modified':
-                          if (index !== -1) {
-                            docs[index] = this.mapRow(data, snap);
-                          }
-                          break;
-                        case 'removed':
-                          if (index !== -1) {
-                            docs.splice(index, 1);
-                          }
-                          break;
-                      }
-                    });
-                  })
-                )
+                    switch (snap.type) {
+                      case 'added':
+                        if (index === -1) {
+                          docs.push(this.mapRow(data, snap));
+                        }
+                        break;
+                      case 'modified':
+                        if (index !== -1) {
+                          docs[index] = this.mapRow(data, snap);
+                        }
+                        break;
+                      case 'removed':
+                        if (index !== -1) {
+                          docs.splice(index, 1);
+                        }
+                        break;
+                    }
+                  });
+                })
+              )
             ).pipe(
               startWith({}),
               map(() => [...docs])
@@ -277,26 +260,6 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
         )
       )
     );
-  }
-
-  getCollection(
-    collection: string,
-    cursor?: QueryDocumentSnapshot<any>,
-    pageSize?: number
-  ) {
-    return this.afs.collection(collection, ref => {
-      let final = ref;
-
-      if (pageSize) {
-        final = final.limit(pageSize) as CollectionReference;
-      }
-
-      if (cursor) {
-        final = final.startAfter(cursor) as CollectionReference;
-      }
-
-      return final;
-    });
   }
 
   trackById(index, item) {

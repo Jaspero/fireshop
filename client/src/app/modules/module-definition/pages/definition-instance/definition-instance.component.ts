@@ -1,19 +1,13 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  OnInit
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 // @ts-ignore
 import {Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
-import {DB_SERVICE} from '../../../../app.module';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
-import {DbService} from '../../../../shared/interfaces/db-service.interface';
 import {Module} from '../../../../shared/interfaces/module.interface';
+import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {SchemaValidation} from '../../../../shared/utils/schema-validation';
@@ -26,7 +20,6 @@ import {SchemaValidation} from '../../../../shared/utils/schema-validation';
 })
 export class DefinitionInstanceComponent implements OnInit {
   constructor(
-    @Inject(DB_SERVICE)
     private dbService: DbService,
     private router: Router,
     private state: StateService,
