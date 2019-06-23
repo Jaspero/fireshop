@@ -3,6 +3,7 @@ import {AngularFireModule} from '@angular/fire';
 import {AngularFireAuthModule} from '@angular/fire/auth';
 import {AngularFireAuthGuardModule} from '@angular/fire/auth-guard';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
+import {AngularFirePerformanceModule} from '@angular/fire/performance';
 import {AngularFireStorageModule} from '@angular/fire/storage';
 import {DbService} from '../../src/app/shared/services/db/db.service';
 import {ENV_CONFIG} from '../../src/env-config';
@@ -14,7 +15,8 @@ import {FbDatabaseService} from './fb-database.service';
     AngularFirestoreModule.enablePersistence(),
     AngularFireAuthModule,
     AngularFireStorageModule,
-    AngularFireAuthGuardModule
+    AngularFireAuthGuardModule,
+    AngularFirePerformanceModule
   ]
 })
 export class FirebaseModule {
