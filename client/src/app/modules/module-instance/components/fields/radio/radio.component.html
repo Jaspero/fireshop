@@ -1,0 +1,8 @@
+<mat-radio-group [formControl]="cData.control">
+  <mat-radio-button
+    *ngFor="let option of cData['options']"
+    [disabled]="option.disabled"
+    [value]="option.value">
+    {{option.label}}
+  </mat-radio-button>
+</mat-radio-group>

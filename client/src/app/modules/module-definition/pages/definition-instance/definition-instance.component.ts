@@ -1,15 +1,13 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatSnackBar} from '@angular/material';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 // @ts-ignore
-import * as nanoid from 'nanoid';
-import {defer, from, Observable, of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
-import {FirestoreCollection} from '../../../../shared/enums/firestore-collection.enum';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
 import {Module} from '../../../../shared/interfaces/module.interface';
+import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {SchemaValidation} from '../../../../shared/utils/schema-validation';
@@ -22,8 +20,8 @@ import {SchemaValidation} from '../../../../shared/utils/schema-validation';
 })
 export class DefinitionInstanceComponent implements OnInit {
   constructor(
+    private dbService: DbService,
     private router: Router,
-    private afs: AngularFirestore,
     private state: StateService,
     private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
@@ -84,7 +82,7 @@ export class DefinitionInstanceComponent implements OnInit {
   }
 
   save(form: FormGroup) {
-    return defer(() => {
+    return () => {
       const {id, ...data} = form.getRawValue();
 
       const {error} = this.schemaValidation.validate(data);
@@ -104,16 +102,11 @@ export class DefinitionInstanceComponent implements OnInit {
         return of({});
       }
 
-      return from(
-        this.afs
-          .collection(FirestoreCollection.Modules)
-          .doc(id || nanoid())
-          .set(data)
-      ).pipe(
+      return this.dbService.setModule(data, id).pipe(
         notify(),
         tap(() => this.back())
       );
-    });
+    };
   }
 
   back() {

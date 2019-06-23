@@ -1,25 +1,29 @@
 import {SelectionModel} from '@angular/cdk/collections';
+import {TemplatePortal} from '@angular/cdk/portal';
 import {
   ChangeDetectionStrategy,
   Component,
+  Injector,
   OnInit,
-  ViewChild
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef
 } from '@angular/core';
-import {
-  AngularFirestore,
-  CollectionReference,
-  QueryDocumentSnapshot
-} from '@angular/fire/firestore';
+import {DocumentChangeAction} from '@angular/fire/firestore';
 import {FormControl} from '@angular/forms';
-import {MatSort} from '@angular/material';
+import {MatDialog} from '@angular/material';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {MatSort} from '@angular/material/sort';
+import {DomSanitizer} from '@angular/platform-browser';
+import {RxDestroy} from '@jaspero/ng-helpers';
 import {get, has} from 'json-pointer';
+import {JSONSchema7} from 'json-schema';
 // @ts-ignore
 import * as nanoid from 'nanoid';
 import {
   BehaviorSubject,
   combineLatest,
   forkJoin,
-  from,
   merge,
   Observable,
   Subject
@@ -27,31 +31,41 @@ import {
 import {
   map,
   shareReplay,
+  skip,
   startWith,
   switchMap,
   take,
+  takeUntil,
   tap
 } from 'rxjs/operators';
+import {ExportComponent} from '../../../../shared/components/export/export.component';
 import {PAGE_SIZES} from '../../../../shared/consts/page-sizes.const';
-import {FirestoreCollection} from '../../../../shared/enums/firestore-collection.enum';
 import {
-  Module,
+  ModuleDefinitions,
+  SortModule,
   TableColumn,
   TableSort
 } from '../../../../shared/interfaces/module.interface';
 import {RouteData} from '../../../../shared/interfaces/route-data.interface';
+import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {confirmation} from '../../../../shared/utils/confirmation';
 import {notify} from '../../../../shared/utils/notify.operator';
+import {SortDialogComponent} from '../../components/sort-dialog/sort-dialog.component';
+import {InstanceSingleState} from '../../enums/instance-single-state.enum';
 import {ModuleInstanceComponent} from '../../module-instance.component';
 import {ColumnPipe} from '../../pipes/column.pipe';
+import {Parser} from '../../utils/parser';
 
 interface InstanceOverview {
   id: string;
   name: string;
   displayColumns: string[];
+  definitions: ModuleDefinitions;
   tableColumns: TableColumn[];
+  schema: JSONSchema7;
   sort?: TableSort;
+  sortModule?: SortModule;
 }
 
 @Component({
@@ -60,15 +74,25 @@ interface InstanceOverview {
   styleUrls: ['./instance-overview.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InstanceOverviewComponent implements OnInit {
+export class InstanceOverviewComponent extends RxDestroy implements OnInit {
   constructor(
+    private dbService: DbService,
     private moduleInstance: ModuleInstanceComponent,
-    private afs: AngularFirestore,
-    private state: StateService
-  ) {}
+    private state: StateService,
+    private bottomSheet: MatBottomSheet,
+    private dialog: MatDialog,
+    private injector: Injector,
+    private viewContainerRef: ViewContainerRef,
+    private domSanitizer: DomSanitizer
+  ) {
+    super();
+  }
 
-  @ViewChild(MatSort)
+  @ViewChild(MatSort, {static: true})
   sort: MatSort;
+
+  @ViewChild('simpleColumn', {static: true})
+  simpleColumnTemplate: TemplateRef<any>;
 
   data$: Observable<InstanceOverview>;
   items$: Observable<any[]>;
@@ -83,13 +107,14 @@ export class InstanceOverviewComponent implements OnInit {
   columnPipe: ColumnPipe;
   pageSize: FormControl;
   options: RouteData;
+  parserCache: {[key: string]: Parser} = {};
 
   ngOnInit() {
     this.options = this.state.getRouterData({
       pageSize: 10
     });
     this.pageSize = new FormControl(this.options.pageSize);
-    this.columnPipe = new ColumnPipe();
+    this.columnPipe = new ColumnPipe(this.domSanitizer);
 
     this.data$ = this.moduleInstance.module$.pipe(
       map(data => {
@@ -140,8 +165,11 @@ export class InstanceOverviewComponent implements OnInit {
         return {
           id: data.id,
           name: data.name,
+          schema: data.schema,
           displayColumns,
-          tableColumns
+          tableColumns,
+          definitions: data.definitions,
+          sortModule: data.layout.sortModule
         };
       }),
       shareReplay(1)
@@ -158,16 +186,12 @@ export class InstanceOverviewComponent implements OnInit {
             this.state.setRouteData(this.options);
           }),
           switchMap(pageSize =>
-            this.getCollection(data.id, null, pageSize)
-              .snapshotChanges(['added'])
-              .pipe(take(1))
+            this.dbService.getDocuments(data.id, pageSize, null)
           ),
           switchMap(snapshots => {
             let cursor;
 
-            if (snapshots.length < this.options.pageSize) {
-              this.hasMore$.next(false);
-            }
+            this.hasMore$.next(snapshots.length === this.options.pageSize);
 
             if (snapshots.length) {
               cursor = snapshots[snapshots.length - 1].payload.doc;
@@ -176,22 +200,14 @@ export class InstanceOverviewComponent implements OnInit {
               this.emptyState$.next(true);
             }
 
-            const docs = snapshots.map(item => ({
-              id: item.payload.doc.id,
-              ...item.payload.doc.data()
-            }));
+            const docs = snapshots.map(item => this.mapRow(data, item));
 
             return merge(
               this.loadMore$.pipe(
-                switchMap(() => {
-                  return this.getCollection(
-                    data.id,
-                    cursor,
-                    this.options.pageSize
-                  )
-                    .snapshotChanges(['added'])
+                switchMap(() =>
+                  this.dbService
+                    .getDocuments(data.id, this.options.pageSize, cursor)
                     .pipe(
-                      take(1),
                       tap(snaps => {
                         if (snaps.length < this.options.pageSize) {
                           this.hasMore$.next(false);
@@ -201,18 +217,44 @@ export class InstanceOverviewComponent implements OnInit {
                           cursor = snaps[snaps.length - 1].payload.doc;
 
                           docs.push(
-                            ...snaps.map(item => ({
-                              id: item.payload.doc.id,
-                              ...item.payload.doc.data()
-                            }))
+                            ...snaps.map(item => this.mapRow(data, item))
                           );
                         }
                       })
+                    )
+                )
+              ),
+
+              this.dbService.getStateChanges(data.id, null, null).pipe(
+                skip(1),
+                tap(snaps => {
+                  snaps.forEach(snap => {
+                    const index = docs.findIndex(
+                      doc => doc.id === snap.payload.doc.id
                     );
+
+                    switch (snap.type) {
+                      case 'added':
+                        if (index === -1) {
+                          docs.push(this.mapRow(data, snap));
+                        }
+                        break;
+                      case 'modified':
+                        if (index !== -1) {
+                          docs[index] = this.mapRow(data, snap);
+                        }
+                        break;
+                      case 'removed':
+                        if (index !== -1) {
+                          docs.splice(index, 1);
+                        }
+                        break;
+                    }
+                  });
                 })
               )
             ).pipe(
-              startWith(null),
+              startWith({}),
               map(() => [...docs])
             );
           })
@@ -221,50 +263,12 @@ export class InstanceOverviewComponent implements OnInit {
     );
   }
 
-  getCollection(
-    collection: string,
-    cursor?: QueryDocumentSnapshot<any>,
-    pageSize?: number
-  ) {
-    return this.afs.collection(collection, ref => {
-      let final = ref;
-
-      if (pageSize) {
-        final = final.limit(pageSize) as CollectionReference;
-      }
-
-      if (cursor) {
-        final = final.startAfter(cursor) as CollectionReference;
-      }
-
-      return final;
-    });
-  }
-
-  getColumnValue(column: TableColumn, rowData: any) {
-    if (typeof column.key !== 'string') {
-      return column.key
-        .map(key => this.getColumnValue({key}, rowData))
-        .join(column.hasOwnProperty('join') ? column.join : ', ');
-    } else {
-      if (has(rowData, column.key)) {
-        return this.columnPipe.transform(
-          get(rowData, column.key),
-          column.pipe,
-          column.pipeArguments
-        );
-      } else {
-        return '';
-      }
-    }
-  }
-
   trackById(index, item) {
     return item.id;
   }
 
   masterToggle() {
-    combineLatest(this.allChecked$, this.items$)
+    combineLatest([this.allChecked$, this.items$])
       .pipe(take(1))
       .subscribe(([check, items]) => {
         if (check.checked) {
@@ -275,25 +279,154 @@ export class InstanceOverviewComponent implements OnInit {
       });
   }
 
-  deleteOne(item: Module) {
-    confirmation([switchMap(() => this.delete(item.id)), notify()]);
+  deleteOne(instance: InstanceOverview, item: any) {
+    confirmation([
+      switchMap(() => this.dbService.removeDocument(instance.id, item.id)),
+      notify()
+    ]);
   }
 
-  deleteSelection() {
+  deleteSelection(instance: InstanceOverview) {
     confirmation([
       switchMap(() =>
-        forkJoin(this.selection.selected.map(id => this.delete(id)))
+        forkJoin(
+          this.selection.selected.map(id =>
+            this.dbService.removeDocument(instance.id, id)
+          )
+        )
       ),
       notify()
     ]);
   }
 
-  delete(id: string): Observable<any> {
-    return from(
-      this.afs
-        .collection(FirestoreCollection.Modules)
-        .doc(id)
-        .delete()
-    );
+  export(collection: string) {
+    this.bottomSheet.open(ExportComponent, {
+      data: {
+        collection,
+        ids: this.selection.selected
+      }
+    });
+  }
+
+  openSortDialog(
+    collection: string,
+    collectionName: string,
+    options: SortModule
+  ) {
+    this.dialog.open(SortDialogComponent, {
+      width: '800px',
+      data: {
+        options,
+        collection,
+        collectionName
+      }
+    });
+  }
+
+  private mapRow(
+    overview: InstanceOverview,
+    rowData: DocumentChangeAction<any>
+  ) {
+    const data = rowData.payload.doc.data();
+    const id = rowData.payload.doc.id;
+
+    return {
+      data,
+      id,
+      parsed: this.parseColumns(overview, {...data, id})
+    };
+  }
+
+  private parseColumns(overview: InstanceOverview, rowData: any) {
+    return overview.tableColumns.reduce((acc, column, index) => {
+      acc[index] = {
+        value: this.getColumnValue(column, overview, rowData),
+        ...(column.nestedColumns
+          ? {
+              nested: this.parseColumns(
+                {...overview, tableColumns: column.nestedColumns},
+                rowData
+              )
+            }
+          : {})
+      };
+      return acc;
+    }, {});
+  }
+
+  private getColumnValue(
+    column: TableColumn,
+    overview: InstanceOverview,
+    rowData: any,
+    nested = false
+  ) {
+    if (column.control) {
+      const key = column.key as string;
+
+      if (!this.parserCache[rowData.id]) {
+        this.parserCache[rowData.id] = new Parser(
+          overview.schema,
+          this.injector,
+          InstanceSingleState.Edit
+        );
+        this.parserCache[rowData.id].buildForm(rowData);
+      }
+
+      const field = this.parserCache[rowData.id].field(
+        key,
+        this.parserCache[rowData.id].pointers[key],
+        overview.definitions,
+        false
+      );
+
+      field.control.valueChanges
+        .pipe(
+          switchMap(value =>
+            this.dbService.setDocument(
+              overview.id,
+              rowData.id,
+              {
+                [Parser.standardizeKey(key)]: value
+              },
+              {merge: true}
+            )
+          ),
+          notify({
+            success: null
+          }),
+          takeUntil(this.destroyed$)
+        )
+        .subscribe();
+
+      return field.portal;
+    } else {
+      let value;
+
+      if (typeof column.key !== 'string') {
+        value = column.key
+          .map(key => this.getColumnValue({key}, overview, rowData, true))
+          .join(column.hasOwnProperty('join') ? column.join : ', ');
+      } else {
+        if (has(rowData, column.key)) {
+          value = this.columnPipe.transform(
+            get(rowData, column.key),
+            column.pipe,
+            column.pipeArguments
+          );
+        } else {
+          value = '';
+        }
+      }
+
+      if (nested) {
+        return value;
+      } else {
+        return new TemplatePortal(
+          this.simpleColumnTemplate,
+          this.viewContainerRef,
+          {value}
+        );
+      }
+    }
   }
 }

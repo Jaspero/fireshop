@@ -1,0 +1,145 @@
+import {Injectable} from '@angular/core';
+import {AngularFirestore, CollectionReference} from '@angular/fire/firestore';
+// @ts-ignore
+import * as nanoid from 'nanoid';
+import {from} from 'rxjs';
+import {map, take} from 'rxjs/operators';
+import {Module} from '../../src/app/shared/interfaces/module.interface';
+import {Settings} from '../../src/app/shared/interfaces/settings.interface';
+import {DbService} from '../../src/app/shared/services/db/db.service';
+import {FirestoreCollection} from './firestore-collection.enum';
+
+@Injectable()
+export class FbDatabaseService extends DbService {
+  constructor(private afs: AngularFirestore) {
+    super();
+  }
+
+  getModules() {
+    return this.afs
+      .collection(FirestoreCollection.Modules)
+      .snapshotChanges()
+      .pipe(
+        map(actions =>
+          actions.map(action => ({
+            id: action.payload.doc.id,
+            ...(action.payload.doc.data() as Module)
+          }))
+        )
+      );
+  }
+
+  setModule(data: Partial<Module>, id?: string) {
+    return from(
+      this.afs
+        .collection(FirestoreCollection.Modules)
+        .doc(id || nanoid())
+        .set(data)
+    );
+  }
+
+  removeModule(id: string) {
+    return from(
+      this.afs
+        .collection(FirestoreCollection.Modules)
+        .doc(id)
+        .delete()
+    );
+  }
+
+  getUserSettings() {
+    return this.afs
+      .collection(FirestoreCollection.Settings)
+      .doc<Settings>('user')
+      .valueChanges()
+      .pipe(take(1));
+  }
+
+  updateUserSettings(settings: Partial<Settings>) {
+    return from(
+      this.afs
+        .collection(FirestoreCollection.Settings)
+        .doc('user')
+        .update(settings)
+    );
+  }
+
+  getDocuments(moduleId, pageSize, cursor, changes?) {
+    if (!changes) {
+      changes = ['added'];
+    }
+
+    return this.collection(moduleId, pageSize, cursor)
+      .snapshotChanges(changes)
+      .pipe(take(1));
+  }
+
+  getStateChanges(moduleId, pageSize, cursor) {
+    return this.collection(moduleId, pageSize, cursor).stateChanges();
+  }
+
+  getDocument(moduleId, documentId) {
+    return this.afs
+      .collection(moduleId)
+      .doc(documentId)
+      .valueChanges()
+      .pipe(
+        take(1),
+        map(value => ({
+          ...value,
+          id: documentId
+        }))
+      );
+  }
+
+  getDocumentsSimple(moduleId, orderBy?, filter?) {
+    return this.afs
+      .collection(moduleId, (ref: any) => {
+        if (orderBy) {
+          ref = ref.orderBy(orderBy);
+        }
+
+        if (filter) {
+          ref = ref.where(filter.key, filter.operator, filter.value);
+        }
+
+        return ref;
+      })
+      .valueChanges({idField: 'id'})
+      .pipe(take(1));
+  }
+
+  setDocument(moduleId, documentId, data, options) {
+    return from(
+      this.afs
+        .collection(moduleId)
+        .doc(documentId)
+        .set(data, options || {})
+    );
+  }
+
+  removeDocument(moduleId, documentId) {
+    return from(
+      this.afs
+        .collection(moduleId)
+        .doc(documentId)
+        .delete()
+    );
+  }
+
+  private collection(moduleId, pageSize, cursor) {
+    return this.afs.collection(moduleId, ref => {
+      let final = ref;
+
+      if (pageSize) {
+        final = final.limit(pageSize) as CollectionReference;
+      }
+
+      if (cursor) {
+        final = final.startAfter(cursor) as CollectionReference;
+      }
+
+      return final;
+    });
+  }
+}

@@ -5,21 +5,19 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {MatSort} from '@angular/material';
+import {MatSort} from '@angular/material/sort';
 import {
   BehaviorSubject,
   combineLatest,
   forkJoin,
-  from,
   merge,
   Observable
 } from 'rxjs';
 import {map, startWith, switchMap, take, tap} from 'rxjs/operators';
-import {FirestoreCollection} from '../../../../shared/enums/firestore-collection.enum';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {RouteData} from '../../../../shared/interfaces/route-data.interface';
+import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {confirmation} from '../../../../shared/utils/confirmation';
 import {notify} from '../../../../shared/utils/notify.operator';
@@ -32,12 +30,12 @@ import {notify} from '../../../../shared/utils/notify.operator';
 })
 export class DefinitionOverviewComponent implements OnInit {
   constructor(
-    private afs: AngularFirestore,
+    private dbService: DbService,
     private state: StateService,
     private fb: FormBuilder
   ) {}
 
-  @ViewChild(MatSort)
+  @ViewChild(MatSort, {static: true})
   sort: MatSort;
   displayedColumns = ['check', 'name', 'createdOn', 'actions'];
 
@@ -70,7 +68,7 @@ export class DefinitionOverviewComponent implements OnInit {
         })
       )
     ).pipe(
-      startWith(null),
+      startWith({}),
       switchMap(() => this.state.modules$),
       map(modules => {
         if (this.options.filters.search) {
@@ -94,10 +92,10 @@ export class DefinitionOverviewComponent implements OnInit {
       })
     );
 
-    this.allChecked$ = combineLatest(
+    this.allChecked$ = combineLatest([
       this.items$,
-      this.selection.changed.pipe(startWith(null))
-    ).pipe(
+      this.selection.changed.pipe(startWith({}))
+    ]).pipe(
       map(([items]) => ({
         checked: this.selection.selected.length === items.length
       }))
@@ -105,7 +103,7 @@ export class DefinitionOverviewComponent implements OnInit {
   }
 
   masterToggle() {
-    combineLatest(this.allChecked$, this.items$)
+    combineLatest([this.allChecked$, this.items$])
       .pipe(take(1))
       .subscribe(([check, items]) => {
         if (check.checked) {
@@ -117,24 +115,20 @@ export class DefinitionOverviewComponent implements OnInit {
   }
 
   deleteOne(item: Module) {
-    confirmation([switchMap(() => this.delete(item.id)), notify()]);
+    confirmation([
+      switchMap(() => this.dbService.removeModule(item.id)),
+      notify()
+    ]);
   }
 
   deleteSelection() {
     confirmation([
       switchMap(() =>
-        forkJoin(this.selection.selected.map(id => this.delete(id)))
+        forkJoin(
+          this.selection.selected.map(id => this.dbService.removeModule(id))
+        )
       ),
       notify()
     ]);
-  }
-
-  delete(id: string): Observable<any> {
-    return from(
-      this.afs
-        .collection(FirestoreCollection.Modules)
-        .doc(id)
-        .delete()
-    );
   }
 }

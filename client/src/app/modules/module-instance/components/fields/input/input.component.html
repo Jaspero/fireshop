@@ -1,8 +1,9 @@
 <mat-form-field class="w-full" appearance="outline">
+  <mat-label>{{cData.label}}</mat-label>
   <input
       matInput
+      [placeholder]="cData['placeholder']"
       [attr.type]="cData['type']"
-      [placeholder]="cData.label"
       [formControl]="cData.control">
   <mat-hint *ngIf="cData.hint">
     {{cData.hint}}

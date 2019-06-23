@@ -1,6 +1,7 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
 import {StateService} from '../../services/state/state.service';
 
 @Component({
@@ -9,17 +10,28 @@ import {StateService} from '../../services/state/state.service';
   styleUrls: ['./layout.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit {
   constructor(
     public state: StateService,
     private afAuth: AngularFireAuth,
     private router: Router
   ) {}
 
-  sidebarExpanded = false;
+  currentUser$: Observable<any>;
+  navigationExpanded = false;
 
-  expandSidebar() {
-    this.sidebarExpanded = !this.sidebarExpanded;
+  ngOnInit() {
+    this.currentUser$ = this.afAuth.user;
+  }
+
+  toggleMenu() {
+    this.navigationExpanded = !this.navigationExpanded;
+  }
+
+  closeMenu() {
+    if (this.navigationExpanded) {
+      this.navigationExpanded = false;
+    }
   }
 
   logOut() {

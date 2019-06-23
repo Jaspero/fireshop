@@ -17,19 +17,17 @@ declare const tinymce: any;
 })
 export class WysiwygComponent extends FieldComponent<FieldData>
   implements AfterViewInit {
-  @ViewChild('textarea')
+  @ViewChild('textarea', {static: true})
   textarea: ElementRef;
 
   editor: any;
 
   ngAfterViewInit() {
-    console.log(this.cData);
     this.registerTiny();
   }
 
   private registerTiny() {
     tinymce.init({
-      selector: 'textarea',
       target: this.textarea.nativeElement,
       height: 420,
       toolbar: [

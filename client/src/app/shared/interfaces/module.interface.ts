@@ -1,10 +1,19 @@
-import {SortDirection} from '@angular/material';
+import {SortDirection} from '@angular/material/sort';
 import {JSONSchema7} from 'json-schema';
+import {InstanceSingleState} from '../../modules/module-instance/enums/instance-single-state.enum';
 import {SegmentType} from '../../modules/module-instance/enums/segment-type.enum';
 import {PipeType} from '../enums/pipe-type.enum';
 import {ComponentType} from './component-type.enum';
 
 export interface TableColumn {
+  /**
+   * This flags indicates that the column
+   * should be turned in to a form control
+   * if it's true the key property needs
+   * to be a string
+   */
+  control?: boolean;
+
   key: string | string[];
   label?: string;
   pipe?: PipeType;
@@ -20,6 +29,7 @@ export interface NestedTableColumn extends TableColumn {
 
 export interface InstanceSegment {
   fields: string[] | any[];
+  array?: string;
   type?: SegmentType;
   title?: string;
   subTitle?: string;
@@ -38,12 +48,19 @@ export interface TableSort {
   direction: SortDirection;
 }
 
+export interface SortModule {
+  sortKey: string;
+  sortTitle: string;
+  sortSubTitle: string;
+}
+
 export interface ModuleLayout {
   icon?: string;
   table?: {
     sort?: TableSort;
     tableColumns?: TableColumn[];
   };
+  sortModule?: SortModule;
   instance: {
     segments: InstanceSegment[];
   };
@@ -59,6 +76,9 @@ export interface ModuleDefinition {
   label?: string;
   hint?: string;
   defaultValue?: any;
+  placeholder?: string;
+  onlyOn?: InstanceSingleState;
+  disableOn?: InstanceSingleState;
 }
 
 export interface ModuleDefinitions {

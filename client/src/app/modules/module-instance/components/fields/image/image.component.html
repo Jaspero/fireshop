@@ -1,3 +1,29 @@
-<p>
-  image works!
-</p>
+<mat-form-field appearance="outline" class="w-full">
+  <mat-label>{{cData.label}}</mat-label>
+  <input
+    matInput
+    [placeholder]="cData['placeholder']"
+    type="url"
+    [class.disabled]="disInput"
+    [formControl]="imageUrl">
+  <div matSuffix>
+    <div class="flex">
+      <ng-container *ngIf="imageUrl.value">
+        <div class="iblock relative">
+          <button class="preview-button" mat-icon-button>
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <img class="preview-image" [attr.src]="imageUrl.value || value" alt="Image Preview">
+        </div>
+      </ng-container>
+      <button mat-icon-button *ngIf="!imageUrl.value && !cData['preventServerUpload']">
+        <mat-icon (click)="openFileUpload()">perm_media</mat-icon>
+      </button>
+      <button mat-icon-button *ngIf="imageUrl.value">
+        <mat-icon (click)="remove()">highlight_off</mat-icon>
+      </button>
+    </div>
+  </div>
+</mat-form-field>
+
+<input #file type="file" hidden (change)="filesImage($event.target.files)">

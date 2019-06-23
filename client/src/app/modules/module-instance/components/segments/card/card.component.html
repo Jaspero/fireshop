@@ -1,8 +1,15 @@
 <mat-card>
 
   <ng-container *ngIf="segment.title || segment.subTitle">
-    <h4 *ngIf="segment.title">{{segment.title}}</h4>
-    <h5 *ngIf="segment.subTitle">{{segment.subTitle}}</h5>
+    <div class="flex jc-between">
+      <div>
+        <h4 *ngIf="segment.title">{{segment.title}}</h4>
+        <h5 *ngIf="segment.subTitle">{{segment.subTitle}}</h5>
+      </div>
+      <button *ngIf="segment.array" mat-icon-button (click)="addArrayItem()" matTooltip="Add">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
     <div class="p-y-m">
       <mat-divider></mat-divider>
     </div>
@@ -12,9 +19,24 @@
 
     <p *ngIf="segment.description">{{segment.description}}</p>
 
-    <ng-container *ngFor="let field of segment.fields">
-      <ng-template [cdkPortalOutlet]="field.portal"></ng-template>
+    <ng-container *ngIf="segment.array; else regular">
+      <div *ngFor="let fields of arrayFields; index as index;" class="flex jc-between">
+        <div>
+          <ng-container *ngFor="let field of fields | showField:sData.parser">
+            <ng-template [cdkPortalOutlet]="field.portal"></ng-template>
+          </ng-container>
+        </div>
+        <button mat-icon-button color="warn" (click)="removeArrayItem(index)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
     </ng-container>
+
+    <ng-template #regular>
+      <ng-container *ngFor="let field of segment.fields | showField:sData.parser">
+        <ng-template [cdkPortalOutlet]="field.portal"></ng-template>
+      </ng-container>
+    </ng-template>
 
     <ng-container *ngFor="let nested of (segment.nestedSegments || [])">
       <ng-template [cdkPortalOutlet]="nested.component"></ng-template>

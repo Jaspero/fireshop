@@ -5,21 +5,21 @@ import {
   Injector,
   OnInit
 } from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {defer, from, Observable, of} from 'rxjs';
-import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
-import {Role} from '../../../../shared/enums/role.enum';
+import {forkJoin, Observable, of} from 'rxjs';
+import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
 import {
   InstanceSegment,
   Module
 } from '../../../../shared/interfaces/module.interface';
+import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {queue} from '../../../../shared/utils/queue.operator';
 import {SegmentComponent} from '../../components/segment/segment.component';
+import {InstanceSingleState} from '../../enums/instance-single-state.enum';
 import {CompiledField} from '../../interfaces/compiled-field.interface';
 import {ModuleInstanceComponent} from '../../module-instance.component';
 import {compileSegment} from '../../utils/compile-segment';
@@ -30,6 +30,7 @@ export interface CompiledSegment extends InstanceSegment {
   fields: CompiledField[];
   component?: ComponentPortal<SegmentComponent>;
   nestedSegments?: CompiledSegment[];
+  entryValue: any;
 }
 
 interface Instance {
@@ -49,8 +50,8 @@ interface Instance {
 })
 export class InstanceSingleComponent implements OnInit {
   constructor(
+    private dbService: DbService,
     private router: Router,
-    private afs: AngularFirestore,
     private state: StateService,
     private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
@@ -66,6 +67,8 @@ export class InstanceSingleComponent implements OnInit {
   data$: Observable<Instance>;
 
   ngOnInit() {
+    this.state.uploadComponents = [];
+
     this.data$ = this.moduleInstance.module$.pipe(
       switchMap(module =>
         this.activatedRoute.params.pipe(
@@ -75,39 +78,27 @@ export class InstanceSingleComponent implements OnInit {
               return of(null);
             } else if (params.id.endsWith('--copy')) {
               this.currentState = ViewState.Copy;
-              const id = params.id.replace('--copy', '');
-              return this.afs
-                .collection(module.id)
-                .doc(id)
-                .valueChanges()
-                .pipe(
-                  take(1),
-                  map(value => ({
-                    ...value,
-                    id
-                  })),
-                  queue()
-                );
+              return this.dbService
+                .getDocument(module.id, params.id.replace('--copy', ''))
+                .pipe(queue());
             } else {
               this.currentState = ViewState.Edit;
-              return this.afs
-                .collection(module.id)
-                .doc(params.id)
-                .valueChanges()
-                .pipe(
-                  take(1),
-                  map(value => ({
-                    ...value,
-                    id: params.id
-                  })),
-                  queue()
-                );
+              return this.dbService
+                .getDocument(module.id, params.id)
+                .pipe(queue());
             }
           }),
           map((value: Partial<Module>) => {
-            const parser = new Parser(module.schema, this.injector);
+            const parser = new Parser(
+              module.schema,
+              this.injector,
+              this.currentState === ViewState.Edit
+                ? InstanceSingleState.Edit
+                : InstanceSingleState.Create
+            );
             const form = parser.buildForm(value);
 
+            console.log('parser', parser);
             console.log('form', form);
 
             this.initialValue = JSON.stringify(form.getRawValue());
@@ -138,7 +129,8 @@ export class InstanceSingleComponent implements OnInit {
                   segment,
                   parser,
                   module.definitions,
-                  this.injector
+                  this.injector,
+                  value
                 )
               ),
               module: {
@@ -154,19 +146,23 @@ export class InstanceSingleComponent implements OnInit {
   }
 
   save(instance: Instance) {
-    return defer(() => {
-      const {id, ...data} = instance.form.getRawValue();
+    return () => {
+      const toExecute = [];
 
-      return from(
-        this.afs
-          .collection(instance.module.id)
-          .doc(id)
-          .set(data, {merge: true})
-      ).pipe(
+      if (this.state.uploadComponents) {
+        toExecute.push(...this.state.uploadComponents.map(comp => comp.save()));
+      }
+
+      return (toExecute.length ? forkJoin(toExecute) : of([])).pipe(
+        switchMap(() => {
+          const {id, ...data} = instance.form.getRawValue();
+
+          return this.dbService.setDocument(instance.module.id, id, data);
+        }),
         notify(),
         tap(() => this.back(instance))
       );
-    });
+    };
   }
 
   back(instance: Instance) {

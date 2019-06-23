@@ -1,4 +1,9 @@
 import {NgModule} from '@angular/core';
+import {
+  canActivate,
+  redirectLoggedInTo,
+  redirectUnauthorizedTo
+} from '@angular/fire/auth-guard';
 import {Routes, RouterModule} from '@angular/router';
 import {DashboardComponent} from './modules/dashboard/dashboard.component';
 import {LoginComponent} from './modules/login/login.component';
@@ -11,14 +16,12 @@ import {InstanceSingleComponent} from './modules/module-instance/pages/instance-
 import {ResetPasswordComponent} from './modules/reset-password/reset-password.component';
 import {SettingsComponent} from './modules/settings/settings.component';
 import {LayoutComponent} from './shared/components/layout/layout.component';
-import {AuthGuard} from './shared/guards/auth.guard';
-import {LoginGuard} from './shared/guards/login.guard';
 
 const routes: Routes = [
   {
     path: '',
-    canActivate: [AuthGuard],
     component: LayoutComponent,
+    ...canActivate(redirectUnauthorizedTo(['/login'])),
     children: [
       {
         path: 'dashboard',
@@ -55,28 +58,28 @@ const routes: Routes = [
             component: InstanceSingleComponent
           }
         ]
+      },
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: '**',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
       }
     ]
   },
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [LoginGuard]
+    ...canActivate(redirectLoggedInTo(['/dashboard']))
   },
   {
     path: 'reset-password',
     component: ResetPasswordComponent,
-    canActivate: [LoginGuard]
-  },
-  {
-    path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full'
-  },
-  {
-    path: '**',
-    redirectTo: 'dashboard',
-    pathMatch: 'full'
+    ...canActivate(redirectLoggedInTo(['/dashboard']))
   }
 ];
 
