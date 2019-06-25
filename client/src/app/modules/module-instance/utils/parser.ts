@@ -1,8 +1,6 @@
 import {ComponentPortal} from '@angular/cdk/portal';
 import {Injector} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
-// @ts-ignore
-import * as nanoid from 'nanoid';
 import {ModuleDefinitions} from '../../../shared/interfaces/module.interface';
 import {FieldComponent} from '../components/field/field.component';
 import {COMPONENT_TYPE_COMPONENT_MAP} from '../consts/component-type-component-map.const';
@@ -183,7 +181,6 @@ export class Parser {
 
     this.form = properties.form;
     this.pointers = properties.pointers;
-    this.form.addControl('id', new FormControl(value ? value.id : nanoid()));
 
     if (value) {
       this.form.patchValue(value);

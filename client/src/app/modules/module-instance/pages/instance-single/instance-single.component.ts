@@ -7,6 +7,8 @@ import {
 } from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
+// @ts-ignore
+import * as nanoid from 'nanoid';
 import {forkJoin, Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
@@ -157,7 +159,11 @@ export class InstanceSingleComponent implements OnInit {
         switchMap(() => {
           const {id, ...data} = instance.form.getRawValue();
 
-          return this.dbService.setDocument(instance.module.id, id, data);
+          return this.dbService.setDocument(
+            instance.module.id,
+            id || nanoid(),
+            data
+          );
         }),
         notify(),
         tap(() => this.back(instance))
