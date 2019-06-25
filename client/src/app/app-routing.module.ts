@@ -63,11 +63,6 @@ const routes: Routes = [
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'
-      },
-      {
-        path: '**',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
       }
     ]
   },
@@ -80,6 +75,11 @@ const routes: Routes = [
     path: 'reset-password',
     component: ResetPasswordComponent,
     ...canActivate(redirectLoggedInTo(['/dashboard']))
+  },
+  {
+    path: '**',
+    redirectTo: 'dashboard',
+    pathMatch: 'full'
   }
 ];
 
