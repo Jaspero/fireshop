@@ -9,6 +9,7 @@ import * as domino from 'domino';
 import * as express from 'express';
 import * as cors from 'cors';
 import * as functions from 'firebase-functions';
+import {RenderOptions} from '@nguniversal/express-engine/src/main';
 
 const win = domino.createWindow('');
 
@@ -43,7 +44,7 @@ const {
   LAZY_MODULE_MAP
 } = require('./../dist/server/main');
 
-app.engine('html', (_, options, callback) =>
+app.engine('html', (_, options: RenderOptions, callback) =>
   ngExpressEngine({
     bootstrap: AppServerModuleNgFactory,
     providers: [

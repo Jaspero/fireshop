@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy, ChangeDetectorRef,
   Component,
   ElementRef,
   Inject,
@@ -64,7 +64,7 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
     super();
   }
 
-  @ViewChild('password', {static: true}) passwordField: ElementRef;
+  @ViewChild('password', {static: false}) passwordField: ElementRef;
 
   logInForm: FormGroup;
   resetPasswordControl: FormControl;
