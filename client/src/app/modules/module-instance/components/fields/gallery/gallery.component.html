@@ -7,6 +7,22 @@
   <button mat-button *ngIf="cData.allowServerUpload" (click)="openFileUpload()">Add images</button>
 </div>
 
+<div class="dropzone"
+     dropzone
+     (hovered)="toggleHover($event)"
+     (dropped)="filesUploaded($event)"
+     [class.hovering]="isHovering">
+
+  <h3>AngularFire Drop Zone</h3>
+  <p>Drag and Drop a File</p>
+</div>
+
+<h3>Uploads</h3>
+
+<!--<div *ngFor="let file of files">-->
+  <!--<upload-task [file]="file"></upload-task>-->
+<!--</div>-->
+
 <hr class="m-y-m">
 
 <div

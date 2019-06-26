@@ -58,10 +58,17 @@ export class GalleryComponent extends FieldComponent<GalleryData>
   lastFrom: number;
   lastTo: number;
 
+  isHovering: boolean;
+
+  files: File[] = [];
   toRemove = [];
 
   ngOnInit() {
     this.state.uploadComponents.push(this);
+  }
+
+  toggleHover(event: boolean) {
+    this.isHovering = event;
   }
 
   openUploadDialog() {
