@@ -12,6 +12,7 @@ import {FieldComponent, FieldData} from '../../field/field.component';
 
 interface SelectData extends FieldData {
   dataSet?: Array<{name: string; value: string}>;
+  multiple?: boolean;
   populate?: {
     collection: string;
     nameKey: string;
