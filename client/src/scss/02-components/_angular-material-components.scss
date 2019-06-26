@@ -150,18 +150,18 @@
   .mat-cell,
   .mat-footer-cell,
   .mat-header-cell {
-    padding: 0 16px;
+    padding: 0 8px;
 
     @media (max-width: $screen-s) {
-      padding: 8px;
+      padding: 4px;
     }
 
     &:first-of-type,
     &:last-of-type {
-      padding: 0 16px;
+      padding: 0 8px;
 
       @media (max-width: $screen-s) {
-        padding: 8px;
+        padding: 4px;
       }
     }
   }
