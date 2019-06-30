@@ -82,7 +82,9 @@ export class SegmentComponent implements OnInit {
           this.sData.parser.field(
             this.segment.array + '/' + key,
             pointer,
-            this.sData.definitions
+            this.sData.definitions,
+            true,
+            this.segment.array
           )
       )
     );

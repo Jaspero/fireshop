@@ -189,19 +189,28 @@ export class Parser {
     return this.form;
   }
 
-  buildProperties(properties: object, required: string[] = [], base = '/') {
+  buildProperties(
+    properties: object,
+    required: string[] = [],
+    base = '/',
+    addId = true
+  ) {
     const {form, pointers} = [
       ...Object.entries(properties),
       /**
        * Add the id field as a property so that
        * it can be added to the form if needed
        */
-      [
-        'id',
-        {
-          type: 'string'
-        }
-      ]
+      ...(addId
+        ? [
+            [
+              'id',
+              {
+                type: 'string'
+              }
+            ]
+          ]
+        : [])
     ].reduce(
       (group, [key, value]: [string, any]) => {
         const isRequired = required.includes(key);
@@ -273,16 +282,27 @@ export class Parser {
     };
   }
 
+  /**
+   * @param pointerKey Lookup key for the pointer
+   * @param pointer Entire pointer object that should be used
+   * @param definitions Entire definitions object that should be used
+   * @param single Defines if the field shown in the form or in the table
+   * @param arrayRoot If the field is in an array what root lookup to use
+   */
   field(
     pointerKey: string,
     pointer: Pointer,
     definitions: ModuleDefinitions = {},
-    single = true
+    single = true,
+    arrayRoot?: string
   ): CompiledField {
     const {key, type, control, validation} = pointer;
     const definition = {
       label: key,
-      ...this.getFromDefinitions(key, definitions)
+      ...this.getFromDefinitions(
+        arrayRoot ? `${arrayRoot}/${key}` : key,
+        definitions
+      )
     };
 
     if (definition.disableOn && definition.disableOn === this.state) {
@@ -333,7 +353,8 @@ export class Parser {
       const properties = this.buildProperties(
         target.properties,
         target.required,
-        ''
+        '',
+        false
       );
 
       target.arrayPointers.push(properties.pointers);
