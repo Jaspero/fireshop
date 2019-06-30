@@ -300,7 +300,7 @@ export class Parser {
     const definition = {
       label: key,
       ...this.getFromDefinitions(
-        arrayRoot ? `${arrayRoot}/${key}` : key,
+        arrayRoot ? `${arrayRoot}/${pointerKey}` : pointerKey,
         definitions
       )
     };
