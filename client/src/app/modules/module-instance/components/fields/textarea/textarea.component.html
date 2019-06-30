@@ -1,4 +1,8 @@
 <mat-form-field class="w-full" appearance="outline">
   <mat-label>{{cData.label}}</mat-label>
-  <textarea matInput [rows]="cData['rows']" [cols]="cData['cols']"></textarea>
+  <textarea
+    matInput
+    [rows]="cData['rows']"
+    [cols]="cData['cols']"
+    [formControl]="cData.control"></textarea>
 </mat-form-field>
