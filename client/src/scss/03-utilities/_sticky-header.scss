@@ -1,0 +1,12 @@
+/**
+ * Sticky header
+ *
+ * A simple utility class for sticky headers.
+ *
+ *============================================================================*/
+
+.sticky-header {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+}

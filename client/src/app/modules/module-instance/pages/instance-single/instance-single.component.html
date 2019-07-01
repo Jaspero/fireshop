@@ -1,5 +1,5 @@
 <form *ngIf="data$ | async as data" [formGroup]="data.form" [ngSwitch]="currentState">
-    <section class="primary bg p-x-s p-y-m flex jc-between ai-center jms-sticky-header">
+    <section class="primary bg p-x-s p-y-m flex jc-between ai-center sticky-header">
         <h6 *ngSwitchCase="viewState.Edit">Editing {{data.form.get('id').value}}</h6>
         <h6 *ngSwitchCase="viewState.New">New {{data.module.name}}</h6>
         <h6 *ngSwitchCase="viewState.Copy">Copy of {{data.form.get('id').value}}</h6>
