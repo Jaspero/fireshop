@@ -1,4 +1,8 @@
-import {CdkDragEnter, moveItemInArray} from '@angular/cdk/drag-drop';
+import {
+  CdkDragDrop,
+  CdkDragEnter,
+  moveItemInArray
+} from '@angular/cdk/drag-drop';
 import {HttpClient} from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -18,6 +22,7 @@ import {ENV_CONFIG} from '../../../../../../env-config';
 import {StateService} from '../../../../../shared/services/state/state.service';
 import {notify} from '../../../../../shared/utils/notify.operator';
 import {COMPONENT_DATA} from '../../../utils/create-component-injector';
+import {switchItemLocations} from '../../../utils/switch-item-locations';
 import {FieldComponent, FieldData} from '../../field/field.component';
 import {readFile} from './read-file';
 
@@ -51,6 +56,9 @@ export class GalleryComponent extends FieldComponent<GalleryData>
 
   @ViewChild('modal', {static: true})
   modalTemplate: TemplateRef<any>;
+
+  @ViewChild('imagesSort', {static: true})
+  imagesSort: TemplateRef<any>;
 
   @ViewChild('file', {static: true})
   fileEl: ElementRef<HTMLInputElement>;
@@ -91,6 +99,28 @@ export class GalleryComponent extends FieldComponent<GalleryData>
 
   openFileUpload() {
     this.fileEl.nativeElement.click();
+  }
+
+  openSortImages() {
+    this.state.uploadComponents.push(this);
+    this.dialog.open(this.imagesSort, {
+      width: '800px'
+    });
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    const value = this.cData.control.value;
+    switchItemLocations(value, event.previousIndex, event.currentIndex);
+    this.cData.control.setValue(value);
+    this.cdr.detectChanges();
+  }
+
+  move(up = false, index: number) {
+    const currentIndex = up ? index - 1 : index + 1;
+    const value = this.cData.control.value;
+    moveItemInArray(value, index, currentIndex);
+    this.cData.control.setValue(value);
+    this.cdr.detectChanges();
   }
 
   filesUploaded(fileList: FileList) {
