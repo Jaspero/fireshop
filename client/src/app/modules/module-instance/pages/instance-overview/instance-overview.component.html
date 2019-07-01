@@ -9,7 +9,7 @@
 </ng-template>
 
 <ng-template #simpleColumn let-value="value">
-  <p>{{value}}</p>
+  <div class="column-inner" [innerHTML]="value"></div>
 </ng-template>
 
 <ng-container *ngIf="data$ | async as data">

@@ -1,0 +1,8 @@
+// Don't let images grow out of control
+.column-inner {
+  ::ng-deep svg,
+  ::ng-deep img {
+    max-width: 50px;
+    padding: 5px;
+  }
+}
