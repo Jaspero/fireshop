@@ -137,7 +137,10 @@ export class InstanceSingleComponent implements OnInit {
               ),
               module: {
                 id: module.id,
-                name: module.name
+                name: module.name,
+                editTitleKey: module.layout.editTitleKey
+                  ? module.layout.editTitleKey
+                  : module.id
               }
             };
           })
