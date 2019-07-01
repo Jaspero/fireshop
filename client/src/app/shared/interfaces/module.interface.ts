@@ -56,6 +56,7 @@ export interface SortModule {
 
 export interface ModuleLayout {
   icon?: string;
+  editTitleKey?: string;
   table?: {
     sort?: TableSort;
     tableColumns?: TableColumn[];

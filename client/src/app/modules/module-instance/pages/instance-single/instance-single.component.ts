@@ -40,6 +40,7 @@ interface Instance {
   module: {
     id: string;
     name: string;
+    editTitleKey: string;
   };
   segments: CompiledSegment[];
 }
@@ -137,7 +138,10 @@ export class InstanceSingleComponent implements OnInit {
               ),
               module: {
                 id: module.id,
-                name: module.name
+                name: module.name,
+                editTitleKey: module.layout.editTitleKey
+                  ? module.layout.editTitleKey
+                  : module.id
               }
             };
           })
