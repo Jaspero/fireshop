@@ -13,7 +13,7 @@
 </ng-template>
 
 <ng-container *ngIf="data$ | async as data">
-  <section class="primary bg p-x-s p-y-m flex jc-between ai-center">
+  <section class="primary bg p-x-s p-y-m flex jc-between ai-center sticky-header">
     <h6>{{data.name}}</h6>
     <a mat-flat-button routerLink="../single/new">Add {{data.name}}</a>
   </section>

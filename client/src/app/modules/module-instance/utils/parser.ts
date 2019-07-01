@@ -299,10 +299,7 @@ export class Parser {
     const {key, type, control, validation} = pointer;
     const definition = {
       label: key,
-      ...this.getFromDefinitions(
-        arrayRoot ? `${arrayRoot}/${pointerKey}` : pointerKey,
-        definitions
-      )
+      ...this.getFromDefinitions(pointerKey, definitions)
     };
 
     if (definition.disableOn && definition.disableOn === this.state) {
