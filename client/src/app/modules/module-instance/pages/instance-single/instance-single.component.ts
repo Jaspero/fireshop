@@ -40,6 +40,7 @@ interface Instance {
   module: {
     id: string;
     name: string;
+    editTitleKey: string;
   };
   segments: CompiledSegment[];
 }
