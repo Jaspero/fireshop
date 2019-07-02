@@ -261,6 +261,15 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
         )
       )
     );
+
+    this.allChecked$ = combineLatest([
+      this.items$,
+      this.selection.changed.pipe(startWith({}))
+    ]).pipe(
+      map(([items]) => ({
+        checked: this.selection.selected.length === items.length
+      }))
+    );
   }
 
   trackById(index, item) {
