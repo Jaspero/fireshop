@@ -90,6 +90,7 @@ export interface Module {
   id: string;
   createdOn: number;
   name: string;
+  order: number;
   description: string;
   schema: JSONSchema7;
   layout?: ModuleLayout;
