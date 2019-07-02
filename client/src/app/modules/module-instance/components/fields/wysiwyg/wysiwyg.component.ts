@@ -6,6 +6,10 @@ import {
   ViewChild
 } from '@angular/core';
 import {FieldComponent, FieldData} from '../../field/field.component';
+import 'tinymce/plugins/code';
+import 'tinymce/plugins/print';
+import 'tinymce/plugins/wordcount';
+import 'tinymce/plugins/link';
 
 declare const tinymce: any;
 
@@ -30,6 +34,13 @@ export class WysiwygComponent extends FieldComponent<FieldData>
     tinymce.init({
       target: this.textarea.nativeElement,
       height: 420,
+      plugins: ['code', 'print', 'wordcount', 'link'],
+
+      /**
+       * Link settings
+       */
+      default_link_target: '_blank',
+
       toolbar: [
         'undo redo',
         'insert',
@@ -38,6 +49,7 @@ export class WysiwygComponent extends FieldComponent<FieldData>
         'forecolor backcolor',
         'alignleft aligncenter alignright alignjustify',
         'bullist numlist outdent indent',
+        'link',
         'mediaLibrary'
       ].join(' | '),
       setup: editor => {
