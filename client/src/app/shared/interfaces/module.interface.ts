@@ -56,6 +56,7 @@ export interface SortModule {
 
 export interface ModuleLayout {
   icon?: string;
+  editTitleKey?: string;
   table?: {
     sort?: TableSort;
     tableColumns?: TableColumn[];
@@ -89,6 +90,7 @@ export interface Module {
   id: string;
   createdOn: number;
   name: string;
+  order: number;
   description: string;
   schema: JSONSchema7;
   layout?: ModuleLayout;

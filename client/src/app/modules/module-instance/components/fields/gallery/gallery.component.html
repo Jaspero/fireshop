@@ -5,6 +5,7 @@
 <div class="ta-right">
   <button mat-button *ngIf="cData.allowUrl" (click)="openUploadDialog()">Add image from URL</button>&nbsp;
   <button mat-button *ngIf="cData.allowServerUpload" (click)="openFileUpload()">Add images</button>
+  <button mat-button *ngIf="cData.allowServerUpload" (click)="openSortImages()">Sort images</button>
 </div>
 
 <hr class="m-y-m">
@@ -40,3 +41,35 @@
 
 <!--Upload from disk-->
 <input #file type="file" multiple hidden (change)="filesUploaded($event.target.files)">
+
+<ng-template #imagesSort>
+  <h6><span class="fs-small">Sort images</span></h6>
+
+  <mat-dialog-content>
+    <div class="jms-sort-dialog-container">
+      <div
+        class="jms-sort-dialog-element"
+        *ngIf="cData.control.value.length; else noValue">
+<!--        cdkDropList
+        (cdkDropListDropped)="drop($event)"-->
+
+        <div class="flex jc-between ai-center jms-sort-dialog-element" *ngFor="let val of cData.control.value; index as index; first as first; last as last;">
+          <img class="sortImages p-y-s p-x-s" [src]="(val.data || val) | jpSanitize:'resourceUrl'">
+          <div>
+            <button mat-icon-button [disabled]="first" (click)="move(true, index)">
+              <mat-icon>arrow_upward</mat-icon>
+            </button>
+            <button mat-icon-button [disabled]="last" (click)="move(false, index)">
+              <mat-icon>arrow_downward</mat-icon>
+            </button>
+<!--            <button mat-icon-button cdkDragHandle>
+              <mat-icon>drag_indicator</mat-icon>
+            </button>-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+
+</ng-template>

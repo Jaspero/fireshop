@@ -17,7 +17,9 @@ export class FbDatabaseService extends DbService {
 
   getModules() {
     return this.afs
-      .collection(FirestoreCollection.Modules)
+      .collection(FirestoreCollection.Modules, ref =>
+        ref.orderBy('layout.order', 'asc')
+      )
       .snapshotChanges()
       .pipe(
         map(actions =>

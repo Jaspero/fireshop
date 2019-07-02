@@ -9,11 +9,11 @@
 </ng-template>
 
 <ng-template #simpleColumn let-value="value">
-  <p>{{value}}</p>
+  <div class="column-inner" [innerHTML]="value"></div>
 </ng-template>
 
 <ng-container *ngIf="data$ | async as data">
-  <section class="primary bg p-x-s p-y-m flex jc-between ai-center">
+  <section class="primary bg p-x-s p-y-m flex jc-between ai-center sticky-header">
     <h6>{{data.name}}</h6>
     <a mat-flat-button routerLink="../single/new">Add {{data.name}}</a>
   </section>
@@ -26,11 +26,11 @@
         <mat-toolbar>
           <ng-container *ngIf="allChecked$ | async as ac">
             <mat-checkbox
-                (change)="$event ? masterToggle() : null"
-                [checked]="selection.hasValue() && ac.checked"
-                [indeterminate]="selection.hasValue() && !ac.checked"
-                color="primary"
-                matTooltip="Select">
+              (change)="$event ? masterToggle() : null"
+              [checked]="selection.hasValue() && ac.checked"
+              [indeterminate]="selection.hasValue() && !ac.checked"
+              color="primary"
+              matTooltip="Select">
             </mat-checkbox>&nbsp;&nbsp;&nbsp;
           </ng-container>
 
