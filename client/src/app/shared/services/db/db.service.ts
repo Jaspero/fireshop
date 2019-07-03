@@ -31,6 +31,10 @@ export abstract class DbService {
   getDocuments(
     moduleId: string,
     pageSize?: number,
+    sort?: {
+      active: string;
+      direction: string;
+    },
     cursor?: any,
     changes?: string
   ): Observable<any[]> {

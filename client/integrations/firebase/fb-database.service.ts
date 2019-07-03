@@ -66,18 +66,18 @@ export class FbDatabaseService extends DbService {
     );
   }
 
-  getDocuments(moduleId, pageSize, cursor, changes?) {
+  getDocuments(moduleId, pageSize, sort?, cursor?, changes?) {
     if (!changes) {
       changes = ['added'];
     }
 
-    return this.collection(moduleId, pageSize, cursor)
+    return this.collection(moduleId, pageSize, sort, cursor)
       .snapshotChanges(changes)
       .pipe(take(1));
   }
 
   getStateChanges(moduleId, pageSize, cursor) {
-    return this.collection(moduleId, pageSize, cursor).stateChanges();
+    return this.collection(moduleId, pageSize, null, cursor).stateChanges();
   }
 
   getDocument(moduleId, documentId) {
@@ -129,9 +129,16 @@ export class FbDatabaseService extends DbService {
     );
   }
 
-  private collection(moduleId, pageSize, cursor) {
+  private collection(moduleId, pageSize, sort, cursor) {
     return this.afs.collection(moduleId, ref => {
       let final = ref;
+
+      if (sort) {
+        final = final.orderBy(
+          sort.active,
+          sort.direction
+        ) as CollectionReference;
+      }
 
       if (pageSize) {
         final = final.limit(pageSize) as CollectionReference;

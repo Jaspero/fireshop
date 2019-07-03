@@ -179,14 +179,29 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
 
     this.items$ = this.data$.pipe(
       switchMap(data =>
-        this.pageSize.valueChanges.pipe(
-          startWith(this.options.pageSize),
-          tap(pageSize => {
-            this.options.pageSize = pageSize;
-            this.state.setRouteData(this.options);
-          }),
-          switchMap(pageSize =>
-            this.dbService.getDocuments(data.id, pageSize, null)
+        merge(
+          this.pageSize.valueChanges.pipe(
+            startWith(this.options.pageSize),
+            tap(pageSize => {
+              this.options.pageSize = pageSize as number;
+              this.state.setRouteData(this.options);
+            })
+          ),
+
+          this.sort.sortChange.pipe(
+            tap((sort: any) => {
+              this.options.sort = sort;
+              this.state.setRouteData(this.options);
+            })
+          )
+        ).pipe(
+          switchMap(() =>
+            this.dbService.getDocuments(
+              data.id,
+              this.options.pageSize,
+              this.options.sort,
+              null
+            )
           ),
           switchMap(snapshots => {
             let cursor;
