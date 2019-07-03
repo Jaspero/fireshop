@@ -2,3 +2,43 @@
 <textarea #textarea role="textarea">
   {{cData.control.value}}
 </textarea>
+
+<ng-template #youTubeDialog>
+  <h4>Embed YouTube</h4>
+
+  <form [formGroup]="ytForm">
+    <mat-form-field class="w-full">
+      <input placeholder="Video ID" matInput formControlName="value">
+    </mat-form-field>
+
+    <div class="inline-slide-toggle">
+      <label>Full Width</label>
+      <mat-slide-toggle formControlName="fullWidth"></mat-slide-toggle>
+    </div>
+
+    <div class="inline-slide-toggle">
+      <label>Show Player Controls</label>
+      <mat-slide-toggle formControlName="showPlayerControls"></mat-slide-toggle>
+    </div>
+
+    <div class="inline-slide-toggle">
+      <label>Privacy Enhanced Mode</label>
+      <mat-slide-toggle formControlName="privacyEnhancedMode"></mat-slide-toggle>
+    </div>
+
+    <mat-form-field class="w-full">
+      <mat-select formControlName="align" placeholder="Alignment">
+        <mat-option value="left">Left</mat-option>
+        <mat-option value="center">Center</mat-option>
+        <mat-option value="right">Right</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="m-t-s flex jc-end">
+      <span class="m-r-s">
+        <button mat-button mat-dialog-close>Close</button>
+      </span>
+      <button mat-raised-button color="primary" [mat-dialog-close]="true">Save</button>
+    </div>
+  </form>
+</ng-template>
