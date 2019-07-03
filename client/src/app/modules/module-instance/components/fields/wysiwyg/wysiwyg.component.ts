@@ -82,7 +82,8 @@ export class WysiwygComponent extends FieldComponent<FieldData>
         'alignleft aligncenter alignright alignjustify',
         'bullist numlist outdent indent',
         'link',
-        'mediaLibrary'
+        'mediaLibrary',
+        'youTube'
       ].join(' | '),
       setup: editor => {
         this.editor = editor;
@@ -90,10 +91,12 @@ export class WysiwygComponent extends FieldComponent<FieldData>
           const tinyContent = editor.getContent();
           this.cData.control.setValue(tinyContent);
         });
-        editor.ui.registry.addSplitButton('youTube', {
-          icon: 'insert',
+
+        editor.ui.registry.addButton('youTube', {
+          type: 'button',
+          icon: 'image',
           tooltip: 'Embed youtube video',
-          onclick: () => {
+          onAction: () => {
             this.ytForm.reset(this.ytDefault);
             this.dialog
               .open(this.youTubeDialogTemplate, {width: '500px'})
