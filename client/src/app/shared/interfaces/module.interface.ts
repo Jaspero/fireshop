@@ -1,9 +1,9 @@
-import {SortDirection} from '@angular/material/sort';
 import {JSONSchema7} from 'json-schema';
 import {InstanceSingleState} from '../../modules/module-instance/enums/instance-single-state.enum';
 import {SegmentType} from '../../modules/module-instance/enums/segment-type.enum';
 import {PipeType} from '../enums/pipe-type.enum';
 import {ComponentType} from './component-type.enum';
+import OrderByDirection = firebase.firestore.OrderByDirection;
 
 export interface TableColumn {
   /**
@@ -44,8 +44,8 @@ export interface InstanceSegment {
 }
 
 export interface TableSort {
-  key: string;
-  direction: SortDirection;
+  active: string;
+  direction: OrderByDirection;
 }
 
 export interface SortModule {
