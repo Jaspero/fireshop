@@ -8,7 +8,7 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {filter} from 'rxjs/operators';
 import {COMPONENT_DATA} from '../../../utils/create-component-injector';
@@ -18,10 +18,6 @@ import 'tinymce/plugins/print';
 import 'tinymce/plugins/wordcount';
 import 'tinymce/plugins/link';
 
-interface WysiwygData extends FieldData {
-  disabled?: boolean;
-}
-
 declare const tinymce: any;
 
 @Component({
@@ -30,10 +26,10 @@ declare const tinymce: any;
   styleUrls: ['./wysiwyg.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WysiwygComponent extends FieldComponent<WysiwygData>
+export class WysiwygComponent extends FieldComponent<FieldData>
   implements OnInit, AfterViewInit {
   constructor(
-    @Inject(COMPONENT_DATA) public cData: WysiwygData,
+    @Inject(COMPONENT_DATA) public cData: FieldData,
     private fb: FormBuilder,
     private dialog: MatDialog
   ) {
@@ -60,6 +56,14 @@ export class WysiwygComponent extends FieldComponent<WysiwygData>
       value: ['', Validators.required],
       ...this.ytDefault
     });
+
+    this.cData.control.statusChanges.subscribe(value => {
+      if (value === 'DISABLED') {
+        tinymce.activeEditor.getBody().setAttribute('readonly', true);
+      } else if (this.cData.control.disabled) {
+        tinymce.activeEditor.getBody().setAttribute('readonly', false);
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -76,7 +80,7 @@ export class WysiwygComponent extends FieldComponent<WysiwygData>
        * Link settings
        */
       default_link_target: '_blank',
-      readonly: this.cData.disabled,
+      readonly: this.cData.control.disabled,
       toolbar: [
         'undo redo',
         'insert',
