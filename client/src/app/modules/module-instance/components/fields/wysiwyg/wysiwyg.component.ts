@@ -8,7 +8,7 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {filter} from 'rxjs/operators';
 import {COMPONENT_DATA} from '../../../utils/create-component-injector';
@@ -56,6 +56,14 @@ export class WysiwygComponent extends FieldComponent<FieldData>
       value: ['', Validators.required],
       ...this.ytDefault
     });
+
+    this.cData.control.statusChanges.subscribe(value => {
+      if (value === 'DISABLED') {
+        tinymce.activeEditor.getBody().setAttribute('readonly', true);
+      } else if (this.cData.control.disabled) {
+        tinymce.activeEditor.getBody().setAttribute('readonly', false);
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -72,7 +80,7 @@ export class WysiwygComponent extends FieldComponent<FieldData>
        * Link settings
        */
       default_link_target: '_blank',
-
+      readonly: this.cData.control.disabled,
       toolbar: [
         'undo redo',
         'insert',
