@@ -306,6 +306,18 @@ export class Parser {
       control.disable();
     }
 
+    if (definition.formatOnLoad) {
+      console.log(x => definition.formatOnLoad);
+      console.log(control);
+
+      control.setValue(control.value);
+
+      control.setValue(5);
+    }
+
+    console.log('key', key);
+    console.log('definition', definition);
+
     /**
      * We don't show labels in the table
      */
