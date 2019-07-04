@@ -18,6 +18,10 @@ import 'tinymce/plugins/print';
 import 'tinymce/plugins/wordcount';
 import 'tinymce/plugins/link';
 
+interface WysiwygData extends FieldData {
+  disabled?: boolean;
+}
+
 declare const tinymce: any;
 
 @Component({
@@ -26,10 +30,10 @@ declare const tinymce: any;
   styleUrls: ['./wysiwyg.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WysiwygComponent extends FieldComponent<FieldData>
+export class WysiwygComponent extends FieldComponent<WysiwygData>
   implements OnInit, AfterViewInit {
   constructor(
-    @Inject(COMPONENT_DATA) public cData: FieldData,
+    @Inject(COMPONENT_DATA) public cData: WysiwygData,
     private fb: FormBuilder,
     private dialog: MatDialog
   ) {
@@ -72,7 +76,7 @@ export class WysiwygComponent extends FieldComponent<FieldData>
        * Link settings
        */
       default_link_target: '_blank',
-
+      readonly: this.cData.disabled,
       toolbar: [
         'undo redo',
         'insert',
