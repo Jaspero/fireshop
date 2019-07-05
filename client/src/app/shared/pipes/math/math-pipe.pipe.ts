@@ -4,7 +4,13 @@ import {Pipe, PipeTransform} from '@angular/core';
   name: 'mathPipe'
 })
 export class MathPipe implements PipeTransform {
-  transform(value: any, args?: any): any {
-    return Math[args](value);
+  transform(value: number, ...args: any): any {
+    const [type, ...additional] = args;
+
+    if (additional) {
+      return Math[type](value, ...additional);
+    } else {
+      return Math[type](value);
+    }
   }
 }
