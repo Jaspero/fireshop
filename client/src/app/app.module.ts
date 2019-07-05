@@ -77,7 +77,7 @@ import {LayoutComponent} from './shared/components/layout/layout.component';
 import {SearchInputComponent} from './shared/components/search-input/search-input.component';
 import {DropzoneDirective} from './shared/directives/dropzone/dropzone.directive';
 import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
-import {MathPipe} from './shared/pipes/math/math-pipe.pipe';
+import {MathPipe} from './shared/pipes/math/math-pipe.';
 
 const PAGES = [
   ModuleDefinitionComponent,

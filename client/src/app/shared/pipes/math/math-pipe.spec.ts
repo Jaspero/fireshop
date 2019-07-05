@@ -1,8 +1,8 @@
-import {MathPipePipe} from './math-pipe.pipe';
+import {MathPipe} from './math-pipe.';
 
 describe('MathPipePipe', () => {
   it('create an instance', () => {
-    const pipe = new MathPipePipe();
+    const pipe = new MathPipe();
     expect(pipe).toBeTruthy();
   });
 });
