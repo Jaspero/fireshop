@@ -307,12 +307,27 @@ export class Parser {
     }
 
     if (definition.formatOnLoad) {
-      console.log(x => definition.formatOnLoad);
-      console.log(control);
+      // tslint:disable-next-line:no-eval
+      const formatOnLoadValue = eval(definition.formatOnLoad);
+      formatOnLoadValue();
+    }
 
-      control.setValue(control.value);
+    if (definition.formatOnSave) {
+      // tslint:disable-next-line:no-eval
+      const formatOnSaveValue = eval(definition.formatOnSave);
+      formatOnSaveValue();
+    }
 
-      control.setValue(5);
+    if (definition.formatOnCreate) {
+      // tslint:disable-next-line:no-eval
+      const formatOnCreateValue = eval(definition.formatOnCreate);
+      formatOnCreateValue();
+    }
+
+    if (definition.formatOnEdit) {
+      // tslint:disable-next-line:no-eval
+      const formatOnEditValue = eval(definition.formatOnEdit);
+      formatOnEditValue();
     }
 
     console.log('key', key);
