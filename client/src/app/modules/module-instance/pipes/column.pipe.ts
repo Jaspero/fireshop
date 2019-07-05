@@ -12,6 +12,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {SanitizePipe} from '@jaspero/ng-helpers';
 import {PipeType} from '../../../shared/enums/pipe-type.enum';
+import {MathPipe} from '../../../shared/pipes/math/math-pipe.';
 
 @Pipe({
   name: 'column'
@@ -23,6 +24,7 @@ export class ColumnPipe implements PipeTransform {
       [PipeType.Currency]: new CurrencyPipe('en'),
       [PipeType.Percent]: new PercentPipe('en'),
       [PipeType.Date]: new DatePipe('en'),
+      [PipeType.Math]: new MathPipe(),
       [PipeType.Json]: new JsonPipe(),
       [PipeType.Lowercase]: new LowerCasePipe(),
       [PipeType.Uppercase]: new UpperCasePipe(),
