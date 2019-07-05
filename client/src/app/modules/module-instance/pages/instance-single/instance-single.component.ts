@@ -107,6 +107,7 @@ export class InstanceSingleComponent implements OnInit {
             this.initialValue = JSON.stringify(form.getRawValue());
             this.currentValue = JSON.stringify(this.initialValue);
 
+            let editTitleKey = 'id';
             let segments: InstanceSegment[];
 
             if (
@@ -125,6 +126,10 @@ export class InstanceSingleComponent implements OnInit {
               ];
             }
 
+            if (module.layout && module.layout.editTitleKey) {
+              editTitleKey = module.layout.editTitleKey;
+            }
+
             return {
               form,
               segments: segments.map(segment =>
@@ -139,9 +144,7 @@ export class InstanceSingleComponent implements OnInit {
               module: {
                 id: module.id,
                 name: module.name,
-                editTitleKey: module.layout.editTitleKey
-                  ? module.layout.editTitleKey
-                  : module.id
+                editTitleKey
               }
             };
           })

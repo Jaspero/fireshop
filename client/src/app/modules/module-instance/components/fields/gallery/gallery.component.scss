@@ -67,6 +67,25 @@
 
 
 
+/* Dropzone
+ *============================================================================*/
+
+.jms-file-upload-dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  border: 2px dashed var(--secondary);
+  border-radius: 4px;
+  margin: 10px 0;
+
+  &.hovering {
+    border: 2px dashed var(--primary);
+  }
+}
+
+
+
 /* CDK animations
  *============================================================================*/
 

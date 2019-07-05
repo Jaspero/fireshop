@@ -26,11 +26,11 @@
         <mat-toolbar>
           <ng-container *ngIf="allChecked$ | async as ac">
             <mat-checkbox
-                (change)="$event ? masterToggle() : null"
-                [checked]="selection.hasValue() && ac.checked"
-                [indeterminate]="selection.hasValue() && !ac.checked"
-                color="primary"
-                matTooltip="Select">
+              (change)="$event ? masterToggle() : null"
+              [checked]="selection.hasValue() && ac.checked"
+              [indeterminate]="selection.hasValue() && !ac.checked"
+              color="primary"
+              matTooltip="Select">
             </mat-checkbox>&nbsp;&nbsp;&nbsp;
           </ng-container>
 

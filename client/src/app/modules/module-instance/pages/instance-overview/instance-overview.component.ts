@@ -1,12 +1,15 @@
 import {SelectionModel} from '@angular/cdk/collections';
 import {TemplatePortal} from '@angular/cdk/portal';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   Injector,
   OnInit,
+  QueryList,
   TemplateRef,
   ViewChild,
+  ViewChildren,
   ViewContainerRef
 } from '@angular/core';
 import {DocumentChangeAction} from '@angular/fire/firestore';
@@ -29,6 +32,7 @@ import {
   Subject
 } from 'rxjs';
 import {
+  filter,
   map,
   shareReplay,
   skip,
@@ -74,7 +78,8 @@ interface InstanceOverview {
   styleUrls: ['./instance-overview.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InstanceOverviewComponent extends RxDestroy implements OnInit {
+export class InstanceOverviewComponent extends RxDestroy
+  implements OnInit, AfterViewInit {
   constructor(
     private dbService: DbService,
     private moduleInstance: ModuleInstanceComponent,
@@ -88,8 +93,11 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
     super();
   }
 
-  @ViewChild(MatSort, {static: true})
-  sort: MatSort;
+  /**
+   * Using view children so we can listen for changes
+   */
+  @ViewChildren(MatSort)
+  sort: QueryList<MatSort>;
 
   @ViewChild('simpleColumn', {static: true})
   simpleColumnTemplate: TemplateRef<any>;
@@ -120,6 +128,7 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
       map(data => {
         let displayColumns: string[];
         let tableColumns: TableColumn[];
+        let sort: TableSort;
 
         if (
           data.layout &&
@@ -156,6 +165,10 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
           }));
         }
 
+        if (data.layout && data.layout.table) {
+          sort = data.layout.table.sort;
+        }
+
         /**
          * Default displayColumns
          */
@@ -168,6 +181,7 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
           schema: data.schema,
           displayColumns,
           tableColumns,
+          sort,
           definitions: data.definitions,
           sortModule: data.layout.sortModule
         };
@@ -176,18 +190,44 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
     );
 
     this.loading$ = this.state.loadingQue$.pipe(map(items => !!items.length));
+  }
 
+  ngAfterViewInit() {
     this.items$ = this.data$.pipe(
       switchMap(data =>
-        this.pageSize.valueChanges.pipe(
-          startWith(this.options.pageSize),
-          tap(pageSize => {
-            this.options.pageSize = pageSize;
+        combineLatest([
+          this.pageSize.valueChanges.pipe(startWith(this.options.pageSize)),
+          ...(data.sort
+            ? [
+                this.sort.changes.pipe(
+                  filter(change => change.last),
+                  switchMap(change => change.last.sortChange),
+                  startWith(data.sort)
+                )
+              ]
+            : [])
+        ]).pipe(
+          switchMap(([pageSize, sort]) => {
+            this.options.pageSize = pageSize as number;
+
+            if (sort) {
+              this.options.sort = sort as TableSort;
+              this.options.sort.active = Parser.standardizeKey(
+                this.options.sort.active
+              );
+            } else {
+              this.options.sort = null;
+            }
+
             this.state.setRouteData(this.options);
+
+            return this.dbService.getDocuments(
+              data.id,
+              this.options.pageSize,
+              this.options.sort,
+              null
+            );
           }),
-          switchMap(pageSize =>
-            this.dbService.getDocuments(data.id, pageSize, null)
-          ),
           switchMap(snapshots => {
             let cursor;
 
@@ -259,7 +299,17 @@ export class InstanceOverviewComponent extends RxDestroy implements OnInit {
             );
           })
         )
-      )
+      ),
+      shareReplay(1)
+    );
+
+    this.allChecked$ = combineLatest([
+      this.items$,
+      this.selection.changed.pipe(startWith({}))
+    ]).pipe(
+      map(([items]) => ({
+        checked: this.selection.selected.length === items.length
+      }))
     );
   }
 
