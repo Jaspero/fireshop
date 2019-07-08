@@ -76,19 +76,23 @@ export class ImageUploadComponent {
   }
 
   save() {
-    if (this.imageUrl.value && this.imageUrl.value !== this.value.name) {
-      return of(this.imageUrl.value).pipe(
-        tap(() => this.onChange(this.imageUrl.value))
-      );
+    if (this.value) {
+      if (this.imageUrl.value && this.imageUrl.value !== this.value.name) {
+        return of(this.imageUrl.value).pipe(
+          tap(() => this.onChange(this.imageUrl.value))
+        );
+      } else {
+        return from(
+          this.afs.upload(this.value.name, this.value, {
+            contentType: this.value.type
+          })
+        ).pipe(
+          switchMap(res => res.ref.getDownloadURL()),
+          tap(url => this.onChange(url))
+        );
+      }
     } else {
-      return from(
-        this.afs.upload(this.value.name, this.value, {
-          contentType: this.value.type
-        })
-      ).pipe(
-        switchMap(res => res.ref.getDownloadURL()),
-        tap(url => this.onChange(url))
-      );
+      return of({});
     }
   }
 }
