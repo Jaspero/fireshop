@@ -246,7 +246,12 @@ export class InstanceOverviewComponent extends RxDestroy
               this.loadMore$.pipe(
                 switchMap(() =>
                   this.dbService
-                    .getDocuments(data.id, this.options.pageSize, cursor)
+                    .getDocuments(
+                      data.id,
+                      this.options.pageSize,
+                      this.options.sort,
+                      cursor
+                    )
                     .pipe(
                       tap(snaps => {
                         if (snaps.length < this.options.pageSize) {
