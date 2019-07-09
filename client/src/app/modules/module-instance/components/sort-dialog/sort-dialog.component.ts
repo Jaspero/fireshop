@@ -5,9 +5,9 @@ import {
   Inject,
   OnInit
 } from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material';
-import {forkJoin, from, Observable} from 'rxjs';
-import {take} from 'rxjs/operators';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {forkJoin, from, Observable, of} from 'rxjs';
+import {tap} from 'rxjs/operators';
 import {SortModule} from '../../../../shared/interfaces/module.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
 import {notify} from '../../../../shared/utils/notify.operator';
@@ -27,10 +27,12 @@ export class SortDialogComponent implements OnInit {
       collection: string;
       collectionName: string;
     },
-    private dbService: DbService
+    private dbService: DbService,
+    private dialogRef: MatDialogRef<SortDialogComponent>
   ) {}
 
   items$: Observable<any>;
+  updateMap: {[key: string]: number} = {};
 
   ngOnInit() {
     this.items$ = this.dbService.getDocumentsSimple(
@@ -40,49 +42,45 @@ export class SortDialogComponent implements OnInit {
   }
 
   drop(items: any[], event: CdkDragDrop<string[]>) {
-    this.update(items, event.previousIndex, event.currentIndex);
+    this.updateMap[items[event.previousIndex].id] = event.currentIndex;
+    this.updateMap[items[event.currentIndex].id] = event.previousIndex;
     switchItemLocations(items, event.previousIndex, event.currentIndex);
   }
 
   move(up = false, items: any[], index: number) {
     const currentIndex = up ? index - 1 : index + 1;
-    this.update(items, index, currentIndex);
+    this.updateMap[items[index].id] = currentIndex;
+    this.updateMap[items[currentIndex].id] = index;
     switchItemLocations(items, index, currentIndex);
   }
 
-  update(items: any[], previousIndex: number, currentIndex: number) {
-    forkJoin([
-      from(
-        this.dbService.setDocument(
-          this.data.collection,
-          items[previousIndex].id,
-          {
-            [this.data.options.sortKey]: currentIndex
-          },
-          {
-            merge: true
-          }
+  update() {
+    return () => {
+      const data = Object.entries(this.updateMap);
+
+      if (!data.length) {
+        return of([]);
+      }
+
+      return forkJoin(
+        data.map(([id, order]) =>
+          from(
+            this.dbService.setDocument(
+              this.data.collection,
+              id,
+              {
+                [this.data.options.sortKey]: order
+              },
+              {
+                merge: true
+              }
+            )
+          )
         )
-      ),
-      from(
-        this.dbService.setDocument(
-          this.data.collection,
-          items[currentIndex].id,
-          {
-            [this.data.options.sortKey]: previousIndex
-          },
-          {
-            merge: true
-          }
-        )
-      )
-    ])
-      .pipe(
-        take(1),
-        notify({
-          success: null
-        })
-      )
-      .subscribe();
+      ).pipe(
+        notify(),
+        tap(() => this.dialogRef.close())
+      );
+    };
   }
 }
