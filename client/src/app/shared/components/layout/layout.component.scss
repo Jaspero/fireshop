@@ -45,13 +45,17 @@
  *============================================================================*/
 
 .dashboard-nav-welcome {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--light-theme);
   display: flex;
   flex-direction: column;
   justify-content: center;
   height: 128px;
   min-height: 128px;
   padding-left: 24px;
-  border-bottom: 1px solid rgba(0,0,0,.12);
+  border-bottom: 1px solid var(--light-tertiary);
 
   @media (max-width: $screen-m) {
     height: 64px;
@@ -128,6 +132,10 @@
  *============================================================================*/
 
 .dashboard-nav-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  background: var(--light-theme);
   cursor: pointer;
   white-space: nowrap;
   display: flex;
