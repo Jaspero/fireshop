@@ -7,7 +7,5 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LandingComponent {
-  constructor() {}
-
   year = new Date().getFullYear();
 }

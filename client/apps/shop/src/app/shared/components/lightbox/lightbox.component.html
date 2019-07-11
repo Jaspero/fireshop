@@ -7,6 +7,9 @@
       <button class="jfs-lightbox-nav-next" mat-icon-button (click)="next()">
         <mat-icon>arrow_right</mat-icon>
       </button>
+      <button class="jfs-lightbox-close" mat-icon-button mat-dialog-close>
+        <mat-icon>close</mat-icon>
+      </button>
       <img class="jfs-lightbox-image" [src]="imageData.images[sliderIndex]" alt="">
     </jp-slide>
   </jp-slides>

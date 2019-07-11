@@ -1,7 +1,11 @@
 :host {
+  position: fixed;
+  top: 0;
+  left: 0;
   display: block;
   height: 100vh;
-  margin: -24px;
+  width: 100vw;
+  background: black;
 }
 
 .jfs-lightbox-nav-prev {
@@ -18,6 +22,16 @@
   position: absolute;
   z-index: 1;
   top: calc(50% - 20px);
+  right: 20px;
+  background: white;
+  color: black;
+  box-shadow: 0 2px 5px 0 black;
+}
+
+.jfs-lightbox-close {
+  position: absolute;
+  z-index: 1;
+  top: 20px;
   right: 20px;
   background: white;
   color: black;
