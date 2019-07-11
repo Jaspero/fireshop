@@ -1,19 +1,17 @@
 <jp-slider *ngIf="sliderNeeded; else sliderNotNeeded">
   <jp-slides>
     <jp-slide>
-          <div class="flex jc-between">
-            <button mat-icon-button (click)="previous()">
-              <mat-icon>arrow_left</mat-icon>
-            </button>
-            <button mat-icon-button (click)="next()">
-              <mat-icon>arrow_right</mat-icon>
-            </button>
-          </div>
-          <img [src]="imageData.images[sliderIndex]" alt="img">
+      <button class="jfs-lightbox-nav-prev" mat-icon-button (click)="previous()">
+        <mat-icon>arrow_left</mat-icon>
+      </button>
+      <button class="jfs-lightbox-nav-next" mat-icon-button (click)="next()">
+        <mat-icon>arrow_right</mat-icon>
+      </button>
+      <img class="jfs-lightbox-image" [src]="imageData.images[sliderIndex]" alt="">
     </jp-slide>
   </jp-slides>
 </jp-slider>
 
 <ng-template #sliderNotNeeded>
-  <img [src]="imageData.images[0]" alt="">
+  <img class="jfs-lightbox-image" [src]="imageData.images[0]" alt="">
 </ng-template>
