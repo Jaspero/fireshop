@@ -40,6 +40,7 @@ import {
   StopPropagationModule
 } from '@jaspero/ng-helpers';
 import {JpImagePreloadModule} from '@jaspero/ng-image-preload';
+import {JpSliderModule} from '@jaspero/ng-slider';
 import {ColorPickerComponent} from '@jf/components/color-picker/color-picker.component';
 import {ConfirmationComponent} from '@jf/components/confirmation/confirmation.component';
 import {RatingScaleComponent} from '@jf/components/rating-scale/rating-scale.component';
@@ -102,6 +103,7 @@ const MODULES = [
   SanitizeModule,
   LoadClickModule,
 
+  JpSliderModule,
   JpImagePreloadModule,
   NgxJsonLdModule
 ];

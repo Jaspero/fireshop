@@ -5,6 +5,7 @@ import {
   Inject
 } from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material';
+import {ImageData} from '@jf/interfaces/image-data.interface';
 
 @Component({
   selector: 'jfs-lightbox',
@@ -13,7 +14,7 @@ import {MAT_DIALOG_DATA} from '@angular/material';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LightboxComponent implements OnInit {
-  constructor(@Inject(MAT_DIALOG_DATA) public imageData: any) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public imageData: ImageData) {}
 
   sliderNeeded: boolean;
   sliderIndex = 0;
@@ -30,7 +31,7 @@ export class LightboxComponent implements OnInit {
     }
   }
 
-  prev() {
+  previous() {
     if (this.sliderIndex <= 0) {
       this.sliderIndex = this.imageData.images.length - 1;
     } else {
