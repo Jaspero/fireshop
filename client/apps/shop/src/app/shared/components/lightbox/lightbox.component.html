@@ -1,16 +1,16 @@
-<jp-slider *ngIf="sliderNeeded; else sliderNotNeeded">
+<jp-slider [options]="{initialSlide: 1}" *ngIf="sliderNeeded; else sliderNotNeeded">
+  <button jpSlideArrow="left" class="jfs-lightbox-nav-prev" mat-icon-button>
+    <mat-icon>arrow_left</mat-icon>
+  </button>
+  <button jpSlideArrow="right" class="jfs-lightbox-nav-next" mat-icon-button>
+    <mat-icon>arrow_right</mat-icon>
+  </button>
+  <button class="jfs-lightbox-close" mat-icon-button mat-dialog-close>
+    <mat-icon>close</mat-icon>
+  </button>
   <jp-slides>
-    <jp-slide>
-      <button class="jfs-lightbox-nav-prev" mat-icon-button (click)="previous()">
-        <mat-icon>arrow_left</mat-icon>
-      </button>
-      <button class="jfs-lightbox-nav-next" mat-icon-button (click)="next()">
-        <mat-icon>arrow_right</mat-icon>
-      </button>
-      <button class="jfs-lightbox-close" mat-icon-button mat-dialog-close>
-        <mat-icon>close</mat-icon>
-      </button>
-      <img class="jfs-lightbox-image" [src]="data.images[sliderIndex]" [attr.alt]="'Gallery Image '  + sliderIndex">
+    <jp-slide *ngFor="let img of data.images">
+      <img class="jfs-lightbox-image" [src]="img" [attr.alt]="'Gallery Image '  + sliderIndex">
     </jp-slide>
   </jp-slides>
 </jp-slider>

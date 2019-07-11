@@ -21,20 +21,4 @@ export class LightboxComponent implements OnInit {
   ngOnInit() {
     this.sliderNeeded = this.data.images.length > 1;
   }
-
-  next() {
-    if (this.sliderIndex >= this.data.images.length - 1) {
-      this.sliderIndex = 0;
-    } else {
-      this.sliderIndex++;
-    }
-  }
-
-  previous() {
-    if (this.sliderIndex <= 0) {
-      this.sliderIndex = this.data.images.length - 1;
-    } else {
-      this.sliderIndex--;
-    }
-  }
 }
