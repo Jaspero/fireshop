@@ -1,4 +1,4 @@
-<jp-slider [options]="{initialSlide: 1}" *ngIf="sliderNeeded; else sliderNotNeeded">
+<jp-slider [options]="{initialSlide: sliderIndex}" *ngIf="sliderNeeded; else sliderNotNeeded">
   <button jpSlideArrow="left" class="jfs-lightbox-nav-prev" mat-icon-button>
     <mat-icon>arrow_left</mat-icon>
   </button>
@@ -9,8 +9,8 @@
     <mat-icon>close</mat-icon>
   </button>
   <jp-slides>
-    <jp-slide *ngFor="let img of data.images">
-      <img class="jfs-lightbox-image" [src]="img" [attr.alt]="'Gallery Image '  + sliderIndex">
+    <jp-slide *ngFor="let img of data.images; index as index;">
+      <img class="jfs-lightbox-image" [src]="img" [attr.alt]="'Gallery Image '  + index">
     </jp-slide>
   </jp-slides>
 </jp-slider>
