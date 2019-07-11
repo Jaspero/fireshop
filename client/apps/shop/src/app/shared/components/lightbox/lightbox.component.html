@@ -10,11 +10,11 @@
       <button class="jfs-lightbox-close" mat-icon-button mat-dialog-close>
         <mat-icon>close</mat-icon>
       </button>
-      <img class="jfs-lightbox-image" [src]="imageData.images[sliderIndex]" alt="">
+      <img class="jfs-lightbox-image" [src]="data.images[sliderIndex]" [attr.alt]="'Gallery Image '  + sliderIndex">
     </jp-slide>
   </jp-slides>
 </jp-slider>
 
 <ng-template #sliderNotNeeded>
-  <img class="jfs-lightbox-image" [src]="imageData.images[0]" alt="">
+  <img class="jfs-lightbox-image" [src]="data.images[0]" alt="Lightbox image">
 </ng-template>
