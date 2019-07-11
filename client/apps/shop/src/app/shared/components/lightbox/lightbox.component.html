@@ -1,0 +1,16 @@
+<div *ngIf="sliderNeeded; else sliderNotNeeded">
+  <div>
+    <button mat-button (click)="prev()">
+      Prev
+    </button>
+    <button mat-button (click)="next()">
+      Next
+    </button>
+    <img [src]="imageData.images[sliderIndex]" alt="">
+  </div>
+</div>
+
+
+<ng-template #sliderNotNeeded>
+  <img [src]="imageData.images[0]" alt="">
+</ng-template>

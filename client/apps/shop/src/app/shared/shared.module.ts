@@ -54,6 +54,7 @@ import {ReviewsDialogComponent} from './components/reviews/reviews-dialog.compon
 import {SearchComponent} from './components/search/search.component';
 import {LibraryImageDirective} from '@jf/directives/library-image.directive';
 import {StripePipe} from '@jf/pipes/stripe.pipe';
+import {LightboxComponent} from './components/lightbox/lightbox.component';
 
 const MODULES = [
   CommonModule,
@@ -111,7 +112,8 @@ const ENTRY_COMPONENTS = [
   CartComponent,
   SearchComponent,
   ReviewsDialogComponent,
-  RatingScaleComponent
+  RatingScaleComponent,
+  LightboxComponent
 ];
 const COMPONENTS = [
   NetworkWidgetComponent,
