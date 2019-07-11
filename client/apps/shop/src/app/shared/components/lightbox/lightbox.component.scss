@@ -9,8 +9,8 @@
 }
 
 .jfs-lightbox-nav-prev {
-  position: absolute;
-  z-index: 1;
+  position: fixed;
+  z-index: 2;
   top: calc(50% - 20px);
   left: 20px;
   background: white;
@@ -19,8 +19,8 @@
 }
 
 .jfs-lightbox-nav-next {
-  position: absolute;
-  z-index: 1;
+  position: fixed;
+  z-index: 2;
   top: calc(50% - 20px);
   right: 20px;
   background: white;
@@ -29,8 +29,8 @@
 }
 
 .jfs-lightbox-close {
-  position: absolute;
-  z-index: 1;
+  position: fixed;
+  z-index: 2;
   top: 20px;
   right: 20px;
   background: white;
