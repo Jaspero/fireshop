@@ -10,7 +10,7 @@ import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {SwUpdate} from '@angular/service-worker';
 import {BROWSER_CONFIG} from '@jf/consts/browser-config.const';
 import {interval, Observable} from 'rxjs';
-import {filter, map} from 'rxjs/operators';
+import {filter, map, take, takeUntil} from 'rxjs/operators';
 import {environment} from '../environments/environment';
 import {CartComponent} from './shared/components/cart/cart.component';
 import {LoginSignupDialogComponent} from './shared/components/login-signup-dialog/login-signup-dialog.component';
@@ -131,11 +131,13 @@ export class AppComponent implements OnInit {
     /**
      * Checks for updates every 5 minutes
      */
-    interval(300000).subscribe(() => {
-      this.swUpdate.checkForUpdate();
-    });
+    interval(300000)
+      .pipe(takeUntil(this.swUpdate.available))
+      .subscribe(() => {
+        this.swUpdate.checkForUpdate();
+      });
 
-    this.swUpdate.available.subscribe(() => {
+    this.swUpdate.available.pipe(take(1)).subscribe(() => {
       this.snackBar.openFromComponent(UpdateAvailableComponent);
     });
   }
