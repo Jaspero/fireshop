@@ -45,6 +45,7 @@
     "express": "4.16.4",
     "firebase": "6.0.2",
     "firebase-admin": "8.2.0",
+    "@jaspero/ng-slider": "2.1.1",
     "firebase-functions": "3.1.0",
     "handlebars": "4.1.2",
     "json2csv": "4.5.1",
