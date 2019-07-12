@@ -44,7 +44,7 @@ export class DateFieldComponent extends FieldComponent<DateData>
   entryControl: FormControl;
 
   ngOnInit() {
-    this.state.uploadComponents.push(this);
+    this.state.saveComponents.push(this);
     this.startDate = this.cData.startAt
       ? new Date(this.cData.startAt)
       : new Date();

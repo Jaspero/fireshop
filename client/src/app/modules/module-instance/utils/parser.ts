@@ -10,6 +10,7 @@ import {CompiledField} from '../interfaces/compiled-field.interface';
 import {Control} from '../interfaces/control.type';
 import {SchemaValidators} from '../validators/schema-validators.class';
 import {createComponentInjector} from './create-component-injector';
+import {safeEval} from './safe-eval';
 import {schemaToComponent} from './schema-to-component';
 
 export interface PropertyDefinition {
@@ -55,6 +56,11 @@ export interface Pointer {
   control: Control;
   validation: any;
 
+  formatOnSave?: (item: any, dataSet?: any) => any;
+  formatOnLoad?: (item: any) => any;
+  formatOnCreate?: (item: any, dataSet?: any) => any;
+  formatOnEdit?: (item: any, dataSet?: any) => any;
+
   /**
    * Arrays can have these properties
    */
@@ -72,7 +78,8 @@ export class Parser {
   constructor(
     public schema: any,
     public injector: Injector,
-    public state: InstanceSingleState
+    public state: InstanceSingleState,
+    public definitions: ModuleDefinitions = {}
   ) {}
 
   form: FormGroup;
@@ -261,10 +268,25 @@ export class Parser {
             break;
         }
 
+        const pointerKey = base + key;
+        const definition = this.getFromDefinitions(pointerKey) || {};
+
         group.form[key] = parsed.control;
-        group.pointers[base + key] = {
+        group.pointers[pointerKey] = {
           key,
           type: value.type,
+          ...(definition.formatOnLoad
+            ? {formatOnLoad: safeEval(definition.formatOnLoad)}
+            : {}),
+          ...(definition.formatOnSave
+            ? {formatOnSave: safeEval(definition.formatOnSave)}
+            : {}),
+          ...(definition.formatOnCreate
+            ? {formatOnCreate: safeEval(definition.formatOnCreate)}
+            : {}),
+          ...(definition.formatOnEdit
+            ? {formatOnEdit: safeEval(definition.formatOnEdit)}
+            : {}),
           ...parsed
         };
 
@@ -305,33 +327,6 @@ export class Parser {
     if (definition.disableOn && definition.disableOn === this.state) {
       control.disable();
     }
-
-    if (definition.formatOnLoad) {
-      // tslint:disable-next-line:no-eval
-      const formatOnLoadValue = eval(definition.formatOnLoad);
-      formatOnLoadValue();
-    }
-
-    if (definition.formatOnSave) {
-      // tslint:disable-next-line:no-eval
-      const formatOnSaveValue = eval(definition.formatOnSave);
-      formatOnSaveValue();
-    }
-
-    if (definition.formatOnCreate) {
-      // tslint:disable-next-line:no-eval
-      const formatOnCreateValue = eval(definition.formatOnCreate);
-      formatOnCreateValue();
-    }
-
-    if (definition.formatOnEdit) {
-      // tslint:disable-next-line:no-eval
-      const formatOnEditValue = eval(definition.formatOnEdit);
-      formatOnEditValue();
-    }
-
-    console.log('key', key);
-    console.log('definition', definition);
 
     /**
      * We don't show labels in the table
@@ -431,7 +426,10 @@ export class Parser {
     }
   }
 
-  private getFromDefinitions(key: string, definitions: ModuleDefinitions) {
+  private getFromDefinitions(
+    key: string,
+    definitions: ModuleDefinitions = this.definitions
+  ) {
     return definitions[Parser.standardizeKey(key)];
   }
 }

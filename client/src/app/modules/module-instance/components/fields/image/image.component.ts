@@ -45,7 +45,7 @@ export class ImageComponent extends FieldComponent<ImageData>
 
   ngOnInit() {
     this.imageUrl = new FormControl(this.cData.control.value);
-    this.state.uploadComponents.push(this);
+    this.state.saveComponents.push(this);
   }
 
   openFileUpload() {

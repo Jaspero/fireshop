@@ -72,7 +72,7 @@ export class GalleryComponent extends FieldComponent<GalleryData>
   toRemove = [];
 
   ngOnInit() {
-    this.state.uploadComponents.push(this);
+    this.state.saveComponents.push(this);
   }
 
   toggleHover(event: boolean) {
@@ -109,7 +109,7 @@ export class GalleryComponent extends FieldComponent<GalleryData>
   }
 
   openSortImages() {
-    this.state.uploadComponents.push(this);
+    this.state.saveComponents.push(this);
     this.dialog.open(this.imagesSort, {
       width: '800px'
     });

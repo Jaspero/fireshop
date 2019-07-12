@@ -22,7 +22,7 @@ export class StateService {
    * Array of components that need to
    * run save() methods on single instance
    */
-  uploadComponents: any[] = [];
+  saveComponents: any[] = [];
 
   /**
    * Holds state information for all

@@ -5,7 +5,7 @@ import {
   Injector,
   OnInit
 } from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 // @ts-ignore
 import * as nanoid from 'nanoid';
@@ -42,6 +42,7 @@ interface Instance {
     name: string;
     editTitleKey: string;
   };
+  parser: Parser;
   segments: CompiledSegment[];
 }
 
@@ -70,7 +71,7 @@ export class InstanceSingleComponent implements OnInit {
   data$: Observable<Instance>;
 
   ngOnInit() {
-    this.state.uploadComponents = [];
+    this.state.saveComponents = [];
 
     this.data$ = this.moduleInstance.module$.pipe(
       switchMap(module =>
@@ -97,7 +98,8 @@ export class InstanceSingleComponent implements OnInit {
               this.injector,
               this.currentState === ViewState.Edit
                 ? InstanceSingleState.Edit
-                : InstanceSingleState.Create
+                : InstanceSingleState.Create,
+              module.definitions
             );
             const form = parser.buildForm(value);
 
@@ -132,6 +134,7 @@ export class InstanceSingleComponent implements OnInit {
 
             return {
               form,
+              parser,
               segments: segments.map(segment =>
                 compileSegment(
                   segment,
@@ -156,11 +159,38 @@ export class InstanceSingleComponent implements OnInit {
 
   save(instance: Instance) {
     return () => {
+      const preSaveData = instance.form.getRawValue();
       const toExecute = [];
 
-      if (this.state.uploadComponents) {
-        toExecute.push(...this.state.uploadComponents.map(comp => comp.save()));
+      if (this.state.saveComponents) {
+        toExecute.push(...this.state.saveComponents.map(comp => comp.save()));
       }
+
+      Object.values(instance.parser.pointers).forEach(entry => {
+        /**
+         * TODO:
+         * For the moment formatOn methods are
+         * only supported on FormControls.
+         * We might want to expand on this later on.
+         */
+        if (entry.control instanceof FormControl) {
+          let value = entry.control.value;
+
+          if (entry.formatOnSave) {
+            value = entry.formatOnSave(value, preSaveData);
+          }
+
+          if (this.currentState === ViewState.Edit && entry.formatOnEdit) {
+            value = entry.formatOnEdit(value, preSaveData);
+          } else if (entry.formatOnCreate) {
+            value = entry.formatOnCreate(value, preSaveData);
+          }
+
+          if (value !== entry.control.value) {
+            entry.control.setValue(value);
+          }
+        }
+      });
 
       return (toExecute.length ? forkJoin(toExecute) : of([])).pipe(
         switchMap(() => {
