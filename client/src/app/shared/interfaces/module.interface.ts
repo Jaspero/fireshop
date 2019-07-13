@@ -74,6 +74,10 @@ export interface ComponentDefinition {
 
 export interface ModuleDefinition {
   component?: ComponentDefinition;
+  formatOnSave?: string;
+  formatOnCreate?: string;
+  formatOnEdit?: string;
+  formatOnLoad?: string;
   label?: string;
   hint?: string;
   defaultValue?: any;
