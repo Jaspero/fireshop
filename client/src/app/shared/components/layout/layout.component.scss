@@ -17,14 +17,14 @@
 
 .dashboard-nav {
   position: fixed;
-  z-index: 2;
+  z-index: 3;
   left: 0;
   top: 0;
   width: 256px;
   height: 100%;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
   background: white;
   box-shadow: 0 0 6px 0 rgba(132,146,166,.2);
@@ -45,9 +45,6 @@
  *============================================================================*/
 
 .dashboard-nav-welcome {
-  position: sticky;
-  top: 0;
-  z-index: 1;
   background: var(--light-theme);
   display: flex;
   flex-direction: column;
@@ -93,6 +90,16 @@
 /* Navigation main items
  *============================================================================*/
 
+.dashboard-nav-scrollable {
+  height: calc(100vh - 128px - 30px); // - nav header - nav footer
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  @media (max-width: $screen-m) {
+    height: calc(100vh - 64px - 30px); // - nav header - nav footer
+  }
+}
+
 .dashboard-nav-item {
   cursor: pointer;
   white-space: nowrap;
@@ -132,9 +139,6 @@
  *============================================================================*/
 
 .dashboard-nav-footer {
-  position: sticky;
-  bottom: 0;
-  z-index: 1;
   background: var(--light-theme);
   cursor: pointer;
   white-space: nowrap;

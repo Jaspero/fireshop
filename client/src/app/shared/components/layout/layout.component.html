@@ -6,27 +6,27 @@
     <mat-icon class="dashboard-nav-welcome-menu" role="button" aria-label="Menu" (click)="toggleMenu()">menu</mat-icon>
   </section>
 
-  <a class="dashboard-nav-item" routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">
-    <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">dashboard</mat-icon>
-    <span class="dashboard-nav-item-text">Dashboard</span>
-  </a>
+  <div class="dashboard-nav-scrollable">
+    <a class="dashboard-nav-item" routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">
+      <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">dashboard</mat-icon>
+      <span class="dashboard-nav-item-text">Dashboard</span>
+    </a>
 
-  <a class="dashboard-nav-item" routerLink="/settings" routerLinkActive="active" (click)="closeMenu()">
-    <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">settings</mat-icon>
-    <span class="dashboard-nav-item-text">Settings</span>
-  </a>
+    <a class="dashboard-nav-item" routerLink="/settings" routerLinkActive="active" (click)="closeMenu()">
+      <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">settings</mat-icon>
+      <span class="dashboard-nav-item-text">Settings</span>
+    </a>
 
-  <a class="dashboard-nav-item" *ngFor="let module of state.modules$ | async" [routerLink]="['/m', module.id, 'overview']" routerLinkActive="active" (click)="closeMenu()">
-    <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">{{module.layout?.icon || 'folder_open'}}</mat-icon>
-    <span class="dashboard-nav-item-text">{{module.name}}</span>
-  </a>
+    <a class="dashboard-nav-item" *ngFor="let module of state.modules$ | async" [routerLink]="['/m', module.id, 'overview']" routerLinkActive="active" (click)="closeMenu()">
+      <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">{{module.layout?.icon || 'folder_open'}}</mat-icon>
+      <span class="dashboard-nav-item-text">{{module.name}}</span>
+    </a>
 
-  <a class="dashboard-nav-item" routerLink="/module-definition/overview" routerLinkActive="active" (click)="closeMenu()">
-    <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">view_module</mat-icon>
-    <span class="dashboard-nav-item-text">Modules</span>
-  </a>
-
-  <hr aria-hidden="true" class="flex1">
+    <a class="dashboard-nav-item" routerLink="/module-definition/overview" routerLinkActive="active" (click)="closeMenu()">
+      <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">view_module</mat-icon>
+      <span class="dashboard-nav-item-text">Modules</span>
+    </a>
+  </div>
 
   <a class="dashboard-nav-footer" (click)="logOut()">
     <mat-icon aria-hidden="true" class="dashboard-nav-footer-icon">power_settings_new</mat-icon>
