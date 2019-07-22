@@ -1,7 +1,6 @@
 import 'zone.js/dist/zone-node';
 import {enableProdMode} from '@angular/core';
 import {ngExpressEngine} from '@nguniversal/express-engine';
-import {provideModuleMap} from '@nguniversal/module-map-ngfactory-loader';
 import {REQUEST, RESPONSE} from '@nguniversal/express-engine/tokens';
 import {json, urlencoded} from 'body-parser';
 import * as compression from 'compression';
@@ -38,16 +37,12 @@ app.use(json());
 app.use(urlencoded({extended: true}));
 
 const DIST_FOLDER = './dist/public/shop';
-const {
-  AppServerModuleNgFactory,
-  LAZY_MODULE_MAP
-} = require('./../dist/server/main');
+const {AppServerModuleNgFactory} = require('./../dist/server/main');
 
 app.engine('html', (_, options, callback) =>
   ngExpressEngine({
     bootstrap: AppServerModuleNgFactory,
     providers: [
-      provideModuleMap(LAZY_MODULE_MAP),
       {
         provide: REQUEST,
         useValue: options.req
