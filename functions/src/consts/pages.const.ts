@@ -45,7 +45,7 @@ export const PAGES: PageData[] = [
 
       // TODO: Structured data and sending state to client
       document.title = data.name;
-      (document.querySelector(`meta[name=description]`) as any).content = data.shortDescription;
+      document.querySelector(`meta[name=description]`).content = data.shortDescription;
     }
   }
 ];
