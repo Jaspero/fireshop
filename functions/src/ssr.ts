@@ -1,67 +1,61 @@
-import 'zone.js/dist/zone-node';
-import {enableProdMode} from '@angular/core';
-import {ngExpressEngine} from '@nguniversal/express-engine';
-import {REQUEST, RESPONSE} from '@nguniversal/express-engine/tokens';
-import {json, urlencoded} from 'body-parser';
 import * as compression from 'compression';
 import * as domino from 'domino';
 import * as express from 'express';
 import * as cors from 'cors';
 import * as functions from 'firebase-functions';
+import {readFileSync} from 'fs';
+import {constants} from 'http2';
+import {DEFAULT_META, PAGE_PREFIX, PAGE_SUFFIX, PAGES} from './consts/pages.const';
 
-const win = domino.createWindow('');
-
-// Polyfills required for Firebase
-global['WebSocket'] = require('ws');
-global['XMLHttpRequest'] = require('xhr2');
-global['window'] = win;
-global['document'] = win.document;
-global['DOMTokenList'] = win['DOMTokenList'];
-
-/**
- * hack for protobufjs
- * https://github.com/protobufjs/protobuf.js/blob/master/src/util/minimal.js
- */
-global['window']['process'] = {
-  versions: {
-    node: true
-  }
-};
-
-enableProdMode();
+const DIST_FOLDER = './dist/public/shop/index.html';
+const index = readFileSync(DIST_FOLDER).toString();
 
 const app = express();
 app.use(compression());
-app.use(cors());
-app.use(json());
-app.use(urlencoded({extended: true}));
-
-const DIST_FOLDER = './dist/public/shop';
-const {AppServerModuleNgFactory} = require('./../dist/server/main');
-
-app.engine('html', (_, options, callback) =>
-  ngExpressEngine({
-    bootstrap: AppServerModuleNgFactory,
-    providers: [
-      {
-        provide: REQUEST,
-        useValue: options.req
-      },
-      {
-        provide: RESPONSE,
-        useValue: options.req.res
-      }
-    ]
-  })(_, options, callback)
-);
-
 app.use(cors({origin: true}));
-app.set('view engine', 'html');
-app.set('views', DIST_FOLDER);
 
-app.get('*.*', express.static(DIST_FOLDER, {maxAge: '1y'}));
-app.get('*', (req, res) => {
-  res.render('index', {req});
+app.get('*', async (req, res) => {
+
+  const document = domino.createDocument(index, true);
+
+  res.setHeader('Content-Type', 'text/html');
+
+  let status = constants.HTTP_STATUS_OK;
+  let foundPage;
+  let capture;
+
+  for (const page of PAGES) {
+    const matcher = new RegExp(page.match);
+    const match = req.url.match(matcher);
+
+    if (match) {
+      foundPage = page;
+      capture = match;
+      break;
+    }
+  }
+
+  if (!foundPage) {
+    status = constants.HTTP_STATUS_NOT_FOUND;
+  }
+
+  if (foundPage.operation) {
+    try {
+      await foundPage.operation(capture, document);
+    } catch (e) {
+      console.log('e', e);
+      // TODO: Redirect to 404
+    }
+  } else {
+    document.title = PAGE_PREFIX + foundPage.name + PAGE_SUFFIX;
+    Object.entries(foundPage.meta || DEFAULT_META).forEach(([key, value]) => {
+      (document.querySelector(`meta[name=${key}]`) as any).content = value;
+    });
+  }
+
+  return res
+    .status(status)
+    .send(document.documentElement.innerHTML);
 });
 
 export const ssr = functions.https.onRequest(app);
