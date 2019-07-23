@@ -5,10 +5,10 @@ import * as express from 'express';
 import * as functions from 'firebase-functions';
 import {readFileSync} from 'fs';
 import {constants} from 'http2';
+import {join} from 'path';
 import {DEFAULT_META, PAGE_PREFIX, PAGE_SUFFIX, PAGES} from './consts/pages.const';
 
-const DIST_FOLDER = './../dist/public/shop/index.html';
-const index = readFileSync(DIST_FOLDER).toString();
+const index = readFileSync(join(__dirname, '../dist/public/shop/index.html')).toString();
 
 const app = express();
 app.use(compression());
