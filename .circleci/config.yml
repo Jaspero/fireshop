@@ -46,9 +46,12 @@ jobs:
           paths:
             - package.json
             - client/package.json
+            - functions/package.json
             - package-lock.json
             - firebase.json
-            - functions
+            - functions/node_modules
+            - functions/dist
+            - functions/lib
             - firestore.indexes.json
             - firestore.rules
             - .firebaserc
