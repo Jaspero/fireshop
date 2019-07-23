@@ -7,7 +7,7 @@ import {readFileSync} from 'fs';
 import {constants} from 'http2';
 import {DEFAULT_META, PAGE_PREFIX, PAGE_SUFFIX, PAGES} from './consts/pages.const';
 
-const DIST_FOLDER = './../dist/public/shop/index.html';
+const DIST_FOLDER = './index.html';
 const index = readFileSync(DIST_FOLDER).toString();
 
 const app = express();
