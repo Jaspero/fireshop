@@ -5,7 +5,7 @@
   "scripts": {
     "target-setup": "firebase target:apply hosting shop jp-fireshop && firebase target:apply hosting admin jp-fireshop-admin",
     "build-indexes": "node build-indexes.js",
-    "build": "npm --prefix client run build:all && npm --prefix functions run build && cp functions/dist/public/shop/index.html functions/lib/",
+    "build": "npm --prefix client run build:all && npm --prefix functions run build && cp functions/dist/public/shop/index.html functions/",
     "lint": "npm --prefix client run lint && npm --prefix functions run lint",
     "deploy": "firebase deploy --only storage --only firestore --only functions:ssr,functions:userCreated,functions:userDeleted,functions:fileCreated,functions:fileDeleted,functions:orderCreated,functions:exportData,functions:importData,functions:similarProducts,functions:stripe,functions:instagram,hosting"
   },

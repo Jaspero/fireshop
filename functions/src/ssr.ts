@@ -1,7 +1,7 @@
 import * as compression from 'compression';
+import * as cors from 'cors';
 import * as domino from 'domino';
 import * as express from 'express';
-import * as cors from 'cors';
 import * as functions from 'firebase-functions';
 import {readFileSync} from 'fs';
 import {constants} from 'http2';
