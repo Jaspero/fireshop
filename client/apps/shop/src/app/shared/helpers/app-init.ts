@@ -8,13 +8,18 @@ import {FirestoreStaticDocuments} from '@jf/enums/firestore-static-documents.enu
 import {CurrencySettings} from '@jf/interfaces/currency-settings.interface';
 import {take} from 'rxjs/operators';
 import {NetworkService} from '../services/network/network.service';
+import {StateService} from '../services/state/state.service';
 
 export async function appInit(
   pId,
   networkService: NetworkService,
   jpPreloadService: JpPreloadService,
-  afs: AngularFirestore
+  afs: AngularFirestore,
+  stateService: StateService
 ) {
+
+  stateService.serverState = window['aServerState'] || {};
+
   if (isPlatformBrowser(pId)) {
     networkService.init();
     jpPreloadService.initialize();

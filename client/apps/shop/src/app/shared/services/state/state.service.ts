@@ -54,4 +54,5 @@ export class StateService {
   });
 
   structuredData: any = {};
+  serverState: any;
 }

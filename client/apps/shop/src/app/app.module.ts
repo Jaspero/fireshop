@@ -23,6 +23,7 @@ import {AppComponent} from './app.component';
 import {UpdateAvailableComponent} from './shared/components/update-available/update-available.component';
 import {appInit} from './shared/helpers/app-init';
 import {NetworkService} from './shared/services/network/network.service';
+import {StateService} from './shared/services/state/state.service';
 import {SharedModule} from './shared/shared.module';
 
 export function init(injector: Injector) {
@@ -31,7 +32,8 @@ export function init(injector: Injector) {
       injector.get(PLATFORM_ID),
       injector.get(NetworkService),
       injector.get(JpPreloadService),
-      injector.get(AngularFirestore)
+      injector.get(AngularFirestore),
+      injector.get(StateService)
     );
   };
 }

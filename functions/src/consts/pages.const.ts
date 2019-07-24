@@ -1,4 +1,5 @@
 import * as admin from 'firebase-admin';
+import {setServerState} from '../utils/set-server-state';
 
 export const PAGE_SUFFIX = ' - Jaspero Fireshop';
 export const PAGE_PREFIX = '';
@@ -43,9 +44,10 @@ export const PAGES: PageData[] = [
 
       const data = product.data();
 
-      // TODO: Structured data and sending state to client
-      document.title = data.name;
+      // TODO: Structured data
+      document.title = PAGE_PREFIX + data.name + PAGE_SUFFIX;
       document.querySelector(`meta[name=description]`).content = data.shortDescription;
+      setServerState({product: data}, document);
     }
   }
 ];

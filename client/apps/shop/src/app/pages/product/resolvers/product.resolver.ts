@@ -5,7 +5,7 @@ import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Product} from '@jf/interfaces/product.interface';
 import {fromStripeFormat} from '@jf/utils/stripe-format';
-import {Observable, throwError} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {catchError, finalize, map} from 'rxjs/operators';
 import {MetaResolver} from '../../../shared/resolvers/meta.resolver';
 import {StructuredDataResolver} from '../../../shared/resolvers/structured-data.resolver';
@@ -22,8 +22,12 @@ export class ProductResolver implements Resolve<Observable<Product>> {
   ) {}
 
   resolve(route: ActivatedRouteSnapshot) {
-    this.state.loading$.next(true);
 
+    if (this.state.serverState.product && this.state.serverState.product.id === route.params.id) {
+      return of(this.state.serverState.product)
+    }
+
+    this.state.loading$.next(true);
     return this.afs
       .doc<Product>(
         `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}/${
