@@ -159,9 +159,9 @@ export class GalleryUploadComponent extends RxDestroy
     this.fileEl.nativeElement.click();
   }
 
-  filesUploaded(fileList: FileList) {
+  filesUploaded(el: HTMLInputElement) {
     forkJoin(
-      Array.from(fileList).map(file =>
+      Array.from(el.files).map(file =>
         readFile(file).pipe(
           map(data => ({
             data,
@@ -174,6 +174,8 @@ export class GalleryUploadComponent extends RxDestroy
       this.values.push(...files);
       this.cdr.detectChanges();
     });
+
+    el.value = '';
   }
 
   /**

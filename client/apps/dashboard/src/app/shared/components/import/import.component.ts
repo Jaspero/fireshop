@@ -33,10 +33,13 @@ export class ImportComponent {
 
   data: ImportResponse;
 
-  selectFile(event) {
-    const file = event.target.files[0];
+  selectFile(el: HTMLInputElement) {
+    const file = el.files[0];
     const formData = new FormData();
     formData.append('file', file, file.name);
+
+    el.value = '';
+
     this.http
       .post(`${environment.restApi}/importData`, formData, {
         params: {

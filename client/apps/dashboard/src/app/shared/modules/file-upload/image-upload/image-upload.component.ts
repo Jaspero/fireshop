@@ -62,8 +62,9 @@ export class ImageUploadComponent {
     this.fileEl.nativeElement.click();
   }
 
-  filesImage(file) {
-    this.value = Array.from(file)[0] as File;
+  filesImage(el: HTMLInputElement) {
+    this.value = Array.from(el.files)[0] as File;
+    el.value = '';
     this.disInput = true;
     this.imageUrl.setValue(this.value['name']);
   }

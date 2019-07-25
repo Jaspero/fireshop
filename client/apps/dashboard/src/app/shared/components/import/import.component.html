@@ -3,7 +3,7 @@
   <span>Import</span>
 </button>
 
-<input type="file" hidden #file (change)="selectFile($event)">
+<input type="file" hidden #file (change)="selectFile($event.target)">
 
 <ng-template #overview>
   <div *ngIf="data">
