@@ -67,6 +67,8 @@ export class ImportComponent {
     formData.append('collection', this.collection);
     formData.append('schema', JSON.stringify(this.schema));
 
+    event.target.value = '';
+
     for (const key in form) {
       if (form.hasOwnProperty(key)) {
         formData.append(key, form[key]);

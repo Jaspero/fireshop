@@ -52,7 +52,7 @@
 </ng-template>
 
 <!--Upload from disk-->
-<input #file type="file" multiple hidden (change)="filesUploaded($event.target.files)">
+<input #file type="file" multiple hidden (change)="filesUploaded($event.target)">
 
 <ng-template #imagesSort>
   <h6><span class="fs-small">Sort images</span></h6>

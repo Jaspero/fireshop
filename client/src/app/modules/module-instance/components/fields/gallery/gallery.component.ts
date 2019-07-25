@@ -130,9 +130,9 @@ export class GalleryComponent extends FieldComponent<GalleryData>
     this.cdr.detectChanges();
   }
 
-  filesUploaded(fileList: FileList) {
+  filesUploaded(el: HTMLInputElement) {
     forkJoin(
-      Array.from(fileList).map(file =>
+      Array.from(el.files).map(file =>
         readFile(file).pipe(
           map(data => ({
             data,
@@ -147,6 +147,8 @@ export class GalleryComponent extends FieldComponent<GalleryData>
       this.cData.control.setValue(value);
       this.cdr.detectChanges();
     });
+
+    el.value = '';
   }
 
   entered(event: CdkDragEnter) {
