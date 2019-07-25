@@ -23,6 +23,9 @@ export class ProductResolver implements Resolve<Observable<Product>> {
 
   resolve(route: ActivatedRouteSnapshot) {
 
+    // tslint:disable-next-line:no-console
+    console.log('this.state.serverState', this.state.serverState);
+
     if (this.state.serverState.product && this.state.serverState.product.id === route.params.id) {
       return of(this.state.serverState.product)
     }
