@@ -37,10 +37,10 @@
 .jc-between { justify-content: space-between; }
 .jc-evenly  { justify-content: space-evenly; }
 
-.flex1      { flex: 1; }
-.flex2      { flex: 2; }
-.flex3      { flex: 3; }
-.flex4      { flex: 4; }
+.flex-1     { flex: 1; }
+.flex-2     { flex: 2; }
+.flex-3     { flex: 3; }
+.flex-4     { flex: 4; }
 
 
 
@@ -95,17 +95,6 @@
 @each $group-name, $group in $colors-themes {
   .c-#{$group-name} {
     color: var(--#{$group-name}-theme);
-  }
-}
-
-
-
-/* Fonts
- *============================================================================*/
-
-@each $group-name, $group in $fonts {
-  .font-#{$group-name} {
-    font-family: var(--font-#{$group-name});
   }
 }
 
@@ -203,16 +192,22 @@
 /* Borders
  *============================================================================*/
 
-.b-a { border       : 2px solid; }
-.b-t { border-top   : 2px solid; }
-.b-r { border-right : 2px solid; }
-.b-b { border-bottom: 2px solid; }
-.b-l { border-left  : 2px solid; }
+.b-a { border       : 1px solid var(--tertiary); }
+.b-t { border-top   : 1px solid var(--tertiary); }
+.b-r { border-right : 1px solid var(--tertiary); }
+.b-b { border-bottom: 1px solid var(--tertiary); }
+.b-l { border-left  : 1px solid var(--tertiary); }
 
 
 
 /* Paddings
  *============================================================================*/
+
+.p-a-0 { padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; }
+.p-t-0 { padding-top: 0; }
+.p-r-0 { padding-right: 0; }
+.p-b-0 { padding-bottom: 0; }
+.p-l-0 { padding-left: 0; }
 
 .p-a-xs { padding: 4px; }
 .p-a-s  { padding: 10px; }
@@ -261,6 +256,13 @@
 /* Margins
  *============================================================================*/
 
+.m-a-0 { margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; }
+.m-t-0 { margin-top: 0; }
+.m-r-0 { margin-right: 0; }
+.m-b-0 { margin-bottom: 0; }
+.m-l-0 { margin-left: 0; }
+
+
 .m-a-xs { margin: 4px; }
 .m-a-s  { margin: 10px; }
 .m-a-m  { margin: 20px; }
@@ -302,7 +304,3 @@
 .m-l-m  { margin-left: 20px; }
 .m-l-l  { margin-left: 40px; }
 .m-l-xl { margin-left: 80px; }
-
-.disabled {
-  pointer-events: none;
-}

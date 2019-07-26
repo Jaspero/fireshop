@@ -26,11 +26,12 @@
   flex-direction: column;
   overflow-y: hidden;
   overflow-x: hidden;
-  background: white;
-  box-shadow: 0 0 6px 0 rgba(132,146,166,.2);
+  background: var(--sidebar-theme);
+  color: var(--sidebar-primary);
+  box-shadow: 0 0 0 1px var(--sidebar-tertiary);
 
   @media (max-width: $screen-m) {
-    width: 56px;
+    width: 40px;
     transition: .4s;
 
     &.dashboard-nav-expanded {
@@ -52,15 +53,16 @@
   height: 128px;
   min-height: 128px;
   padding-left: 24px;
-  border-bottom: 1px solid var(--light-tertiary);
+  box-shadow: 0 0 0 1px var(--sidebar-tertiary);
 
   @media (max-width: $screen-m) {
     height: 64px;
     min-height: 64px;
-    padding-left: 16px;
+    padding-left: 8px;
   }
 
   &-logo {
+    font-size: 28px;
     @media (max-width: $screen-m) {
       display: none;
     }
@@ -105,23 +107,23 @@
   white-space: nowrap;
   display: flex;
   align-items: center;
-  height: 64px;
-  min-height: 64px;
+  height: 48px;
+  min-height: 48px;
   padding-left: 24px;
   border-right: 3px solid transparent;
   transition: .2s;
 
   @media (max-width: $screen-m) {
-    padding-left: 16px;
+    padding-left: 8px;
   }
 
   &.active {
-    background: rgba(30,50,73,.04);
+    background: var(--sidebar-tertiary);
     border-right: 3px solid var(--primary-theme);
   }
 
   &:hover {
-    background: rgba(30,50,73,.03);
+    background: var(--sidebar-tertiary);
   }
 
   &-icon {
@@ -139,7 +141,6 @@
  *============================================================================*/
 
 .dashboard-nav-footer {
-  background: var(--light-theme);
   cursor: pointer;
   white-space: nowrap;
   display: flex;
@@ -147,21 +148,25 @@
   height: 30px;
   min-height: 30px;
   padding-left: 24px;
-  border-top: 1px solid rgba(0,0,0,.12);
-  color: var(--secondary);
+  box-shadow: 0 0 0 1px var(--sidebar-tertiary);
+  background: var(--sidebar-theme);
+  color: var(--sidebar-secondary);
   transition: .2s;
 
   @media (max-width: $screen-m) {
-    padding-left: 16px;
+    padding-left: 8px;
   }
 
   &:hover {
-    background: rgba(30,50,73,.03);
+    background: var(--sidebar-tertiary);
   }
 
   &-icon {
     min-width: 24px;
-    font-size: .85em;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    text-align: center;
   }
 
   &-text {
@@ -179,6 +184,6 @@
   padding-left: 256px;
 
   @media (max-width: $screen-m) {
-    padding-left: 56px;
+    padding-left: 40px;
   }
 }

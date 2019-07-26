@@ -27,74 +27,52 @@
  *============================================================================*/
 
 .mat-form-field {
-  font-size: 14px;
-  line-height: 1.15;
-  font-family: inherit;
+  font-size: 13px;
 }
 
-// Fixes style for untouched form fields that seemed to have invalid style
-.mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid.ng-untouched {
-  .mat-form-field-outline {
-    opacity: 1;
-  }
-
-  .mat-form-field-outline-thick {
-    color: var(--primary);
-    opacity: 0;
-  }
-
-  .mat-form-field-label, .mat-select-arrow {
-    color: var(--secondary);
-  }
+// 'mat-form-field-has-hint' custom class for extra white space after hint
+.mat-form-field-has-hint {
+  margin-bottom: 1.25em;
 }
 
-// Consistent vertical positioning for appearance="outline"
-.mat-form-field-appearance-outline {
-  .mat-form-field-prefix,
-  .mat-form-field-suffix {
-    align-self: center;
-    transition: .2s;
-  }
-
-  &.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-prefix,
-  &.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-suffix {
-    top: 0.45em;
-  }
-}
-
-.mat-no-hint .mat-form-field-wrapper {
+// 'mat-form-field-no-hint' custom class for no white space
+.mat-form-field-no-hint > .mat-form-field-wrapper {
   padding-bottom: 0;
 }
 
-.form-field-s .mat-form-field-infix {
+// 'mat-form-field-small' custom class for smaller form fields
+.mat-form-field.mat-form-field-small .mat-form-field-infix {
   width: 90px;
 }
 
-
-
-/* Material icons
- *============================================================================*/
-
-.material-icons {
-  font-family: 'Material Icons Outlined', monospace;
-  font-size: 24px;
-  line-height: 24px;
-  text-align: center;
-  white-space: nowrap;
-  word-wrap: normal;
+// 'mat-form-field-large' custom class for larger form fields
+.mat-form-field.mat-form-field-large .mat-form-field-infix {
+  width: 240px;
 }
 
 
 
-/* Stepper
+
+/* Toolbar
  *============================================================================*/
 
-.mat-stepper-vertical, .mat-stepper-horizontal {
-  font-family: inherit;
+.mat-toolbar-row.mat-toolbar-row,
+.mat-toolbar-single-row.mat-toolbar-single-row {
+  height: 64px;
 }
 
-.mat-step-icon .mat-icon {
-  line-height: 16px;
+
+
+/* Table
+ *============================================================================*/
+
+.mat-table.mat-table {
+  width: 100%;
+  background: transparent;
+}
+
+.mat-row:nth-last-child(1) > .mat-cell {
+  border-bottom: none;
 }
 
 
@@ -122,58 +100,47 @@
 
 
 
-/* Progress bar
- *============================================================================*/
-
-.mat-progress-bar-buffer {
-  background-color: #ddd;
-}
-
-
-
 /* Card
  *============================================================================*/
 
+.mat-card {
+  --theme    : var(--panel-theme);
+  --primary  : var(--panel-primary);
+  --secondary: var(--panel-secondary);
+  --tertiary : var(--panel-tertiary );
+}
 .mat-card.mat-card {
-  font-family: inherit;
+  box-shadow: 0 0 0 1px var(--panel-tertiary);
+  background: var(--panel-theme);
+  color: var(--panel-primary);
 }
 
-
-
-/* Table
- *============================================================================*/
-
-.mat-table {
-  background: transparent;
-  font-family: inherit;
-
-  .mat-cell,
-  .mat-footer-cell,
-  .mat-header-cell {
-    padding: 0 8px;
-
-    @media (max-width: $screen-s) {
-      padding: 4px;
-    }
-
-    &:first-of-type,
-    &:last-of-type {
-      padding: 0 8px;
-
-      @media (max-width: $screen-s) {
-        padding: 4px;
-      }
-    }
-  }
+.mat-card-header.mat-card-header {
+  margin-top: -16px !important;
+  margin-right: -16px;
+  margin-bottom: 16px;
+  margin-left: -16px;
+  padding: 16px;
+  border-bottom: 1px solid var(--panel-tertiary);
+  align-items: center;
 }
 
+.mat-card-header-text.mat-card-header-text {
+  margin: 0;
+}
 
+.mat-card-actions.mat-card-actions {
+  margin-top: 16px !important;
+  margin-right: -16px;
+  margin-bottom: -16px;
+  margin-left: -16px;
+  padding: 16px;
+  border-top: 1px solid var(--panel-tertiary);
+}
 
-/* Paginator
- *============================================================================*/
-
-.mat-paginator-range-label.mat-paginator-range-label {
-  @media (max-width: $screen-s) {
-    margin: 0 8px;
-  }
+.mat-card-content.mat-card-content-inset {
+  margin-top: -16px;
+  margin-right: -16px;
+  margin-bottom: -16px !important;
+  margin-left: -16px;
 }

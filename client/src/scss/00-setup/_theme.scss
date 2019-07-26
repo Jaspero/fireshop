@@ -14,43 +14,39 @@ $colors-themes: (
   primary: (
     theme    : #3f51b5,
     primary  : rgba(255,255,255,1),
-    secondary: rgba(255,255,255,.7),
-    tertiary : rgba(255,255,255,.04),
+    secondary: rgba(255,255,255,.8),
+    tertiary : rgba(255,255,255,.15),
   ),
   accent: (
     theme    : #ff4081,
     primary  : rgba(255,255,255,1),
-    secondary: rgba(255,255,255,.7),
-    tertiary : rgba(255,255,255,.04),
+    secondary: rgba(255,255,255,.8),
+    tertiary : rgba(255,255,255,.15),
   ),
   warn: (
     theme    : #dc143c,
     primary  : rgba(255,255,255,1),
-    secondary: rgba(255,255,255,.7),
-    tertiary : rgba(255,255,255,.04),
+    secondary: rgba(255,255,255,.8),
+    tertiary : rgba(255,255,255,.15),
   ),
-  pale: (
-    theme    : #fafafa,
-    primary  : rgba(0,0,0,.87),
-    secondary: rgba(0,0,0,.54),
-    tertiary : rgba(0,0,0,.04),
+  backdrop: (
+    theme    : #f1f2f4,
+    primary  : rgba(0,0,0,.9),
+    secondary: rgba(0,0,0,.7),
+    tertiary : rgba(0,0,0,.15),
   ),
-  light: (
-    theme    : #ffffff,
-    primary  : rgba(0,0,0,.87),
-    secondary: rgba(0,0,0,.54),
-    tertiary : rgba(0,0,0,.04),
+  panel: (
+    theme    : #fff,
+    primary  : rgba(0,0,0,.9),
+    secondary: rgba(0,0,0,.7),
+    tertiary : rgba(0,0,0,.15),
   ),
   sidebar: (
-    theme    : #f0f0f0,
-    primary  : rgba(0,0,0,.87),
-    secondary: rgba(0,0,0,.54),
-    tertiary : rgba(0,0,0,.04),
+    theme    : #fff,
+    primary  : rgba(0,0,0,.9),
+    secondary: rgba(0,0,0,.7),
+    tertiary : rgba(0,0,0,.1),
   )
-);
-
-$fonts: (
-  primary: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif",
 );
 
 
@@ -63,9 +59,6 @@ $fonts: (
     @each $color-name, $color-value in $group {
       --#{$group-name}-#{$color-name}: #{$color-value};
     }
-  }
-  @each $font-name, $font-value in $fonts {
-    --font-#{$font-name}: #{$font-value};
   }
 }
 

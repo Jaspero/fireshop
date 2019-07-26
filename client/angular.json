@@ -44,7 +44,6 @@
             ],
             "showCircularDependencies": false,
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "node_modules/jsoneditor/dist/jsoneditor.min.css",
               "src/styles.scss"
             ],

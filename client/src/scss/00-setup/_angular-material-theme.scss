@@ -60,10 +60,39 @@ $warn: (
   )
 );
 
-$retailer-primary: mat-palette($primary);
-$retailer-accent : mat-palette($accent);
-$retailer-warn   : mat-palette($warn);
+$jms-primary: mat-palette($primary);
+$jms-accent : mat-palette($accent);
+$jms-warn   : mat-palette($warn);
 
-$retailer-theme: mat-light-theme($retailer-primary, $retailer-accent, $retailer-warn);
+$jms-theme: mat-light-theme($jms-primary, $jms-accent, $jms-warn);
 
-@include angular-material-theme($retailer-theme);
+@include angular-material-theme($jms-theme);
+
+
+
+/* Font
+ *============================================================================*/
+/**
+ * Define a custom typography config that overrides the font-family as well as
+ * the `headlines` and `body-1` levels.
+ */
+
+$custom-typography: mat-typography-config(
+  $font-family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif",
+  $display-4:    mat-typography-level(20px, 25px, 400),
+  $display-3:    mat-typography-level(20px, 25px, 400),
+  $display-2:    mat-typography-level(20px, 25px, 400),
+  $display-1:    mat-typography-level(20px, 25px, 400),
+  $headline:     mat-typography-level(20px, 25px, 400),
+  $title:        mat-typography-level(20px, 25px, 400),
+  $subheading-2: mat-typography-level(20px, 25px, 400),
+  $subheading-1: mat-typography-level(20px, 25px, 400),
+  $body-2:       mat-typography-level(14px, 21px, 400),
+  $body-1:       mat-typography-level(14px, 21px, 400),
+  $caption:      mat-typography-level(12px, 18px, 400),
+  $button:       mat-typography-level(14px, 14px, 500),
+  $input:        mat-typography-level(12, 1.125, 400)
+);
+
+// Override the typography in the core CSS.
+@include mat-core($custom-typography);

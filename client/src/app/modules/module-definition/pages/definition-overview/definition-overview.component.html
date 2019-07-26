@@ -1,41 +1,40 @@
-<section class="primary bg p-x-s p-y-m flex jc-between ai-center sticky-header">
-  <h6>Modules</h6>
+<mat-toolbar role="heading" color="primary" class="sticky-header">
+  <span>Modules</span>
+  <div class="flex-1"></div>
   <a mat-flat-button routerLink="../single/new">Add module</a>
-</section>
+</mat-toolbar>
 
 <section class="grid">
   <div class="col-12">
     <mat-card>
-      <!--Search-->
-      <form [formGroup]="filters">
-        <jms-search-input formControlName="search"></jms-search-input>
-      </form>
+      <mat-card-header>
+        <form [formGroup]="filters">
+          <jms-search-input formControlName="search"></jms-search-input>
+        </form>
+      </mat-card-header>
 
-      <!--Table actions-->
-      <mat-toolbar>
-        <ng-container *ngIf="allChecked$ | async as ac">
-          <mat-checkbox
-            (change)="$event ? masterToggle() : null"
-            [checked]="selection.hasValue() && ac.checked"
-            [indeterminate]="selection.hasValue() && !ac.checked"
-            color="primary"
-            matTooltip="Select">
-          </mat-checkbox>&nbsp;&nbsp;&nbsp;
-        </ng-container>
+      <mat-card-content class="mat-card-content-inset">
+        <mat-toolbar>
+          <ng-container *ngIf="allChecked$ | async as ac">
+            <mat-checkbox
+              (change)="$event ? masterToggle() : null"
+              [checked]="selection.hasValue() && ac.checked"
+              [indeterminate]="selection.hasValue() && !ac.checked"
+              color="primary"
+              matTooltip="Select">
+            </mat-checkbox>&nbsp;&nbsp;&nbsp;
+          </ng-container>
 
-        <button
-          mat-icon-button
-          matTooltip="Remove {{selection.selected.length}} items"
-          *ngIf="selection.hasValue()"
-          (click)="deleteSelection()">
-          <mat-icon>delete_forever</mat-icon>
-        </button>
-      </mat-toolbar>
+          <button
+            mat-icon-button
+            matTooltip="Remove {{selection.selected.length}} items"
+            *ngIf="selection.hasValue()"
+            (click)="deleteSelection()">
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+        </mat-toolbar>
 
-      <!--Modules list-->
-      <div class="of-x-auto">
         <table
-          class="w-full"
           mat-table
           matSort
           matSortDisableClear
@@ -98,11 +97,11 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
-      </div>
+      </mat-card-content>
 
       <!--Loading-->
-      <div class="flex jc-center m-y-s">
-        <mat-spinner *ngIf="dataLoading$ | async" [diameter]="40"></mat-spinner>
+      <div class="flex jc-center p-y-l" *ngIf="dataLoading$ | async">
+        <mat-spinner [diameter]="40"></mat-spinner>
       </div>
 
       <!--Empty state-->
