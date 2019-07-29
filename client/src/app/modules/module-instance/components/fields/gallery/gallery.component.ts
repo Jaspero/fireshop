@@ -130,9 +130,11 @@ export class GalleryComponent extends FieldComponent<GalleryData>
     this.cdr.detectChanges();
   }
 
-  filesUploaded(el: HTMLInputElement) {
+  filesUploaded(el: HTMLInputElement | FileList) {
+    const files = Array.from(el instanceof FileList ? el : el.files);
+
     forkJoin(
-      Array.from(el.files).map(file =>
+      files.map(file =>
         readFile(file).pipe(
           map(data => ({
             data,
@@ -141,14 +143,23 @@ export class GalleryComponent extends FieldComponent<GalleryData>
           }))
         )
       )
-    ).subscribe(files => {
-      const value = this.cData.control.value;
-      value.push(...files);
-      this.cData.control.setValue(value);
-      this.cdr.detectChanges();
-    });
+    ).subscribe(
+      files => {
+        const value = this.cData.control.value;
+        value.push(...files);
+        this.cData.control.setValue(value);
+        if (!(el instanceof FileList)) {
+          el.value = '';
+        }
 
-    el.value = '';
+        this.cdr.detectChanges();
+      },
+      () => {
+        if (!(el instanceof FileList)) {
+          el.value = '';
+        }
+      }
+    );
   }
 
   entered(event: CdkDragEnter) {
