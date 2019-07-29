@@ -75,6 +75,79 @@
   border-bottom: none;
 }
 
+.mat-header-row {
+  @media (max-width: $screen-s) {
+    opacity : 0;
+    position: absolute;
+    z-index : -1;
+  }
+}
+
+.mat-row.mat-row {
+  @media (max-width: $screen-s) {
+    display: block;
+    height: unset;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+  }
+}
+
+.mat-cell.mat-cell,
+.mat-footer-cell.mat-footer-cell,
+.mat-header-cell.mat-header-cell {
+  padding: 0 4px;
+
+  &:first-of-type {
+    padding-left: 16px; // same as toolbar padding
+
+    @media (max-width: $screen-s) {
+      padding: 8px;
+    }
+  }
+
+  &:last-of-type {
+    padding-left: 16px; // same as toolbar padding
+
+    @media (max-width: $screen-s) {
+      padding: 8px;
+    }
+  }
+
+  @media (max-width: $screen-s) {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: baseline;
+    border: none;
+    padding: 8px;
+    text-align: right;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+
+    &:before {
+      /*content: attr(data-label);*/
+      content: 'Label';
+      text-align: left;
+      order: 2;
+    }
+
+    &:after {
+      content: "";
+      flex: 1;
+      order: 1;
+      border-top: 1px dashed var(--tertiary);
+      margin: 0 16px;
+      height: .35em;
+      opacity: .75;
+    }
+  }
+}
+
 
 
 /* Snackbar
