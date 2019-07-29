@@ -1,3 +1,12 @@
+// TODO: custom styles for elements inside table
+
+.jms-instance-table::ng-deep {
+  .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+}
+
+// TODO: add this to the table above
 // Don't let images grow out of control
 .column-inner {
   ::ng-deep svg,

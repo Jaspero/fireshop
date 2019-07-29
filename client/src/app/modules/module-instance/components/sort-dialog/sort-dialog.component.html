@@ -1,34 +1,28 @@
 <h1 mat-dialog-title>Sort {{data.collectionName}}</h1>
 
 <mat-dialog-content *ngIf="items$ | async as items" cdkDropList (cdkDropListDropped)="drop(items, $event)">
-  <div class="jms-sort-dialog-container">
-    <div
-      *ngFor="let item of items; index as index; first as first; last as last;"
-      cdkDrag
-      class="jms-sort-dialog-element">
-      <div class="flex jc-between ai-center">
-        <div>
-          <h6><span class="fs-small">{{item[data.options.sortTitle]}}</span></h6>
-          <p class="fs-small" *ngIf="data.options.sortSubTitle">{{item[data.options.sortSubTitle]}}</p>
-        </div>
-        <div>
-          <button mat-icon-button [disabled]="first" (click)="move(true, items, index)">
-            <mat-icon>arrow_upward</mat-icon>
-          </button>
-          <button mat-icon-button [disabled]="last" (click)="move(false, items, index)">
-            <mat-icon>arrow_downward</mat-icon>
-          </button>
-          <button mat-icon-button cdkDragHandle>
-            <mat-icon>drag_indicator</mat-icon>
-          </button>
-        </div>
+  <div *ngFor="let item of items; index as index; first as first; last as last;" cdkDrag>
+    <div class="flex">
+      <p class="flex-1">
+        <span class="of-x-auto">{{item[data.options.sortTitle]}}</span><br>
+        <span class="of-x-auto fs-small" *ngIf="data.options.sortSubTitle">{{item[data.options.sortSubTitle]}}</span>
+      </p>
+      <div>
+        <button mat-icon-button [disabled]="first" (click)="move(true, items, index)">
+          <mat-icon>arrow_upward</mat-icon>
+        </button>
+        <button mat-icon-button [disabled]="last" (click)="move(false, items, index)">
+          <mat-icon>arrow_downward</mat-icon>
+        </button>
+        <button mat-icon-button cdkDragHandle>
+          <mat-icon>drag_indicator</mat-icon>
+        </button>
       </div>
     </div>
+    <hr class="m-y-s" *ngIf="!last">
   </div>
 </mat-dialog-content>
 
-<mat-dialog-actions>
-  <div class="flex jc-end w-full">
-    <button mat-raised-button color="primary" [jpLoadClick]="update()">Update Order</button>
-  </div>
+<mat-dialog-actions class="jc-end">
+  <button mat-raised-button color="primary" [jpLoadClick]="update()">Update Order</button>
 </mat-dialog-actions>

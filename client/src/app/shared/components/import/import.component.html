@@ -1,7 +1,14 @@
-<button mat-button (click)="openDialog()">
-  <mat-icon>vertical_align_bottom</mat-icon>
-  <span>Import</span>
-</button>
+<span class="hide-xs">
+  <button mat-button (click)="openDialog()">
+    <mat-icon>vertical_align_bottom</mat-icon>
+    <span>Import</span>
+  </button>
+</span>
+<span class="show-xs">
+  <button mat-icon-button (click)="openDialog()" matTooltip="Import">
+    <mat-icon>vertical_align_bottom</mat-icon>
+  </button>
+</span>
 
 <input type="file" hidden #file (change)="selectFile($event)">
 
@@ -27,15 +34,14 @@
 </ng-template>
 
 <ng-template #dialog>
-
   <form [formGroup]="form" (ngSubmit)="file.click()">
-    <mat-form-field class="w-full">
+    <mat-form-field class="w-full" appearance="outline">
       <mat-select placeholder="Type" formControlName="type">
         <mat-option *ngFor="let option of importType | keyvalue" [value]="option.value">{{option.key}}</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field class="w-full" *ngIf="form.get('type').value === importType.CSV">
+    <mat-form-field class="w-full" appearance="outline" *ngIf="form.get('type').value === importType.CSV">
       <input matInput formControlName="delimiter" placeholder="delimiter">
     </mat-form-field>
 

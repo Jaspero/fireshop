@@ -1,44 +1,44 @@
-<label>{{cData.label}}</label>
-<textarea #textarea role="textarea">
-  {{cData.control.value}}
-</textarea>
+<div class="mat-form-field-wrapper">
+  <p class="fs-small fg-secondary" *ngIf="cData.label">{{cData.label}}</p>
+  <textarea #textarea role="textarea">{{cData.control.value}}</textarea>
+</div>
 
 <ng-template #youTubeDialog>
-  <h4>Embed YouTube</h4>
+  <h1 mat-dialog-title>Embed YouTube</h1>
 
   <form [formGroup]="ytForm">
-    <mat-form-field class="w-full">
-      <input placeholder="Video ID" matInput formControlName="value">
-    </mat-form-field>
+    <mat-dialog-content>
+      <mat-form-field class="w-full">
+        <input placeholder="Video ID" matInput formControlName="value">
+      </mat-form-field>
 
-    <div class="inline-slide-toggle">
-      <label>Full Width</label>
-      <mat-slide-toggle formControlName="fullWidth"></mat-slide-toggle>
-    </div>
+      <label class="mat-form-field-wrapper flex jc-between">
+        <span>Full Width</span>
+        <mat-slide-toggle formControlName="fullWidth"></mat-slide-toggle>
+      </label>
 
-    <div class="inline-slide-toggle">
-      <label>Show Player Controls</label>
-      <mat-slide-toggle formControlName="showPlayerControls"></mat-slide-toggle>
-    </div>
+      <label class="mat-form-field-wrapper flex jc-between">
+        <span>Show Player Controls</span>
+        <mat-slide-toggle formControlName="showPlayerControls"></mat-slide-toggle>
+      </label>
 
-    <div class="inline-slide-toggle">
-      <label>Privacy Enhanced Mode</label>
-      <mat-slide-toggle formControlName="privacyEnhancedMode"></mat-slide-toggle>
-    </div>
+      <label class="mat-form-field-wrapper flex jc-between">
+        <span>Privacy Enhanced Mode</span>
+        <mat-slide-toggle formControlName="privacyEnhancedMode"></mat-slide-toggle>
+      </label>
 
-    <mat-form-field class="w-full">
-      <mat-select formControlName="align" placeholder="Alignment">
-        <mat-option value="left">Left</mat-option>
-        <mat-option value="center">Center</mat-option>
-        <mat-option value="right">Right</mat-option>
-      </mat-select>
-    </mat-form-field>
+      <mat-form-field class="w-full">
+        <mat-select formControlName="align" placeholder="Alignment">
+          <mat-option value="left">Left</mat-option>
+          <mat-option value="center">Center</mat-option>
+          <mat-option value="right">Right</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-dialog-content>
 
-    <div class="m-t-s flex jc-end">
-      <span class="m-r-s">
-        <button mat-button mat-dialog-close>Close</button>
-      </span>
+    <mat-dialog-actions class="jc-end">
+      <button mat-button mat-dialog-close>Close</button>
       <button mat-raised-button color="primary" [mat-dialog-close]="true">Save</button>
-    </div>
+    </mat-dialog-actions>
   </form>
 </ng-template>

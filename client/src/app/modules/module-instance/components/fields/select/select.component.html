@@ -1,14 +1,14 @@
-<mat-form-field class="w-full" appearance="outline">
+<mat-form-field class="w-full" appearance="outline" [class.mat-form-field-has-hint]="cData.hint">
   <mat-label>{{cData.label}}</mat-label>
-  <mat-select [placeholder]="cData.placeholder"  [formControl]="cData.control" [multiple]="cData.multiple">
+  <mat-select [placeholder]="cData.placeholder" [formControl]="cData.control" [multiple]="cData.multiple">
     <mat-option *ngFor="let data of dataSet$ | async" [value]="data.value">
       {{data.name}}
     </mat-option>
   </mat-select>
   <mat-spinner
+    matSuffix
     *ngIf="cData.populate && (loading$ | async)"
-    [diameter]="20">
-  </mat-spinner>
+    [diameter]="20"></mat-spinner>
   <mat-hint *ngIf="cData.hint">
     {{cData.hint}}
   </mat-hint>

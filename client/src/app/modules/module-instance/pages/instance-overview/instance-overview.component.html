@@ -13,136 +13,144 @@
 </ng-template>
 
 <ng-container *ngIf="data$ | async as data">
-  <section class="primary bg p-x-s p-y-m flex jc-between ai-center sticky-header">
-    <h6>{{data.name}}</h6>
+  <mat-toolbar role="heading" color="primary" class="sticky-header">
+    <span>{{data.name}}</span>
+    <div class="flex-1"></div>
     <a mat-flat-button routerLink="../single/new">Add {{data.name}}</a>
-  </section>
+  </mat-toolbar>
 
   <section class="grid">
     <div class="col-12">
       <mat-card>
+        <mat-card-content class="mat-card-content-inset">
+          <mat-toolbar class="b-b">
+            <ng-container *ngIf="allChecked$ | async as ac">
+              <mat-checkbox
+                (change)="$event ? masterToggle() : null"
+                [checked]="selection.hasValue() && ac.checked"
+                [indeterminate]="selection.hasValue() && !ac.checked"
+                color="primary"
+                matTooltip="Select">
+              </mat-checkbox>&nbsp;&nbsp;&nbsp;
+            </ng-container>
 
-        <!--Table actions-->
-        <mat-toolbar>
-          <ng-container *ngIf="allChecked$ | async as ac">
-            <mat-checkbox
-              (change)="$event ? masterToggle() : null"
-              [checked]="selection.hasValue() && ac.checked"
-              [indeterminate]="selection.hasValue() && !ac.checked"
-              color="primary"
-              matTooltip="Select">
-            </mat-checkbox>&nbsp;&nbsp;&nbsp;
-          </ng-container>
-
-          <button
+            <button
               mat-icon-button
               matTooltip="Remove {{selection.selected.length}} items"
               *ngIf="selection.hasValue()"
               (click)="deleteSelection(data)">
-            <mat-icon>delete_forever</mat-icon>
-          </button>
+              <mat-icon>delete_forever</mat-icon>
+            </button>
 
-          <button mat-button (click)="export(data.id)">
-            <mat-icon>vertical_align_top</mat-icon>
-            <span>Export</span>
-          </button>
+            <div class="flex-1"></div>
 
+            <span class="hide-xs">
+              <button mat-button (click)="export(data.id)">
+                <mat-icon>vertical_align_top</mat-icon>
+                <span>Export</span>
+              </button>
+            </span>
+            <span class="show-xs">
+              <button mat-icon-button (click)="export(data.id)" matTooltip="Export">
+                <mat-icon>vertical_align_top</mat-icon>
+              </button>
+            </span>
 
-          <jms-import [collection]="data.id" [schema]="data.schema"></jms-import>
+            <jms-import [collection]="data.id" [schema]="data.schema"></jms-import>
 
-          <button
-            *ngIf="data.sortModule"
-            mat-button
-            (click)="openSortDialog(data.id, data.name, data.sortModule)">
-            <mat-icon>vertical_split</mat-icon>
-            <span>Sort</span>
-          </button>
-        </mat-toolbar>
+            <button
+              *ngIf="data.sortModule"
+              mat-button
+              (click)="openSortDialog(data.id, data.name, data.sortModule)">
+              <mat-icon>vertical_split</mat-icon>
+              <span>Sort</span>
+            </button>
+          </mat-toolbar>
 
-        <!--Modules list-->
-        <div class="of-x-auto">
-          <table
-            class="w-full"
-            mat-table
-            matSort
-            matSortDisableClear
-            [trackBy]="trackById"
-            [dataSource]="items$ | async"
-            [matSortActive]="data.sort?.key"
-            [matSortDirection]="data.sort?.direction">
-            <ng-container matColumnDef="check">
-              <th mat-header-cell *matHeaderCellDef></th>
-              <td mat-cell *matCellDef="let row">
-                <mat-checkbox
-                  (click)="$event.stopPropagation()"
-                  (change)="$event ? selection.toggle(row.id) : null"
-                  [checked]="selection.isSelected(row.id)"
-                  color="primary">
-                </mat-checkbox>
-              </td>
-            </ng-container>
-
-            <ng-container *ngFor="let column of data.tableColumns; index as index" [matColumnDef]="data.displayColumns[index + 1]">
-
-              <ng-container *ngIf="column.sortable; else notSortable">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                  {{column.label}}
-                </th>
+          <div class="of-x-auto">
+            <table
+              class="jms-instance-table"
+              mat-table
+              matSort
+              matSortDisableClear
+              [trackBy]="trackById"
+              [dataSource]="items$ | async"
+              [matSortActive]="data.sort?.key"
+              [matSortDirection]="data.sort?.direction">
+              <ng-container matColumnDef="check" sticky>
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-checkbox
+                    (click)="$event.stopPropagation()"
+                    (change)="$event ? selection.toggle(row.id) : null"
+                    [checked]="selection.isSelected(row.id)"
+                    color="primary">
+                  </mat-checkbox>
+                </td>
               </ng-container>
 
-              <ng-template #notSortable>
-                <th mat-header-cell *matHeaderCellDef>
-                  {{column.label}}
-                </th>
-              </ng-template>
+              <ng-container *ngFor="let column of data.tableColumns; index as index" [matColumnDef]="data.displayColumns[index + 1]">
 
-              <td mat-cell *matCellDef="let row;">
-                <ng-container *ngTemplateOutlet="columnLayout; context: {row: row.parsed, column: column, index: index}"></ng-container>
-              </td>
-            </ng-container>
+                <ng-container *ngIf="column.sortable; else notSortable">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                    {{column.label}}
+                  </th>
+                </ng-container>
 
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef></th>
-              <td mat-cell *matCellDef="let element" class="ta-right">
-                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions" matTooltip="Actions">
-                  <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu">
-                  <button mat-menu-item [routerLink]="['..', 'single', element.id]">
-                    <mat-icon>edit</mat-icon>
-                    <span>Edit</span>
+                <ng-template #notSortable>
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{column.label}}
+                  </th>
+                </ng-template>
+
+                <td mat-cell *matCellDef="let row;">
+                  <ng-container *ngTemplateOutlet="columnLayout; context: {row: row.parsed, column: column, index: index}"></ng-container>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions" stickyEnd>
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element">
+                  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions" matTooltip="Actions">
+                    <mat-icon>more_vert</mat-icon>
                   </button>
-                  <button mat-menu-item fDisable (click)="deleteOne(data, element)">
-                    <mat-icon>delete_forever</mat-icon>
-                    <span>Delete</span>
-                  </button>
-                </mat-menu>
-              </td>
-            </ng-container>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item [routerLink]="['..', 'single', element.id]">
+                      <mat-icon>edit</mat-icon>
+                      <span>Edit</span>
+                    </button>
+                    <button mat-menu-item fDisable (click)="deleteOne(data, element)">
+                      <mat-icon>delete_forever</mat-icon>
+                      <span>Delete</span>
+                    </button>
+                  </mat-menu>
+                </td>
+              </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="data.displayColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: data.displayColumns"></tr>
-          </table>
-        </div>
+              <tr mat-header-row *matHeaderRowDef="data.displayColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: data.displayColumns"></tr>
+            </table>
+          </div>
 
-        <div class="flex jc-between p-y-s">
-          <div class="p-x-m hide-xs"></div>
-          <button
-            mat-button
-            color="primary"
-            [disabled]="(hasMore$ | async) === false"
-            [class.loading]="loading$ | async"
-            (click)="loadMore$.next(true)">
-            Load More
-          </button>
-          <mat-form-field class="fs-small">
-            <mat-select placeholder="Page size" [formControl]="pageSize">
-              <mat-option *ngFor="let size of pageSizes" [value]="size">
-                {{size}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
+          <mat-toolbar class="jc-between">
+            <button
+              mat-button
+              color="primary"
+              [disabled]="(hasMore$ | async) === false"
+              [class.loading]="loading$ | async"
+              (click)="loadMore$.next(true)">
+              More…
+            </button>
+            <mat-form-field appearance="outline" class="mat-form-field-no-hint">
+              <mat-label>Page size</mat-label>
+              <mat-select [formControl]="pageSize">
+                <mat-option *ngFor="let size of pageSizes" [value]="size">
+                  {{size}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-toolbar>
+        </mat-card-content>
 
         <!--Empty state-->
         <p class="ta-center p-y-l" *ngIf="emptyState$ | async">

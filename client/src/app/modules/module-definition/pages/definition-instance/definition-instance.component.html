@@ -1,8 +1,8 @@
 <form *ngIf="form$ | async as form" [formGroup]="form" [ngSwitch]="currentState">
   <mat-toolbar role="heading" color="primary" class="sticky-header">
-    <span *ngSwitchCase="viewState.Edit">{{form.get('name').value}}</span>
-    <span *ngSwitchCase="viewState.New">New Module</span>
-    <span *ngSwitchCase="viewState.Copy">Copy of {{form.get('name').value}}</span>
+    <span class="of-x-auto" *ngSwitchCase="viewState.Edit">{{form.get('name').value}}</span>
+    <span class="of-x-auto" *ngSwitchCase="viewState.New">New Module</span>
+    <span class="of-x-auto" *ngSwitchCase="viewState.Copy">Copy of {{form.get('name').value}}</span>
     <div class="flex-1"></div>
     <a mat-button (click)="back()">Cancel</a>&nbsp;
     <button

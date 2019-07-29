@@ -6,23 +6,21 @@
     type="url"
     [class.disabled]="disInput"
     [formControl]="imageUrl">
-  <div matSuffix>
-    <div class="flex">
-      <ng-container *ngIf="imageUrl.value">
-        <div class="iblock relative">
-          <button class="preview-button" mat-icon-button>
-            <mat-icon>visibility</mat-icon>
-          </button>
-          <img class="preview-image" [attr.src]="imageUrl.value || value" alt="Image Preview">
-        </div>
-      </ng-container>
-      <button mat-icon-button *ngIf="!imageUrl.value && !cData['preventServerUpload']">
-        <mat-icon (click)="openFileUpload()">perm_media</mat-icon>
-      </button>
-      <button mat-icon-button *ngIf="imageUrl.value">
-        <mat-icon (click)="remove()">highlight_off</mat-icon>
-      </button>
-    </div>
+  <div matSuffix class="jms-image-suffix">
+    <ng-container *ngIf="imageUrl.value">
+      <div class="jms-image-suffix-preview">
+        <button class="jms-image-suffix-preview-button" mat-icon-button>
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <img class="jms-image-suffix-preview-image" [attr.src]="imageUrl.value || value" alt="Image Preview">
+      </div>
+    </ng-container>
+    <button mat-icon-button *ngIf="!imageUrl.value && !cData['preventServerUpload']">
+      <mat-icon (click)="openFileUpload()">perm_media</mat-icon>
+    </button>
+    <button mat-icon-button *ngIf="imageUrl.value">
+      <mat-icon (click)="remove()">highlight_off</mat-icon>
+    </button>
   </div>
 </mat-form-field>
 
