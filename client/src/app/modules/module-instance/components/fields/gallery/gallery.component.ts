@@ -9,6 +9,8 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostBinding,
+  HostListener,
   Inject,
   OnInit,
   TemplateRef,
@@ -71,8 +73,21 @@ export class GalleryComponent extends FieldComponent<GalleryData>
   files: File[] = [];
   toRemove = [];
 
+  @HostBinding('class.dragging')
+  dragging = false;
+
   ngOnInit() {
     this.state.saveComponents.push(this);
+  }
+
+  @HostListener('dragenter', ['$event'])
+  dragEnter() {
+    this.dragging = true;
+  }
+
+  @HostListener('dragleave')
+  dragLeave() {
+    this.dragging = false;
   }
 
   toggleHover(event: boolean) {
@@ -144,10 +159,11 @@ export class GalleryComponent extends FieldComponent<GalleryData>
         )
       )
     ).subscribe(
-      files => {
+      fls => {
         const value = this.cData.control.value;
-        value.push(...files);
+        value.push(...fls);
         this.cData.control.setValue(value);
+
         if (!(el instanceof FileList)) {
           el.value = '';
         }
