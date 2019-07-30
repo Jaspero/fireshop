@@ -95,7 +95,9 @@ export class GalleryComponent extends FieldComponent<GalleryData>
   }
 
   openUploadDialog() {
-    this.dialog.open(this.modalTemplate);
+    this.dialog.open(this.modalTemplate, {
+      width: '420px'
+    });
   }
 
   addImage(image: string) {

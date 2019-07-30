@@ -1,17 +1,9 @@
-<div class="jms-file-upload-dropzone"
-     jmsDropzone
-     (hovered)="toggleHover($event)"
-     (dropped)="filesUploaded($event)"
-     [class.hovering]="isHovering">
-</div>
+<p class="fs-small fg-secondary">{{cData.label}}</p>
 
-<div class="jms-file-upload-content">
-  <h6>{{cData.label}}</h6>
-
-  <div>
-    <p>Drop files here</p>
-    <button mat-button *ngIf="cData.allowUrl" (click)="openUploadDialog()">Add image from URL</button>&nbsp;
-    <button mat-button *ngIf="cData.allowServerUpload" (click)="openFileUpload()">Add images</button>
+<div class="jms-gallery">
+  <div class="ta-center p-y-l">
+    <button mat-button *ngIf="cData.allowUrl" (click)="openUploadDialog()">Enter URL</button>
+    <button mat-button *ngIf="cData.allowServerUpload" (click)="openFileUpload()">Choose files</button>
     <button mat-button *ngIf="cData.allowServerUpload" (click)="openSortImages()">Sort images</button>
   </div>
 
@@ -19,68 +11,63 @@
   <!--<upload-task [file]="file"></upload-task>-->
   <!--</div>-->
 
-  <ng-container *ngIf="cData.control.value.length; else noValue">
-    <p class="p-y-s fs-small fg-secondary">Uploads:</p>
-
-    <div class="jms-file-upload-list" cdkDropListGroup>
-      <div class="jms-file-upload-image-container" *ngFor="let val of cData.control.value; index as index" cdkDropList [cdkDropListData]="index" cdkDropListOrientation="vertical">
-        <img class="jms-file-upload-image" [src]="(val.data || val) | jpSanitize:'resourceUrl'" cdkDrag cdkDragBoundary=".jms-file-upload-list" (cdkDragEntered)="entered($event)" (cdkDragEnded)="ended($event)" [cdkDragData]="index">
-        <button class="jms-file-upload-remove-image" type="button" mat-icon-button matTooltip="Remove" color="warn" (click)="removeImage(index, val)">
-          <mat-icon>highlight_off</mat-icon>
-        </button>
-      </div>
-    </div>
-  </ng-container>
-
-  <!--No images-->
-  <ng-template #noValue>
-    <p class="p-y-m ta-center fg-secondary fs-small">No images added yet.</p>
-  </ng-template>
-
   <!--Uplaod from URL-->
   <ng-template #modal>
-    <mat-form-field class="w-full" appearance="outline">
-      <mat-label>Image URL</mat-label>
-      <input matInput #url>
-    </mat-form-field>
+    <mat-dialog-content>
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Image URL</mat-label>
+        <input matInput #url>
+      </mat-form-field>
+    </mat-dialog-content>
 
-    <div class="ta-right">
+    <mat-dialog-actions class="jc-end">
       <button mat-button mat-dialog-close>Cancel</button>&nbsp;
       <button mat-flat-button color="primary" [disabled]="!url.value" (click)="addImage(url.value)" mat-dialog-close>Add image</button>
-    </div>
+    </mat-dialog-actions>
   </ng-template>
 
   <!--Upload from disk-->
   <input #file type="file" multiple hidden (change)="filesUploaded($event.target)">
 
+  <!--Image sort-->
   <ng-template #imagesSort>
-    <h6><span class="fs-small">Sort images</span></h6>
+    <h1 mat-dialog-title>Sort images</h1>
 
-    <mat-dialog-content>
-      <div class="jms-sort-dialog-container">
-        <div
-          class="jms-sort-dialog-element"
-          *ngIf="cData.control.value.length; else noValue">
-          <!--cdkDropList
-            (cdkDropListDropped)="drop($event)"-->
-
-          <div class="flex jc-between ai-center jms-sort-dialog-element" *ngFor="let val of cData.control.value; index as index; first as first; last as last;">
-            <img class="sortImages p-y-s p-x-s" [src]="(val.data || val) | jpSanitize:'resourceUrl'">
-            <div>
-              <button mat-icon-button [disabled]="first" (click)="move(true, index)">
-                <mat-icon>arrow_upward</mat-icon>
-              </button>
-              <button mat-icon-button [disabled]="last" (click)="move(false, index)">
-                <mat-icon>arrow_downward</mat-icon>
-              </button>
-              <!--<button mat-icon-button cdkDragHandle>
-                <mat-icon>drag_indicator</mat-icon>
-              </button>-->
-            </div>
+    <mat-dialog-content *ngIf="cData.control.value.length">
+      <div *ngFor="let val of cData.control.value; index as index; first as first; last as last;">
+        <div class="flex ai-center">
+          <img class="jms-gallery-sort-image" [src]="(val.data || val) | jpSanitize:'resourceUrl'">
+          <div class="flex-1"></div>
+          <div>
+            <button mat-icon-button [disabled]="first" (click)="move(true, index)">
+              <mat-icon>arrow_upward</mat-icon>
+            </button>
+            <button mat-icon-button [disabled]="last" (click)="move(false, index)">
+              <mat-icon>arrow_downward</mat-icon>
+            </button>
           </div>
         </div>
+        <hr class="m-y-s" *ngIf="!last">
       </div>
     </mat-dialog-content>
   </ng-template>
 
+  <!--Uploaded images list-->
+  <ng-container *ngIf="cData.control.value.length">
+    <div class="jms-gallery-list">
+      <div class="jms-gallery-list-image" *ngFor="let val of cData.control.value; index as index">
+        <img class="jms-gallery-list-image-inner" [src]="(val.data || val) | jpSanitize:'resourceUrl'">
+        <button class="jms-gallery-list-image-remove" type="button" mat-icon-button matTooltip="Remove" (click)="removeImage(index, val)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="jms-gallery-dropzone"
+       jmsDropzone
+       (hovered)="toggleHover($event)"
+       (dropped)="filesUploaded($event)"
+       [class.hovering]="isHovering">
+  </div>
 </div>

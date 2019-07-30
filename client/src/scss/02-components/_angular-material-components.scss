@@ -220,6 +220,23 @@
 
 
 
+/* Progress bar
+ *============================================================================*/
+
+.mat-progress-bar[mode="query"] > .mat-progress-bar-background,
+.mat-progress-bar[mode="determinate"] > .mat-progress-bar-background,
+.mat-progress-bar[mode="indeterminate"] > .mat-progress-bar-background {
+  display: none;
+}
+
+.mat-progress-bar.mat-accent {
+  & > .mat-progress-bar-buffer      { background: var(--accent-secondary); }
+  & > .mat-progress-bar-fill::after { background: var(--accent-theme); }
+  & > .mat-progress-bar-background  { fill      : var(--accent-theme); }
+}
+
+
+
 /* Card
  *============================================================================*/
 

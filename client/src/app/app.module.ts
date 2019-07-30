@@ -78,6 +78,7 @@ import {SearchInputComponent} from './shared/components/search-input/search-inpu
 import {DropzoneDirective} from './shared/directives/dropzone/dropzone.directive';
 import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
 import {MathPipe} from './shared/pipes/math/math-pipe.';
+import {MatProgressBarModule} from '@angular/material';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -188,6 +189,7 @@ const PIPES = [ColumnPipe, ShowFieldPipe, MathPipe];
     MatRadioModule,
     MatChipsModule,
     MatBottomSheetModule,
+    MatProgressBarModule,
 
     // Ng Helpers
     LoadClickModule,
