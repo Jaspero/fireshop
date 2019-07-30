@@ -3,8 +3,8 @@
 <mat-dialog-content *ngIf="items$ | async as items" cdkDropList (cdkDropListDropped)="drop(items, $event)">
   <div *ngFor="let item of items; index as index; first as first; last as last;" cdkDrag>
     <div class="flex">
-      <p class="flex-1">
-        <span class="of-x-auto">{{item[data.options.sortTitle]}}</span><br>
+      <p class="flex fd-col jc-center flex-1">
+        <span class="of-x-auto">{{item[data.options.sortTitle]}}</span>
         <span class="of-x-auto fs-small" *ngIf="data.options.sortSubTitle">{{item[data.options.sortSubTitle]}}</span>
       </p>
       <div>
