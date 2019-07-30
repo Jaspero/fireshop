@@ -1,11 +1,16 @@
-<mat-list role="list" cdkDropList (cdkDropListDropped)="drop($event)">
-  <div>
-    <mat-list-item
-      *ngFor="let item of cData['options'];
-      index as index"
+<div class="mat-form-field-wrapper">
+  <p class="fs-small fg-secondary" *ngIf="cData.label">{{cData.label}}</p>
+
+  <div
+    class="jms-draggable-list"
+    cdkDropList
+    (cdkDropListDropped)="drop($event)">
+    <div
+      class="jms-draggable-list-item"
+      *ngFor="let item of cData['options']; index as index"
       [cdkDragDisabled]="item.cdkDragDisabled"
-      cdkDrag role="listitem">
+      cdkDrag>
       {{index + 1}}. {{item.label}}
-    </mat-list-item>
+    </div>
   </div>
-</mat-list>
+</div>
