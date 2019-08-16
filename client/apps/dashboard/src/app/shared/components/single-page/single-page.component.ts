@@ -11,6 +11,7 @@ import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {Role} from '../../enums/role.enum';
 import {StateService} from '../../services/state/state.service';
 import {queue} from '../../utils/queue.operator';
+import * as nanoid from 'nanoid';
 
 export enum ViewState {
   New,
@@ -123,11 +124,7 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
   buildForm(data: any) {}
 
   createId(): string {
-    return this.form
-      .get('name')
-      .value.toLowerCase()
-      .replace(/[^\w ]+/g, '')
-      .replace(/ +/g, '-');
+    return nanoid();
   }
 
   getSaveData(...args): Observable<any> {

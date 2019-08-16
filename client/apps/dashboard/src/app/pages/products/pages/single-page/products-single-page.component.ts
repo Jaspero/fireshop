@@ -87,6 +87,14 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   //     });
   // }
 
+  createId(): string {
+    return this.form
+      .get('name')
+      .value.toLowerCase()
+      .replace(/[^\w ]+/g, '')
+      .replace(/ +/g, '-');
+  }
+
   getSaveData(...args) {
     return this.categories$.pipe(
       take(1),
