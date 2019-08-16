@@ -6,7 +6,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {notify} from '@jf/utils/notify.operator';
-import * as nanoid from 'nanoid';
 import {from, Observable, of} from 'rxjs';
 import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {Role} from '../../enums/role.enum';
@@ -124,7 +123,11 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
   buildForm(data: any) {}
 
   createId(): string {
-    return nanoid();
+    const name = this.form.get('name').value;
+    return name
+      .toLowerCase()
+      .replace(/[^\w ]+/g, '')
+      .replace(/ +/g, '-');
   }
 
   getSaveData(...args): Observable<any> {

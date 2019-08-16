@@ -14,7 +14,6 @@ import {shareReplay, switchMap, take} from 'rxjs/operators';
 import {environment} from '../../../../../../../shop/src/environments/environment';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {CURRENCIES} from '../../../../shared/const/currency.const';
-import {URL_REGEX} from '../../../../shared/const/url-regex.const';
 import {GalleryUploadComponent} from '../../../../shared/modules/file-upload/gallery-upload/gallery-upload.component';
 
 @Component({
@@ -25,7 +24,7 @@ import {GalleryUploadComponent} from '../../../../shared/modules/file-upload/gal
 })
 export class ProductsSinglePageComponent extends LangSinglePageComponent
   implements OnInit {
-  @ViewChild(GalleryUploadComponent, {static: true})
+  @ViewChild(GalleryUploadComponent, {static: false})
   galleryUploadComponent: GalleryUploadComponent;
 
   categories$: Observable<Category[]>;
@@ -44,7 +43,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       switchMap(lang =>
         this.afs
           .collection<Category>(`${FirestoreCollections.Categories}-${lang}`)
-          .valueChanges('id')
+          .valueChanges({idField: 'id'})
       ),
       shareReplay(1)
     );
@@ -142,8 +141,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   buildForm(data: any) {
     this.form = this.fb.group({
       id: [
-        {value: data.id, disabled: this.currentState === this.viewState.Edit},
-        [Validators.required, Validators.pattern(URL_REGEX)]
+        {value: data.id, disabled: this.currentState === this.viewState.Edit}
       ],
       name: [data.name || '', Validators.required],
       active: data.active || false,
@@ -152,7 +150,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       shortDescription: data.shortDescription || '',
       gallery: [data.gallery || []],
       quantity: [data.quantity || 0, Validators.min(0)],
-      category: data.category,
+      category: [data.category, ''],
       showingQuantity: data.hasOwnProperty('showingQuantity')
         ? data.showingQuantity
         : DYNAMIC_CONFIG.generalSettings.showingQuantity,
