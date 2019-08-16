@@ -123,9 +123,9 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
   buildForm(data: any) {}
 
   createId(): string {
-    const name = this.form.get('name').value;
-    return name
-      .toLowerCase()
+    return this.form
+      .get('name')
+      .value.toLowerCase()
       .replace(/[^\w ]+/g, '')
       .replace(/ +/g, '-');
   }
