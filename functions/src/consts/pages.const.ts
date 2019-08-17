@@ -16,7 +16,7 @@ export async function loadItem(
   collection: string,
   id: string,
   titleKey: string,
-  descriptionKey: string,
+  meta?: (item: any) => {[key: string]: string},
   stateKey?: string
 ) {
   // TODO: Language
@@ -34,8 +34,16 @@ export async function loadItem(
 
   // TODO: Structured data
   document.title = PAGE_PREFIX + data[titleKey] + PAGE_SUFFIX;
-  document.querySelector(`meta[name=description]`).content =
-    data[descriptionKey];
+
+  let metaSet: any = DEFAULT_META;
+
+  if (meta) {
+    metaSet = meta(data);
+  }
+
+  Object.entries(metaSet).forEach(([key, value]) => {
+    document.querySelector(`meta[name=${key}]`).content = value;
+  });
 
   if (stateKey) {
     setServerState({[stateKey]: data}, document);
@@ -67,7 +75,9 @@ export const PAGES: PageData[] = [
         'products-en',
         capture[1],
         'name',
-        'shortDescription',
+        item => ({
+          description: item.shortDescription
+        }),
         'product'
       );
     }
