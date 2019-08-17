@@ -8,6 +8,7 @@ import {constants} from 'http2';
 import {join} from 'path';
 import {
   DEFAULT_META,
+  DEFAULT_META_PROPERTIES,
   PAGE_PREFIX,
   PAGE_SUFFIX,
   PAGES
@@ -59,6 +60,13 @@ app.get('*', async (req, res) => {
       ...(foundPage.meta || {})
     }).forEach(([key, value]) => {
       document.querySelector(`meta[name=${key}]`)['content'] = value;
+    });
+
+    Object.entries({
+      ...DEFAULT_META_PROPERTIES,
+      ...(foundPage.metaProperties || {})
+    }).forEach(([key, value]) => {
+      document.querySelector(`meta[property=${key}]`)['content'] = value;
     });
   }
 
