@@ -3,12 +3,33 @@ import {setServerState} from '../utils/set-server-state';
 
 export const PAGE_SUFFIX = ' - Jaspero Fireshop';
 export const PAGE_PREFIX = '';
+export const DEFAULT_META = {
+  description: 'A modern pwa webshop built on Firebase with Angular',
+  keywords: 'e-commerce,angular,firebase,pwa'
+};
+
+export const DEFAULT_META_PROPERTIES = {
+  'og:type': 'website',
+  'og:url': 'https://fireshop.jaspero.co',
+  'og:title': 'Jaspero Fireshop',
+  'og:description': 'A modern pwa webshop built on Firebase with Angular',
+  'og:image': 'https://fireshop.jaspero.co/assets/images/fireshop.svg',
+
+  'twitter:card': 'summary_large_image',
+  'twitter:url': 'https://fireshop.jaspero.co',
+  'twitter:title': 'Jaspero Fireshop',
+  'twitter:description': 'A modern pwa webshop built on Firebase with Angular',
+  'twitter:image': 'https://fireshop.jaspero.co/assets/images/fireshop.svg'
+};
+
+export type Meta = {[key: string]: string};
 
 export interface PageData {
   name: string;
   match: RegExp;
   operation?: (capture: string[], document) => Promise<void>;
-  meta?: {[key: string]: string};
+  meta?: Meta;
+  metaProperties?: Meta;
 }
 
 export async function loadItem(
@@ -16,7 +37,8 @@ export async function loadItem(
   collection: string,
   id: string,
   titleKey: string,
-  meta?: (item: any) => {[key: string]: string},
+  meta?: (item: any) => Meta,
+  metaProperties?: (item: any) => Meta,
   stateKey?: string
 ) {
   // TODO: Language
@@ -35,14 +57,29 @@ export async function loadItem(
   // TODO: Structured data
   document.title = PAGE_PREFIX + data[titleKey] + PAGE_SUFFIX;
 
-  let metaSet: any = DEFAULT_META;
+  let metaSet: Meta = DEFAULT_META;
+  let metaPropertiesSet: Meta = DEFAULT_META_PROPERTIES;
 
   if (meta) {
-    metaSet = meta(data);
+    metaSet = {
+      ...DEFAULT_META,
+      ...(meta(data) || {})
+    };
+  }
+
+  if (metaProperties) {
+    metaPropertiesSet = {
+      ...DEFAULT_META_PROPERTIES,
+      ...(metaProperties(data) || {})
+    };
   }
 
   Object.entries(metaSet).forEach(([key, value]) => {
     document.querySelector(`meta[name=${key}]`).content = value;
+  });
+
+  Object.entries(metaPropertiesSet).forEach(([key, value]) => {
+    document.querySelector(`meta[property=${key}]`).content = value;
   });
 
   if (stateKey) {
@@ -63,7 +100,16 @@ export const PAGES: PageData[] = [
     name: 'Shop',
     match: /^\/shop\/?$/i,
     meta: {
-      description: 'ListComponent of the products in our shop'
+      description: 'List of the products in our shop'
+    },
+    metaProperties: {
+      'og:url': 'https://fireshop.jaspero.co/shop',
+      'og:title': 'Shop',
+      'og:description': 'List of the products in our shop',
+
+      'twitter:url': 'https://fireshop.jaspero.co/shop',
+      'twitter:title': 'Shop',
+      'twitter:description': 'List of the products in our shop'
     }
   },
   {
@@ -78,13 +124,17 @@ export const PAGES: PageData[] = [
         item => ({
           description: item.shortDescription
         }),
+        item => ({
+          'og:url': `https://fireshop.jaspero.co/product/${capture[1]}`,
+          'og:title': item.name,
+          'og:description': item.shortDescription,
+
+          'twitter:url': `https://fireshop.jaspero.co/product/${capture[1]}`,
+          'twitter:title': item.name,
+          'twitter:description': item.shortDescription
+        }),
         'product'
       );
     }
   }
 ];
-
-export const DEFAULT_META = {
-  description: 'A modern pwa webshop built on Firebase with Angular',
-  keywords: 'e-commerce,angular,firebase,pwa'
-};

@@ -54,7 +54,10 @@ app.get('*', async (req, res) => {
     }
   } else {
     document.title = PAGE_PREFIX + foundPage.name + PAGE_SUFFIX;
-    Object.entries(foundPage.meta || DEFAULT_META).forEach(([key, value]) => {
+    Object.entries({
+      ...DEFAULT_META,
+      ...(foundPage.meta || {})
+    }).forEach(([key, value]) => {
       document.querySelector(`meta[name=${key}]`)['content'] = value;
     });
   }
