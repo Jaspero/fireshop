@@ -209,6 +209,7 @@
                 <mat-form-field appearance="outline" class="w-full mat-hint">
                   <mat-label>URL</mat-label>
                   <input matInput formControlName="id" />
+                  <mat-hint>URL will auto populate from product name if left empty.</mat-hint>
                   <mat-error *ngIf="form.get('id').invalid">Only lowercase letters dashes and underscores are allowed</mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="w-full">

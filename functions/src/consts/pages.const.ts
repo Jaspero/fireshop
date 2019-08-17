@@ -8,7 +8,38 @@ export interface PageData {
   name: string;
   match: RegExp;
   operation?: (capture: string[], document) => Promise<void>;
-  meta?: {[key: string]: string}
+  meta?: {[key: string]: string};
+}
+
+export async function loadItem(
+  document,
+  collection: string,
+  id: string,
+  titleKey: string,
+  descriptionKey: string,
+  stateKey?: string
+) {
+  // TODO: Language
+  const item = await admin
+    .firestore()
+    .collection(collection)
+    .doc(id)
+    .get();
+
+  if (!item.exists) {
+    throw new Error('Item missing');
+  }
+
+  const data = item.data();
+
+  // TODO: Structured data
+  document.title = PAGE_PREFIX + data[titleKey] + PAGE_SUFFIX;
+  document.querySelector(`meta[name=description]`).content =
+    data[descriptionKey];
+
+  if (stateKey) {
+    setServerState({[stateKey]: data}, document);
+  }
 }
 
 export const PAGES: PageData[] = [
@@ -30,24 +61,15 @@ export const PAGES: PageData[] = [
   {
     name: 'Product',
     match: /^\/product\/(?:([^\/]+?))\/?$/i,
-    operation: async (capture, document) => {
-      // TODO: Language
-      const product = await admin
-        .firestore()
-        .collection('products-en')
-        .doc(capture[1])
-        .get();
-
-      if (!product.exists) {
-        throw new Error('Product missing');
-      }
-
-      const data = product.data();
-
-      // TODO: Structured data
-      document.title = PAGE_PREFIX + data.name + PAGE_SUFFIX;
-      document.querySelector(`meta[name=description]`).content = data.shortDescription;
-      setServerState({product: data}, document);
+    operation: (capture, document) => {
+      return loadItem(
+        document,
+        'products-en',
+        capture[1],
+        'name',
+        'shortDescription',
+        'product'
+      );
     }
   }
 ];
