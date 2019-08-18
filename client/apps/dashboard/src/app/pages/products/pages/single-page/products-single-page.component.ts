@@ -11,7 +11,7 @@ import {Category} from '@jf/interfaces/category.interface';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
 import {Observable} from 'rxjs';
 import {shareReplay, switchMap, take} from 'rxjs/operators';
-import {environment} from '../../../../../../../shop/src/environments/environment';
+import {environment} from '../../../../../environments/environment';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import {CURRENCIES} from '../../../../shared/const/currency.const';
 import {GalleryUploadComponent} from '../../../../shared/modules/file-upload/gallery-upload/gallery-upload.component';

@@ -42,32 +42,32 @@ app.get('*', async (req, res) => {
     }
   }
 
-  if (!foundPage) {
-    status = constants.HTTP_STATUS_NOT_FOUND;
-  }
+  if (foundPage) {
+    if (foundPage.operation) {
+      try {
+        await foundPage.operation(capture, document);
+      } catch (e) {
+        console.log('e', e);
+        status = constants.HTTP_STATUS_NOT_FOUND;
+      }
+    } else {
+      document.title = PAGE_PREFIX + foundPage.name + PAGE_SUFFIX;
+      Object.entries({
+        ...DEFAULT_META,
+        ...(foundPage.meta || {})
+      }).forEach(([key, value]) => {
+        document.querySelector(`meta[name=${key}]`)['content'] = value;
+      });
 
-  if (foundPage.operation) {
-    try {
-      await foundPage.operation(capture, document);
-    } catch (e) {
-      console.log('e', e);
-      status = constants.HTTP_STATUS_NOT_FOUND;
+      Object.entries({
+        ...DEFAULT_META_PROPERTIES,
+        ...(foundPage.metaProperties || {})
+      }).forEach(([key, value]) => {
+        document.querySelector(`meta[property=${key}]`)['content'] = value;
+      });
     }
   } else {
-    document.title = PAGE_PREFIX + foundPage.name + PAGE_SUFFIX;
-    Object.entries({
-      ...DEFAULT_META,
-      ...(foundPage.meta || {})
-    }).forEach(([key, value]) => {
-      document.querySelector(`meta[name=${key}]`)['content'] = value;
-    });
-
-    Object.entries({
-      ...DEFAULT_META_PROPERTIES,
-      ...(foundPage.metaProperties || {})
-    }).forEach(([key, value]) => {
-      document.querySelector(`meta[property=${key}]`)['content'] = value;
-    });
+    status = constants.HTTP_STATUS_NOT_FOUND;
   }
 
   return res.status(status).send(document.documentElement.innerHTML);
