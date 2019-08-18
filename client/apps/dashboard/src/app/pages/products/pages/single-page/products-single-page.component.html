@@ -27,7 +27,7 @@
             <mat-icon>filter_none</mat-icon>
             <span>&nbsp;Duplicate</span>
           </button>
-          <button mat-button (click)="view(form)">
+          <button mat-button [disabled]="!initialValue || !initialValue.active" (click)="view(form)">
             <mat-icon>visibility</mat-icon>
             <span>&nbsp;View</span>
           </button>
