@@ -39,7 +39,8 @@ export async function loadItem(
   titleKey: string,
   meta?: (item: any) => Meta,
   metaProperties?: (item: any) => Meta,
-  stateKey?: string
+  stateKey?: string,
+  additionalCriteria?: (item: any) => boolean
 ) {
   // TODO: Language
   const item = await admin
@@ -53,6 +54,12 @@ export async function loadItem(
   }
 
   const data = item.data();
+
+  if (additionalCriteria) {
+    if (!additionalCriteria(item)) {
+      throw new Error('Item missing');
+    }
+  }
 
   // TODO: Structured data
   document.title = PAGE_PREFIX + data[titleKey] + PAGE_SUFFIX;
@@ -133,7 +140,8 @@ export const PAGES: PageData[] = [
           'twitter:title': item.name,
           'twitter:description': item.shortDescription
         }),
-        'product'
+        'product',
+        item => item.active
       );
     }
   }
