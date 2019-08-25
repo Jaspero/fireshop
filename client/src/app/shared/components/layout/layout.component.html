@@ -1,7 +1,7 @@
 <nav class="dashboard-nav" [class.dashboard-nav-expanded]="navigationExpanded">
   <section class="dashboard-nav-welcome">
     <!--<img class="dashboard-nav-welcome-logo" src="assets/logo.svg" alt="Four logo" width="60">-->
-    <h1 class="dashboard-nav-welcome-logo">JMS</h1>
+    <h1 class="dashboard-nav-welcome-logo">{{staticConfig.displayName}}</h1>
     <p *ngIf="currentUser$ | async as user" class="dashboard-nav-welcome-user">{{user.email}}</p>
     <mat-icon class="dashboard-nav-welcome-menu" role="button" aria-label="Menu" (click)="toggleMenu()">menu</mat-icon>
   </section>

@@ -3,6 +3,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {STATIC_CONFIG} from '../../../../environments/static-config';
 import {StateService} from '../../services/state/state.service';
 
 @Component({
@@ -26,6 +27,7 @@ export class LayoutComponent implements OnInit {
       link: string[];
     }>
   >;
+  staticConfig = STATIC_CONFIG;
   navigationExpanded = false;
 
   ngOnInit() {

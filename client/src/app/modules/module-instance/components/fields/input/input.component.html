@@ -1,7 +1,7 @@
 <!--TODO: Format this when fixed. For some reason if the type is passed through a variable angular doesn't properly parse-->
 <ng-container [ngSwitch]="cData.type">
   <mat-form-field *ngSwitchCase="'number'" class="w-full" appearance="outline" [class.mat-form-field-has-hint]="cData.hint">
-    <mat-label>{{cData.label}} number</mat-label>
+    <mat-label>{{cData.label}}</mat-label>
     <input
       matInput
       type="number"
