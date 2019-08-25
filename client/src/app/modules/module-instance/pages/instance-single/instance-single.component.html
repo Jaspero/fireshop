@@ -16,25 +16,27 @@
     <!--<mat-progress-bar class="jms-instance-single-loading" color="accent" mode="determinate" value="40"></mat-progress-bar>-->
   </mat-toolbar>
 
-  <section class="grid" *ngSwitchCase="viewState.Edit">
-    <div class="col-12">
-      <mat-card>
-        <div class="flex ai-center">
-          <button mat-button (click)="duplicate(data)">
-            <mat-icon>filter_none</mat-icon>
-            <span>&nbsp;Duplicate</span>
-          </button>
-          <div class="flex-1"></div>
-          <button mat-icon-button aria-label="Previous category" matTooltip="Previous category" (click)="move(false, data.form)">
-            <mat-icon>arrow_back</mat-icon>
-          </button>
-          <button mat-icon-button aria-label="Next category" matTooltip="Next category" (click)="move(true, data.form)">
-            <mat-icon>arrow_forward</mat-icon>
-          </button>
-        </div>
-      </mat-card>
-    </div>
-  </section>
+  <ng-container *ngSwitchCase="viewState.Edit">
+    <section class="grid" *ngIf="!data.directLink">
+      <div class="col-12">
+        <mat-card>
+          <div class="flex ai-center">
+            <button mat-button (click)="duplicate(data)">
+              <mat-icon>filter_none</mat-icon>
+              <span>&nbsp;Duplicate</span>
+            </button>
+            <div class="flex-1"></div>
+            <button mat-icon-button aria-label="Previous category" matTooltip="Previous category" (click)="move(false, data.form)">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+            <button mat-icon-button aria-label="Next category" matTooltip="Next category" (click)="move(true, data.form)">
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </mat-card>
+      </div>
+    </section>
+  </ng-container>
 
   <section class="grid">
     <ng-container *ngFor="let segment of data.segments">

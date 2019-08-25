@@ -44,6 +44,7 @@ interface Instance {
   };
   parser: Parser;
   segments: CompiledSegment[];
+  directLink: boolean;
 }
 
 @Component({
@@ -164,7 +165,8 @@ export class InstanceSingleComponent implements OnInit {
                 id: module.id,
                 name: module.name,
                 editTitleKey
-              }
+              },
+              directLink: !(module.layout && module.layout.directLink)
             };
           })
         )
