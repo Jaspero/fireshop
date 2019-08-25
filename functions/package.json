@@ -10,7 +10,7 @@
     "logs": "firebase functions:log"
   },
   "engines": {
-    "node": "8"
+    "node": "10"
   },
   "main": "lib/index.js",
   "dependencies": {
@@ -30,6 +30,7 @@
   "devDependencies": {
     "@types/ajv": "1.0.0",
     "@types/busboy": "0.2.3",
+    "@types/cors": "2.8.6",
     "@types/csvtojson": "1.1.5",
     "@types/json2csv": "4.5.0",
     "@types/nanoid": "2.0.0",
