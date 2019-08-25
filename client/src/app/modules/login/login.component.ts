@@ -12,7 +12,7 @@ import {Router} from '@angular/router';
 import {auth} from 'firebase/app';
 import {from, throwError} from 'rxjs';
 import {catchError, filter, switchMap} from 'rxjs/operators';
-import {Role} from '../../shared/enums/role.enum';
+import {STATIC_CONFIG} from '../../../environments/static-config';
 import {StateService} from '../../shared/services/state/state.service';
 import {notify} from '../../shared/utils/notify.operator';
 
@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
   @ViewChild('password', {static: true}) passwordField: ElementRef;
 
   loginForm: FormGroup;
+  staticConfig = STATIC_CONFIG;
 
   ngOnInit() {
     this.afAuth.user

@@ -3,6 +3,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {from} from 'rxjs';
+import {STATIC_CONFIG} from '../../../environments/static-config';
 import {notify} from '../../shared/utils/notify.operator';
 
 @Component({
@@ -19,6 +20,7 @@ export class ResetPasswordComponent implements OnInit {
   ) {}
 
   resetControl: FormControl;
+  staticConfig = STATIC_CONFIG;
 
   ngOnInit() {
     this.resetControl = this.fb.control('', [

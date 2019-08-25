@@ -163,8 +163,7 @@
     }
 
     &:before {
-      /*content: attr(data-label);*/
-      content: 'Label';
+      content: attr(data-label);
       text-align: left;
       order: 2;
     }

@@ -17,9 +17,14 @@
       <span class="dashboard-nav-item-text">Settings</span>
     </a>
 
-    <a class="dashboard-nav-item" *ngFor="let module of state.modules$ | async" [routerLink]="['/m', module.id, 'overview']" routerLinkActive="active" (click)="closeMenu()">
-      <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">{{module.layout?.icon || 'folder_open'}}</mat-icon>
-      <span class="dashboard-nav-item-text">{{module.name}}</span>
+    <a
+      class="dashboard-nav-item"
+      *ngFor="let item of links$ | async"
+      [routerLink]="item.link"
+      routerLinkActive="active"
+      (click)="closeMenu()">
+      <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">{{item.icon}}</mat-icon>
+      <span class="dashboard-nav-item-text">{{item.name}}</span>
     </a>
 
     <a class="dashboard-nav-item" routerLink="/module-definition/overview" routerLinkActive="active" (click)="closeMenu()">

@@ -79,7 +79,7 @@
               [matSortDirection]="data.sort?.direction">
               <ng-container matColumnDef="check" sticky>
                 <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let row">
+                <td mat-cell *matCellDef="let row" data-label="Select">
                   <mat-checkbox
                     (click)="$event.stopPropagation()"
                     (change)="$event ? selection.toggle(row.id) : null"
@@ -103,14 +103,14 @@
                   </th>
                 </ng-template>
 
-                <td mat-cell *matCellDef="let row;">
+                <td mat-cell *matCellDef="let row;" [attr.data-label]="column.label">
                   <ng-container *ngTemplateOutlet="columnLayout; context: {row: row.parsed, column: column, index: index}"></ng-container>
                 </td>
               </ng-container>
 
               <ng-container matColumnDef="actions" stickyEnd>
                 <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let element">
+                <td mat-cell *matCellDef="let element" data-label="Actions">
                   <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions" matTooltip="Actions">
                     <mat-icon>more_vert</mat-icon>
                   </button>
@@ -132,30 +132,32 @@
             </table>
           </div>
 
-          <mat-toolbar class="jc-between">
-            <button
-              mat-button
-              color="primary"
-              [disabled]="(hasMore$ | async) === false"
-              [class.loading]="loading$ | async"
-              (click)="loadMore$.next(true)">
-              More…
-            </button>
-            <mat-form-field appearance="outline" class="mat-form-field-no-hint">
-              <mat-label>Page size</mat-label>
-              <mat-select [formControl]="pageSize">
-                <mat-option *ngFor="let size of pageSizes" [value]="size">
-                  {{size}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+          <mat-toolbar class="jc-center" *ngIf="emptyState$ | async; else hasContent;">
+            <p>No {{data.name}} yet.</p>
+            <button mat-button color="primary" [routerLink]="['../single/new']">Add {{data.name}}</button>
           </mat-toolbar>
-        </mat-card-content>
 
-        <!--Empty state-->
-        <p class="ta-center p-y-l" *ngIf="emptyState$ | async">
-          No {{data.name}} yet. <button mat-button color="primary" [routerLink]="['../single/new']">Add {{data.name}}</button>
-        </p>
+          <ng-template #hasContent>
+            <mat-toolbar class="jc-between">
+              <button
+                mat-button
+                color="primary"
+                [disabled]="(hasMore$ | async) === false"
+                [class.loading]="loading$ | async"
+                (click)="loadMore$.next(true)">
+                More…
+              </button>
+              <mat-form-field appearance="outline" class="mat-form-field-no-hint">
+                <mat-label>Page size</mat-label>
+                <mat-select [formControl]="pageSize">
+                  <mat-option *ngFor="let size of pageSizes" [value]="size">
+                    {{size}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-toolbar>
+          </ng-template>
+        </mat-card-content>
       </mat-card>
     </div>
   </section>

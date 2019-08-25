@@ -57,6 +57,13 @@ export interface SortModule {
 export interface ModuleLayout {
   icon?: string;
   editTitleKey?: string;
+
+  /**
+   * ID of a document in the collection.
+   * If added the dashboard link navigates
+   * directly to the provided id.
+   */
+  directLink?: string;
   table?: {
     sort?: TableSort;
     tableColumns?: TableColumn[];

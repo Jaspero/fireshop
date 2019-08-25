@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {StateService} from '../../services/state/state.service';
 
 @Component({
@@ -18,10 +19,33 @@ export class LayoutComponent implements OnInit {
   ) {}
 
   currentUser$: Observable<any>;
+  links$: Observable<
+    Array<{
+      icon: string;
+      name: string;
+      link: string[];
+    }>
+  >;
   navigationExpanded = false;
 
   ngOnInit() {
     this.currentUser$ = this.afAuth.user;
+    this.links$ = this.state.modules$.pipe(
+      map(items =>
+        items.map(item => ({
+          icon:
+            item.layout && item.layout.icon ? item.layout.icon : 'folder_open',
+          name: item.name,
+          link: [
+            '/m',
+            item.id,
+            ...(item.layout && item.layout.directLink
+              ? ['single', item.layout.directLink]
+              : ['overview'])
+          ]
+        }))
+      )
+    );
   }
 
   toggleMenu() {
