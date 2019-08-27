@@ -11,6 +11,12 @@ import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {SchemaValidation} from '../../../../shared/utils/schema-validation';
+import {DEFINITION_AUTOCOMPLETE} from './consts/definition-autocomplete.const';
+import {DEFINITION_TEMPLATES} from './consts/definition-templates.const';
+import {LAYOUT_AUTOCOMPLETE} from './consts/layout-autocomplete.const';
+import {LAYOUT_TEMPLATES} from './consts/layout-templates.const';
+import {SCHEMA_AUTOCOMPLETE} from './consts/schema-autocomplete.const';
+import {SCHEMA_TEMPLATES} from './consts/schema-templates.const';
 
 @Component({
   selector: 'jms-definition-instance',
@@ -33,6 +39,20 @@ export class DefinitionInstanceComponent implements OnInit {
   viewState = ViewState;
   currentState: ViewState;
   schemaValidation: SchemaValidation;
+
+  // https://github.com/josdejong/jsoneditor/blob/develop/docs/api.md
+  schemaOptions = {
+    templates: SCHEMA_TEMPLATES,
+    autocomplete: SCHEMA_AUTOCOMPLETE
+  };
+  layoutOptions = {
+    templates: LAYOUT_TEMPLATES,
+    autocomplete: LAYOUT_AUTOCOMPLETE
+  };
+  definitionsOptions = {
+    templates: DEFINITION_TEMPLATES,
+    autocomplete: DEFINITION_AUTOCOMPLETE
+  };
 
   form$: Observable<FormGroup>;
 

@@ -46,7 +46,7 @@ export class JsonEditorComponent
     let touched = false;
 
     this.editor = new JSONEditor(this.editorEl.nativeElement, {
-      mode: 'code',
+      mode: 'tree',
       modes: ['tree', 'code', 'view', 'text'],
       onChange: () => {
         if (!touched) {
