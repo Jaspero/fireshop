@@ -10,13 +10,11 @@ export function queue(
   const state: StateService = (window as any).rootInjector.get(StateService);
 
   return <T>(source$: Observable<T>) => {
-    return source$.pipe(
-      tap(() => {
-        name = name || Date.now();
-        cq.push(name);
+    name = name || Date.now();
+    cq.push(name);
+    state.loadingQue$.next(cq);
 
-        state.loadingQue$.next(cq);
-      }),
+    return source$.pipe(
       finalize(() => {
         const index = cq.indexOf(name);
 
