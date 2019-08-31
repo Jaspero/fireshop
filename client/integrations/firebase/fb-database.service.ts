@@ -5,7 +5,7 @@ import {AngularFirestore, CollectionReference} from '@angular/fire/firestore';
 import {AngularFireFunctions} from '@angular/fire/functions';
 // @ts-ignore
 import * as nanoid from 'nanoid';
-import {from} from 'rxjs';
+import {from, Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {Module} from '../../src/app/shared/interfaces/module.interface';
 import {Settings} from '../../src/app/shared/interfaces/settings.interface';
@@ -137,7 +137,7 @@ export class FbDatabaseService extends DbService {
 
   createUserAccount(email: string, password: string) {
     const func = this.aff.functions.httpsCallable('createUser');
-    return from(func({email, password}));
+    return from(func({email, password})) as any;
   }
 
   removeUserAccount(id: string) {
