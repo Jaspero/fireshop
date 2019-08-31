@@ -32,7 +32,7 @@
               </mat-select>
             </mat-form-field>
             <div class="col-2 col-xs-12">
-              <button class="w-full" type="submit" mat-flat-button color="primary" [jpLoadClick]="add()">Add</button>
+              <button class="w-full" type="submit" mat-flat-button color="primary" [disabled]="form.invalid" [jpLoadClick]="add()">Add</button>
             </div>
           </form>
 

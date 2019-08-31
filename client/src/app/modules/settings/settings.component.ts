@@ -6,8 +6,8 @@ import {
 } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {RxDestroy} from '@jaspero/ng-helpers';
-import {concat, forkJoin, Observable} from 'rxjs';
-import {takeUntil, tap} from 'rxjs/operators';
+import {concat, forkJoin, Observable, of} from 'rxjs';
+import {switchMap, takeUntil, tap} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../integrations/firebase/firestore-collection.enum';
 import {Role} from '../../shared/enums/role.enum';
 import {Settings} from '../../shared/interfaces/settings.interface';
@@ -107,27 +107,27 @@ export class SettingsComponent extends RxDestroy implements OnInit {
 
       this.settings.roles.push(newUser);
 
-      const toExec: Array<Observable<any>> = [
-        this.dbService.updateUserSettings(this.settings)
-      ];
+      return this.dbService.updateUserSettings(this.settings).pipe(
+        switchMap(() => {
+          if (data.password) {
+            return this.dbService
+              .createUserAccount(data.email, data.password)
+              .pipe(
+                tap(({id}) => {
+                  newUser = {
+                    ...newUser,
+                    id
+                  };
+                })
+              );
+          }
 
-      if (data.password) {
-        toExec.push(
-          this.dbService.createUserAccount(data.email, data.password).pipe(
-            tap(({id}) => {
-              newUser = {
-                ...newUser,
-                id
-              };
-            })
-          )
-        );
-      }
-
-      return concat(toExec).pipe(
+          return of(true);
+        }),
         notify(),
         tap(() => {
-          this.users = [newUser, ...this.users];
+          this.users = [...this.users, newUser];
+          this.form.reset();
           this.cdr.detectChanges();
         })
       );
