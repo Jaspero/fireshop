@@ -1,41 +1,79 @@
-<ng-container *ngIf="form$ | async as form">
+<ng-container>
   <mat-toolbar role="heading" color="primary" class="sticky-header">
     <span>Settings</span>
     <div class="flex-1"></div>
-    <button [jpLoadClick]="save(form)" mat-flat-button>Save</button>
   </mat-toolbar>
 
   <section class="grid">
-    <div class="col-6 col-m-8 col-s-10 col-xs-12">
-      <mat-card [formGroup]="form">
+    <div class="col-12">
+      <mat-card>
         <mat-card-header>
           <h1>Roles</h1>
           <div class="flex-1"></div>
-          <button mat-button (click)="add(form)">Add new user</button>
         </mat-card-header>
 
-        <mat-card-content formArrayName="roles">
-          <div
-            class="grid"
-            *ngFor="let user of rolesForm(form).controls; index as index; last as last; first as first"
-            [class.b-b]="!last"
-            [class.p-t-s]="!first"
-            [class.p-b-s]="!last"
-            [formGroupName]="index">
-            <mat-form-field appearance="outline" class="col-8 col-xs-12 mat-form-field-no-hint">
+        <mat-card-content>
+          <form class="grid" [formGroup]="form" autocomplete="off">
+            <mat-form-field appearance="outline" class="col-4 col-xs-12">
               <mat-label>Email</mat-label>
               <input type="email" formControlName="email" matInput>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="col-4 col-xs-12 mat-form-field-no-hint">
+            <mat-form-field appearance="outline" class="col-4 col-xs-12">
+              <mat-label>Password</mat-label>
+              <input type="password" formControlName="password" matInput>
+              <mat-hint>User won't be created if a password isn't provided</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-2 col-xs-12">
               <mat-label>Role</mat-label>
               <mat-select formControlName="role">
                 <mat-option *ngFor="let option of role | keyvalue" [value]="option.value">{{option.key}}</mat-option>
               </mat-select>
-              <button mat-icon-button matSuffix matTooltip="Remove user" (click)="rolesForm(form).removeAt(index)">
-                <mat-icon>cancel</mat-icon>
-              </button>
             </mat-form-field>
+            <div class="col-2 col-xs-12">
+              <button class="w-full" type="submit" mat-flat-button color="primary" [jpLoadClick]="add()">Add</button>
+            </div>
+          </form>
+
+          <div class="grid">
+            <div class="col-12">
+              <table mat-table [dataSource]="users">
+                <ng-container matColumnDef="exists">
+                  <th mat-header-cell *matHeaderCellDef>Account Exists</th>
+                  <td mat-cell *matCellDef="let element" data-label="Exists">
+                    <mat-checkbox [checked]="!!element.id" [disabled]="true"></mat-checkbox>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="email">
+                  <th mat-header-cell *matHeaderCellDef>Email</th>
+                  <td mat-cell *matCellDef="let element" data-label="Email">{{element.email}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="role">
+                  <th mat-header-cell *matHeaderCellDef>Role</th>
+                  <td mat-cell *matCellDef="let element" data-label="role">{{element.role}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="providerData">
+                  <th mat-header-cell *matHeaderCellDef>Provider</th>
+                  <td mat-cell *matCellDef="let element" data-label="Provider">{{element.providerData | json}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef></th>
+                  <td mat-cell *matCellDef="let element" data-label="Remove">
+                    <button mat-icon-button type="button" aria-label="Remove" matTooltip="Remove" [jpLoadClick]="remove(element)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                <tr mat-row *matRowDef="let row; columns: columns"></tr>
+              </table>
+            </div>
           </div>
         </mat-card-content>
       </mat-card>

@@ -1,5 +1,8 @@
+import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore, CollectionReference} from '@angular/fire/firestore';
+import {AngularFireFunctions} from '@angular/fire/functions';
 // @ts-ignore
 import * as nanoid from 'nanoid';
 import {from} from 'rxjs';
@@ -11,7 +14,10 @@ import {FirestoreCollection} from './firestore-collection.enum';
 
 @Injectable()
 export class FbDatabaseService extends DbService {
-  constructor(private afs: AngularFirestore) {
+  constructor(
+    private afs: AngularFirestore,
+    private aff: AngularFireFunctions
+  ) {
     super();
   }
 
@@ -127,6 +133,16 @@ export class FbDatabaseService extends DbService {
         .doc(documentId)
         .delete()
     );
+  }
+
+  createUserAccount(email: string, password: string) {
+    const func = this.aff.functions.httpsCallable('createUser');
+    return from(func({email, password}));
+  }
+
+  removeUserAccount(id: string) {
+    const func = this.aff.functions.httpsCallable('removeUser');
+    return from(func({id}));
   }
 
   private collection(moduleId, pageSize, sort, cursor) {

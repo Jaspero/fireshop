@@ -77,4 +77,12 @@ export abstract class DbService {
   removeDocument(moduleId: string, documentId: string): Observable<void> {
     return of();
   }
+
+  createUserAccount(email: string, password: string): Observable<{id: string}> {
+    return of();
+  }
+
+  removeUserAccount(id: string): Observable<any> {
+    return of();
+  }
 }
