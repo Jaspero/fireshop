@@ -12,8 +12,8 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {FirestoreStaticDocuments} from '@jf/enums/firestore-static-documents.enum';
 import {notify} from '@jf/utils/notify.operator';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format';
-import {BehaviorSubject, forkJoin, from} from 'rxjs';
-import {finalize, takeUntil} from 'rxjs/operators';
+import {forkJoin, from} from 'rxjs';
+import {tap} from 'rxjs/operators';
 import {CURRENCIES} from '../../shared/const/currency.const';
 import {Role} from '../../shared/enums/role.enum';
 import {hasDuplicates} from '../../shared/utils/has-duplicates';
@@ -40,7 +40,6 @@ export class SettingsComponent extends RxDestroy implements OnInit {
 
   currencies = CURRENCIES;
   form: FormGroup;
-  loading$ = new BehaviorSubject(false);
   groups = [
     {
       collection: FirestoreStaticDocuments.UserSettings,
@@ -160,39 +159,36 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   }
 
   save() {
-    this.loading$.next(true);
+    return () => {
+      const updated: any = {};
 
-    const updated: any = {};
+      return forkJoin(
+        this.groups.map(group => {
+          const data = (this.form.get(
+            group.collection
+          ) as FormGroup).getRawValue();
 
-    forkJoin(
-      this.groups.map(group => {
-        const data = (this.form.get(
-          group.collection
-        ) as FormGroup).getRawValue();
+          Object.keys(data).forEach(key => {
+            data[key] = SettingsComponent.getFieldValue(group, key, data[key]);
+          });
 
-        Object.keys(data).forEach(key => {
-          data[key] = SettingsComponent.getFieldValue(group, key, data[key]);
-        });
+          updated[group.collection] = data;
 
-        updated[group.collection] = data;
-
-        return from(
-          this.afs
-            .collection(FirestoreCollections.Settings)
-            .doc(group.collection)
-            .set(data, {
-              merge: true
-            })
-        );
-      })
-    )
-      .pipe(
+          return from(
+            this.afs
+              .collection(FirestoreCollections.Settings)
+              .doc(group.collection)
+              .set(data, {
+                merge: true
+              })
+          );
+        })
+      ).pipe(
         notify(),
-        finalize(() => this.loading$.next(false)),
-        takeUntil(this.destroyed$)
-      )
-      .subscribe(() => {
-        DYNAMIC_CONFIG.currency = updated['currency'];
-      });
+        tap(() => {
+          DYNAMIC_CONFIG.currency = updated['currency'];
+        })
+      );
+    };
   }
 }

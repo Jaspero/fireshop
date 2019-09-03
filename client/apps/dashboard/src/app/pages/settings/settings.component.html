@@ -5,7 +5,7 @@
       <span>Settings</span>
       <div class="f1"></div>
       <div>
-        <button mat-flat-button color="primary" [routerLink]="['/dashboard']">
+        <button type="button" mat-flat-button color="primary" [routerLink]="['/dashboard']">
           Discard changes
         </button>
         &nbsp;
@@ -13,8 +13,7 @@
           mat-flat-button
           type="submit"
           [disabled]="form.invalid"
-          [class.loading]="loading$ | async"
-          (click)="save()">
+          [jpLoadClick]="save()">
           Save
         </button>
       </div>
@@ -110,13 +109,13 @@
                   </mat-select>
                 </mat-form-field>
 
-                <button mat-icon-button color="warn" (click)="roles.removeAt(index)">
+                <button mat-icon-button type="button" color="warn" (click)="roles.removeAt(index)">
                   <mat-icon>delete</mat-icon>
                 </button>
               </div>
 
               <div class="flex jc-end">
-                <button mat-raised-button color="primary" (click)="roles.push(createRole())">Add role</button>
+                <button mat-raised-button type="button" color="primary" (click)="roles.push(createRole())">Add role</button>
               </div>
 
             </mat-card>
