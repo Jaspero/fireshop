@@ -15,6 +15,7 @@ import {UNIQUE_ID, UNIQUE_ID_PROVIDER} from '@jf/utils/id.provider';
 import 'tinymce/plugins/code';
 import 'tinymce/plugins/print';
 import 'tinymce/plugins/wordcount';
+import 'tinymce/plugins/fullpage';
 
 declare const tinymce: any;
 
@@ -38,6 +39,9 @@ export class WysiwygComponent implements AfterViewInit, ControlValueAccessor {
     public uniqueId: string,
     private cdr: ChangeDetectorRef
   ) {}
+
+  @Input() options: any;
+
   @HostBinding('class.active')
   focused = false;
 
@@ -82,12 +86,13 @@ export class WysiwygComponent implements AfterViewInit, ControlValueAccessor {
       target: this.textarea.nativeElement,
       selector: '#' + this.uniqueId,
       height: 420,
-      plugins: ['code', 'print', 'wordcount'],
+      plugins: ['code', 'print', 'wordcount', 'fullpage'],
       toolbar: [
         'undo redo',
         'insert',
         'styleselect',
         'bold italic',
+        'fullpage',
         'forecolor backcolor',
         'alignleft aligncenter alignright alignjustify',
         'bullist numlist outdent indent',
@@ -118,7 +123,8 @@ export class WysiwygComponent implements AfterViewInit, ControlValueAccessor {
           this.focused = false;
           this.cdr.markForCheck();
         });
-      }
+      },
+      ...this.options || {}
     });
   }
 }

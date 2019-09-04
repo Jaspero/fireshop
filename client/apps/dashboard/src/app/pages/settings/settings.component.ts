@@ -96,6 +96,10 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   emailTag = EmailTag;
   emailTemplates = EMAIL_TEMPLATES;
   emailTagColors = EMAIL_TAG_COLORS;
+  emailEditorOptions = {
+    valid_elements: '*[*]',
+    valid_styles: '*[*]'
+  };
   emailTemplateCache: {
     [id: string]: {
       exampleData?: any;
