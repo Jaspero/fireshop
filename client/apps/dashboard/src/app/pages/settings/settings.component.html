@@ -147,12 +147,16 @@
                       <button type="button" mat-icon-button matTooltip="Edit Template" [jpLoadClick]="editTemplate(template)">
                         <mat-icon>edit</mat-icon>
                       </button>
-                      <button type="button" mat-icon-button matTooltip="Edit Example Data" [jpLoadClick]="editTemplateData(template)">
-                        <mat-icon>explicit</mat-icon>
-                      </button>
-                      <button type="button" mat-icon-button matTooltip="Send Example Email" [jpLoadClick]="sendExampleEmail(template)">
-                        <mat-icon>email</mat-icon>
-                      </button>
+
+                      <ng-container *ngIf="template.tags[0] !== emailTag.Layout">
+                        <button type="button" mat-icon-button matTooltip="Edit Example Data" [jpLoadClick]="editTemplateData(template)">
+                          <mat-icon>explicit</mat-icon>
+                        </button>
+                        <button type="button" mat-icon-button matTooltip="Send Example Email" [jpLoadClick]="sendExampleEmail(template)">
+                          <mat-icon>email</mat-icon>
+                        </button>
+                      </ng-container>
+
                     </mat-panel-description>
                   </mat-expansion-panel-header>
 
@@ -207,7 +211,12 @@
             {{tag}}
           </mat-chip>
         </mat-chip-list>
-        <button type="button" mat-icon-button matTooltip="Send Example Email" [jpLoadClick]="sendExampleEmail(selectedTemplate)">
+        <button
+            *ngIf="selectedTemplate.tags[0] !== emailTag.Layout"
+            type="button"
+            mat-icon-button
+            matTooltip="Send Example Email"
+            [jpLoadClick]="sendExampleEmail(selectedTemplate, selectedTemplateController)">
           <mat-icon>email</mat-icon>
         </button>
       </div>
@@ -239,7 +248,12 @@
             {{tag}}
           </mat-chip>
         </mat-chip-list>
-        <button type="button" mat-icon-button matTooltip="Send Example Email" [jpLoadClick]="sendExampleEmail(selectedTemplate)">
+        <button
+            *ngIf="selectedTemplate.tags[0] !== emailTag.Layout"
+            type="button"
+            mat-icon-button
+            matTooltip="Send Example Email"
+            [jpLoadClick]="sendExampleEmail(selectedTemplate, selectedTemplateController)">
           <mat-icon>email</mat-icon>
         </button>
       </div>
