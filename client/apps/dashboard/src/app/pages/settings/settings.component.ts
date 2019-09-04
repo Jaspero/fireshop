@@ -9,7 +9,7 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {FirestoreStaticDocuments} from '@jf/enums/firestore-static-documents.enum';
 import {notify} from '@jf/utils/notify.operator';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format';
-import {forkJoin, from, of} from 'rxjs';
+import {forkJoin, from, Observable, of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {CURRENCIES} from '../../shared/const/currency.const';
 import {Role} from '../../shared/enums/role.enum';
@@ -261,15 +261,15 @@ export class SettingsComponent extends RxDestroy implements OnInit {
     }
   }
 
-  sendExampleEmail(template: EmailTemplate, control?: FormControl) {
+  sendExampleEmail(temp: EmailTemplate, control?: FormControl) {
     return () => {
 
-      const exec = (template) => {
+      const exec = (template: string) => {
         const func = this.aff.functions.httpsCallable('exampleEmail');
         return from(func({
-          id: template.id,
+          id: temp.id,
           email: this.form.get('general-settings.errorNotificationEmail').value,
-          subject: template.title,
+          subject: temp.title,
           template
         }))
           .pipe(
@@ -280,7 +280,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
       if (control) {
         return exec(control.value)
       } else {
-        return this.loadTemplate(template)
+        return this.loadTemplate(temp)
           .pipe(
             switchMap(res =>
               exec(res)
@@ -332,7 +332,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
     }
   }
 
-  private loadTemplate(template: EmailTemplate) {
+  private loadTemplate(template: EmailTemplate): Observable<string> {
     return ((
       this.emailTemplateCache[template.id] && this.emailTemplateCache[template.id].template ?
         of(this.emailTemplateCache[template.id].template) :
