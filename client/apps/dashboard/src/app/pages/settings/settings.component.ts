@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnInit, TemplateRef, ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {AngularFireFunctions} from '@angular/fire/functions';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
@@ -14,8 +9,8 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {FirestoreStaticDocuments} from '@jf/enums/firestore-static-documents.enum';
 import {notify} from '@jf/utils/notify.operator';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format';
-import {forkJoin, from} from 'rxjs';
-import {tap} from 'rxjs/operators';
+import {forkJoin, from, of} from 'rxjs';
+import {map, switchMap, tap} from 'rxjs/operators';
 import {CURRENCIES} from '../../shared/const/currency.const';
 import {Role} from '../../shared/enums/role.enum';
 import {hasDuplicates} from '../../shared/utils/has-duplicates';
