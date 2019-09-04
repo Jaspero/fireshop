@@ -1,7 +1,6 @@
 import * as sgMail from '@sendgrid/mail';
-import {readFile} from 'fs';
-import {compile} from 'handlebars';
-import {promisify} from 'util';
+import * as admin from 'firebase-admin';
+import {compile, registerPartial} from 'handlebars';
 import {ENV_CONFIG} from '../consts/env-config.const';
 
 export async function parseEmail(
@@ -10,10 +9,26 @@ export async function parseEmail(
   template: string,
   context: any
 ) {
-  const templateFile = await promisify(readFile)(
-    `./email-templates/${template}.hbs`
-  );
-  const html = compile(templateFile.toString())(context);
+
+  const [layout, dbTemplate] = (await Promise.all([
+    admin
+      .firestore()
+      .doc(`settings/templates/templates/layout`)
+      .get(),
+    admin
+      .firestore()
+      .doc(`settings/templates/templates/${template}`)
+      .get()
+  ]))
+    .map(item =>
+      item
+        .data()
+        .value
+    );
+
+  registerPartial('body', dbTemplate);
+
+  const html = compile(layout)(context);
 
   sgMail.setApiKey(ENV_CONFIG.sendgrid.token);
 

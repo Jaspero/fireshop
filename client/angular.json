@@ -208,8 +208,13 @@
                 "output": "/skins/content/default"
               }
             ],
-            "styles": ["apps/dashboard/src/styles.scss"],
-            "scripts": ["./node_modules/tinymce/tinymce.min.js"]
+            "styles": [
+              "node_modules/jsoneditor/dist/jsoneditor.min.css",
+              "apps/dashboard/src/styles.scss"
+            ],
+            "scripts": [
+              "./node_modules/tinymce/tinymce.min.js"
+            ]
           },
           "configurations": {
             "production": {

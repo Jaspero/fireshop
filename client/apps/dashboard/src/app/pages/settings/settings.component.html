@@ -120,6 +120,50 @@
 
             </mat-card>
           </div>
+
+          <div class="col-12">
+            <mat-card>
+              <h6 class="p-y-xs">Email Templates</h6>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+
+              <mat-accordion>
+                <mat-expansion-panel *ngFor="let template of emailTemplates">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title class="flex ai-center">
+                      <span>{{template.title}}</span>
+                    </mat-panel-title>
+
+                    <mat-panel-description class="flex jc-end">
+
+                      <mat-chip-list>
+                        <mat-chip *ngFor="let tag of template.tags" [selected]="true" [color]="emailTagColors[tag]">
+                          {{tag}}
+                        </mat-chip>
+                      </mat-chip-list>
+
+                      <button type="button" mat-icon-button matTooltip="Edit Template" [jpLoadClick]="editTemplate(template)">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+
+                      <ng-container *ngIf="template.tags[0] !== emailTag.Layout">
+                        <button type="button" mat-icon-button matTooltip="Edit Example Data" [jpLoadClick]="editTemplateData(template)">
+                          <mat-icon>explicit</mat-icon>
+                        </button>
+                        <button type="button" mat-icon-button matTooltip="Send Example Email" [jpLoadClick]="sendExampleEmail(template)">
+                          <mat-icon>email</mat-icon>
+                        </button>
+                      </ng-container>
+
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+
+                  <p>{{template.description}}</p>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </mat-card>
+          </div>
         </div>
       </div>
       <div class="col-4 col-s-10 col-xs-12">
@@ -154,3 +198,78 @@
     </div>
   </section>
 </form>
+
+<ng-template #emailTemplate>
+
+  <div mat-dialog-title>
+    <div class="flex jc-between ai-center w-full">
+      <h4>{{selectedTemplate.title}}</h4>
+      <div class="flex ai-center">
+        <mat-chip-list>
+          <mat-chip *ngFor="let tag of selectedTemplate.tags" [selected]="true" [color]="emailTagColors[tag]">
+            {{tag}}
+          </mat-chip>
+        </mat-chip-list>
+        <button
+            *ngIf="selectedTemplate.tags[0] !== emailTag.Layout"
+            type="button"
+            mat-icon-button
+            matTooltip="Send Example Email"
+            [jpLoadClick]="sendExampleEmail(selectedTemplate, selectedTemplateController)">
+          <mat-icon>email</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <form>
+    <mat-dialog-content>
+      <p class="m-b-s">{{selectedTemplate.description}}</p>
+
+      <div class="p-y-xs">
+        <jfsc-wysiwyg [formControl]="selectedTemplateController"></jfsc-wysiwyg>
+      </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="jc-end">
+      <button type="submit" mat-raised-button color="primary" [jpLoadClick]="saveTemplate()">Save</button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>
+
+<ng-template #emailTemplateData>
+  <div mat-dialog-title>
+    <div class="flex jc-between ai-center w-full">
+      <h4>{{selectedTemplate.title}}</h4>
+      <div class="flex ai-center">
+        <mat-chip-list>
+          <mat-chip *ngFor="let tag of selectedTemplate.tags" [selected]="true" [color]="emailTagColors[tag]">
+            {{tag}}
+          </mat-chip>
+        </mat-chip-list>
+        <button
+            *ngIf="selectedTemplate.tags[0] !== emailTag.Layout"
+            type="button"
+            mat-icon-button
+            matTooltip="Send Example Email"
+            [jpLoadClick]="sendExampleEmail(selectedTemplate, selectedTemplateController)">
+          <mat-icon>email</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <form>
+    <mat-dialog-content>
+      <p class="m-b-s">{{selectedTemplate.description}}</p>
+
+      <div class="p-y-xs">
+        <jfs-json-editor [formControl]="selectedTemplateController"></jfs-json-editor>
+      </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="jc-end">
+      <button type="submit" mat-raised-button color="primary" [jpLoadClick]="saveTemplateData()">Save</button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>

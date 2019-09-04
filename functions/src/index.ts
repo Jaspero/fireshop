@@ -2,6 +2,9 @@ import {initializeApp} from 'firebase-admin';
 
 initializeApp();
 
+// Callable
+export {exampleEmail} from './callable/example-email';
+
 // Triggers
 export {userCreated} from './triggers/user-created';
 export {userDeleted} from './triggers/user-deleted';

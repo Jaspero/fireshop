@@ -60,6 +60,7 @@ import {WysiwygComponent} from './components/wysiwyg/wysiwyg.component';
 import {FileUploadModule} from './modules/file-upload/file-upload.module';
 import {ImportComponent} from './components/import/import.component';
 import {ForceDisableDirective} from './directives/force-disable/force-disable.directive';
+import { JsonEditorComponent } from './components/json-editor/json-editor.component';
 
 const IMPORTS = [
   CommonModule,
@@ -123,7 +124,8 @@ const COMPONENTS = [
   ChipsComponent,
   SearchInputComponent,
   ImportComponent,
-  CustomerLookupComponent
+  CustomerLookupComponent,
+  JsonEditorComponent
 ];
 
 const ENTRY_COMPONENTS = [
