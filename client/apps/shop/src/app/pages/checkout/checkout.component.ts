@@ -2,10 +2,8 @@ import {HttpClient} from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
   OnInit,
-  QueryList,
-  ViewChildren
+  ViewChild
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
@@ -14,7 +12,6 @@ import {MatDialog} from '@angular/material';
 import {Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
-import {ENV_CONFIG} from '@jf/consts/env-config.const';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
@@ -24,7 +21,6 @@ import * as nanoid from 'nanoid';
 import {
   BehaviorSubject,
   combineLatest,
-  from,
   Observable,
   Subscription,
   throwError
@@ -32,7 +28,6 @@ import {
 import {
   catchError,
   finalize,
-  first,
   map,
   shareReplay,
   switchMap,
@@ -44,6 +39,9 @@ import {
   LoginSignupDialogComponent,
   LoginSignUpView
 } from '../../shared/components/login-signup-dialog/login-signup-dialog.component';
+import {ElementType} from '../../shared/modules/stripe-elements/enums/element-type.enum';
+import {ElementConfig} from '../../shared/modules/stripe-elements/interfaces/element-config.interface';
+import {StripeElementsComponent} from '../../shared/modules/stripe-elements/stripe-elements.component';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {
   LoggedInUser,
@@ -58,24 +56,8 @@ interface CheckoutState {
   price: OrderPrice;
   form: FormGroup;
   termsControl: FormControl;
-  stripe: {
-    stripe: stripe.Stripe;
-    cardObj: stripe.elements.Element;
-    cardChanges$: Observable<stripe.elements.ElementChangeResponse>;
-    clientSecret: string;
-  };
   orderItems: OrderItemWithId[];
   user?: LoggedInUser;
-}
-
-function cardValidator(cardChanges$: CheckoutState['stripe']['cardChanges$']) {
-  return () =>
-    cardChanges$.pipe(
-      take(1),
-      map(changes => {
-        return !changes || !changes.complete ? {cardInvalid: true} : null;
-      })
-    );
 }
 
 @Component({
@@ -98,17 +80,28 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     super();
   }
 
-  /**
-   * Using ViewChildren instead of ViewChild so
-   * we can observe changes and wait for the
-   * element to become available in the DOM
-   */
-  @ViewChildren('card')
-  cardHostEl: QueryList<ElementRef<HTMLElement>>;
+  @ViewChild(StripeElementsComponent, {static: false})
+  stripeElementsComponent: StripeElementsComponent;
 
   pageLoading$ = new BehaviorSubject(true);
   checkoutLoading$ = new BehaviorSubject(false);
   data$: Observable<CheckoutState>;
+  cardConfig: ElementConfig = {
+    type: ElementType.Card,
+    options: {
+      style: {
+        base: {
+          fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+          fontSmoothing: 'antialiased',
+          fontSize: '16px'
+        }
+      }
+    }
+  };
+  payButtonConfig: ElementConfig = {
+    type: ElementType.PaymentRequestButton
+  };
+  clientSecret$: Observable<{clientSecret: string}>;
 
   private shippingSubscription: Subscription;
 
@@ -120,7 +113,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
 
           this.cartService.items$.pipe(
             take(1),
-            switchMap(items => {
+            map(items => {
               const orderItems = items.map(val => ({
                 id: val.productId,
                 quantity: val.quantity,
@@ -130,71 +123,37 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
                 identifier: val.identifier
               }));
 
-              return this.http
-                .post<{clientSecret: string}>(
-                  `${environment.restApi}/stripe/checkout`,
-                  {
-                    orderItems,
-                    lang: STATIC_CONFIG.lang,
-                    ...(user
-                      ? {
-                          customer: {
-                            email: user.authData.email,
-                            name: user.customerData.name,
-                            id: user.authData.uid
-                          }
+              this.clientSecret$ = this.http.post<{clientSecret: string}>(
+                `${environment.restApi}/stripe/checkout`,
+                {
+                  orderItems,
+                  lang: STATIC_CONFIG.lang,
+                  ...(user
+                    ? {
+                        customer: {
+                          email: user.authData.email,
+                          name: user.customerData.name,
+                          id: user.authData.uid
                         }
-                      : {})
-                  }
-                )
-                .pipe(map(({clientSecret}) => ({clientSecret, orderItems})));
+                      }
+                    : {})
+                }
+              );
+
+              return orderItems;
             })
           )
         ]).pipe(
-          map(([total, {clientSecret, orderItems}]) => {
-            /**
-             * Connect stripe
-             */
-            const str = Stripe(ENV_CONFIG.stripe.token);
-            const elements = str.elements();
-            const cardObj = elements.create('card', {
-              style: {
-                base: {
-                  fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                  fontSmoothing: 'antialiased',
-                  fontSize: '16px'
-                }
+          map(([total, orderItems]) => {
+            this.payButtonConfig.options = {
+              currency: DYNAMIC_CONFIG.currency.primary,
+              total: {
+                label: 'Total',
+                amount: total
               }
-            });
+            };
 
-            const cardChanges$ = new Observable<
-              stripe.elements.ElementChangeResponse
-            >(obs => {
-              cardObj.on('change', event => {
-                obs.next(event);
-              });
-            }).pipe(shareReplay(1));
-
-            this.cardHostEl.changes
-              .pipe(first(changes => changes.first))
-              .subscribe(value => {
-                cardObj.mount(value.first.nativeElement);
-              });
-
-            const form = this.buildForm(
-              user ? user.customerData : {},
-              cardChanges$
-            );
-
-            /**
-             * Dirty solution for updating validity
-             * when card element changes. This is
-             * necessary because it isn't part of the
-             * form
-             */
-            cardChanges$
-              .pipe(takeUntil(this.destroyed$))
-              .subscribe(() => form.updateValueAndValidity());
+            const form = this.buildForm(user ? user.customerData : {});
 
             this.pageLoading$.next(false);
 
@@ -206,13 +165,6 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
                 total,
                 shipping: DYNAMIC_CONFIG.currency.shippingCost || 0,
                 subTotal: total - (DYNAMIC_CONFIG.currency.shippingCost || 0)
-              },
-
-              stripe: {
-                stripe: str,
-                cardObj,
-                cardChanges$,
-                clientSecret
               },
 
               orderItems,
@@ -233,18 +185,13 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     );
   }
 
-  buildForm(value: Partial<Customer>, cardChanges$) {
-    const group = this.fb.group(
-      {
-        billing: this.addressForm(value.billing ? value.billing : {}),
-        code: '',
-        shippingInfo: value.shippingInfo || true,
-        saveInfo: true
-      },
-      {
-        asyncValidators: [cardValidator(cardChanges$)]
-      }
-    );
+  buildForm(value: Partial<Customer>) {
+    const group = this.fb.group({
+      billing: this.addressForm(value.billing ? value.billing : {}),
+      code: '',
+      shippingInfo: value.shippingInfo || true,
+      saveInfo: true
+    });
 
     if (this.shippingSubscription) {
       this.shippingSubscription.unsubscribe();
@@ -284,35 +231,16 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     if (this.afAuth.auth.currentUser && data.saveInfo) {
       this.afs
         .doc(
-          `${FirestoreCollections.Customers}/${
-            this.afAuth.auth.currentUser.uid
-          }`
+          `${FirestoreCollections.Customers}/${this.afAuth.auth.currentUser.uid}`
         )
         .update(data);
     }
 
-    from(
-      state.stripe.stripe['handleCardPayment'](
-        state.stripe.clientSecret,
-        state.stripe.cardObj,
-        {
-          payment_method_data: {
-            billing_details: {
-              name: `${data.billing.firstName} ${data.billing.lastName}`
-            }
-          },
-          receipt_email: data.billing.email,
-          save_payment_method: !!this.afAuth.auth.currentUser
-        }
-      )
-    )
+    this.stripeElementsComponent.activeElement
+      .triggerPayment()
       .pipe(
-        switchMap(({paymentIntent, error}) => {
-          if (error) {
-            return throwError(error);
-          }
-
-          return this.afs
+        switchMap(paymentIntent =>
+          this.afs
             .collection(FirestoreCollections.Orders)
             .doc(nanoid())
             .set({
@@ -353,8 +281,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
                   orderItemsData: []
                 }
               )
-            });
-        }),
+            })
+        ),
         finalize(() => this.checkoutLoading$.next(false))
       )
       .subscribe(

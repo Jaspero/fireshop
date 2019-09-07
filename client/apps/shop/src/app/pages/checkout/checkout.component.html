@@ -28,10 +28,7 @@
                   </div>
                   <div class="col-12">
                     <h6 class="p-y-xs">Payment info</h6>
-                    <div #card></div>
-                    <p class="c-warm m-t-xs" *ngIf="(data.stripe.cardChanges$ | async)?.error as cardError">
-                      {{cardError.message}}
-                    </p>
+                    <jfs-stripe-elements [clientSecret$]="clientSecret$" [elementConfig]="[cardConfig, payButtonConfig]"></jfs-stripe-elements>
                   </div>
                   <div class="col-12">
                     <div class="p-y-xs">
