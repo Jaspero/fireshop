@@ -2,8 +2,6 @@ export const LAYOUT_AUTOCOMPLETE = {
   filter: 'contain',
   caseSensitive: false,
   getOptions: (text, path) => {
-    console.log('path', path);
-
     /**
      * Options available in root
      */
@@ -12,6 +10,24 @@ export const LAYOUT_AUTOCOMPLETE = {
     }
 
     if (path[0] === 'instance') {
+      if (path[1] && path[1] === 'segments') {
+        return [
+          'fields',
+          'array',
+          'type',
+          'title',
+          'subTitle',
+          'description',
+          'nestedSegments',
+          'columnsDesktop',
+          'columnsTablet',
+          'columnsMobile',
+          'configuration',
+          'classes',
+          'id'
+        ];
+      }
+
       return ['segments'];
     }
 
