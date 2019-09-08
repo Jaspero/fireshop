@@ -7,11 +7,12 @@ import {
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {DbService} from '../../../../../shared/services/db/db.service';
+import {Option} from '../../../interfaces/option.inteface';
 import {COMPONENT_DATA} from '../../../utils/create-component-injector';
 import {FieldComponent, FieldData} from '../../field/field.component';
 
 interface SelectData extends FieldData {
-  dataSet?: Array<{name: string; value: string}>;
+  dataSet?: Option[];
   multiple?: boolean;
   populate?: {
     collection: string;
@@ -41,7 +42,7 @@ export class SelectComponent extends FieldComponent<SelectData>
     super(cData);
   }
 
-  dataSet$: Observable<Array<{name: string; value: string}>>;
+  dataSet$: Observable<Option[]>;
   loading$ = new BehaviorSubject(true);
 
   ngOnInit() {

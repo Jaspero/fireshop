@@ -1,6 +1,6 @@
 const item = (text: string, value: any) => {
   return {
-    text: `Component - ${text}`,
+    text,
     title: `Insert a definition for a ${text.toLowerCase()} component`,
     field: 'pointer',
     value: {
@@ -9,6 +9,11 @@ const item = (text: string, value: any) => {
     }
   };
 };
+const options = [
+  {name: 'Option 1', value: 'option-1', disabled: false},
+  {name: 'Option 2', value: 'option-2', disabled: false},
+  {name: 'Option 3', value: 'option-3', disabled: false}
+];
 const simpleItem = (text: string) => ({
   ...item(text, {
     component: text.toLowerCase()
@@ -17,8 +22,48 @@ const simpleItem = (text: string) => ({
 
 export const DEFINITION_TEMPLATES = [
   simpleItem('Input'),
-  simpleItem('Checkbox'),
   simpleItem('Wysiwyg'),
+  simpleItem('Checkbox'),
+  simpleItem('Toggle'),
+  item('Textarea', {
+    type: 'textarea',
+    configuration: {
+      rows: 10,
+      cols: 10
+    }
+  }),
+  item('Select', {
+    type: 'select',
+    configuration: {
+      dataSet: options,
+      multiple: false
+    }
+  }),
+  item('Radio', {
+    type: 'radio',
+    configuration: {
+      options
+    }
+  }),
+  item('Draggable', {
+    type: 'draggable',
+    configuration: {
+      options
+    }
+  }),
+  item('Slider', {
+    type: 'slider',
+    configuration: {
+      validation: {
+        minimum: 10,
+        maximum: 90
+      },
+      thumbLabel: true,
+      tickInterval: 1,
+      startAt: 0,
+      endAt: 100
+    }
+  }),
   item('Image', {
     type: 'image',
     configuration: {

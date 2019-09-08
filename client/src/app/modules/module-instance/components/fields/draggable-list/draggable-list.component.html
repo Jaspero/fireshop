@@ -7,10 +7,10 @@
     (cdkDropListDropped)="drop($event)">
     <div
       class="jms-draggable-list-item"
-      *ngFor="let item of cData['options']; index as index"
-      [cdkDragDisabled]="item.cdkDragDisabled"
+      *ngFor="let item of cData.options; index as index"
+      [cdkDragDisabled]="item.disabled"
       cdkDrag>
-      {{index + 1}}. {{item.label}}
+      {{index + 1}}. {{item.name}}
     </div>
   </div>
 </div>

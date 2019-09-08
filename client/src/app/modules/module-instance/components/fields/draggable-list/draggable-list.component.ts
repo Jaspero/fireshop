@@ -1,13 +1,10 @@
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {Option} from '../../../interfaces/option.inteface';
 import {FieldComponent, FieldData} from '../../field/field.component';
 
 interface DragData extends FieldData {
-  options: Array<{
-    value: any;
-    label: string;
-    cdkDragDisabled: boolean;
-  }>;
+  options: Option[];
 }
 
 @Component({

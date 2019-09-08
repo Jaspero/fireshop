@@ -4,7 +4,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 // @ts-ignore
 import {Observable, of} from 'rxjs';
-import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
+import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
@@ -122,7 +122,15 @@ export class DefinitionInstanceComponent implements OnInit {
         return of({});
       }
 
-      return this.dbService.setModule(data, id).pipe(
+      return this.state.modules$.pipe(
+        take(1),
+        switchMap(modules => {
+          if (!data.hasOwnProperty('order')) {
+            data.order = modules.length;
+          }
+
+          return this.dbService.setModule(data, id);
+        }),
         notify(),
         tap(() => this.back())
       );
