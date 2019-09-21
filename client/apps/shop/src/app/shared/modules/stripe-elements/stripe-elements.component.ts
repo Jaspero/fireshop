@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -9,7 +10,7 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import {forkJoin, Observable} from 'rxjs';
+import {BehaviorSubject, forkJoin, Observable, Subject} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {BaseElement} from './classes/base-element.class';
 import {ELEMENTS_MAP} from './consts/elements-map.const';
@@ -18,7 +19,8 @@ import {ElementConfig} from './interfaces/element-config.interface';
 @Component({
   selector: 'jfs-stripe-elements',
   templateUrl: './stripe-elements.component.html',
-  styleUrls: ['./stripe-elements.component.scss']
+  styleUrls: ['./stripe-elements.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StripeElementsComponent implements OnInit {
   constructor(
@@ -26,7 +28,7 @@ export class StripeElementsComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-  @ViewChild('host', {static: true})
+  @ViewChild('hostEl', {static: true})
   hostEl: ElementRef<HTMLDivElement>;
 
   elements: stripe.elements.Elements;
@@ -45,12 +47,14 @@ export class StripeElementsComponent implements OnInit {
   /**
    * List of elements that can be toggled through
    */
-  availableElements: BaseElement[];
+  availableElements: BaseElement[] = [];
   activeElementIndex: number;
   activeElement: BaseElement;
 
   @Output()
   paymentTriggered = new EventEmitter();
+
+  error$ = new BehaviorSubject<string>('');
 
   ngOnInit() {
     this.stripe = Stripe(this.publicKey);
@@ -75,19 +79,25 @@ export class StripeElementsComponent implements OnInit {
       })
     )
       .pipe(take(1))
-      .subscribe(elements => {
-        this.availableElements = elements.reduce((acc, cur) => {
-          if (cur.canCreate) {
-            acc.push(cur.instance);
-          }
+      .subscribe(
+        elements => {
+          this.availableElements = elements.reduce((acc, cur) => {
+            if (cur.canCreate) {
+              acc.push(cur.instance);
+            }
 
-          return acc;
-        }, []);
+            return acc;
+          }, []);
 
-        this.activeElementIndex = 1;
-        this.toggleUsedElement();
-        this.cdr.markForCheck();
-      });
+          this.activeElementIndex = 1;
+          this.toggleUsedElement();
+          this.cdr.markForCheck();
+        },
+        error => {
+          console.log('error', error);
+          this.error$.next('Error rendering payment methods.');
+        }
+      );
   }
 
   toggleUsedElement() {
@@ -112,7 +122,7 @@ export class StripeElementsComponent implements OnInit {
           activeElement.options
         );
 
-        activeElement.element.mount(this.hostEl);
+        activeElement.element.mount(this.hostEl.nativeElement);
 
         activeElement.afterMount();
 

@@ -1,5 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   OnInit,
@@ -66,7 +67,8 @@ interface CheckoutState {
   styleUrls: ['./checkout.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CheckoutComponent extends RxDestroy implements OnInit {
+export class CheckoutComponent extends RxDestroy
+  implements OnInit, AfterViewInit {
   constructor(
     public cartService: CartService,
     public afAuth: AngularFireAuth,
@@ -102,6 +104,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     type: ElementType.PaymentRequestButton
   };
   clientSecret$: Observable<{clientSecret: string}>;
+  paymentError$: Observable<string>;
 
   private shippingSubscription: Subscription;
 
@@ -146,7 +149,9 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
         ]).pipe(
           map(([total, orderItems]) => {
             this.payButtonConfig.options = {
-              currency: DYNAMIC_CONFIG.currency.primary,
+              currency: DYNAMIC_CONFIG.currency.primary.toLowerCase(),
+              // TODO: Remove country (should be applied once entered)
+              country: 'US',
               total: {
                 label: 'Total',
                 amount: total
@@ -183,6 +188,10 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
       ),
       shareReplay(1)
     );
+  }
+
+  ngAfterViewInit() {
+    this.paymentError$ = this.stripeElementsComponent.error$;
   }
 
   buildForm(value: Partial<Customer>) {

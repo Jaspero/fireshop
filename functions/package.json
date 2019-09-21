@@ -12,7 +12,6 @@
   },
   "main": "lib/index.js",
   "dependencies": {
-    "@angular/service-worker": "8.1.2",
     "@google-cloud/storage": "2.5.0",
     "@sendgrid/mail": "6.4.0",
     "ajv": "6.10.2",
@@ -32,7 +31,7 @@
     "nanoid": "2.0.3",
     "reflect-metadata": "0.1.13",
     "rxjs": "6.5.2",
-    "sharp": "0.22.1",
+    "sharp": "0.23.0",
     "simple-oauth2": "2.2.1",
     "xlsx": "0.14.4",
     "stripe": "7.4.0"

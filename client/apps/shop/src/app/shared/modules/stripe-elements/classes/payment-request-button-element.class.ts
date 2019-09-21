@@ -38,7 +38,12 @@ export class PaymentRequestButtonElement extends BaseElement {
   }
 
   canCreate() {
-    this.paymentRequest = this.stripe.paymentRequest(this.options);
+    try {
+      console.log('options', this.options);
+      this.paymentRequest = this.stripe.paymentRequest(this.options);
+    } catch (e) {
+      return throwError(e);
+    }
 
     return from(this.paymentRequest.canMakePayment()) as Observable<boolean>;
   }

@@ -3,7 +3,7 @@ import {ElementType} from '../enums/element-type.enum';
 import {BaseElement} from './base-element.class';
 
 export class CardElement extends BaseElement {
-  type: ElementType.Card;
+  type = ElementType.Card;
 
   afterMount() {
     this.element.on('change', event => {

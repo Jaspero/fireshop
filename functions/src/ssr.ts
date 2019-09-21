@@ -14,9 +14,17 @@ import {
   PAGES
 } from './consts/pages.const';
 
-const index = readFileSync(
-  join(__dirname, '../dist/public/shop/index.html')
-).toString();
+let index = '';
+
+/**
+ * Allows running functions n development
+ * without a built client
+ */
+try {
+  index = readFileSync(
+    join(__dirname, '../dist/public/shop/index.html')
+  ).toString();
+} catch (e) {}
 
 const app = express();
 app.use(compression());
@@ -70,7 +78,9 @@ app.get('*', async (req, res) => {
     status = constants.HTTP_STATUS_NOT_FOUND;
   }
 
-  return res.status(status).send(document.documentElement.outerHTML);
+  return res
+    .status(status)
+    .send('<!DOCTYPE html>' + document.documentElement.outerHTML);
 });
 
 export const ssr = functions.https.onRequest(app);

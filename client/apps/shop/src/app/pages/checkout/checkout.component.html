@@ -29,6 +29,9 @@
                   <div class="col-12">
                     <h6 class="p-y-xs">Payment info</h6>
                     <jfs-stripe-elements [clientSecret$]="clientSecret$" [elementConfig]="[cardConfig, payButtonConfig]"></jfs-stripe-elements>
+                    <div class="payment-error" *ngIf="paymentError$ | async as error">
+                      {{error}}
+                    </div>
                   </div>
                   <div class="col-12">
                     <div class="p-y-xs">
@@ -222,7 +225,7 @@
                 </tr>
                 <tr>
                   <td class="w-half p-a-xs">Payment method:</td>
-                  <td class="w-half p-a-xs">{{(data.stripe.cardChanges$ | async)?.brand}}</td>
+                  <!--<td class="w-half p-a-xs">{{(data.stripe.cardChanges$ | async)?.brand}}</td>-->
                 </tr>
                 <tr>
                   <td class="w-half p-a-xs">Billing email:</td>
