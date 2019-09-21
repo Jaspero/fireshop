@@ -1,3 +1,4 @@
+rules_version = '2';
 service cloud.firestore {
   function write() {
     return request.auth.token.role == 'write'
@@ -15,6 +16,16 @@ service cloud.firestore {
 
     match /settings/{setting} {
       allow read: if true
+      allow write, delete: if write()
+    }
+
+    match /settings/templates/{document=**} {
+      allow read: if readOrWrite()
+      allow write, delete: if write()
+    }
+
+    match /settings/template-data/{document=**} {
+      allow read: if readOrWrite()
       allow write, delete: if write()
     }
 

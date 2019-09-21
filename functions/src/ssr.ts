@@ -70,7 +70,7 @@ app.get('*', async (req, res) => {
     status = constants.HTTP_STATUS_NOT_FOUND;
   }
 
-  return res.status(status).send(document.documentElement.innerHTML);
+  return res.status(status).send(document.documentElement.outerHTML);
 });
 
 export const ssr = functions.https.onRequest(app);
