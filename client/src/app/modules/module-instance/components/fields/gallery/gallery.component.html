@@ -11,46 +11,8 @@
   <!--<upload-task [file]="file"></upload-task>-->
   <!--</div>-->
 
-  <!--Uplaod from URL-->
-  <ng-template #modal>
-    <mat-dialog-content>
-      <mat-form-field class="w-full" appearance="outline">
-        <mat-label>Image URL</mat-label>
-        <input matInput #url>
-      </mat-form-field>
-    </mat-dialog-content>
-
-    <mat-dialog-actions class="jc-end">
-      <button mat-button mat-dialog-close>Cancel</button>&nbsp;
-      <button mat-flat-button color="primary" [disabled]="!url.value" (click)="addImage(url.value)" mat-dialog-close>Add image</button>
-    </mat-dialog-actions>
-  </ng-template>
-
   <!--Upload from disk-->
   <input #file type="file" multiple hidden (change)="filesUploaded($event.target)">
-
-  <!--Image sort-->
-  <ng-template #imagesSort>
-    <h1 mat-dialog-title>Sort images</h1>
-
-    <mat-dialog-content *ngIf="cData.control.value.length">
-      <div *ngFor="let val of cData.control.value; index as index; first as first; last as last;">
-        <div class="flex ai-center">
-          <img class="jms-gallery-sort-image" [src]="(val.data || val) | jpSanitize:'resourceUrl'">
-          <div class="flex-1"></div>
-          <div>
-            <button mat-icon-button [disabled]="first" (click)="move(true, index)">
-              <mat-icon>arrow_upward</mat-icon>
-            </button>
-            <button mat-icon-button [disabled]="last" (click)="move(false, index)">
-              <mat-icon>arrow_downward</mat-icon>
-            </button>
-          </div>
-        </div>
-        <hr class="m-y-s" *ngIf="!last">
-      </div>
-    </mat-dialog-content>
-  </ng-template>
 
   <!--Uploaded images list-->
   <ng-container *ngIf="cData.control.value.length">
@@ -71,3 +33,49 @@
        [class.hovering]="isHovering">
   </div>
 </div>
+
+<!--Uplaod from URL-->
+<ng-template #modal>
+  <mat-dialog-content>
+    <mat-form-field class="w-full" appearance="outline">
+      <mat-label>Image URL</mat-label>
+      <input matInput #url>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="jc-end">
+    <button mat-button mat-dialog-close>Cancel</button>&nbsp;
+    <button mat-flat-button color="primary" [disabled]="!url.value" (click)="addImage(url.value)" mat-dialog-close>Add image</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<!--Image sort-->
+<ng-template #imagesSort>
+  <h1 mat-dialog-title>Sort images</h1>
+
+  <mat-dialog-content>
+
+    <div
+      class="sort-wrapper"
+      cdkDropList
+      (cdkDropListDropped)="sortDrop($event)">
+
+      <div class="sort-box" *ngFor="let val of cData.control.value; index as index; first as first; last as last;" cdkDrag>
+        <img class="sort-image" [src]="(val.data || val) | jpSanitize:'resourceUrl'">
+        <div class="flex-1"></div>
+        <div>
+          <button mat-icon-button [disabled]="first" (click)="move(true, index)">
+            <mat-icon>arrow_upward</mat-icon>
+          </button>
+          <button mat-icon-button [disabled]="last" (click)="move(false, index)">
+            <mat-icon>arrow_downward</mat-icon>
+          </button>
+          <button mat-icon-button cdkDragHandle>
+            <mat-icon>drag_indicator</mat-icon>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </mat-dialog-content>
+</ng-template>

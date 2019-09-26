@@ -209,6 +209,13 @@ export class GalleryComponent extends FieldComponent<GalleryData>
     this.cData.control.value.splice(index, 1);
   }
 
+  sortDrop(event: CdkDragDrop<string[]>) {
+    console.log('event', event);
+    const value = this.cData.control.value;
+    moveItemInArray(value, event.previousIndex, event.currentIndex);
+    this.cData.control.setValue(value);
+  }
+
   /**
    * Executes all uploads/removes to persist
    * the changes on server

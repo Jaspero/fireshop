@@ -300,3 +300,10 @@
   padding: 16px 24px;
   border-top: 1px solid var(--tertiary);
 }
+
+
+// Temporary material fix
+// https://github.com/angular/components/issues/15880
+html.cdk-global-scrollblock {
+  position: initial !important;
+}
