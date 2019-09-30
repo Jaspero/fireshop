@@ -189,21 +189,20 @@
 
           <div class="col-12">
             <mat-card formGroupName="currency">
-              <h6 class="p-y-xs">Shipping</h6>
+              <div class="p-b-xxs ai-center flex jc-between">
+                <h6>Shipping</h6>
+                <button mat-flat-button color="primary" [jpLoadClick]="manageShipping()">Manage Shipping</button>
+              </div>
               <div class="p-y-xs">
                 <mat-divider></mat-divider>
               </div>
-              <div class="p-y-xs">
+              <div class="p-b-xs">
                 <mat-form-field appearance="outline" class="w-full">
                   <mat-label>Default Shipping cost</mat-label>
                   <input type="number" matInput formControlName="shippingCost">
                   <span matPrefix>{{currencySymbol}}&nbsp;</span>
                   <mat-hint>This value will be used for countries without a defined shipping cost.</mat-hint>
                 </mat-form-field>
-              </div>
-
-              <div class="flex jc-end">
-                <button mat-flat-button color="primary" [jpLoadClick]="manageShipping()">Manage Shipping</button>
               </div>
             </mat-card>
           </div>
@@ -296,7 +295,7 @@
       <table class="w-full">
         <tr class="ta-left">
           <th>Country</th>
-          <th>Code</th>
+          <th width="100">Code</th>
           <th>Value</th>
         </tr>
         <tr *ngFor="let country of countries; index as index;">

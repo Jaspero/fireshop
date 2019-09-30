@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFireFunctions} from '@angular/fire/functions';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {Router} from '@angular/router';
@@ -18,6 +19,7 @@ import {ENV_CONFIG} from '@jf/consts/env-config.const';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
+import {Country} from '@jf/interfaces/country.interface';
 import {Customer} from '@jf/interfaces/customer.interface';
 import {OrderItem, OrderPrice} from '@jf/interfaces/order.interface';
 import * as nanoid from 'nanoid';
@@ -88,6 +90,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   constructor(
     public cartService: CartService,
     public afAuth: AngularFireAuth,
+    public aff: AngularFireFunctions,
     private http: HttpClient,
     private afs: AngularFirestore,
     private fb: FormBuilder,
@@ -109,10 +112,18 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   pageLoading$ = new BehaviorSubject(true);
   checkoutLoading$ = new BehaviorSubject(false);
   data$: Observable<CheckoutState>;
+  countries$: Observable<Country[]>;
 
   private shippingSubscription: Subscription;
 
   ngOnInit() {
+    this.countries$ = from(
+      this.aff.functions.httpsCallable('countries')()
+    ).pipe(
+      map(res => res.data),
+      shareReplay(1)
+    );
+
     this.data$ = this.state.user$.pipe(
       switchMap(user =>
         combineLatest([
@@ -284,9 +295,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     if (this.afAuth.auth.currentUser && data.saveInfo) {
       this.afs
         .doc(
-          `${FirestoreCollections.Customers}/${
-            this.afAuth.auth.currentUser.uid
-          }`
+          `${FirestoreCollections.Customers}/${this.afAuth.auth.currentUser.uid}`
         )
         .update(data);
     }

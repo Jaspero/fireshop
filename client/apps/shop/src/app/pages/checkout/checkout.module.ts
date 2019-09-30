@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import {AngularFireFunctionsModule} from '@angular/fire/functions';
 import {RouterModule, Routes} from '@angular/router';
 import {CheckoutCompleteGuard} from '../../shared/guards/checkout-complete.guard';
 import {SharedModule} from '../../shared/shared.module';
@@ -26,7 +27,13 @@ const routes: Routes = [
     CheckoutErrorComponent,
     CheckoutSuccessComponent
   ],
-  imports: [SharedModule, RouterModule.forChild(routes)],
+  imports: [
+    SharedModule,
+
+    AngularFireFunctionsModule,
+
+    RouterModule.forChild(routes)
+  ],
   providers: [CheckoutCompleteGuard]
 })
 export class CheckoutModule {}

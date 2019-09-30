@@ -413,7 +413,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
 
       return from(func()).pipe(
         switchMap((value: any) => {
-          this.countries = value;
+          this.countries = value.data;
 
           this.shippingControl = new FormArray(
             this.countries.map(country => {
