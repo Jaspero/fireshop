@@ -11,7 +11,7 @@ export const exampleEmail = functions.https.onCall(async data => {
         .get()).data() || {}
     ).value || '';
 
-  await parseEmail(data.email, data.subject, data.id, exampleData, false);
+  await parseEmail(data.email, data.subject, data.template, exampleData, false);
 
   return true;
 });
