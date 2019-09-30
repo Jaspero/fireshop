@@ -174,7 +174,7 @@
               <div class="p-y-xs">
                 <mat-divider></mat-divider>
               </div>
-              <div class="p-y-xs">
+              <div class="p-t-xs">
                 <mat-form-field appearance="outline" class="w-full">
                   <mat-label>Primary currency</mat-label>
                   <mat-select formControlName="primary">
@@ -184,12 +184,26 @@
                   </mat-select>
                 </mat-form-field>
               </div>
+            </mat-card>
+          </div>
+
+          <div class="col-12">
+            <mat-card formGroupName="currency">
+              <h6 class="p-y-xs">Shipping</h6>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
               <div class="p-y-xs">
                 <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Shipping cost</mat-label>
+                  <mat-label>Default Shipping cost</mat-label>
                   <input type="number" matInput formControlName="shippingCost">
                   <span matPrefix>{{currencySymbol}}&nbsp;</span>
+                  <mat-hint>This value will be used for countries without a defined shipping cost.</mat-hint>
                 </mat-form-field>
+              </div>
+
+              <div class="flex jc-end">
+                <button mat-flat-button color="primary" [jpLoadClick]="manageShipping()">Manage Shipping</button>
               </div>
             </mat-card>
           </div>
@@ -270,6 +284,35 @@
 
     <mat-dialog-actions class="jc-end">
       <button type="submit" mat-raised-button color="primary" [jpLoadClick]="saveTemplateData()">Save</button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>
+
+<ng-template #shippingDialog>
+  <h4 mat-dialog-title>Shipping Management</h4>
+
+  <form>
+    <mat-dialog-content>
+      <table class="w-full">
+        <tr class="ta-left">
+          <th>Country</th>
+          <th>Code</th>
+          <th>Value</th>
+        </tr>
+        <tr *ngFor="let country of countries; index as index;">
+          <td>{{country.name}}</td>
+          <td>{{country.code}}</td>
+          <td>
+            <mat-form-field appearance="outline">
+              <input type="number" placeholder="Value" matInput [formControl]="shippingControl.at(index)">
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="jc-end">
+      <button type="submit" mat-raised-button color="primary" [matDialogClose]="shippingControl.getRawValue()">Save</button>
     </mat-dialog-actions>
   </form>
 </ng-template>

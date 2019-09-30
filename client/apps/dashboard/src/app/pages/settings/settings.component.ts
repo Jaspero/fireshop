@@ -20,6 +20,8 @@ import {RxDestroy} from '@jaspero/ng-helpers';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {FirestoreStaticDocuments} from '@jf/enums/firestore-static-documents.enum';
+import {Country} from '@jf/interfaces/country.interface';
+import {Shipping} from '@jf/interfaces/shipping.interface';
 import {notify} from '@jf/utils/notify.operator';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format';
 import {forkJoin, from, Observable, of} from 'rxjs';
@@ -59,6 +61,9 @@ export class SettingsComponent extends RxDestroy implements OnInit {
 
   @ViewChild('emailTemplateData', {static: true})
   emailTemplateData: TemplateRef<any>;
+
+  @ViewChild('shippingDialog', {static: true})
+  shippingDialog: TemplateRef<any>;
 
   currencies = CURRENCIES;
   form: FormGroup;
@@ -122,6 +127,11 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   } = {};
   selectedTemplate: EmailTemplate;
   selectedTemplateController: FormControl;
+  shipping: Shipping[];
+  shippingControl: FormArray;
+  countries: Country[];
+
+  private _snapshot: any;
 
   static setFieldValue(group: any, key: string, value: any) {
     return group.transform && group.transform[key]
@@ -150,6 +160,8 @@ export class SettingsComponent extends RxDestroy implements OnInit {
       .collection(FirestoreCollections.Settings)
       .get()
       .subscribe(snapshot => {
+        this._snapshot = snapshot;
+
         this.form = this.fb.group(
           this.groups.reduce((acc, cur) => {
             const document = snapshot.docs.find(
@@ -200,8 +212,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   save() {
     return () => {
       const updated: any = {};
-
-      return forkJoin(
+      const toExec: any = [
         this.groups.map(group => {
           const data = (this.form.get(
             group.collection
@@ -222,7 +233,22 @@ export class SettingsComponent extends RxDestroy implements OnInit {
               })
           );
         })
-      ).pipe(
+      ];
+
+      if (this.shipping) {
+        toExec.push(
+          from(
+            this.afs
+              .collection(FirestoreCollections.Settings)
+              .doc(FirestoreStaticDocuments.Shipping)
+              .set({
+                value: this.shipping
+              })
+          )
+        );
+      }
+
+      return forkJoin(toExec).pipe(
         notify(),
         tap(() => {
           DYNAMIC_CONFIG.currency = updated['currency'];
@@ -362,6 +388,58 @@ export class SettingsComponent extends RxDestroy implements OnInit {
         tap(() => {
           this.emailTemplateCache[this.selectedTemplate.id].exampleData = value;
           this.dialog.closeAll();
+        })
+      );
+    };
+  }
+
+  manageShipping() {
+    return () => {
+      const func = this.aff.functions.httpsCallable('countries');
+      const document = this._snapshot.docs.find(
+        it => it.id === FirestoreStaticDocuments.Shipping
+      );
+      const documentData = document ? document.data().value : null;
+
+      let shipping: Shipping[];
+
+      if (this.shipping) {
+        shipping = [...this.shipping];
+      } else if (documentData) {
+        shipping = [...documentData];
+      } else {
+        shipping = [];
+      }
+
+      return from(func()).pipe(
+        switchMap((value: any) => {
+          this.countries = value;
+
+          this.shippingControl = new FormArray(
+            this.countries.map(country => {
+              const setValue = shipping.find(it => it.code === country.code);
+
+              return new FormControl(setValue ? setValue.value : 0);
+            })
+          );
+
+          return this.dialog
+            .open(this.shippingDialog, {width: '800px'})
+            .afterClosed();
+        }),
+        tap(value => {
+          if (value) {
+            this.shipping = value.reduce((acc, cur, index) => {
+              if (cur) {
+                acc.push({
+                  ...this.countries[index],
+                  value: cur
+                });
+              }
+
+              return acc;
+            }, []);
+          }
         })
       );
     };
