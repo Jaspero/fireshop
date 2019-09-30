@@ -1,7 +1,20 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {AngularFireFunctions} from '@angular/fire/functions';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
@@ -98,13 +111,14 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   emailTagColors = EMAIL_TAG_COLORS;
   emailEditorOptions = {
     valid_elements: '*[*]',
-    valid_styles: '*[*]'
+    valid_styles: '*[*]',
+    entity_encoding: 'raw'
   };
   emailTemplateCache: {
     [id: string]: {
       exampleData?: any;
       template?: string;
-    }
+    };
   } = {};
   selectedTemplate: EmailTemplate;
   selectedTemplateController: FormControl;
@@ -219,137 +233,146 @@ export class SettingsComponent extends RxDestroy implements OnInit {
 
   editTemplate(template: EmailTemplate) {
     return () => {
-
       this.selectedTemplate = template;
 
-      return this.loadTemplate(template)
-        .pipe(
-          tap(res => {
-            this.selectedTemplateController = new FormControl(res, Validators.required);
-            this.dialog.open(this.emailTemplate, {width: '800px'});
-          })
-        );
-    }
+      return this.loadTemplate(template).pipe(
+        tap(res => {
+          this.selectedTemplateController = new FormControl(
+            res,
+            Validators.required
+          );
+          this.dialog.open(this.emailTemplate, {width: '800px'});
+        })
+      );
+    };
   }
 
   editTemplateData(template: EmailTemplate) {
     return () => {
-
       this.selectedTemplate = template;
 
-      return ((
-        this.emailTemplateCache[template.id] && this.emailTemplateCache[template.id].exampleData ?
-          of(this.emailTemplateCache[template.id].exampleData) :
-          // tslint:disable-next-line:max-line-length
-          this.afs.doc(`${FirestoreCollections.Settings}/${FirestoreStaticDocuments.Templates}/${FirestoreStaticDocuments.TemplateData}/${template.id}`).get()
+      return ((this.emailTemplateCache[template.id] &&
+      this.emailTemplateCache[template.id].exampleData
+        ? of(this.emailTemplateCache[template.id].exampleData)
+        : // tslint:disable-next-line:max-line-length
+          this.afs
+            .doc(
+              `${FirestoreCollections.Settings}/${FirestoreStaticDocuments.Templates}/${FirestoreStaticDocuments.TemplateData}/${template.id}`
+            )
+            .get()
             .pipe(
-              map(res => res.exists ? res.data().value : {})
-            )
-      ) as any)
-        .pipe(
-          tap(res => {
-            if (!this.emailTemplateCache[template.id]) {
-              this.emailTemplateCache[template.id] = {};
-            }
-
-            this.emailTemplateCache[template.id].exampleData = res;
-            this.selectedTemplateController = new FormControl(res, Validators.required);
-
-            this.dialog.open(this.emailTemplateData, {width: '800px'});
-          })
-        )
-    }
-  }
-
-  sendExampleEmail(temp: EmailTemplate, control?: FormControl) {
-    return () => {
-
-      const exec = (template: string) => {
-        const func = this.aff.functions.httpsCallable('exampleEmail');
-        return from(func({
-          id: temp.id,
-          email: this.form.get('general-settings.errorNotificationEmail').value,
-          subject: temp.title,
-          template
-        }))
-          .pipe(
-            notify()
-          );
-      };
-
-      if (control) {
-        return exec(control.value)
-      } else {
-        return this.loadTemplate(temp)
-          .pipe(
-            switchMap(res =>
-              exec(res)
-            )
-          )
-      }
-    }
-  }
-
-  saveTemplate() {
-    return () => {
-
-      const value = this.selectedTemplateController.value;
-
-      return from(
-        // tslint:disable-next-line:max-line-length
-        this.afs.doc(`${FirestoreCollections.Settings}/${FirestoreStaticDocuments.Templates}/${FirestoreStaticDocuments.Templates}/${this.selectedTemplate.id}`).set({
-          value
-        })
-      )
-        .pipe(
-          notify(),
-          tap(() => {
-            this.emailTemplateCache[this.selectedTemplate.id].template = value;
-            this.dialog.closeAll();
-          })
-        )
-    }
-  }
-
-  saveTemplateData() {
-    return () => {
-
-      const value = this.selectedTemplateController.value;
-
-      return from(
-        // tslint:disable-next-line:max-line-length
-        this.afs.doc(`${FirestoreCollections.Settings}/${FirestoreStaticDocuments.Templates}/${FirestoreStaticDocuments.TemplateData}/${this.selectedTemplate.id}`).set({
-          value
-        })
-      )
-        .pipe(
-          notify(),
-          tap(() => {
-            this.emailTemplateCache[this.selectedTemplate.id].exampleData = value;
-            this.dialog.closeAll();
-          })
-        )
-    }
-  }
-
-  private loadTemplate(template: EmailTemplate): Observable<string> {
-    return ((
-      this.emailTemplateCache[template.id] && this.emailTemplateCache[template.id].template ?
-        of(this.emailTemplateCache[template.id].template) :
-        // tslint:disable-next-line:max-line-length
-        this.afs.doc(`${FirestoreCollections.Settings}/${FirestoreStaticDocuments.Templates}/${FirestoreStaticDocuments.Templates}/${template.id}`).get()
-          .pipe(
-            map(res => res.exists ? res.data().value : '')
-          )
-    ) as any)
-      .pipe(
-        tap((res: string) => {
+              map(res => (res.exists ? res.data().value : {}))
+            )) as any).pipe(
+        tap(res => {
           if (!this.emailTemplateCache[template.id]) {
             this.emailTemplateCache[template.id] = {};
           }
 
-          this.emailTemplateCache[template.id].template = res;
+          this.emailTemplateCache[template.id].exampleData = res;
+          this.selectedTemplateController = new FormControl(
+            res,
+            Validators.required
+          );
+
+          this.dialog.open(this.emailTemplateData, {width: '800px'});
         })
-      )
+      );
+    };
+  }
+
+  sendExampleEmail(temp: EmailTemplate, control?: FormControl) {
+    return () => {
+      const exec = (template: string) => {
+        const func = this.aff.functions.httpsCallable('exampleEmail');
+        return from(
+          func({
+            id: temp.id,
+            email: this.form.get('general-settings.errorNotificationEmail')
+              .value,
+            subject: temp.title,
+            template
+          })
+        ).pipe(notify());
+      };
+
+      if (control) {
+        return exec(control.value);
+      } else {
+        return this.loadTemplate(temp).pipe(switchMap(res => exec(res)));
+      }
+    };
+  }
+
+  saveTemplate() {
+    return () => {
+      /**
+       * Fix for tinymce escaping handlebars partials
+       */
+      const value = this.selectedTemplateController.value.replace(
+        /{{&gt;/g,
+        '{{>'
+      );
+
+      return from(
+        // tslint:disable-next-line:max-line-length
+        this.afs
+          .doc(
+            `${FirestoreCollections.Settings}/${FirestoreStaticDocuments.Templates}/${FirestoreStaticDocuments.Templates}/${this.selectedTemplate.id}`
+          )
+          .set({
+            value
+          })
+      ).pipe(
+        notify(),
+        tap(() => {
+          this.emailTemplateCache[this.selectedTemplate.id].template = value;
+          this.dialog.closeAll();
+        })
+      );
+    };
+  }
+
+  saveTemplateData() {
+    return () => {
+      const value = this.selectedTemplateController.value;
+
+      return from(
+        // tslint:disable-next-line:max-line-length
+        this.afs
+          .doc(
+            `${FirestoreCollections.Settings}/${FirestoreStaticDocuments.Templates}/${FirestoreStaticDocuments.TemplateData}/${this.selectedTemplate.id}`
+          )
+          .set({
+            value
+          })
+      ).pipe(
+        notify(),
+        tap(() => {
+          this.emailTemplateCache[this.selectedTemplate.id].exampleData = value;
+          this.dialog.closeAll();
+        })
+      );
+    };
+  }
+
+  private loadTemplate(template: EmailTemplate): Observable<string> {
+    return ((this.emailTemplateCache[template.id] &&
+    this.emailTemplateCache[template.id].template
+      ? of(this.emailTemplateCache[template.id].template)
+      : // tslint:disable-next-line:max-line-length
+        this.afs
+          .doc(
+            `${FirestoreCollections.Settings}/${FirestoreStaticDocuments.Templates}/${FirestoreStaticDocuments.Templates}/${template.id}`
+          )
+          .get()
+          .pipe(map(res => (res.exists ? res.data().value : '')))) as any).pipe(
+      tap((res: string) => {
+        if (!this.emailTemplateCache[template.id]) {
+          this.emailTemplateCache[template.id] = {};
+        }
+
+        this.emailTemplateCache[template.id].template = res;
+      })
+    );
   }
 }

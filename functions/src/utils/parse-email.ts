@@ -7,24 +7,35 @@ export async function parseEmail(
   to: string,
   subject: string,
   template: string,
-  context: any
+  context: any,
+  loadTemplate = true
 ) {
+  let layout: string;
+  let dbTemplate: string;
 
-  const [layout, dbTemplate] = (await Promise.all([
+  const toExec = [
     admin
       .firestore()
       .doc(`settings/templates/templates/layout`)
-      .get(),
-    admin
-      .firestore()
-      .doc(`settings/templates/templates/${template}`)
       .get()
-  ]))
-    .map(item =>
-      item
-        .data()
-        .value
+  ];
+
+  if (loadTemplate) {
+    toExec.push(
+      admin
+        .firestore()
+        .doc(`settings/templates/templates/${template}`)
+        .get()
     );
+  }
+
+  [layout, dbTemplate] = (await Promise.all(toExec)).map(
+    item => item.data().value
+  );
+
+  if (!loadTemplate) {
+    dbTemplate = template;
+  }
 
   registerPartial('body', dbTemplate);
 
