@@ -125,8 +125,8 @@ export class DefinitionInstanceComponent implements OnInit {
       return this.state.modules$.pipe(
         take(1),
         switchMap(modules => {
-          if (!data.hasOwnProperty('order')) {
-            data.order = modules.length;
+          if (!data.layout.hasOwnProperty('order')) {
+            data.layout.order = modules.length;
           }
 
           return this.dbService.setModule(data, id);
