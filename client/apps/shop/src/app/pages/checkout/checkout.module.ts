@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import {AngularFireFunctionsModule} from '@angular/fire/functions';
 import {RouterModule, Routes} from '@angular/router';
 import {ENV_CONFIG} from '@jf/consts/env-config.const';
 import {CheckoutCompleteGuard} from '../../shared/guards/checkout-complete.guard';
@@ -33,6 +34,7 @@ const routes: Routes = [
   ],
   imports: [
     SharedModule,
+    AngularFireFunctionsModule,
     StripeElementsModule.config(ENV_CONFIG.stripe.token),
     RouterModule.forChild(routes)
   ],

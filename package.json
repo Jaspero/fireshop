@@ -7,7 +7,7 @@
     "build-indexes": "node build-indexes.js",
     "build": "npm --prefix client run build:all && npm --prefix functions run build",
     "lint": "npm --prefix client run lint && npm --prefix functions run lint",
-    "deploy": "firebase deploy --only storage --only firestore --only functions:ssr,functions:userCreated,functions:userDeleted,functions:fileCreated,functions:fileDeleted,functions:orderCreated,functions:exportData,functions:importData,functions:similarProducts,functions:stripe,functions:instagram,functions:exampleEmail,hosting"
+    "deploy": "firebase deploy --only storage --only firestore --only functions:ssr,functions:countries,functions:userCreated,functions:userDeleted,functions:fileCreated,functions:fileDeleted,functions:orderCreated,functions:exportData,functions:importData,functions:similarProducts,functions:stripe,functions:instagram,functions:exampleEmail,hosting"
   },
   "author": {
     "name": "Jaspero Ltd",

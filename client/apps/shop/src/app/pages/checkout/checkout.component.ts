@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFireFunctions} from '@angular/fire/functions';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
 import {Router} from '@angular/router';
@@ -16,6 +17,7 @@ import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
+import {Country} from '@jf/interfaces/country.interface';
 import {Customer} from '@jf/interfaces/customer.interface';
 import {OrderItem, OrderPrice} from '@jf/interfaces/order.interface';
 import * as nanoid from 'nanoid';
@@ -72,6 +74,7 @@ export class CheckoutComponent extends RxDestroy
   constructor(
     public cartService: CartService,
     public afAuth: AngularFireAuth,
+    public aff: AngularFireFunctions,
     private http: HttpClient,
     private afs: AngularFirestore,
     private fb: FormBuilder,
@@ -105,10 +108,18 @@ export class CheckoutComponent extends RxDestroy
   };
   clientSecret$: Observable<{clientSecret: string}>;
   paymentError$: Observable<string>;
+  countries$: Observable<Country[]>;
 
   private shippingSubscription: Subscription;
 
   ngOnInit() {
+    this.countries$ = from(
+      this.aff.functions.httpsCallable('countries')()
+    ).pipe(
+      map(res => res.data),
+      shareReplay(1)
+    );
+
     this.data$ = this.state.user$.pipe(
       switchMap(user =>
         combineLatest([

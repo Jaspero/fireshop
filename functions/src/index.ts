@@ -4,6 +4,7 @@ initializeApp();
 
 // Callable
 export {exampleEmail} from './callable/example-email';
+export {countries} from './callable/countries';
 
 // Triggers
 export {userCreated} from './triggers/user-created';
