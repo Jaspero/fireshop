@@ -254,10 +254,14 @@ export class SettingsComponent extends RxDestroy implements OnInit {
       return ((this.emailTemplateCache[template.id] &&
       this.emailTemplateCache[template.id].exampleData
         ? of(this.emailTemplateCache[template.id].exampleData)
-        : // tslint:disable-next-line:max-line-length
-          this.afs
+        : this.afs
             .doc(
-              `${FirestoreCollections.Settings}/${FirestoreStaticDocuments.Templates}/${FirestoreStaticDocuments.TemplateData}/${template.id}`
+              [
+                FirestoreCollections.Settings,
+                FirestoreStaticDocuments.Templates,
+                FirestoreStaticDocuments.TemplateData,
+                template.id
+              ].join('/')
             )
             .get()
             .pipe(
@@ -314,10 +318,14 @@ export class SettingsComponent extends RxDestroy implements OnInit {
       );
 
       return from(
-        // tslint:disable-next-line:max-line-length
         this.afs
           .doc(
-            `${FirestoreCollections.Settings}/${FirestoreStaticDocuments.Templates}/${FirestoreStaticDocuments.Templates}/${this.selectedTemplate.id}`
+            [
+              FirestoreCollections.Settings,
+              FirestoreStaticDocuments.Templates,
+              FirestoreStaticDocuments.Templates,
+              this.selectedTemplate.id
+            ].join('/')
           )
           .set({
             value
@@ -337,10 +345,14 @@ export class SettingsComponent extends RxDestroy implements OnInit {
       const value = this.selectedTemplateController.value;
 
       return from(
-        // tslint:disable-next-line:max-line-length
         this.afs
           .doc(
-            `${FirestoreCollections.Settings}/${FirestoreStaticDocuments.Templates}/${FirestoreStaticDocuments.TemplateData}/${this.selectedTemplate.id}`
+            [
+              FirestoreCollections.Settings,
+              FirestoreStaticDocuments.Templates,
+              FirestoreStaticDocuments.TemplateData,
+              this.selectedTemplate.id
+            ].join('/')
           )
           .set({
             value
@@ -359,10 +371,14 @@ export class SettingsComponent extends RxDestroy implements OnInit {
     return ((this.emailTemplateCache[template.id] &&
     this.emailTemplateCache[template.id].template
       ? of(this.emailTemplateCache[template.id].template)
-      : // tslint:disable-next-line:max-line-length
-        this.afs
+      : this.afs
           .doc(
-            `${FirestoreCollections.Settings}/${FirestoreStaticDocuments.Templates}/${FirestoreStaticDocuments.Templates}/${template.id}`
+            [
+              FirestoreCollections.Settings,
+              FirestoreStaticDocuments.Templates,
+              FirestoreStaticDocuments.Templates,
+              template.id
+            ].join('/')
           )
           .get()
           .pipe(map(res => (res.exists ? res.data().value : '')))) as any).pipe(
