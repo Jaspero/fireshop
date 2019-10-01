@@ -10,7 +10,7 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import {BehaviorSubject, forkJoin, Observable, Subject} from 'rxjs';
+import {BehaviorSubject, forkJoin, Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {BaseElement} from './classes/base-element.class';
 import {ELEMENTS_MAP} from './consts/elements-map.const';
@@ -94,6 +94,7 @@ export class StripeElementsComponent implements OnInit {
           this.cdr.markForCheck();
         },
         error => {
+          // tslint:disable-next-line:no-console
           console.log('error', error);
           this.error$.next('Error rendering payment methods.');
         }
@@ -126,7 +127,7 @@ export class StripeElementsComponent implements OnInit {
 
         activeElement.afterMount();
 
-        this.activeElement = this.availableElements[this.activeElementIndex];
+        this.activeElement = activeElement;
       });
   }
 }

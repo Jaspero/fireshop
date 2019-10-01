@@ -1,43 +1,24 @@
 import {HttpClient} from '@angular/common/http';
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {AngularFireFunctions} from '@angular/fire/functions';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {MatDialog} from '@angular/material';
+import {MatDialog} from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
+import {FirestoreStaticDocuments} from '@jf/enums/firestore-static-documents.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
 import {Country} from '@jf/interfaces/country.interface';
 import {Customer} from '@jf/interfaces/customer.interface';
-import {OrderItem, OrderPrice} from '@jf/interfaces/order.interface';
+import {OrderItem} from '@jf/interfaces/order.interface';
+import {Shipping} from '@jf/interfaces/shipping.interface';
 import * as nanoid from 'nanoid';
-import {
-  BehaviorSubject,
-  combineLatest,
-  from,
-  Observable,
-  Subscription,
-  throwError
-} from 'rxjs';
-import {
-  catchError,
-  finalize,
-  map,
-  shareReplay,
-  switchMap,
-  take,
-  takeUntil
-} from 'rxjs/operators';
+import {combineLatest, from, Observable, Subscription, throwError} from 'rxjs';
+import {catchError, map, shareReplay, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {
   LoginSignupDialogComponent,
@@ -47,21 +28,15 @@ import {ElementType} from '../../shared/modules/stripe-elements/enums/element-ty
 import {ElementConfig} from '../../shared/modules/stripe-elements/interfaces/element-config.interface';
 import {StripeElementsComponent} from '../../shared/modules/stripe-elements/stripe-elements.component';
 import {CartService} from '../../shared/services/cart/cart.service';
-import {
-  LoggedInUser,
-  StateService
-} from '../../shared/services/state/state.service';
+import {StateService} from '../../shared/services/state/state.service';
 
-interface OrderItemWithId extends OrderItem {
-  id: string;
-}
-
-interface CheckoutState {
-  price: OrderPrice;
-  form: FormGroup;
-  termsControl: FormControl;
-  orderItems: OrderItemWithId[];
-  user?: LoggedInUser;
+interface Item extends OrderItem {
+  id: string,
+  quantity: number,
+  price: number,
+  name: string,
+  attributes: any,
+  identifier: string
 }
 
 @Component({
@@ -70,8 +45,7 @@ interface CheckoutState {
   styleUrls: ['./checkout.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CheckoutComponent extends RxDestroy
-  implements OnInit, AfterViewInit {
+export class CheckoutComponent extends RxDestroy implements OnInit {
   constructor(
     public cartService: CartService,
     public afAuth: AngularFireAuth,
@@ -89,37 +63,19 @@ export class CheckoutComponent extends RxDestroy
   @ViewChild(StripeElementsComponent, {static: false})
   stripeElementsComponent: StripeElementsComponent;
 
-  pageLoading$ = new BehaviorSubject(true);
-  checkoutLoading$ = new BehaviorSubject(false);
-  data$: Observable<CheckoutState>;
-  cardConfig: ElementConfig = {
-    type: ElementType.Card,
-    options: {
-      style: {
-        base: {
-          fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-          fontSmoothing: 'antialiased',
-          fontSize: '16px'
-        }
-      }
-    }
-  };
-  payButtonConfig: ElementConfig = {
-    type: ElementType.PaymentRequestButton
-  };
   clientSecret$: Observable<{clientSecret: string}>;
-  paymentError$: Observable<string>;
   countries$: Observable<Country[]>;
   form$: Observable<FormGroup>;
   loggedIn$: Observable<boolean>;
-  items$: Observable<Array<{
-    id: string,
-    quantity: number,
-    price: number,
-    name: string,
-    attributes: any,
-    identifier: string
-  }>>;
+  items$: Observable<Item[]>;
+  formData$: Observable<any>;
+  shipping$: Observable<Shipping[]>;
+  price$: Observable<{
+    total: number,
+    shipping: number,
+    subTotal: number
+  }>;
+  elementConfig$: Observable<[ElementConfig, ElementConfig]>;
 
   termsControl = new FormControl(false);
 
@@ -132,6 +88,12 @@ export class CheckoutComponent extends RxDestroy
       map(res => res.data),
       shareReplay(1)
     );
+
+    this.shipping$ = this.afs.doc(`${FirestoreCollections.Settings}/${FirestoreStaticDocuments.Shipping}`).get()
+      .pipe(
+        map(res => res.exists ? res.data().value : []),
+        shareReplay(1)
+      );
 
     this.loggedIn$ = this.state.user$
       .pipe(
@@ -160,120 +122,94 @@ export class CheckoutComponent extends RxDestroy
         shareReplay(1)
       );
 
+    this.formData$ = this.form$
+      .pipe(
+        map(form => form.getRawValue())
+      );
+
     this.clientSecret$ = combineLatest([
       this.state.user$
         .pipe(
           take(1)
         ),
-      this.form$,
+      this.formData$,
       this.items$
     ])
       .pipe(
-        switchMap(([user, form, orderItems]) => {
-          const data = form.getRawValue();
-
-          return this.http.post<{clientSecret: string}>(
+        switchMap(([user, data, orderItems]) =>
+          this.http.post<{clientSecret: string}>(
             `${environment.restApi}/stripe/checkout`,
             {
               orderItems,
               lang: STATIC_CONFIG.lang,
               form: data,
               ...user
-                && {
-                  customer: {
-                    email: user.authData.email,
-                    name: user.customerData.name,
-                    id: user.authData.uid
-                  }
+              && {
+                customer: {
+                  email: user.authData.email,
+                  name: user.customerData.name,
+                  id: user.authData.uid
                 }
+              }
             }
           )
+        ),
+        shareReplay(1)
+      );
+
+    this.price$ = combineLatest([
+      this.cartService.totalPrice$
+        .pipe(
+          take(1)
+        ),
+      this.formData$,
+      this.shipping$
+    ])
+      .pipe(
+        map(([cartTotal, data, shippingData]) => {
+          const country = data.shippingInfo ? data.billing.country : data.shipping.country;
+          const shipping = shippingData.hasOwnProperty(country) ? shippingData[country].value : DYNAMIC_CONFIG.currency.shippingCost || 0;
+          const total = cartTotal + shipping;
+
+          return {
+            total,
+            shipping,
+            subTotal: total - shipping
+          }
         })
       );
 
-    this.data$ = this.state.user$.pipe(
-      switchMap(user =>
-        combineLatest([
-          this.cartService.totalPrice$.pipe(take(1)),
-
-          this.cartService.items$.pipe(
-            take(1),
-            map(items => {
-              const orderItems = items.map(val => ({
-                id: val.productId,
-                quantity: val.quantity,
-                price: val.price,
-                name: val.name,
-                attributes: val.filters,
-                identifier: val.identifier
-              }));
-
-              this.clientSecret$ = this.http.post<{clientSecret: string}>(
-                `${environment.restApi}/stripe/checkout`,
-                {
-                  orderItems,
-                  lang: STATIC_CONFIG.lang,
-                  ...(user
-                    ? {
-                        customer: {
-                          email: user.authData.email,
-                          name: user.customerData.name,
-                          id: user.authData.uid
-                        }
-                      }
-                    : {})
+    this.elementConfig$ = combineLatest([
+      this.price$,
+      this.formData$
+    ])
+      .pipe(
+        map(([price, data]) => [
+          {
+            type: ElementType.Card,
+            options: {
+              style: {
+                base: {
+                  fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                  fontSmoothing: 'antialiased',
+                  fontSize: '16px'
                 }
-              );
-
-              return orderItems;
-            })
-          )
-        ]).pipe(
-          map(([total, orderItems]) => {
-            this.payButtonConfig.options = {
+              }
+            }
+          },
+          {
+            type: ElementType.PaymentRequestButton,
+            options: {
               currency: DYNAMIC_CONFIG.currency.primary.toLowerCase(),
-              // TODO: Remove country (should be applied once entered)
-              country: 'US',
+              country: data.billing.country,
               total: {
                 label: 'Total',
-                amount: total
+                amount: price.total
               }
-            };
-
-            const form = this.buildForm(user ? user.customerData : {});
-
-            this.pageLoading$.next(false);
-
-            return {
-              /**
-               * TODO: Incorporate tax
-               */
-              price: {
-                total,
-                shipping: DYNAMIC_CONFIG.currency.shippingCost || 0,
-                subTotal: total - (DYNAMIC_CONFIG.currency.shippingCost || 0)
-              },
-
-              orderItems,
-              user,
-              form,
-              termsControl: new FormControl(false)
-            };
-          }),
-          catchError(error => {
-            localStorage.setItem('result', JSON.stringify(error.error));
-            this.router.navigate(['/checkout/error']);
-
-            return throwError(error);
-          })
-        )
-      ),
-      shareReplay(1)
-    );
-  }
-
-  ngAfterViewInit() {
-    this.paymentError$ = this.stripeElementsComponent.error$;
+            }
+          }
+        ])
+      );
   }
 
   buildForm(value: Partial<Customer>) {
@@ -316,83 +252,113 @@ export class CheckoutComponent extends RxDestroy
     });
   }
 
-  checkOut(state: CheckoutState, data: any) {
-    this.checkoutLoading$.next(true);
+  /**
+   * Payments Triggered by clicking on checkout
+   */
+  checkOut() {
+    return () =>
+      this.stripeElementsComponent.activeElement
+        .triggerPayment()
+        .pipe(
+          switchMap(paymentIntent => this.triggerPayment(paymentIntent))
+        );
+  }
 
-    if (this.afAuth.auth.currentUser && data.saveInfo) {
-      this.afs
-        .doc(
-          `${FirestoreCollections.Customers}/${this.afAuth.auth.currentUser.uid}`
+  /**
+   * Payments triggered by different payment methods
+   * like apple pay for example
+   */
+  paymentTriggered(ev) {
+    if (!ev.error) {
+      this.triggerPayment(ev.paymentIntent)
+        .pipe(
+          take(1)
         )
-        .update(data);
+        .subscribe();
     }
+  }
 
-    this.stripeElementsComponent.activeElement
-      .triggerPayment()
+  triggerPayment(paymentIntent) {
+    return combineLatest([
+      this.formData$,
+      this.state.user$,
+      this.price$,
+      this.items$
+    ])
       .pipe(
-        switchMap(paymentIntent =>
-          this.afs
-            .collection(FirestoreCollections.Orders)
-            .doc(nanoid())
-            .set({
-              price: state.price,
-              status: OrderStatus.Ordered,
-              paymentIntentId: paymentIntent.id,
-              billing: data.billing,
-              createdOn: Date.now(),
+        switchMap(([data, user, price, items]) => {
 
-              ...(data.shippingInfo ? {} : {shipping: data.shipping}),
-              ...(state.user
-                ? {
-                    customerId: state.user.authData.uid,
-                    customerName: state.user.customerData.name,
-                    email: state.user.authData.email
-                  }
-                : {}),
-
-              /**
-               * Format ExtendedOrderItem[] in to the
-               * appropriate order format
-               */
-              ...state.orderItems.reduce(
-                (acc, cur) => {
-                  const {id, ...data} = cur;
-
-                  if (!data.attributes) {
-                    delete data.attributes;
-                  }
-
-                  acc.orderItems.push(cur.id);
-                  acc.orderItemsData.push(data);
-
-                  return acc;
-                },
-                {
-                  orderItems: [],
-                  orderItemsData: []
-                }
+          if (this.afAuth.auth.currentUser && data.saveInfo) {
+            this.afs
+              .doc(
+                `${FirestoreCollections.Customers}/${this.afAuth.auth.currentUser.uid}`
               )
-            })
-        ),
-        finalize(() => this.checkoutLoading$.next(false))
+              .update(data);
+          }
+
+          return from(
+            this.afs
+              .collection(FirestoreCollections.Orders)
+              .doc(nanoid())
+              .set({
+                price,
+                status: OrderStatus.Ordered,
+                paymentIntentId: paymentIntent.id,
+                billing: data.billing,
+                createdOn: Date.now(),
+
+                ...(data.shippingInfo ? {} : {shipping: data.shipping}),
+                ...user && user.authData
+                && {
+                  customerId: user.authData.uid,
+                  customerName: user.customerData.name,
+                  email: user.authData.email
+                },
+
+                /**
+                 * Format ExtendedOrderItem[] in to the
+                 * appropriate order format
+                 */
+                ...items.reduce(
+                  (acc, cur) => {
+                    const {id, ...data} = cur;
+
+                    if (!data.attributes) {
+                      delete data.attributes;
+                    }
+
+                    acc.orderItems.push(cur.id);
+                    acc.orderItemsData.push(data);
+
+                    return acc;
+                  },
+                  {
+                    orderItems: [],
+                    orderItemsData: []
+                  }
+                )
+              })
+          )
+            .pipe(
+              tap(() => {
+                localStorage.setItem(
+                  'result',
+                  JSON.stringify({
+                    orderItems: items,
+                    price: price,
+                    billing: data.billing,
+                    ...(data.shippingInfo ? {} : {shipping: data.shipping.email})
+                  })
+                );
+                this.router.navigate(['checkout/success']);
+              }),
+              catchError(error => {
+                this.router.navigate(['checkout/error']);
+                return throwError(error)
+              })
+            )
+        })
       )
-      .subscribe(
-        () => {
-          localStorage.setItem(
-            'result',
-            JSON.stringify({
-              orderItems: state.orderItems,
-              price: state.price,
-              billing: data.billing,
-              ...(data.shippingInfo ? {} : {shipping: data.shipping.email})
-            })
-          );
-          this.router.navigate(['checkout/success']);
-        },
-        () => {
-          this.router.navigate(['checkout/error']);
-        }
-      );
   }
 
   logInSignUp(logIn = true) {

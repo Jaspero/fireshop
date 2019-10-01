@@ -2,51 +2,60 @@
   <ng-container [formGroup]="form">
     <div class="col-6 col-xs-12">
       <mat-form-field class="w-full" appearance="outline">
-        <input matInput placeholder="First name" formControlName="firstName">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="firstName">
       </mat-form-field>
     </div>
     <div class="col-6 col-xs-12">
       <mat-form-field class="w-full" appearance="outline">
-        <input matInput placeholder="Last name" formControlName="lastName">
+        <mat-label>Last name</mat-label>
+        <input matInput formControlName="lastName">
       </mat-form-field>
     </div>
     <div class="col-6 col-xs-12">
       <mat-form-field class="w-full" appearance="outline">
-        <input matInput placeholder="Email" formControlName="email">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email">
       </mat-form-field>
     </div>
     <div class="col-6 col-xs-12">
       <mat-form-field class="w-full" appearance="outline">
-        <input matInput placeholder="Phone" formControlName="phone">
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="phone">
       </mat-form-field>
     </div>
-    <div class="col-4 col-xs-7">
+    <div class="col-6 col-xs-12">
       <mat-form-field class="w-full" appearance="outline">
-        <input matInput placeholder="City" formControlName="city">
+        <mat-label>City</mat-label>
+        <input matInput formControlName="city">
       </mat-form-field>
     </div>
-    <div class="col-4 col-xs-5">
+    <div class="col-6 col-xs-12">
       <mat-form-field class="w-full" appearance="outline">
-        <input matInput placeholder="ZIP code" formControlName="zip">
+        <mat-label>Postal Code</mat-label>
+        <input matInput formControlName="zip">
       </mat-form-field>
     </div>
-    <div class="col-4 col-xs-12">
+    <div class="col-12">
       <mat-form-field class="w-full" appearance="outline">
-        <mat-select placeholder="Country" formControlName="country">
+        <mat-label>Country</mat-label>
+        <mat-select formControlName="country" autocomplete="country">
           <mat-option *ngFor="let country of countries$ | async" [value]="country.code">
             {{country.name}}
           </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
-    <div class="col-8 col-xs-12">
+    <div class="col-12">
       <mat-form-field class="w-full" appearance="outline">
-        <input matInput placeholder="Billing address" formControlName="line1">
+        <mat-label>Address Line One</mat-label>
+        <input matInput formControlName="line1">
       </mat-form-field>
     </div>
-    <div class="col-8 col-xs-12">
+    <div class="col-12">
       <mat-form-field class="w-full" appearance="outline">
-        <input matInput placeholder="Billing address, line 2" formControlName="line2">
+        <mat-label>Address Line Two</mat-label>
+        <input matInput formControlName="line2">
       </mat-form-field>
     </div>
   </ng-container>
@@ -59,16 +68,12 @@
   </a>
 </h5>
 
-<div *ngIf="pageLoading$ | async" class="flex jc-center m-t-l">
-  <mat-spinner [diameter]="40"></mat-spinner>
-</div>
-
 <div class="grid grid-no-gutter">
   <div class="col-12">
-    <mat-horizontal-stepper linear class="bg-l-primary">
+    <mat-horizontal-stepper linear class="bg-l-primary" #stepper>
 
-      <mat-step label="Information" [stepControl]="form$ | async">
-        <div class="grid fw-rev">
+      <mat-step label="Information" [stepControl]="form$ | async" #information>
+        <div class="grid fw-rev" *ngIf="stepper.selected == null || stepper.selected == information">
           <div class="col-8 col-s-12">
             <mat-card *ngIf="form$ | async as form">
               <form class="grid grid-no-gutter jc-start" [formGroup]="form">
@@ -158,20 +163,24 @@
         </div>
       </mat-step>
 
-      <!--Payment content-->
-      <mat-step label="Payment">
-        <div class="grid fw-rev">
+      <mat-step label="Payment" #payment>
+        <div class="grid fw-rev" *ngIf="stepper.selected == payment">
           <div class="col-8 col-s-12">
             <mat-card>
-              <form>
+              <form *ngIf="elementConfig$ | async as elementConfigs">
 
                 <div class="grid grid-no-gutter jc-start">
-                  <jfs-stripe-elements [clientSecret$]="clientSecret$" [elementConfig]="[cardConfig, payButtonConfig]"></jfs-stripe-elements>
-                  <div class="payment-error" *ngIf="paymentError$ | async as error">
+                  <jfs-stripe-elements
+                      #stripeEl
+                      [clientSecret$]="clientSecret$"
+                      [elementConfig]="elementConfigs"
+                      (paymentTriggered)="paymentTriggered($event)">
+                  </jfs-stripe-elements>
+                  <div class="payment-error" *ngIf="stripeEl.error$ | async as error">
                     {{error}}
                   </div>
                   <div class="col-12 ta-right">
-                    <button id="btn-nxt-step-1" mat-flat-button color="primary" matStepperNext [disabled]="paymentError$ | async">Continue</button>
+                    <button id="btn-nxt-step-1" mat-flat-button color="primary" matStepperNext [disabled]="stripeEl.error$ | async">Continue</button>
                   </div>
                 </div>
 
@@ -189,78 +198,77 @@
         </div>
       </mat-step>
 
-      <!--Review and purchase content-->
-      <mat-step label="Review & Purchase">
-        <div class="grid fw-rev" *ngIf="data.form.getRawValue() as val">
+      <mat-step label="Review & Purchase" #review>
+        <div class="grid fw-rev" *ngIf="stepper.selected == review">
           <div class="col-8 col-s-12">
             <mat-card>
               <h6 class="m-y-xs">Your purchase</h6>
               <div class="bg-l-secondary p-a-s">
                 <table class="w-full">
-                  <tr *ngFor="let product of data.orderItems">
+                  <tr *ngFor="let product of items$ | async">
                     <td class="w-half p-a-xs">{{product.name}}:</td>
                     <td class="w-half p-a-xs">{{product.price | sp }} x{{product.quantity}}</td>
                   </tr>
-                  <tr>
-                    <td class="w-half p-a-xs">Subtotal:</td>
-                    <td class="w-half p-a-xs">{{data.price.subTotal | sp}}</td>
-                  </tr>
-                  <tr>
-                    <td colspan="2"><hr></td>
-                  </tr>
-                  <tr>
-                    <td class="w-half p-a-xs">Shipping:</td>
-                    <td class="w-half p-a-xs">{{data.price.shipping ? (data.price.shipping | sp) : 'Free'}}</td>
-                  </tr>
-                  <tr>
-                    <td colspan="2"><hr></td>
-                  </tr>
-                  <tr class="fw-bold">
-                    <td class="w-half p-a-xs">Total:</td>
-                    <td class="w-half p-a-xs">{{data.price.total | sp}}</td>
-                  </tr>
+
+                  <ng-container *ngIf="price$ | async as price">
+                    <tr>
+                      <td class="w-half p-a-xs">Subtotal:</td>
+                      <td class="w-half p-a-xs">{{price.subTotal | sp}}</td>
+                    </tr>
+                    <tr>
+                      <td colspan="2"><hr></td>
+                    </tr>
+                    <tr>
+                      <td class="w-half p-a-xs">Shipping:</td>
+                      <td class="w-half p-a-xs">{{price.shipping ? (price.shipping | sp) : 'Free'}}</td>
+                    </tr>
+                    <tr>
+                      <td colspan="2"><hr></td>
+                    </tr>
+                    <tr class="fw-bold">
+                      <td class="w-half p-a-xs">Total:</td>
+                      <td class="w-half p-a-xs">{{price.total | sp}}</td>
+                    </tr>
+                  </ng-container>
                 </table>
               </div>
               <div class="p-y-s">
                 <mat-divider></mat-divider>
               </div>
-              <table class="w-full">
+              <table class="w-full" *ngIf="formData$ | async as fd">
                 <tr>
                   <td class="w-half p-a-xs">Checkout:</td>
-                  <td class="w-half p-a-xs">{{val.billing.firstName}} {{val.billing.lastName}}</td>
-                </tr>
-                <tr>
-                  <td class="w-half p-a-xs">Payment method:</td>
-                  <!--<td class="w-half p-a-xs">{{(data.stripe.cardChanges$ | async)?.brand}}</td>-->
+                  <td class="w-half p-a-xs">{{fd.billing.firstName}} {{fd.billing.lastName}}</td>
                 </tr>
                 <tr>
                   <td class="w-half p-a-xs">Billing email:</td>
-                  <td class="w-half p-a-xs">{{val.billing.email}}</td>
+                  <td class="w-half p-a-xs">{{fd.billing.email}}</td>
                 </tr>
                 <tr>
                   <td class="w-half p-a-xs">Shipping email:</td>
-                  <td class="w-half p-a-xs">{{val.shippingInfo ? val.billing.email : val.shipping.email}}</td>
+                  <td class="w-half p-a-xs">{{fd.shippingInfo ? fd.billing.email : fd.shipping.email}}</td>
                 </tr>
               </table>
               <div class="p-y-s">
                 <mat-divider></mat-divider>
               </div>
               <div class="m-t-xs m-b-s">
-                <mat-checkbox color="primary" [formControl]="termsControl">I agree to the</mat-checkbox>&nbsp;<a class="c-primary" href="" target="_blank"><u>terms of service</u>.</a>
+                <mat-checkbox color="primary" [formControl]="termsControl">I agree to the</mat-checkbox>
+                &nbsp;
+                <a class="c-primary" href="" target="_blank"><u>terms of service</u>.</a>
               </div>
               <div class="ta-right p-y-xs">
                 <button
                   mat-flat-button
                   color="primary"
                   id="btn-purchase"
-                  [class.loading]="checkoutLoading$ | async"
                   [disabled]="!termsControl.value"
-                  (click)="checkOut(data, val)">
+                  [jpLoadClick]="checkOut()">
                   Purchase
                 </button>
               </div>
             </mat-card>
-            <p class="p-y-xs">Confirmation will be emailed to your address at {{val.billing.email}}</p>
+            <p class="p-y-xs">Confirmation will be emailed to your address at {{(formData$ | async).billing.email}}</p>
           </div>
           <div class="col-4 col-s-12">
             <mat-card>

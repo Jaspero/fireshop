@@ -23,11 +23,7 @@ export class PaymentRequestButtonElement extends BaseElement {
               payment_method: ev.paymentMethod.id
             })
             .then(confirmResult => {
-              if (confirmResult.error) {
-                this.paymentTriggered.next({error: confirmResult.error});
-              } else {
-                this.paymentTriggered.next();
-              }
+              this.paymentTriggered.next(confirmResult);
             })
             .catch(error => this.paymentTriggered.next({error}));
         });
@@ -39,7 +35,6 @@ export class PaymentRequestButtonElement extends BaseElement {
 
   canCreate() {
     try {
-      console.log('options', this.options);
       this.paymentRequest = this.stripe.paymentRequest(this.options);
     } catch (e) {
       return throwError(e);
