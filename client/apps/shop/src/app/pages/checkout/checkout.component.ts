@@ -110,6 +110,18 @@ export class CheckoutComponent extends RxDestroy
   clientSecret$: Observable<{clientSecret: string}>;
   paymentError$: Observable<string>;
   countries$: Observable<Country[]>;
+  form$: Observable<FormGroup>;
+  loggedIn$: Observable<boolean>;
+  items$: Observable<Array<{
+    id: string,
+    quantity: number,
+    price: number,
+    name: string,
+    attributes: any,
+    identifier: string
+  }>>;
+
+  termsControl = new FormControl(false);
 
   private shippingSubscription: Subscription;
 
@@ -120,6 +132,64 @@ export class CheckoutComponent extends RxDestroy
       map(res => res.data),
       shareReplay(1)
     );
+
+    this.loggedIn$ = this.state.user$
+      .pipe(
+        map(user => !!user)
+      );
+
+    this.items$ = this.cartService.items$
+      .pipe(
+        map(items =>
+          items.map(val => ({
+            id: val.productId,
+            quantity: val.quantity,
+            price: val.price,
+            name: val.name,
+            attributes: val.filters,
+            identifier: val.identifier
+          }))
+        )
+      );
+
+    this.form$ = this.state.user$
+      .pipe(
+        map(user => {
+          return this.buildForm(user ? user.customerData : {})
+        }),
+        shareReplay(1)
+      );
+
+    this.clientSecret$ = combineLatest([
+      this.state.user$
+        .pipe(
+          take(1)
+        ),
+      this.form$,
+      this.items$
+    ])
+      .pipe(
+        switchMap(([user, form, orderItems]) => {
+          const data = form.getRawValue();
+
+          return this.http.post<{clientSecret: string}>(
+            `${environment.restApi}/stripe/checkout`,
+            {
+              orderItems,
+              lang: STATIC_CONFIG.lang,
+              form: data,
+              ...user
+                && {
+                  customer: {
+                    email: user.authData.email,
+                    name: user.customerData.name,
+                    id: user.authData.uid
+                  }
+                }
+            }
+          )
+        })
+      );
 
     this.data$ = this.state.user$.pipe(
       switchMap(user =>
