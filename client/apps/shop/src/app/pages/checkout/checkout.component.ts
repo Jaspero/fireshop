@@ -1,5 +1,10 @@
 import {HttpClient} from '@angular/common/http';
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {AngularFireFunctions} from '@angular/fire/functions';
@@ -18,7 +23,15 @@ import {OrderItem} from '@jf/interfaces/order.interface';
 import {Shipping} from '@jf/interfaces/shipping.interface';
 import * as nanoid from 'nanoid';
 import {combineLatest, from, Observable, Subscription, throwError} from 'rxjs';
-import {catchError, map, shareReplay, switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import {
+  catchError,
+  map,
+  shareReplay,
+  switchMap,
+  take,
+  takeUntil,
+  tap
+} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {
   LoginSignupDialogComponent,
@@ -31,12 +44,12 @@ import {CartService} from '../../shared/services/cart/cart.service';
 import {StateService} from '../../shared/services/state/state.service';
 
 interface Item extends OrderItem {
-  id: string,
-  quantity: number,
-  price: number,
-  name: string,
-  attributes: any,
-  identifier: string
+  id: string;
+  quantity: number;
+  price: number;
+  name: string;
+  attributes: any;
+  identifier: string;
 }
 
 @Component({
@@ -67,13 +80,14 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   countries$: Observable<Country[]>;
   form$: Observable<FormGroup>;
   loggedIn$: Observable<boolean>;
+  loggedOut$: Observable<boolean>;
   items$: Observable<Item[]>;
   formData$: Observable<any>;
   shipping$: Observable<Shipping[]>;
   price$: Observable<{
-    total: number,
-    shipping: number,
-    subTotal: number
+    total: number;
+    shipping: number;
+    subTotal: number;
   }>;
   elementConfig$: Observable<[ElementConfig, ElementConfig]>;
 
@@ -89,127 +103,116 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
       shareReplay(1)
     );
 
-    this.shipping$ = this.afs.doc(`${FirestoreCollections.Settings}/${FirestoreStaticDocuments.Shipping}`).get()
+    this.shipping$ = this.afs
+      .doc(
+        `${FirestoreCollections.Settings}/${FirestoreStaticDocuments.Shipping}`
+      )
+      .get()
       .pipe(
-        map(res => res.exists ? res.data().value : []),
+        map(res => (res.exists ? res.data().value : [])),
         shareReplay(1)
       );
 
-    this.loggedIn$ = this.state.user$
-      .pipe(
-        map(user => !!user)
-      );
+    this.loggedIn$ = this.state.user$.pipe(map(user => !!user));
 
-    this.items$ = this.cartService.items$
-      .pipe(
-        map(items =>
-          items.map(val => ({
-            id: val.productId,
-            quantity: val.quantity,
-            price: val.price,
-            name: val.name,
-            attributes: val.filters,
-            identifier: val.identifier
-          }))
-        )
-      );
+    this.loggedOut$ = this.state.user$.pipe(map(user => !user));
 
-    this.form$ = this.state.user$
-      .pipe(
-        map(user => {
-          return this.buildForm(user ? user.customerData : {})
-        }),
-        shareReplay(1)
-      );
+    this.items$ = this.cartService.items$.pipe(
+      map(items =>
+        items.map(val => ({
+          id: val.productId,
+          quantity: val.quantity,
+          price: val.price,
+          name: val.name,
+          attributes: val.filters,
+          identifier: val.identifier
+        }))
+      )
+    );
 
-    this.formData$ = this.form$
-      .pipe(
-        map(form => form.getRawValue())
-      );
+    this.form$ = this.state.user$.pipe(
+      map(user => {
+        return this.buildForm(user ? user.customerData : {});
+      }),
+      shareReplay(1)
+    );
+
+    this.formData$ = this.form$.pipe(map(form => form.getRawValue()));
 
     this.clientSecret$ = combineLatest([
-      this.state.user$
-        .pipe(
-          take(1)
-        ),
+      this.state.user$.pipe(take(1)),
       this.formData$,
       this.items$
-    ])
-      .pipe(
-        switchMap(([user, data, orderItems]) =>
-          this.http.post<{clientSecret: string}>(
-            `${environment.restApi}/stripe/checkout`,
-            {
-              orderItems,
-              lang: STATIC_CONFIG.lang,
-              form: data,
-              ...user
-              && {
-                customer: {
-                  email: user.authData.email,
-                  name: user.customerData.name,
-                  id: user.authData.uid
-                }
+    ]).pipe(
+      switchMap(([user, data, orderItems]) =>
+        this.http.post<{clientSecret: string}>(
+          `${environment.restApi}/stripe/checkout`,
+          {
+            orderItems,
+            lang: STATIC_CONFIG.lang,
+            form: data,
+            ...(user && {
+              customer: {
+                email: user.authData.email,
+                name: user.customerData.name,
+                id: user.authData.uid
               }
-            }
-          )
-        ),
-        shareReplay(1)
-      );
+            })
+          }
+        )
+      ),
+      shareReplay(1)
+    );
 
     this.price$ = combineLatest([
-      this.cartService.totalPrice$
-        .pipe(
-          take(1)
-        ),
+      this.cartService.totalPrice$.pipe(take(1)),
       this.formData$,
       this.shipping$
-    ])
-      .pipe(
-        map(([cartTotal, data, shippingData]) => {
-          const country = data.shippingInfo ? data.billing.country : data.shipping.country;
-          const shipping = shippingData.hasOwnProperty(country) ? shippingData[country].value : DYNAMIC_CONFIG.currency.shippingCost || 0;
-          const total = cartTotal + shipping;
+    ]).pipe(
+      map(([cartTotal, data, shippingData]) => {
+        const country = data.shippingInfo
+          ? data.billing.country
+          : data.shipping.country;
+        const shipping = shippingData.hasOwnProperty(country)
+          ? shippingData[country].value
+          : DYNAMIC_CONFIG.currency.shippingCost || 0;
+        const total = cartTotal + shipping;
 
-          return {
-            total,
-            shipping,
-            subTotal: total - shipping
-          }
-        })
-      );
+        return {
+          total,
+          shipping,
+          subTotal: total - shipping
+        };
+      })
+    );
 
-    this.elementConfig$ = combineLatest([
-      this.price$,
-      this.formData$
-    ])
-      .pipe(
-        map(([price, data]) => [
-          {
-            type: ElementType.Card,
-            options: {
-              style: {
-                base: {
-                  fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                  fontSmoothing: 'antialiased',
-                  fontSize: '16px'
-                }
-              }
-            }
-          },
-          {
-            type: ElementType.PaymentRequestButton,
-            options: {
-              currency: DYNAMIC_CONFIG.currency.primary.toLowerCase(),
-              country: data.billing.country,
-              total: {
-                label: 'Total',
-                amount: price.total
+    this.elementConfig$ = combineLatest([this.price$, this.formData$]).pipe(
+      map(([price, data]) => [
+        {
+          type: ElementType.Card,
+          options: {
+            style: {
+              base: {
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px'
               }
             }
           }
-        ])
-      );
+        },
+        {
+          type: ElementType.PaymentRequestButton,
+          options: {
+            currency: DYNAMIC_CONFIG.currency.primary.toLowerCase(),
+            country: data.billing.country,
+            total: {
+              label: 'Total',
+              amount: price.total
+            }
+          }
+        }
+      ])
+    );
   }
 
   buildForm(value: Partial<Customer>) {
@@ -259,9 +262,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     return () =>
       this.stripeElementsComponent.activeElement
         .triggerPayment()
-        .pipe(
-          switchMap(paymentIntent => this.triggerPayment(paymentIntent))
-        );
+        .pipe(switchMap(paymentIntent => this.triggerPayment(paymentIntent)));
   }
 
   /**
@@ -271,9 +272,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   paymentTriggered(ev) {
     if (!ev.error) {
       this.triggerPayment(ev.paymentIntent)
-        .pipe(
-          take(1)
-        )
+        .pipe(take(1))
         .subscribe();
     }
   }
@@ -284,81 +283,78 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
       this.state.user$,
       this.price$,
       this.items$
-    ])
-      .pipe(
-        switchMap(([data, user, price, items]) => {
+    ]).pipe(
+      switchMap(([data, user, price, items]) => {
+        if (this.afAuth.auth.currentUser && data.saveInfo) {
+          this.afs
+            .doc(
+              `${FirestoreCollections.Customers}/${this.afAuth.auth.currentUser.uid}`
+            )
+            .update(data);
+        }
 
-          if (this.afAuth.auth.currentUser && data.saveInfo) {
-            this.afs
-              .doc(
-                `${FirestoreCollections.Customers}/${this.afAuth.auth.currentUser.uid}`
-              )
-              .update(data);
-          }
+        return from(
+          this.afs
+            .collection(FirestoreCollections.Orders)
+            .doc(nanoid())
+            .set({
+              price,
+              status: OrderStatus.Ordered,
+              paymentIntentId: paymentIntent.id,
+              billing: data.billing,
+              createdOn: Date.now(),
 
-          return from(
-            this.afs
-              .collection(FirestoreCollections.Orders)
-              .doc(nanoid())
-              .set({
-                price,
-                status: OrderStatus.Ordered,
-                paymentIntentId: paymentIntent.id,
-                billing: data.billing,
-                createdOn: Date.now(),
-
-                ...(data.shippingInfo ? {} : {shipping: data.shipping}),
-                ...user && user.authData
-                && {
+              ...(data.shippingInfo ? {} : {shipping: data.shipping}),
+              ...(user &&
+                user.authData && {
                   customerId: user.authData.uid,
                   customerName: user.customerData.name,
                   email: user.authData.email
-                },
+                }),
 
-                /**
-                 * Format ExtendedOrderItem[] in to the
-                 * appropriate order format
-                 */
-                ...items.reduce(
-                  (acc, cur) => {
-                    const {id, ...data} = cur;
+              /**
+               * Format ExtendedOrderItem[] in to the
+               * appropriate order format
+               */
+              ...items.reduce(
+                (acc, cur) => {
+                  const {id, ...data} = cur;
 
-                    if (!data.attributes) {
-                      delete data.attributes;
-                    }
-
-                    acc.orderItems.push(cur.id);
-                    acc.orderItemsData.push(data);
-
-                    return acc;
-                  },
-                  {
-                    orderItems: [],
-                    orderItemsData: []
+                  if (!data.attributes) {
+                    delete data.attributes;
                   }
-                )
+
+                  acc.orderItems.push(cur.id);
+                  acc.orderItemsData.push(data);
+
+                  return acc;
+                },
+                {
+                  orderItems: [],
+                  orderItemsData: []
+                }
+              )
+            })
+        ).pipe(
+          tap(() => {
+            localStorage.setItem(
+              'result',
+              JSON.stringify({
+                orderItems: items,
+                price: price,
+                billing: data.billing,
+                ...(data.shippingInfo ? {} : {shipping: data.shipping.email})
               })
-          )
-            .pipe(
-              tap(() => {
-                localStorage.setItem(
-                  'result',
-                  JSON.stringify({
-                    orderItems: items,
-                    price: price,
-                    billing: data.billing,
-                    ...(data.shippingInfo ? {} : {shipping: data.shipping.email})
-                  })
-                );
-                this.router.navigate(['checkout/success']);
-              }),
-              catchError(error => {
-                this.router.navigate(['checkout/error']);
-                return throwError(error)
-              })
-            )
-        })
-      )
+            );
+            this.router.navigate(['checkout/success']);
+          }),
+          catchError(error => {
+            this.router.navigate(['checkout/error']);
+            return throwError(error);
+          })
+        );
+      })
+    );
   }
 
   logInSignUp(logIn = true) {
