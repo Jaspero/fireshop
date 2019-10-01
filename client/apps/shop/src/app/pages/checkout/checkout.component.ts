@@ -27,6 +27,7 @@ import {
   catchError,
   map,
   shareReplay,
+  startWith,
   switchMap,
   take,
   takeUntil,
@@ -92,6 +93,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   elementConfig$: Observable<[ElementConfig, ElementConfig]>;
 
   termsControl = new FormControl(false);
+  elementType = ElementType;
 
   private shippingSubscription: Subscription;
 
@@ -166,16 +168,22 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
 
     this.price$ = combineLatest([
       this.cartService.totalPrice$.pipe(take(1)),
-      this.formData$,
+      this.form$.pipe(
+        switchMap(form =>
+          form.valueChanges.pipe(startWith(form.getRawValue()))
+        ),
+        map(data =>
+          data.shippingInfo ? data.billing.country : data.shipping.country
+        )
+      ),
       this.shipping$
     ]).pipe(
-      map(([cartTotal, data, shippingData]) => {
-        const country = data.shippingInfo
-          ? data.billing.country
-          : data.shipping.country;
-        const shipping = shippingData.hasOwnProperty(country)
-          ? shippingData[country].value
-          : DYNAMIC_CONFIG.currency.shippingCost || 0;
+      map(([cartTotal, country, shippingData]) => {
+        const shippingItem = shippingData.find(it => it.code === country);
+        const shipping =
+          shippingItem && Number.isInteger(shippingItem.value)
+            ? shippingItem.value
+            : DYNAMIC_CONFIG.currency.shippingCost || 0;
         const total = cartTotal + shipping;
 
         return {

@@ -304,6 +304,7 @@
           <td>
             <mat-form-field appearance="outline">
               <input type="number" placeholder="Value" matInput [formControl]="shippingControl.at(index)">
+              <mat-icon class="cs-pointer" matSuffix matTooltip="Clear" (click)="shippingControl.at(index).setValue(null)">clear</mat-icon>
             </mat-form-field>
           </td>
         </tr>

@@ -7,7 +7,7 @@ export class CardElement extends BaseElement {
 
   afterMount() {
     this.element.on('change', event => {
-      const toSet = !event.error;
+      const toSet = !event.error && event.complete;
 
       let current: boolean;
 

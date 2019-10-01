@@ -78,17 +78,19 @@
             <mat-card *ngIf="form$ | async as form">
               <form class="grid grid-no-gutter jc-start" [formGroup]="form">
 
-                <div class="col-12" *ngIf="loggedOut$ | async">
-                  <p class="bg-l-secondary p-y-s ta-center">
-                    You're doing checkout as a guest. You can <a class="link c-primary" (click)="logInSignUp()">login</a> or <a class="link c-primary" (click)="logInSignUp(false)">sign-up</a> now.<br>Your data or cart won't be lost.
-                  </p>
-                </div>
-
-                <div class="col-12">
-                  <div class="p-y-xs">
-                    <mat-divider></mat-divider>
+                <ng-container *ngIf="loggedOut$ | async">
+                  <div class="col-12">
+                    <p class="bg-l-secondary p-y-s ta-center">
+                      You're doing checkout as a guest. You can <a class="link c-primary" (click)="logInSignUp()">login</a> or <a class="link c-primary" (click)="logInSignUp(false)">sign-up</a> now.<br>Your data or cart won't be lost.
+                    </p>
                   </div>
-                </div>
+
+                  <div class="col-12">
+                    <div class="p-y-xs">
+                      <mat-divider></mat-divider>
+                    </div>
+                  </div>
+                </ng-container>
 
                 <div class="col-12">
                   <h6 class="p-y-xs">Billing info</h6>
@@ -151,12 +153,29 @@
           </div>
           <div class="col-4 col-s-12">
             <mat-card>
-              <h6 class="m-b-xs">Cart</h6>
+              <h6 class="m-b-xs">Order Details</h6>
               <table class="w-full">
                 <tr *ngFor="let product of cartService.items$ | async">
                   <td class="w-half p-a-xs">{{product.name}}:</td>
                   <td class="w-half p-a-xs">{{product.price | sp }} x{{product.quantity}}</td>
                 </tr>
+                <tr>
+                  <td colspan="2"><hr></td>
+                </tr>
+                <ng-container *ngIf="price$ | async as price">
+                  <tr>
+                    <td class="w-half p-a-xs">Subtotal:</td>
+                    <td class="w-half p-a-xs">{{price.subTotal | sp}}</td>
+                  </tr>
+                  <tr>
+                    <td class="w-half p-a-xs">Shipping:</td>
+                    <td class="w-half p-a-xs">{{price.shipping ? (price.shipping | sp) : 'Free'}}</td>
+                  </tr>
+                  <tr class="fw-bold">
+                    <td class="w-half p-a-xs">Total:</td>
+                    <td class="w-half p-a-xs">{{price.total | sp}}</td>
+                  </tr>
+                </ng-container>
               </table>
             </mat-card>
           </div>
@@ -170,17 +189,25 @@
               <form *ngIf="elementConfig$ | async as elementConfigs">
 
                 <div class="grid grid-no-gutter jc-start">
-                  <jfs-stripe-elements
+
+                  <div class="col-12">
+                    <h6 class="p-y-xs">Payment info</h6>
+                  </div>
+
+                  <div class="col-12">
+                    <jfs-stripe-elements
                       #stripeEl
                       [clientSecret$]="clientSecret$"
                       [elementConfig]="elementConfigs"
                       (paymentTriggered)="paymentTriggered($event)">
-                  </jfs-stripe-elements>
-                  <div class="payment-error" *ngIf="stripeEl.error$ | async as error">
-                    {{error}}
+                    </jfs-stripe-elements>
+                    <div class="payment-error" *ngIf="stripeEl.error$ | async as error">
+                      {{error}}
+                    </div>
                   </div>
-                  <div class="col-12 ta-right">
-                    <button id="btn-nxt-step-1" mat-flat-button color="primary" matStepperNext [disabled]="stripeEl.error$ | async">Continue</button>
+
+                  <div class="col-12 ta-right m-t-s" *ngIf="stripeEl.activeElement && stripeEl.activeElement.type !== elementType.PaymentRequestButton">
+                    <button id="btn-nxt-step-1" mat-flat-button color="primary" matStepperNext [disabled]="(stripeEl.activeElement.isValid$ | async) === false">Continue</button>
                   </div>
                 </div>
 
@@ -189,7 +216,7 @@
           </div>
           <div class="col-4 col-s-12">
             <mat-card>
-              <h6 class="m-b-xs">Payment methods</h6>
+              <h6 class="m-b-xs">Security</h6>
               <p>We accept the following secure payment methods:</p>
               <p class="m-y-xs">...</p>
               <p>When you submit your payment information your data is protected by Secure Socket Layer (SSL) technology certified by a digital certificate.</p>

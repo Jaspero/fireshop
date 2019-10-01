@@ -419,7 +419,9 @@ export class SettingsComponent extends RxDestroy implements OnInit {
             this.countries.map(country => {
               const setValue = shipping.find(it => it.code === country.code);
 
-              return new FormControl(setValue ? setValue.value : 0);
+              return new FormControl(
+                setValue ? fromStripeFormat(setValue.value) : 0
+              );
             })
           );
 
@@ -433,7 +435,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
               if (cur) {
                 acc.push({
                   ...this.countries[index],
-                  value: cur
+                  value: toStripeFormat(cur)
                 });
               }
 
