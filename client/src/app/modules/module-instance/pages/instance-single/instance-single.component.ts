@@ -221,7 +221,11 @@ export class InstanceSingleComponent implements OnInit {
           );
         }),
         notify(),
-        tap(() => this.back(instance))
+        tap(() => {
+          if (!instance.directLink) {
+            this.back(instance);
+          }
+        })
       );
     };
   }
