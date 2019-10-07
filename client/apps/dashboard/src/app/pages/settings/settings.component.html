@@ -178,8 +178,8 @@
                 <mat-form-field appearance="outline" class="w-full">
                   <mat-label>Primary currency</mat-label>
                   <mat-select formControlName="primary">
-                    <mat-option [value]="cur.value" *ngFor="let cur of currencies">
-                      {{cur.value}} ({{cur.symbol}})
+                    <mat-option [value]="cur.code" *ngFor="let cur of currencies$ | async">
+                      ({{cur.code}}) {{cur.name}}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
@@ -187,8 +187,8 @@
                 <mat-form-field appearance="outline" class="w-full">
                   <mat-label>Supported Currencies</mat-label>
                   <mat-select formControlName="supportedCurrencies" multiple>
-                    <mat-option [value]="cur.value" *ngFor="let cur of currencies">
-                      {{cur.value}} ({{cur.symbol}})
+                    <mat-option [value]="cur.code" *ngFor="let cur of currencies$ | async">
+                      ({{cur.code}}) {{cur.name}}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>

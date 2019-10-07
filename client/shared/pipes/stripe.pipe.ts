@@ -12,15 +12,19 @@ export class StripePipe implements PipeTransform {
   currencyPipe: CurrencyPipe;
 
   transform(
-    data: number,
+    data: number | {[key: string]: number},
     currencyCode?: string,
     display?: 'code' | 'symbol' | 'symbol-narrow' | string | boolean,
     digitsInfo?: string,
     locale?: string
   ): string {
+
+    const code = currencyCode || DYNAMIC_CONFIG.currency.primary;
+    const value = typeof data === 'number' ? data : data.hasOwnProperty(code) ? data[code] : data[DYNAMIC_CONFIG.currency.primary] || 0;
+
     return this.currencyPipe.transform(
-      data / 100,
-      currencyCode || DYNAMIC_CONFIG.currency.primary,
+      value / 100,
+      code,
       display,
       digitsInfo,
       locale
