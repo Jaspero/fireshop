@@ -144,11 +144,18 @@
                       <input type="number" matInput formControlName="quantity">
                     </mat-form-field>
 
-                    <mat-form-field class="m-r-xs" appearance="outline">
+                    <!-- todo: finish this -->
+                    <!--<mat-form-field class="m-r-xs" appearance="outline">
                       <mat-label>Price</mat-label>
                       <span matPrefix>{{currency}}&nbsp;</span>
                       <input formControlName="price" matInput type="number">
                     </mat-form-field>
+
+                    <mat-form-field class="m-r-xs" appearance="outline" *ngFor="let currency of currencies">
+                      <mat-label>Price</mat-label>
+                      <span matPrefix>{{currency}}&nbsp;</span>
+                      <input formControlName="price" matInput type="number">
+                    </mat-form-field>-->
 
                     <mat-radio-button [value]="item"><span class="c-d-secondary">Default</span></mat-radio-button>
                   </div>

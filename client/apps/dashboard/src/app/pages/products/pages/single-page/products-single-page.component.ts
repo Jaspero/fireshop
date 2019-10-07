@@ -30,6 +30,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   categories$: Observable<Category[]>;
   collection = FirestoreCollections.Products;
   currency: string;
+  currencies = CURRENCIES;
   inventoryKeys: string[] = [];
   colors = ['c-warm', 'c-primary', 'c-accent', 'c-primary'];
 
@@ -153,7 +154,15 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       ],
       name: [data.name || '', Validators.required],
       active: data.active || false,
-      price: [data.price ? fromStripeFormat(data.price) : 0, Validators.min(0)],
+      price: this.fb.group(
+        CURRENCIES.reduce((acc, currency) => ({
+          ...acc,
+          [currency.value]: this.fb.control(
+            fromStripeFormat(data.price && data.price[currency.value] ? data.price[currency.value] : 0),
+            Validators.min(0)
+          )
+        }), {})
+      ),
       description: data.description || '',
       shortDescription: data.shortDescription || '',
       gallery: [data.gallery || []],
