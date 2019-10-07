@@ -99,10 +99,12 @@ export class SettingsComponent extends RxDestroy implements OnInit {
       collection: FirestoreStaticDocuments.CurrencySettings,
       defaultValues: {
         primary: 'USD',
+        supportedCurrencies: ['USD'],
         shippingCost: 0
       },
       transform: {
-        shippingCost: value => (value ? fromStripeFormat(value) : 0)
+        shippingCost: value => (value ? fromStripeFormat(value) : 0),
+        supportedCurrencies: value => [value || []]
       },
       compile: {
         shippingCost: value => (value ? toStripeFormat(value) : 0)

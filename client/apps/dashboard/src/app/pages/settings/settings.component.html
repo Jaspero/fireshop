@@ -183,6 +183,15 @@
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
+
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Supported Currencies</mat-label>
+                  <mat-select formControlName="supportedCurrencies">
+                    <mat-option [value]="cur.value" *ngFor="let cur of currencies">
+                      {{cur.value}} ({{cur.symbol}})
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
             </mat-card>
           </div>
