@@ -1,3 +1,4 @@
+import {getCurrencySymbol} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -36,9 +37,10 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   ngOnInit() {
     super.ngOnInit();
-    this.currency = CURRENCIES.find(
-      cur => cur.value === DYNAMIC_CONFIG.currency.primary
-    ).symbol;
+    this.currency = getCurrencySymbol(
+      DYNAMIC_CONFIG.currency.primary,
+      'narrow'
+    );
 
     this.categories$ = this.state.language$.pipe(
       switchMap(lang =>
@@ -155,13 +157,20 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       name: [data.name || '', Validators.required],
       active: data.active || false,
       price: this.fb.group(
-        CURRENCIES.reduce((acc, currency) => ({
-          ...acc,
-          [currency.value]: this.fb.control(
-            fromStripeFormat(data.price && data.price[currency.value] ? data.price[currency.value] : 0),
-            Validators.min(0)
-          )
-        }), {})
+        CURRENCIES.reduce(
+          (acc, currency) => ({
+            ...acc,
+            [currency.value]: this.fb.control(
+              fromStripeFormat(
+                data.price && data.price[currency.value]
+                  ? data.price[currency.value]
+                  : 0
+              ),
+              Validators.min(0)
+            )
+          }),
+          {}
+        )
       ),
       description: data.description || '',
       shortDescription: data.shortDescription || '',
