@@ -1,3 +1,4 @@
+import {getCurrencySymbol} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -65,7 +66,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   @ViewChild('shippingDialog', {static: true})
   shippingDialog: TemplateRef<any>;
 
-  currencies = CURRENCIES;
+  currencies$: Observable<{}>;
   form: FormGroup;
   groups = [
     {
@@ -152,12 +153,13 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   }
 
   get currencySymbol() {
-    return CURRENCIES.find(
-      cur => cur.value === this.form.get('currency.primary').value
-    ).symbol;
+    return getCurrencySymbol(this.form.get('currency.primary').value, 'narrow')
   }
 
   ngOnInit() {
+
+
+
     this.afs
       .collection(FirestoreCollections.Settings)
       .get()

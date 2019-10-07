@@ -10,6 +10,7 @@ export let DYNAMIC_CONFIG: {
 } = {
   currency: {
     primary: 'USD',
+    supportedCurrencies: ['USD'],
     shippingCost: 0
   },
   generalSettings: {
