@@ -104,8 +104,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
         shippingCost: 0
       },
       transform: {
-        shippingCost: value => (value ? fromStripeFormat(value) : 0),
-        supportedCurrencies: value => [value || []]
+        shippingCost: value => (value ? fromStripeFormat(value) : 0)
       },
       compile: {
         shippingCost: value => (value ? toStripeFormat(value) : 0)
@@ -157,9 +156,17 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   }
 
   ngOnInit() {
-    this.currencies$ = from(
-      this.aff.functions.httpsCallable('currencies')()
-    ).pipe(map(res => res.data));
+    // this.currencies$ = from(
+    //   this.aff.functions.httpsCallable('currencies')()
+    // ).pipe(map((res: any) => res.data));
+
+    this.currencies$ = of([
+      {code: 'AUD', name: '$'},
+      {code: 'EUR', name: '€'},
+      {code: 'GBP', name: '£'},
+      {code: 'HRK', name: 'KN'},
+      {code: 'USD', name: '$'}
+    ]);
 
     this.afs
       .collection(FirestoreCollections.Settings)

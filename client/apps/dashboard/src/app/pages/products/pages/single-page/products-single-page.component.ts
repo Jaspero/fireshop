@@ -5,17 +5,31 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {FormArray, Validators} from '@angular/forms';
+import {FormArray, FormControl, Validators} from '@angular/forms';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
 import {Observable} from 'rxjs';
-import {shareReplay, switchMap, take} from 'rxjs/operators';
+import {
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  takeUntil
+} from 'rxjs/operators';
 import {environment} from '../../../../../environments/environment';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
-import {CURRENCIES} from '../../../../shared/const/currency.const';
 import {GalleryUploadComponent} from '../../../../shared/modules/file-upload/gallery-upload/gallery-upload.component';
+
+interface Currency {
+  code: string;
+  symbol: string;
+}
+
+interface SelectedCurrency extends Currency {
+  control: FormControl;
+}
 
 @Component({
   selector: 'jfsc-single-page',
@@ -30,17 +44,20 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   categories$: Observable<Category[]>;
   collection = FirestoreCollections.Products;
-  currency: string;
-  currencies = CURRENCIES;
+  currencies: Currency[];
   inventoryKeys: string[] = [];
   colors = ['c-warm', 'c-primary', 'c-accent', 'c-primary'];
 
+  selectedCurrency: SelectedCurrency;
+  currencyControl: FormControl;
+
   ngOnInit() {
     super.ngOnInit();
-    this.currency = getCurrencySymbol(
-      DYNAMIC_CONFIG.currency.primary,
-      'narrow'
-    );
+
+    this.currencies = DYNAMIC_CONFIG.currency.supportedCurrencies.map(it => ({
+      code: it,
+      symbol: getCurrencySymbol(it, 'narrow')
+    }));
 
     this.categories$ = this.state.language$.pipe(
       switchMap(lang =>
@@ -102,7 +119,10 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
     return this.categories$.pipe(
       take(1),
       switchMap(categories => {
-        args[1].price = toStripeFormat(args[1].price);
+        DYNAMIC_CONFIG.currency.supportedCurrencies.forEach(code => {
+          args[1].price[code] = toStripeFormat(args[1].price[code]);
+        });
+
         args[1].search = args[1].name
           .split(' ')
           .map(value => value.trim().toLowerCase());
@@ -124,9 +144,11 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
          */
         if (args[1].inventory) {
           for (const key in args[1].inventory) {
-            args[1].inventory[key].price = toStripeFormat(
-              args[1].inventory[key].price
-            );
+            const pr = args[1].inventory[key].price;
+
+            DYNAMIC_CONFIG.currency.supportedCurrencies.forEach(code => {
+              pr[code] = toStripeFormat(pr[code]);
+            });
           }
         }
 
@@ -156,22 +178,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       ],
       name: [data.name || '', Validators.required],
       active: data.active || false,
-      price: this.fb.group(
-        CURRENCIES.reduce(
-          (acc, currency) => ({
-            ...acc,
-            [currency.value]: this.fb.control(
-              fromStripeFormat(
-                data.price && data.price[currency.value]
-                  ? data.price[currency.value]
-                  : 0
-              ),
-              Validators.min(0)
-            )
-          }),
-          {}
-        )
-      ),
+      price: this.setCurrencyGroup(data.price),
       description: data.description || '',
       shortDescription: data.shortDescription || '',
       gallery: [data.gallery || []],
@@ -200,52 +207,26 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       ),
       default: data.default || ''
     });
+
+    this.currencyControl = new FormControl(DYNAMIC_CONFIG.currency.primary);
+
+    this.currencyControl.valueChanges
+      .pipe(
+        startWith(this.currencyControl.value),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(code => {
+        this.selectedCurrency = {
+          code,
+          control: this.form.get(`price.${code}`) as FormControl,
+          symbol: getCurrencySymbol(code, 'narrow')
+        };
+        this.cdr.markForCheck();
+      });
   }
 
   view(form) {
     window.open(environment.websiteUrl + '/product/' + form.controls.id.value);
-  }
-
-  filterData() {
-    const price = this.form.get('price').value;
-    const attributesData = this.attributesForms.getRawValue();
-
-    return {
-      ...attributesData.reduce((acc, cur) => {
-        if (Object.keys(acc).length && cur.list.length) {
-          for (const key in acc) {
-            cur.list.forEach(y => {
-              acc[`${key}_${y}`] = {
-                quantity: 0,
-                price: price || 0
-              };
-            });
-          }
-        } else {
-          cur.list.forEach(x => {
-            acc[x] = {
-              quantity: 0,
-              price: price || 0
-            };
-          });
-        }
-        return acc;
-      }, {}),
-      ...this.form.get('inventory').value
-    };
-  }
-
-  formatInventory(data: any, adjustPrice?: boolean) {
-    const obj = {};
-    this.inventoryKeys = [];
-    for (const key in data) {
-      this.inventoryKeys.push(key);
-      obj[key] = this.fb.group({
-        ...data[key],
-        price: adjustPrice ? fromStripeFormat(data[key].price) : data[key].price
-      });
-    }
-    return obj;
   }
 
   addAttribute() {
@@ -354,5 +335,62 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
           acc + ` <span class="${this.colors[ind]}">  ${cur}</span>`,
         ''
       );
+  }
+
+  private setCurrencyGroup(price: {[key: string]: number}, adjustPrice = true) {
+    return this.fb.group(
+      DYNAMIC_CONFIG.currency.supportedCurrencies.reduce((acc, currency) => {
+        const value = price && price[currency] ? price[currency] : 0;
+
+        acc[currency] = new FormControl(
+          adjustPrice ? fromStripeFormat(value) : value,
+          Validators.min(0)
+        );
+
+        return acc;
+      }, {})
+    );
+  }
+
+  private filterData() {
+    const price = this.form.get('price').value;
+    const attributesData = this.attributesForms.getRawValue();
+
+    return {
+      ...attributesData.reduce((acc, cur) => {
+        if (Object.keys(acc).length && cur.list.length) {
+          for (const key in acc) {
+            cur.list.forEach(y => {
+              acc[`${key}_${y}`] = {
+                quantity: 0,
+                price
+              };
+            });
+          }
+        } else {
+          cur.list.forEach(x => {
+            acc[x] = {
+              quantity: 0,
+              price
+            };
+          });
+        }
+        return acc;
+      }, {}),
+      ...this.form.get('inventory').value
+    };
+  }
+
+  private formatInventory(data: any, adjustPrice?: boolean) {
+    const obj = {};
+    this.inventoryKeys = [];
+    for (const key in data) {
+      this.inventoryKeys.push(key);
+      obj[key] = this.fb.group({
+        ...data[key],
+        price: this.setCurrencyGroup(data[key].price, adjustPrice)
+      });
+    }
+    return obj;
   }
 }

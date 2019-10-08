@@ -15,6 +15,14 @@
           <div class="flex ai-center jc-between">
             <h5>{{form.get('name').value}}</h5>
             <div>
+              <mat-form-field appearance="outline">
+                <mat-label>Currency</mat-label>
+                <mat-select [formControl]="currencyControl">
+                  <mat-option *ngFor="let currency of currencies" [value]="currency.code">
+                    {{currency.code}} ({{currency.symbol}})
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
               <button mat-icon-button aria-label="Previous product" matTooltip="Previous product" (click)="move(false, form)">
                 <mat-icon>arrow_back</mat-icon>
               </button>
@@ -33,9 +41,29 @@
           </button>
         </ng-container>
 
-        <h5 *ngSwitchCase="viewState.New">New Product</h5>
+        <div *ngSwitchCase="viewState.New" class="flex ai-center jc-between">
+          <h5>New Product</h5>
+          <mat-form-field appearance="outline">
+            <mat-label>Currency</mat-label>
+            <mat-select [formControl]="currencyControl">
+              <mat-option *ngFor="let currency of currencies" [value]="currency.code">
+                {{currency.code}} ({{currency.symbol}})
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
 
-        <h5 *ngSwitchCase="viewState.Copy">Copy of {{form.get('name').value}}</h5>
+        <div *ngSwitchCase="viewState.Copy" class="flex ai-center jc-between">
+          <h5>Copy of {{form.get('name').value}}</h5>
+          <mat-form-field appearance="outline">
+            <mat-label>Currency</mat-label>
+            <mat-select [formControl]="currencyControl">
+              <mat-option *ngFor="let currency of currencies" [value]="currency.code">
+                {{currency.code}} ({{currency.symbol}})
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
 
       </div>
     </div>
@@ -144,18 +172,13 @@
                       <input type="number" matInput formControlName="quantity">
                     </mat-form-field>
 
-                    <!-- todo: finish this -->
-                    <!--<mat-form-field class="m-r-xs" appearance="outline">
-                      <mat-label>Price</mat-label>
-                      <span matPrefix>{{currency}}&nbsp;</span>
-                      <input formControlName="price" matInput type="number">
-                    </mat-form-field>
-
-                    <mat-form-field class="m-r-xs" appearance="outline" *ngFor="let currency of currencies">
-                      <mat-label>Price</mat-label>
-                      <span matPrefix>{{currency}}&nbsp;</span>
-                      <input formControlName="price" matInput type="number">
-                    </mat-form-field>-->
+                    <ng-container formGroupName="price">
+                      <mat-form-field class="m-r-xs" appearance="outline">
+                        <mat-label>Price</mat-label>
+                        <span matPrefix>{{selectedCurrency.symbol}}&nbsp;</span>
+                        <input [formControl]="form.get('inventory.' + item + '.price.' + selectedCurrency.code)" matInput type="number">
+                      </mat-form-field>
+                    </ng-container>
 
                     <mat-radio-button [value]="item"><span class="c-d-secondary">Default</span></mat-radio-button>
                   </div>
@@ -175,10 +198,10 @@
                 <mat-divider></mat-divider>
               </div>
               <div class="p-y-xs">
-                <mat-form-field appearance="outline" class="w-full">
+                <mat-form-field class="m-r-xs w-full" appearance="outline">
                   <mat-label>Price</mat-label>
-                  <span matPrefix>{{currency}}&nbsp;</span>
-                  <input formControlName="price" matInput type="number">
+                  <span matPrefix>{{selectedCurrency.symbol}}&nbsp;</span>
+                  <input [formControl]="selectedCurrency.control" matInput type="number">
                 </mat-form-field>
               </div>
             </mat-card>
