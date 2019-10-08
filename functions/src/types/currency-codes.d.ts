@@ -1,6 +1,7 @@
 declare module 'currency-codes' {
-
-  function code(currency: string): {
+  function code(
+    currency: string
+  ): {
     code: string;
     number: string;
     digits: number;
@@ -8,7 +9,9 @@ declare module 'currency-codes' {
     countries: string[];
   };
 
-  function number(num: number): {
+  function number(
+    num: number
+  ): {
     code: string;
     number: string;
     digits: number;
@@ -16,7 +19,9 @@ declare module 'currency-codes' {
     countries: string[];
   };
 
-  function country(currency: string): Array<{
+  function country(
+    currency: string
+  ): Array<{
     code: string;
     number: string;
     digits: number;
@@ -26,11 +31,13 @@ declare module 'currency-codes' {
 }
 
 declare module 'currency-codes/data' {
-  export default function data(): Array<{
+  function data(): Array<{
     code: string;
     number: string;
     digits: number;
     currency: string;
     countries: string[];
   }>;
+
+  export = data;
 }

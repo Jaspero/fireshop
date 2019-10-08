@@ -156,17 +156,9 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   }
 
   ngOnInit() {
-    // this.currencies$ = from(
-    //   this.aff.functions.httpsCallable('currencies')()
-    // ).pipe(map((res: any) => res.data));
-
-    this.currencies$ = of([
-      {code: 'AUD', name: '$'},
-      {code: 'EUR', name: '€'},
-      {code: 'GBP', name: '£'},
-      {code: 'HRK', name: 'KN'},
-      {code: 'USD', name: '$'}
-    ]);
+    this.currencies$ = from(
+      this.aff.functions.httpsCallable('currencies')()
+    ).pipe(map((res: any) => res.data));
 
     this.afs
       .collection(FirestoreCollections.Settings)

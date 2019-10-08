@@ -82,9 +82,7 @@ async function getItems(
          */
         if (!snapshots[i].inventory[lookUp]) {
           error.push({
-            message: `${
-              snapshots[i].name
-            } with these attributes no longer exists`,
+            message: `${snapshots[i].name} with these attributes no longer exists`,
             type: 'product_missing',
             data: {
               id: snapshots[i].id,
@@ -107,9 +105,7 @@ async function getItems(
         snapshots[i].quantity < orderItems[i].quantity
       ) {
         error.push({
-          message: `We currently don't have enough of ${
-            snapshots[i].name
-          } in inventory`,
+          message: `We currently don't have enough of ${snapshots[i].name} in inventory`,
           data: {
             id: snapshots[i].id,
             quantity: snapshots[i].quantity,
@@ -145,39 +141,39 @@ async function getItems(
 
 app.post('/checkout', (req, res) => {
   async function exec() {
-    let [currency, shipping, generalSettings, stripeCustomer]: any = await Promise.all([
-
-      [
-        'currency',
-        'shipping',
-        'general-settings'
-      ]
-        .map(key =>
-          admin
-            .firestore()
-            .collection('settings')
-            .doc(key)
-            .get()
-        ),
+    let [
+      currency,
+      shipping,
+      generalSettings,
+      stripeCustomer
+    ]: any = await Promise.all([
+      ['currency', 'shipping', 'general-settings'].map(key =>
+        admin
+          .firestore()
+          .collection('settings')
+          .doc(key)
+          .get()
+      ),
 
       /**
        * Try to retrieve a customer if the
        * checkout is from a logged in user
        */
-      ...req.body.customer
-        && [
-            si.customers.list({
-              email: req.body.customer.email,
-              limit: 1
-            })
-          ]
+      ...(req.body.customer && [
+        si.customers.list({
+          email: req.body.customer.email,
+          limit: 1
+        })
+      ])
     ]);
 
     currency = currency.data();
     generalSettings = generalSettings.data();
 
     const shippingData = shipping.exists ? shipping.data() : {};
-    const country = req.body.form.shippingInfo ? req.body.form.billing.country : req.body.form.shipping.country;
+    const country = req.body.form.shippingInfo
+      ? req.body.form.billing.country
+      : req.body.form.shipping.country;
 
     const items = await getItems(
       req.body.orderItems,
@@ -204,8 +200,11 @@ app.post('/checkout', (req, res) => {
 
     const amount = items.reduce(
       (acc, cur, curIndex) =>
-        acc + req.body.orderItems[curIndex].quantity * cur.price,
-      shippingData.hasOwnProperty(country) ? shippingData[country].value : currency.shippingCost || 0
+        acc +
+        req.body.orderItems[curIndex].quantity * cur.price[req.body.currency],
+      shippingData.hasOwnProperty(country)
+        ? shippingData[country].value
+        : currency.shippingCost || 0
     );
 
     const paymentIntent = await si.paymentIntents.create({

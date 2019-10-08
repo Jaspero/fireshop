@@ -1,4 +1,5 @@
 import {OrderStatus} from '@jf/enums/order-status.enum';
+import {Price} from '@jf/interfaces/product.interface';
 import {Address} from './address.interface';
 
 export interface OrderPrice {
@@ -10,7 +11,7 @@ export interface OrderPrice {
 export interface OrderItem {
   quantity: number;
   name: string;
-  price: number;
+  price: Price;
   attributes: any;
   identifier: string;
 }

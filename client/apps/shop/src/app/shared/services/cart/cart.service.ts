@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {MatSnackBar} from '@angular/material';
 import {BROWSER_CONFIG} from '@jf/consts/browser-config.const';
+import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {Product} from '@jf/interfaces/product.interface';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
@@ -25,7 +26,12 @@ export class CartService {
 
     this.totalPrice$ = this.items$.pipe(
       map(items =>
-        items.reduce((acc, cur) => (acc += cur['quantity'] * cur['price']), 0)
+        items.reduce(
+          (acc, cur) =>
+            (acc +=
+              cur['quantity'] * cur['price'][DYNAMIC_CONFIG.currency.primary]),
+          0
+        )
       )
     );
   }
