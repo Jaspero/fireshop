@@ -3,9 +3,9 @@ import {Price} from '@jf/interfaces/product.interface';
 import {Address} from './address.interface';
 
 export interface OrderPrice {
-  total: number;
-  shipping?: number;
-  subTotal: number;
+  total: Price;
+  shipping?: Price;
+  subTotal: Price;
 }
 
 export interface OrderItem {

@@ -187,12 +187,12 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
           shippingItem && Number.isInteger(shippingItem.value)
             ? shippingItem.value
             : DYNAMIC_CONFIG.currency.shippingCost || 0;
-        const total = cartTotal + shipping;
+        const total = cartTotal[DYNAMIC_CONFIG.currency.primary] + shipping;
 
         return {
           total,
           shipping,
-          subTotal: total - shipping
+          subTotal: cartTotal[DYNAMIC_CONFIG.currency.primary]
         };
       })
     );
