@@ -1,3 +1,4 @@
+import {getCurrencySymbol} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -26,12 +27,12 @@ import {notify} from '@jf/utils/notify.operator';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format';
 import {forkJoin, from, Observable, of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
-import {CURRENCIES} from '../../shared/const/currency.const';
 import {Role} from '../../shared/enums/role.enum';
 import {hasDuplicates} from '../../shared/utils/has-duplicates';
 import {EMAIL_TAG_COLORS} from './consts/email-tag-colors.const';
 import {EMAIL_TEMPLATES} from './consts/email-templates.const';
 import {EmailTag} from './enums/email-tag.enum';
+import {Currency} from './interfaces/currency.interface';
 import {EmailTemplate} from './interfaces/email-template.interface';
 
 interface UserRole {
@@ -65,7 +66,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   @ViewChild('shippingDialog', {static: true})
   shippingDialog: TemplateRef<any>;
 
-  currencies = CURRENCIES;
+  currencies$: Observable<Currency[]>;
   form: FormGroup;
   groups = [
     {
@@ -99,6 +100,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
       collection: FirestoreStaticDocuments.CurrencySettings,
       defaultValues: {
         primary: 'USD',
+        supportedCurrencies: ['USD'],
         shippingCost: 0
       },
       transform: {
@@ -150,12 +152,22 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   }
 
   get currencySymbol() {
-    return CURRENCIES.find(
-      cur => cur.value === this.form.get('currency.primary').value
-    ).symbol;
+    return getCurrencySymbol(this.form.get('currency.primary').value, 'narrow');
   }
 
   ngOnInit() {
+    // this.currencies$ = from(
+    //   this.aff.functions.httpsCallable('currencies')()
+    // ).pipe(map((res: any) => res.data));
+
+    this.currencies$ = of([
+      {code: 'AUD', name: '$'},
+      {code: 'EUR', name: '€'},
+      {code: 'GBP', name: '£'},
+      {code: 'HRK', name: 'KN'},
+      {code: 'USD', name: '$'}
+    ]);
+
     this.afs
       .collection(FirestoreCollections.Settings)
       .get()
