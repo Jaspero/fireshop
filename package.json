@@ -4,7 +4,9 @@
   "license": "MIT",
   "scripts": {
     "build": "npm --prefix client run build && npm --prefix functions run build",
-    "lint": "npm --prefix client run lint && npm --prefix functions run lint",
+    "lint:client": "npm --prefix client run lint",
+    "lint:functions": "npm --prefix client run lint",
+    "lint": "npm run lint:client && npm run lint:functions",
     "deploy": "firebase deploy"
   },
   "author": {
@@ -35,6 +37,14 @@
   "lint-staged": {
     "*.{ts,json,md}": [
       "prettier --write",
+      "git add"
+    ],
+    "client/**/*.{ts}": [
+      "npm run lint:client",
+      "git add"
+    ],
+    "functions/**/*.{ts}": [
+      "npm run lint:functions",
       "git add"
     ]
   },
