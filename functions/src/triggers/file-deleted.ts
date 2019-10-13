@@ -1,6 +1,7 @@
 import {Storage} from '@google-cloud/storage';
 import * as functions from 'firebase-functions';
 import {basename, dirname, join} from 'path';
+import {unpackGenerateImageString} from '../utils/unpack-generate-image-string';
 
 export const fileDeleted = functions.storage
   .object()
@@ -14,7 +15,7 @@ export const fileDeleted = functions.storage
     if (
       data.contentType.startsWith('image/') &&
       data.contentType !== 'image/webp' &&
-      !data.name.startsWith('thumb_') &&
+      !data.metadata['generate_1'] &&
       (data.metadata.skipDelete ? data.metadata.skipDelete !== 'true' : true)
     ) {
       const storage = new Storage().bucket(data.bucket);
@@ -22,18 +23,23 @@ export const fileDeleted = functions.storage
         join(dirName, (entry || '') + fileName);
       const webpLookUp = (entry?: string) =>
         lookUpName(entry).replace(/(.jpg|.png|.jpeg)/, '.webp');
-      const toRemove = [
-        lookUpName('thumb_s_'),
-        lookUpName('thumb_m_'),
-        webpLookUp(),
-        webpLookUp('thumb_s_'),
-        webpLookUp('thumb_m_')
-      ];
 
-      for (const fp of toRemove) {
-        try {
-          await storage.file(fp).delete();
-        } catch (e) {}
+      for (const key in data.metadata) {
+        if (key.includes('generate_')) {
+          const {filePrefix, webpVersion} = unpackGenerateImageString(
+            data.metadata[key]
+          );
+
+          try {
+            await storage.file(lookUpName(filePrefix)).delete();
+          } catch (e) {}
+
+          if (webpVersion) {
+            try {
+              await storage.file(webpLookUp(filePrefix)).delete();
+            } catch (e) {}
+          }
+        }
       }
     }
   });

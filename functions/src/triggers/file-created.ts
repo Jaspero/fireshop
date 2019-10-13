@@ -5,9 +5,13 @@ import {tmpdir} from 'os';
 import {basename, dirname, join} from 'path';
 import * as sharp from 'sharp';
 import {promisify} from 'util';
+import {unpackGenerateImageString} from '../utils/unpack-generate-image-string';
 
-export const fileCreated = functions.storage
-  .object()
+export const fileCreated = functions
+  .runWith({
+    memory: '512MB'
+  })
+  .storage.object()
   .onFinalize(async ({bucket, name, contentType, metadata}: any) => {
     const fileName = basename(name);
     const dirName = dirname(name);
@@ -34,17 +38,20 @@ export const fileCreated = functions.storage
 
     for (const key in metadata) {
       if (key.includes('generate_')) {
-        const [filePrefix, height, width, webpVersion] = metadata[key].split(
-          '---'
-        );
+        const {
+          filePrefix,
+          height,
+          width,
+          webpVersion
+        } = unpackGenerateImageString(metadata[key]);
         const fName = filePrefix + fileName;
         const tmpDir = join(tmpdir(), fName);
 
         toGenerate.push({
           tmpDir,
           fName,
-          height: parseInt(height),
-          width: parseInt(width)
+          height,
+          width
         });
 
         if (webpVersion) {
