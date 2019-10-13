@@ -1,17 +1,27 @@
 import {initializeApp} from 'firebase-admin';
+import {createUser} from './callable/create-user';
+import {removeUser} from './callable/remove-user';
+import {exportData} from './rest/export-data';
+import {importData} from './rest/import-data';
+import {fileCreated} from './triggers/file-created';
+import {fileDeleted} from './triggers/file-deleted';
+import {userCreated} from './triggers/user-created';
+import {userDeleted} from './triggers/user-deleted';
 
 initializeApp();
 
-// Triggers
-export {userCreated} from './triggers/user-created';
-export {userDeleted} from './triggers/user-deleted';
-export {fileCreated} from './triggers/file-created';
-export {fileDeleted} from './triggers/file-deleted';
+export const cms = {
+  // Triggers
+  userCreated,
+  userDeleted,
+  fileCreated,
+  fileDeleted,
 
-// Callable
-export {createUser} from './callable/create-user';
-export {removeUser} from './callable/remove-user';
+  // Callable
+  createUser,
+  removeUser,
 
-// Rest
-export {exportData} from './rest/export-data';
-export {importData} from './rest/import-data';
+  // Rest
+  exportData,
+  importData
+};
