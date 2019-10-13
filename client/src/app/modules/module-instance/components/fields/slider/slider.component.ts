@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {FieldComponent, FieldData} from '../../field/field.component';
+import {FieldData} from '../../../interfaces/field-data.interface';
+import {FieldComponent} from '../../field/field.component';
 
 interface SliderData extends FieldData {
   validation: {

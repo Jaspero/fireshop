@@ -7,8 +7,9 @@ import {
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {map, startWith, switchMap, tap} from 'rxjs/operators';
 import {DbService} from '../../../../../shared/services/db/db.service';
+import {FieldData} from '../../../interfaces/field-data.interface';
 import {COMPONENT_DATA} from '../../../utils/create-component-injector';
-import {FieldComponent, FieldData} from '../../field/field.component';
+import {FieldComponent} from '../../field/field.component';
 
 interface AutocompleteData extends FieldData {
   dataSet: Array<{name: string; value: any}>;

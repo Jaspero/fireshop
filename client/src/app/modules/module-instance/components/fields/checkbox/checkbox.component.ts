@@ -1,5 +1,6 @@
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {FieldComponent, FieldData} from '../../field/field.component';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {FieldData} from '../../../interfaces/field-data.interface';
+import {FieldComponent} from '../../field/field.component';
 
 @Component({
   selector: 'jms-checkbox',

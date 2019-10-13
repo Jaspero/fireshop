@@ -5,7 +5,7 @@
   "scripts": {
     "build": "npm --prefix client run build && npm --prefix functions run build",
     "lint:client": "npm --prefix client run lint",
-    "lint:functions": "npm --prefix client run lint",
+    "lint:functions": "npm --prefix functions run lint",
     "lint": "npm run lint:client && npm run lint:functions",
     "deploy": "firebase deploy"
   },
@@ -49,8 +49,8 @@
     ]
   },
   "devDependencies": {
-    "husky": "3.0.4",
-    "lint-staged": "9.2.3",
+    "husky": "3.0.9",
+    "lint-staged": "10.0.0-0",
     "prettier": "1.18.2"
   }
 }

@@ -1,13 +1,6 @@
 import {Component, Inject} from '@angular/core';
-import {FormControl} from '@angular/forms';
+import {FieldData} from '../../interfaces/field-data.interface';
 import {COMPONENT_DATA} from '../../utils/create-component-injector';
-
-export interface FieldData {
-  control: FormControl;
-  label: string;
-  hint?: string;
-  placeholder?: string;
-}
 
 @Component({
   selector: 'jms-field',

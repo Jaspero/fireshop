@@ -177,7 +177,10 @@ export class InstanceSingleComponent implements OnInit {
 
   save(instance: Instance) {
     return () => {
-      const preSaveData = instance.form.getRawValue();
+      let data = instance.form.getRawValue();
+
+      const id = data.id || nanoid();
+      const preSaveData = data;
       const toExecute = [];
 
       if (this.state.saveComponents) {
@@ -212,13 +215,11 @@ export class InstanceSingleComponent implements OnInit {
 
       return (toExecute.length ? forkJoin(toExecute) : of([])).pipe(
         switchMap(() => {
-          const {id, ...data} = instance.form.getRawValue();
+          data = instance.form.getRawValue();
 
-          return this.dbService.setDocument(
-            instance.module.id,
-            id || nanoid(),
-            data
-          );
+          delete data.id;
+
+          return this.dbService.setDocument(instance.module.id, id, data);
         }),
         notify(),
         tap(() => {

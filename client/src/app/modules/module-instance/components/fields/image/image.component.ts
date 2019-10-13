@@ -12,11 +12,15 @@ import {FormControl} from '@angular/forms';
 import {from, of} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 import {StateService} from '../../../../../shared/services/state/state.service';
+import {FieldData} from '../../../interfaces/field-data.interface';
+import {GeneratedImage} from '../../../interfaces/generated-image.interface';
 import {COMPONENT_DATA} from '../../../utils/create-component-injector';
-import {FieldComponent, FieldData} from '../../field/field.component';
+import {formatGeneratedImages} from '../../../utils/format-generated-images';
+import {FieldComponent} from '../../field/field.component';
 
 interface ImageData extends FieldData {
   preventServerUpload?: boolean;
+  generatedImages?: GeneratedImage[];
 }
 
 @Component({
@@ -68,7 +72,7 @@ export class ImageComponent extends FieldComponent<ImageData>
     this.cdr.detectChanges();
   }
 
-  save() {
+  save(moduleId: string, documentId: string) {
     if (this.value) {
       if (this.imageUrl.value && this.imageUrl.value !== this.value.name) {
         return of(this.imageUrl.value).pipe(
@@ -77,7 +81,13 @@ export class ImageComponent extends FieldComponent<ImageData>
       } else {
         return from(
           this.storage.upload(this.value.name, this.value, {
-            contentType: this.value.type
+            contentType: this.value.type,
+            customMetadata: {
+              moduleId,
+              documentId,
+              ...(this.cData.generatedImages &&
+                formatGeneratedImages(this.cData.generatedImages))
+            }
           })
         ).pipe(
           switchMap(res => res.ref.getDownloadURL()),

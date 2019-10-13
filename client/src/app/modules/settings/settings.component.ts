@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {RxDestroy} from '@jaspero/ng-helpers';
-import {concat, forkJoin, Observable, of} from 'rxjs';
+import {forkJoin, of} from 'rxjs';
 import {switchMap, takeUntil, tap} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../integrations/firebase/firestore-collection.enum';
 import {Role} from '../../shared/enums/role.enum';
@@ -49,10 +49,10 @@ export class SettingsComponent extends RxDestroy implements OnInit {
       role: Role.Read
     });
 
-    forkJoin(
+    forkJoin([
       this.dbService.getUserSettings(),
       this.dbService.getDocuments(FirestoreCollection.Admins)
-    )
+    ])
       .pipe(takeUntil(this.destroyed$))
       .subscribe(([settings, adminUsers]) => {
         this.settings = settings;

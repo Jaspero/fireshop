@@ -12,8 +12,9 @@ import {of} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {StateService} from '../../../../../shared/services/state/state.service';
 import {cloneAbstractControl} from '../../../../../shared/utils/clone-abstract-control';
+import {FieldData} from '../../../interfaces/field-data.interface';
 import {COMPONENT_DATA} from '../../../utils/create-component-injector';
-import {FieldComponent, FieldData} from '../../field/field.component';
+import {FieldComponent} from '../../field/field.component';
 
 interface DateData extends FieldData {
   startYear?: number;

@@ -23,14 +23,18 @@ import {catchError, map, switchMap, tap} from 'rxjs/operators';
 import {ENV_CONFIG} from '../../../../../../env-config';
 import {StateService} from '../../../../../shared/services/state/state.service';
 import {notify} from '../../../../../shared/utils/notify.operator';
+import {FieldData} from '../../../interfaces/field-data.interface';
+import {GeneratedImage} from '../../../interfaces/generated-image.interface';
 import {COMPONENT_DATA} from '../../../utils/create-component-injector';
+import {formatGeneratedImages} from '../../../utils/format-generated-images';
 import {switchItemLocations} from '../../../utils/switch-item-locations';
-import {FieldComponent, FieldData} from '../../field/field.component';
+import {FieldComponent} from '../../field/field.component';
 import {readFile} from './read-file';
 
 interface GalleryData extends FieldData {
   allowUrl?: boolean;
   allowServerUpload?: boolean;
+  generatedImages?: GeneratedImage[];
 }
 
 @Component({
@@ -210,7 +214,6 @@ export class GalleryComponent extends FieldComponent<GalleryData>
   }
 
   sortDrop(event: CdkDragDrop<string[]>) {
-    console.log('event', event);
     const value = this.cData.control.value;
     moveItemInArray(value, event.previousIndex, event.currentIndex);
     this.cData.control.setValue(value);
@@ -220,7 +223,7 @@ export class GalleryComponent extends FieldComponent<GalleryData>
    * Executes all uploads/removes to persist
    * the changes on server
    */
-  save() {
+  save(moduleId: string, documentId: string) {
     if (
       !this.toRemove.length &&
       !this.cData.control.value.find(val => !val.live)
@@ -242,7 +245,13 @@ export class GalleryComponent extends FieldComponent<GalleryData>
           acc.push(
             from(
               this.storage.upload(cur.pushToLive.name, cur.pushToLive, {
-                contentType: cur.pushToLive.type
+                contentType: cur.pushToLive.type,
+                customMetadata: {
+                  moduleId,
+                  documentId,
+                  ...(this.cData.generatedImages &&
+                    formatGeneratedImages(this.cData.generatedImages))
+                }
               })
             ).pipe(
               switchMap(task => task.ref.getDownloadURL()),
