@@ -7,7 +7,7 @@
     "lint:client": "npm --prefix client run lint",
     "lint:functions": "npm --prefix functions run lint",
     "lint": "npm run lint:client && npm run lint:functions",
-    "deploy": "firebase deploy"
+    "deploy": "firebase deploy --only storage,firestore,functions:cms,hosting"
   },
   "author": {
     "name": "Jaspero Ltd",
