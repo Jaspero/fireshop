@@ -29,7 +29,7 @@ import {Parser} from '../../utils/parser';
 
 export interface CompiledSegment extends InstanceSegment {
   classes: string[];
-  fields: CompiledField[];
+  fields: CompiledField[] | string[];
   component?: ComponentPortal<SegmentComponent>;
   nestedSegments?: CompiledSegment[];
   entryValue: any;
@@ -166,7 +166,7 @@ export class InstanceSingleComponent implements OnInit {
                 name: module.name,
                 editTitleKey
               },
-              directLink: !(module.layout && module.layout.directLink)
+              directLink: !!(module.layout && module.layout.directLink)
             };
           })
         )

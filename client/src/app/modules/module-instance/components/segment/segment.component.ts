@@ -77,16 +77,23 @@ export class SegmentComponent implements OnInit {
     const arrayPointers = this.pointers[this.segment.array].arrayPointers;
 
     this.arrayFields.push(
-      Object.entries(arrayPointers[arrayPointers.length - 1]).map(
-        ([key, pointer]) =>
-          this.sData.parser.field(
-            this.segment.array + '/' + key,
-            pointer,
-            this.sData.definitions,
-            true,
-            this.segment.array
-          )
-      )
+      Object.entries(arrayPointers[arrayPointers.length - 1])
+        .map(
+          ([key, pointer]) =>
+            this.sData.parser.field(
+              this.segment.array + '/' + key,
+              pointer,
+              this.sData.definitions,
+              true,
+              this.segment.array
+            )
+        )
+        .sort((a, b) => {
+          const originalIndexA = (this.segment.fields || []).findIndex(fi => fi === a.pointer);
+          const originalIndexB = (this.segment.fields || []).findIndex(fi => fi === b.pointer);
+
+          return originalIndexA - originalIndexB;
+        })
     );
   }
 

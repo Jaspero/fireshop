@@ -21,7 +21,7 @@ export function compileSegment(
 ) {
   const classes = [];
 
-  let fields: CompiledField[] = [];
+  let fields: CompiledField[] | string[] = [];
 
   if (segment.columnsDesktop) {
     classes.push(`col-${segment.columnsDesktop}`);
@@ -47,11 +47,12 @@ export function compileSegment(
     classes.push(...segment.classes);
   }
 
-  /**
-   * If it's an array fields are parsed
-   */
-  if (segment.fields && !segment.array) {
-    fields = (segment.fields || []).map(key =>
+  if (segment.fields) {
+
+    /**
+     * If it's an array fields are parsed
+     */
+    fields = segment.array ? (segment.fields || []).map(fi => segment.array + fi) : (segment.fields || []).map(key =>
       parser.field(key, parser.pointers[key], definitions)
     );
   }
