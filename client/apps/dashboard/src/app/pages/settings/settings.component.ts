@@ -93,7 +93,8 @@ export class SettingsComponent extends RxDestroy implements OnInit {
         showingQuantity: true,
         description: 'Purchase from fireShop website',
         statementDescription: 'Fireshop purchase',
-        allowOutOfQuantityPurchase: false
+        allowOutOfQuantityPurchase: false,
+        relatedProducts: 3
       }
     },
     {

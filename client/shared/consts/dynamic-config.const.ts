@@ -21,6 +21,7 @@ export let DYNAMIC_CONFIG: {
     notifyOnShipped: true,
     notifyOnDelivered: true,
     showingQuantity: true,
-    allowOutOfQuantityPurchase: false
+    allowOutOfQuantityPurchase: false,
+    relatedProducts: 3
   }
 };

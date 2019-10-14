@@ -19,6 +19,7 @@ export interface Product {
   showingQuantity: boolean;
   quantity: number;
   allowOutOfQuantityPurchase: boolean;
+  relatedProducts?: string[];
   default?: string;
   attributes?: ProductAttribute[];
   inventory?: {

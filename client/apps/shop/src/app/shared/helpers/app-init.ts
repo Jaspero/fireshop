@@ -9,6 +9,7 @@ import {CurrencySettings} from '@jf/interfaces/currency-settings.interface';
 import {take} from 'rxjs/operators';
 import {NetworkService} from '../services/network/network.service';
 import {StateService} from '../services/state/state.service';
+import {GeneralSettings} from '@jf/interfaces/general-settings.interface';
 
 export async function appInit(
   pId,
@@ -17,7 +18,6 @@ export async function appInit(
   afs: AngularFirestore,
   stateService: StateService
 ) {
-
   stateService.serverState = window['aServerState'] || {};
 
   if (isPlatformBrowser(pId)) {
@@ -27,12 +27,21 @@ export async function appInit(
     BROWSER_CONFIG.isBrowser = true;
 
     try {
-      DYNAMIC_CONFIG.currency = (await afs
-        .collection(FirestoreCollections.Settings)
-        .doc<CurrencySettings>(FirestoreStaticDocuments.CurrencySettings)
-        .get()
-        .toPromise()
-      ).data() as CurrencySettings;
+      const [generalSettings, currencySettings] = await Promise.all([
+        afs
+          .collection(FirestoreCollections.Settings)
+          .doc<CurrencySettings>(FirestoreStaticDocuments.CurrencySettings)
+          .get()
+          .toPromise(),
+        afs
+          .collection(FirestoreCollections.Settings)
+          .doc<GeneralSettings>(FirestoreStaticDocuments.GeneralSettings)
+          .get()
+          .toPromise()
+      ]);
+
+      DYNAMIC_CONFIG.generalSettings = generalSettings.data() as GeneralSettings;
+      DYNAMIC_CONFIG.currency = currencySettings.data() as CurrencySettings;
     } catch (e) {}
 
     if (!self.createImageBitmap) {

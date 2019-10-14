@@ -6,38 +6,64 @@ import * as cors from 'cors';
 const app = express();
 app.use(cors());
 
-app.get('/', (req, res) => {
-  const {category, id, num, lang} = req.query;
+app.get('/', async (req, res) => {
+  let {category, id, num, lang, relatedProducts} = req.query;
 
-  admin
-    .firestore()
-    .collection(`products-${lang}`)
+  num = parseFloat(num);
+
+  const collection = admin.firestore().collection(`products-${lang}`);
+
+  relatedProducts = (await Promise.all(
+    (relatedProducts || '').split(',').reduce((acc, cur) => {
+      if (cur) {
+        acc.push(
+          collection
+            .doc(cur)
+            .get()
+            .then(
+              it =>
+                it.exists && {
+                  id: it.id,
+                  ...it.data()
+                }
+            )
+        );
+      }
+
+      return acc;
+    }, [])
+  )).filter(it => it);
+
+  if (relatedProducts.length >= num) {
+    return res.json(relatedProducts);
+  }
+
+  num -= relatedProducts.length;
+
+  const categoryData = (await collection
     .where('category', '==', category)
-    .get()
-    .then(snapshots => {
-      const docs = snapshots.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id
-      }));
+    .get()).docs.reduce((acc, cur) => {
+    const data = {
+      id: cur.id,
+      ...cur.data()
+    };
 
-      const index = docs.findIndex(it => it.id === id);
+    if (data.id !== id) {
+      acc.push(data);
+    }
 
-      if (index !== -1) {
-        docs.splice(index, 1);
-      }
+    return acc;
+  }, []);
 
-      const finalArr = [];
+  for (let i = 0; i < num; i++) {
+    if (categoryData.length) {
+      const number = Math.floor(Math.random() * categoryData.length);
+      relatedProducts.push(categoryData[number]);
+      categoryData.splice(number, 1);
+    }
+  }
 
-      for (let i = 0; i < parseFloat(num); i++) {
-        if (docs.length) {
-          const number = Math.floor(Math.random() * docs.length);
-          finalArr.push(docs[number]);
-          docs.splice(number, 1);
-        }
-      }
-
-      return res.json(finalArr);
-    });
+  return res.json(relatedProducts);
 });
 
 export const similarProducts = functions.https.onRequest(app);
