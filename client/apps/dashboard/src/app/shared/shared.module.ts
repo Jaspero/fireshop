@@ -60,7 +60,9 @@ import {WysiwygComponent} from './components/wysiwyg/wysiwyg.component';
 import {FileUploadModule} from './modules/file-upload/file-upload.module';
 import {ImportComponent} from './components/import/import.component';
 import {ForceDisableDirective} from './directives/force-disable/force-disable.directive';
-import { JsonEditorComponent } from './components/json-editor/json-editor.component';
+import {JsonEditorComponent} from './components/json-editor/json-editor.component';
+import {ProductSelectDialogComponent} from './components/product-select-dialog/product-select-dialog.component';
+import {AfAutocompleteComponent} from './components/af-autocomplete/af-autocomplete.component';
 
 const IMPORTS = [
   CommonModule,
@@ -125,7 +127,8 @@ const COMPONENTS = [
   SearchInputComponent,
   ImportComponent,
   CustomerLookupComponent,
-  JsonEditorComponent
+  JsonEditorComponent,
+  AfAutocompleteComponent
 ];
 
 const ENTRY_COMPONENTS = [
@@ -135,7 +138,8 @@ const ENTRY_COMPONENTS = [
   ListComponent,
   LangListComponent,
   SinglePageComponent,
-  LangSinglePageComponent
+  LangSinglePageComponent,
+  ProductSelectDialogComponent
 ];
 
 const DIRECTIVES = [ForceDisableDirective];
