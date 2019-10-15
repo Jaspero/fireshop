@@ -1,5 +1,6 @@
 import {Directive, ElementRef, Input, Renderer2} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {ENV_CONFIG} from '@jf/consts/env-config.const';
 import {BROWSER_CONFIG} from '../consts/browser-config.const';
 
 @Directive({
@@ -12,8 +13,7 @@ export class LibraryImageDirective {
     private _el: ElementRef
   ) {}
 
-  static FIRESHOP_URL =
-    'https://firebasestorage.googleapis.com/v0/b/jaspero-fireshop.appspot.com/o/';
+  static FIRESHOP_URL = `https://firebasestorage.googleapis.com/v0/b/${ENV_CONFIG.firebase.storageBucket}/o/`;
 
   @Input()
   webp = true;

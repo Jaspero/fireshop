@@ -253,6 +253,23 @@
                   </mat-select>
                 </mat-form-field>
               </div>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="p-y-xs">
+
+                <p>
+                  Related products are populated automatically by selecting at
+                  random from the same category. If however a specific list is provided
+                  it will be used instead.
+                </p>
+
+                <div class="p-t-s">
+                  <button mat-raised-button color="primary" (click)="relatedProducts()">
+                    Related Products <ng-container *ngIf="form.get('relatedProducts').value.length as rp">({{rp}})</ng-container>
+                  </button>
+                </div>
+              </div>
             </mat-card>
           </div>
         </div>

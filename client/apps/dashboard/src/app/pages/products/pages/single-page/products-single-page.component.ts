@@ -12,6 +12,7 @@ import {Category} from '@jf/interfaces/category.interface';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
 import {Observable} from 'rxjs';
 import {
+  filter,
   shareReplay,
   startWith,
   switchMap,
@@ -20,6 +21,7 @@ import {
 } from 'rxjs/operators';
 import {environment} from '../../../../../environments/environment';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
+import {ProductSelectDialogComponent} from '../../../../shared/components/product-select-dialog/product-select-dialog.component';
 import {GalleryUploadComponent} from '../../../../shared/modules/file-upload/gallery-upload/gallery-upload.component';
 
 interface Currency {
@@ -192,6 +194,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       )
         ? data.allowOutOfQuantityPurchase
         : DYNAMIC_CONFIG.generalSettings.allowOutOfQuantityPurchase,
+      relatedProducts: [data.relatedProducts || []],
       attributes: this.fb.array(
         data.attributes
           ? data.attributes.map(x =>
@@ -335,6 +338,26 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
           acc + ` <span class="${this.colors[ind]}">  ${cur}</span>`,
         ''
       );
+  }
+
+  relatedProducts() {
+    const relatedProd = this.form.get('relatedProducts');
+
+    this.dialog
+      .open(ProductSelectDialogComponent, {
+        width: '800px',
+        autoFocus: false,
+        data: {
+          selected: relatedProd.value,
+          title: 'Related Products'
+        }
+      })
+      .afterClosed()
+      .pipe(filter(value => value))
+      .subscribe(value => {
+        relatedProd.setValue(value);
+        this.cdr.markForCheck();
+      });
   }
 
   private setCurrencyGroup(price: {[key: string]: number}, adjustPrice = true) {

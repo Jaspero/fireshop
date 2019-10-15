@@ -1,3 +1,4 @@
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {
   Component,
   OnInit,
@@ -9,6 +10,7 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {FormControl} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {RxDestroy} from '@jaspero/ng-helpers';
+import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Product} from '@jf/interfaces/product.interface';
 import {forkJoin} from 'rxjs';
@@ -48,7 +50,9 @@ export class ProductSelectDialogComponent extends RxDestroy implements OnInit {
       forkJoin(
         this.data.selected.map(id =>
           this.afs
-            .collection(FirestoreCollections.Products)
+            .collection(
+              `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}`
+            )
             .doc(id)
             .get()
         )
@@ -76,5 +80,21 @@ export class ProductSelectDialogComponent extends RxDestroy implements OnInit {
 
   save() {
     this.dialogRef.close(this.selected.map(it => it.id));
+  }
+
+  optionSelected(product: Product) {
+    if (!this.selected.some(it => it.id === product.id)) {
+      this.selected.push(product);
+    }
+    this.cdr.markForCheck();
+  }
+
+  drop(event: CdkDragDrop<Product>) {
+    moveItemInArray(this.selected, event.previousIndex, event.currentIndex);
+  }
+
+  unselect(index: number) {
+    this.selected.splice(index, 1);
+    this.cdr.markForCheck();
   }
 }

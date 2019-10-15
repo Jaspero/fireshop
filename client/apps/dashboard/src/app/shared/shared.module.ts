@@ -47,6 +47,7 @@ import {
 } from '@jaspero/ng-helpers';
 import {ColorPickerComponent} from '@jf/components/color-picker/color-picker.component';
 import {ConfirmationComponent} from '@jf/components/confirmation/confirmation.component';
+import {LibraryImageDirective} from '@jf/directives/library-image.directive';
 import {StripePipe} from '@jf/pipes/stripe.pipe';
 import {ChipsComponent} from './components/chips/chips.component';
 import {CustomerLookupComponent} from './components/customer-lookup/customer-lookup.component';
@@ -63,6 +64,7 @@ import {ForceDisableDirective} from './directives/force-disable/force-disable.di
 import {JsonEditorComponent} from './components/json-editor/json-editor.component';
 import {ProductSelectDialogComponent} from './components/product-select-dialog/product-select-dialog.component';
 import {AfAutocompleteComponent} from './components/af-autocomplete/af-autocomplete.component';
+import {ProductAutocompleteComponent} from './components/product-autocomplete/product-autocomplete.component';
 
 const IMPORTS = [
   CommonModule,
@@ -128,7 +130,8 @@ const COMPONENTS = [
   ImportComponent,
   CustomerLookupComponent,
   JsonEditorComponent,
-  AfAutocompleteComponent
+  AfAutocompleteComponent,
+  ProductAutocompleteComponent
 ];
 
 const ENTRY_COMPONENTS = [
@@ -142,7 +145,7 @@ const ENTRY_COMPONENTS = [
   ProductSelectDialogComponent
 ];
 
-const DIRECTIVES = [ForceDisableDirective];
+const DIRECTIVES = [ForceDisableDirective, LibraryImageDirective];
 
 const PIPES = [StripePipe];
 

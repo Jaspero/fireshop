@@ -1,9 +1,18 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ContentChild,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  TemplateRef
+} from '@angular/core';
 import {AngularFirestoreCollection} from '@angular/fire/firestore';
 import {FormControl} from '@angular/forms';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
-import {Observable} from 'rxjs';
-import {map, startWith, switchMap} from 'rxjs/operators';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {debounceTime, map, startWith, switchMap, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'jfs-af-autocomplete',
@@ -20,11 +29,23 @@ export class AfAutocompleteComponent implements OnInit {
   @Input()
   query: (search: string) => AngularFirestoreCollection;
 
+  @Input()
+  displayKey = 'id';
+
+  @ContentChild('afOption', {static: true})
+  optionTemplate: TemplateRef<any>;
+
+  @Output()
+  optionSelected = new EventEmitter();
+
   search = new FormControl('');
   results$: Observable<any[]>;
+  loading$ = new BehaviorSubject(false);
 
   ngOnInit() {
     this.results$ = this.search.valueChanges.pipe(
+      debounceTime(300),
+      tap(() => this.loading$.next(true)),
       startWith(''),
       switchMap(value => this.query(value).get()),
       map(res =>
@@ -32,9 +53,13 @@ export class AfAutocompleteComponent implements OnInit {
           id: it.id,
           ...it.data()
         }))
-      )
+      ),
+      tap(() => this.loading$.next(false))
     );
   }
 
-  optionSelected(event: MatAutocompleteSelectedEvent) {}
+  selected(event: MatAutocompleteSelectedEvent) {
+    this.optionSelected.next(event.option.value);
+    this.search.setValue('');
+  }
 }
