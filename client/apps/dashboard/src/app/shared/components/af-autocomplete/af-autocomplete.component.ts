@@ -15,7 +15,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {debounceTime, map, startWith, switchMap, tap} from 'rxjs/operators';
 
 @Component({
-  selector: 'jfs-af-autocomplete',
+  selector: 'jfsc-af-autocomplete',
   templateUrl: './af-autocomplete.component.html',
   styleUrls: ['./af-autocomplete.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

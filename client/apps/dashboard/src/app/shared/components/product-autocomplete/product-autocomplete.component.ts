@@ -11,7 +11,7 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Product} from '@jf/interfaces/product.interface';
 
 @Component({
-  selector: 'jfs-product-autocomplete',
+  selector: 'jfsc-product-autocomplete',
   templateUrl: './product-autocomplete.component.html',
   styleUrls: ['./product-autocomplete.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

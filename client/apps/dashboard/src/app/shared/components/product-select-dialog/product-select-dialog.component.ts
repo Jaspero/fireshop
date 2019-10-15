@@ -17,7 +17,7 @@ import {forkJoin} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 @Component({
-  selector: 'jfs-product-select-dialog',
+  selector: 'jfsc-product-select-dialog',
   templateUrl: './product-select-dialog.component.html',
   styleUrls: ['./product-select-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
