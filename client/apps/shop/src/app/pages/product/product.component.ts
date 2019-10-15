@@ -76,7 +76,9 @@ export class ProductComponent extends RxDestroy implements OnInit {
             params: {
               category: data.product.category,
               id: data.product.id,
-              num: DYNAMIC_CONFIG.generalSettings.relatedProducts.toString(),
+              num: (
+                DYNAMIC_CONFIG.generalSettings.relatedProducts || 3
+              ).toString(),
               lang: STATIC_CONFIG.lang,
               ...(data.product.relatedProducts &&
                 data.product.relatedProducts.length && {

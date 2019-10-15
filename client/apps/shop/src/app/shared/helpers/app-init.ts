@@ -29,12 +29,12 @@ export async function appInit(
       const [generalSettings, currencySettings] = await Promise.all([
         afs
           .collection(FirestoreCollections.Settings)
-          .doc<CurrencySettings>(FirestoreStaticDocuments.CurrencySettings)
+          .doc<GeneralSettings>(FirestoreStaticDocuments.GeneralSettings)
           .get()
           .toPromise(),
         afs
           .collection(FirestoreCollections.Settings)
-          .doc<GeneralSettings>(FirestoreStaticDocuments.GeneralSettings)
+          .doc<CurrencySettings>(FirestoreStaticDocuments.CurrencySettings)
           .get()
           .toPromise()
       ]);
