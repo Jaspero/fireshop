@@ -186,6 +186,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       gallery: [data.gallery || []],
       quantity: [data.quantity || 0, Validators.min(0)],
       category: data.category,
+      order: data.order || 0,
       showingQuantity: data.hasOwnProperty('showingQuantity')
         ? data.showingQuantity
         : DYNAMIC_CONFIG.generalSettings.showingQuantity,

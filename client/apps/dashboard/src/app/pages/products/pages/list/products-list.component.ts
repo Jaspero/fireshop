@@ -1,4 +1,10 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import {MatCheckboxChange} from '@angular/material';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
@@ -8,6 +14,7 @@ import {Product} from '@jf/interfaces/product.interface';
 import {from, Observable} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {LangListComponent} from '../../../../shared/components/lang-list/lang-list.component';
+import {SortDialogComponent} from '../../../../shared/components/sort-dialog/sort-dialog.component';
 
 @Component({
   selector: 'jfsc-list',
@@ -36,6 +43,9 @@ export class ProductsListComponent extends LangListComponent<Product>
     }
   };
   categories$: Observable<Category[]>;
+
+  @ViewChild('sortItem', {static: true})
+  sortItemTemplate: TemplateRef<any>;
 
   ngOnInit() {
     super.ngOnInit();
@@ -88,5 +98,16 @@ export class ProductsListComponent extends LangListComponent<Product>
         )
       )
       .subscribe();
+  }
+
+  openSort() {
+    this.dialog.open(SortDialogComponent, {
+      width: '800px',
+      data: {
+        title: 'Most Relevant Sort',
+        collection: `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}`,
+        templateRef: this.sortItemTemplate
+      }
+    });
   }
 }

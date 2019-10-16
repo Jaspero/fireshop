@@ -65,6 +65,7 @@ import {JsonEditorComponent} from './components/json-editor/json-editor.componen
 import {ProductSelectDialogComponent} from './components/product-select-dialog/product-select-dialog.component';
 import {AfAutocompleteComponent} from './components/af-autocomplete/af-autocomplete.component';
 import {ProductAutocompleteComponent} from './components/product-autocomplete/product-autocomplete.component';
+import {SortDialogComponent} from './components/sort-dialog/sort-dialog.component';
 
 const IMPORTS = [
   CommonModule,
@@ -142,7 +143,8 @@ const ENTRY_COMPONENTS = [
   LangListComponent,
   SinglePageComponent,
   LangSinglePageComponent,
-  ProductSelectDialogComponent
+  ProductSelectDialogComponent,
+  SortDialogComponent
 ];
 
 const DIRECTIVES = [ForceDisableDirective, LibraryImageDirective];

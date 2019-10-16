@@ -14,10 +14,18 @@
           <div class="toolbar toolbar-inset p-t-0">
             <jfsc-search-input formControlName="search"></jfsc-search-input>
             <div class="f1"></div>
-            <button mat-button (click)="openFilter()">
-              <span>&nbsp;Filters&nbsp;</span>
-              <mat-icon>filter_list</mat-icon>
-            </button>
+            <div>
+
+              <button mat-button (click)="openSort()">
+                <span>&nbsp;Most Relevant Sort&nbsp;</span>
+                <mat-icon>reorder</mat-icon>
+              </button>
+
+              <button mat-button (click)="openFilter()">
+                <span>&nbsp;Filters&nbsp;</span>
+                <mat-icon>filter_list</mat-icon>
+              </button>
+            </div>
           </div>
 
           <ng-template #filterDialog>
@@ -242,3 +250,13 @@
     </div>
   </div>
 </section>
+
+<ng-template #sortItem let-value="value">
+  <div class="flex">
+    <img class="snippet-img" size="s" [jfsLibraryImage]="value.gallery[0]" />
+    <div class="p-l-xs">
+      <h5>{{value.name}}</h5>
+      <p>{{value.id}}</p>
+    </div>
+  </div>
+</ng-template>
