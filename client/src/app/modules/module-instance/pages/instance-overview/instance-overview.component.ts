@@ -55,6 +55,7 @@ import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {confirmation} from '../../../../shared/utils/confirmation';
 import {notify} from '../../../../shared/utils/notify.operator';
+import {queue} from '../../../../shared/utils/queue.operator';
 import {SortDialogComponent} from '../../components/sort-dialog/sort-dialog.component';
 import {InstanceSingleState} from '../../enums/instance-single-state.enum';
 import {ModuleInstanceComponent} from '../../module-instance.component';
@@ -226,7 +227,10 @@ export class InstanceOverviewComponent extends RxDestroy
               this.options.pageSize,
               this.options.sort,
               null
-            );
+            )
+              .pipe(
+                queue()
+              );
           }),
           switchMap(snapshots => {
             let cursor;
@@ -253,6 +257,7 @@ export class InstanceOverviewComponent extends RxDestroy
                       cursor
                     )
                     .pipe(
+                      queue(),
                       tap(snaps => {
                         if (snaps.length < this.options.pageSize) {
                           this.hasMore$.next(false);
