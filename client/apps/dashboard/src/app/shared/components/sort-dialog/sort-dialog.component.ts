@@ -9,8 +9,13 @@ import {
 import {AngularFirestore} from '@angular/fire/firestore';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {notify} from '@jf/utils/notify.operator';
-import {forkJoin, from, Observable, of} from 'rxjs';
+import {from, Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
+
+interface Item {
+  id: string;
+  [key: string]: any;
+}
 
 @Component({
   selector: 'jfsc-sort-dialog',
@@ -18,7 +23,7 @@ import {map, tap} from 'rxjs/operators';
   styleUrls: ['./sort-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SortDialogComponent<T = any> implements OnInit {
+export class SortDialogComponent<T = Item> implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA)
     private data: {
@@ -34,7 +39,8 @@ export class SortDialogComponent<T = any> implements OnInit {
   title = 'Sort Items';
   templateRef?: TemplateRef<any>;
   items$: Observable<T[]>;
-  updateMap: {[key: string]: number} = {};
+
+  private _originals: {[key: string]: number};
 
   ngOnInit() {
     if (!this.data.sortKey) {
@@ -55,55 +61,62 @@ export class SortDialogComponent<T = any> implements OnInit {
       )
       .snapshotChanges()
       .pipe(
-        map(actions =>
-          actions.map(action => ({
-            id: action.payload.doc.id,
-            ...action.payload.doc.data()
-          }))
-        )
+        map(actions => {
+          const {data, originals} = actions.reduce(
+            (acc, action) => {
+              const item = {
+                id: action.payload.doc.id,
+                ...action.payload.doc.data()
+              };
+
+              acc.data.push(item);
+              acc.originals[item.id] = item[this.data.sortKey];
+
+              return acc;
+            },
+            {
+              data: [],
+              originals: {}
+            }
+          );
+
+          this._originals = originals;
+
+          return data;
+        })
       );
   }
 
-  drop(items: any[], event: CdkDragDrop<string[]>) {
-    this.updateMap[items[event.previousIndex].id] = event.currentIndex;
-    this.updateMap[items[event.currentIndex].id] = event.previousIndex;
+  drop(items: T[], event: CdkDragDrop<string[]>) {
     moveItemInArray(items, event.previousIndex, event.currentIndex);
   }
 
-  move(up = false, items: any[], index: number) {
+  move(up = false, items: T[], index: number) {
     const currentIndex = up ? index - 1 : index + 1;
-    this.updateMap[items[index].id] = currentIndex;
-    this.updateMap[items[currentIndex].id] = index;
     moveItemInArray(items, index, currentIndex);
   }
 
-  update() {
+  update(items: Item[]) {
     return () => {
-      const data = Object.entries(this.updateMap);
+      const batch = this.afs.firestore.batch();
 
-      if (!data.length) {
-        return of([]);
-      }
+      items.forEach((item, index) => {
+        if (index !== this._originals[item.id]) {
+          const {ref} = this.afs.collection(this.data.collection).doc(item.id);
 
-      console.log('data', data);
+          batch.set(
+            ref,
+            {
+              [this.data.sortKey]: index
+            },
+            {
+              merge: true
+            }
+          );
+        }
+      });
 
-      return forkJoin(
-        data.map(([id, order]) =>
-          from(
-            this.afs
-              .collection(this.data.collection)
-              .doc(id)
-              .set(
-                {
-                  [this.data.sortKey]: order
-                },
-                {
-                  merge: true
-                }
-              )
-          )
-        )
-      ).pipe(
+      return from(batch.commit()).pipe(
         notify(),
         tap(() => this.dialogRef.close())
       );

@@ -116,7 +116,8 @@ export class ShopComponent extends RxDestroy implements OnInit {
 
     this.afs
       .collection<Category>(
-        `${FirestoreCollections.Categories}-${STATIC_CONFIG.lang}`
+        `${FirestoreCollections.Categories}-${STATIC_CONFIG.lang}`,
+        ref => ref.orderBy('order', 'asc')
       )
       .valueChanges('id');
 

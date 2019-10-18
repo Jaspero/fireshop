@@ -1,30 +1,32 @@
 <h4 mat-dialog-title>{{title}}</h4>
 
-<mat-dialog-content class="sort-dialog" *ngIf="items$ | async as items" cdkDropList (cdkDropListDropped)="drop(items, $event)">
-  <div class="sort-dialog-item" *ngFor="let item of items; index as index; first as first; last as last;" cdkDrag>
-    <div>
-      <ng-container *ngIf="templateRef; else regular;">
-        <ng-container *ngTemplateOutlet="templateRef; context: {value: item}"></ng-container>
-      </ng-container>
+<ng-container *ngIf="items$ | async as items">
+  <mat-dialog-content class="sort-dialog" cdkDropList (cdkDropListDropped)="drop(items, $event)">
+    <div class="sort-dialog-item" *ngFor="let item of items; index as index; first as first; last as last;" cdkDrag>
+      <div>
+        <ng-container *ngIf="templateRef; else regular;">
+          <ng-container *ngTemplateOutlet="templateRef; context: {value: item}"></ng-container>
+        </ng-container>
 
-      <ng-template #regular>
-        <span class="of-x-auto">{{item.name}}</span>
-      </ng-template>
+        <ng-template #regular>
+          <span class="of-x-auto">{{item.name}}</span>
+        </ng-template>
+      </div>
+      <div class="flex ai-center">
+        <button mat-icon-button [disabled]="first" (click)="move(true, items, index)">
+          <mat-icon>arrow_upward</mat-icon>
+        </button>
+        <button mat-icon-button [disabled]="last" (click)="move(false, items, index)">
+          <mat-icon>arrow_downward</mat-icon>
+        </button>
+        <button mat-icon-button cdkDragHandle>
+          <mat-icon>drag_indicator</mat-icon>
+        </button>
+      </div>
     </div>
-    <div class="flex ai-center">
-      <button mat-icon-button [disabled]="first" (click)="move(true, items, index)">
-        <mat-icon>arrow_upward</mat-icon>
-      </button>
-      <button mat-icon-button [disabled]="last" (click)="move(false, items, index)">
-        <mat-icon>arrow_downward</mat-icon>
-      </button>
-      <button mat-icon-button cdkDragHandle>
-        <mat-icon>drag_indicator</mat-icon>
-      </button>
-    </div>
-  </div>
-</mat-dialog-content>
+  </mat-dialog-content>
 
-<mat-dialog-actions class="jc-end">
-  <button mat-raised-button color="primary" [jpLoadClick]="update()">Update Order</button>
-</mat-dialog-actions>
+  <mat-dialog-actions class="jc-end">
+    <button mat-raised-button color="primary" [jpLoadClick]="update(items)">Update Order</button>
+  </mat-dialog-actions>
+</ng-container>

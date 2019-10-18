@@ -6,13 +6,13 @@ const collections = [
   {
     collection: 'products',
     queries: ['search', 'category', 'active'],
-    sort: ['createdOn', 'name', 'price', 'active', 'quantity'],
+    sort: ['createdOn', 'name', 'price', 'active', 'quantity', 'order'],
     languages: ['en', 'hr']
   },
   {
     collection: 'categories',
     queries: ['name'],
-    sort: ['createdOn', 'name'],
+    sort: ['createdOn', 'name', 'order'],
     languages: ['en', 'hr']
   },
   {
