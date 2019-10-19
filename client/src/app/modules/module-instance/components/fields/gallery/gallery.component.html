@@ -1,6 +1,6 @@
 <p class="fs-small fg-secondary" *ngIf="cData.label">{{cData.label}}</p>
 
-<div class="jms-gallery">
+<div class="jms-gallery" jmsDropzone (dropped)="filesUploaded($event)">
   <div class="ta-center p-y-l">
     <button mat-button *ngIf="cData.allowUrl" (click)="openUploadDialog()">Enter URL</button>
     <button mat-button *ngIf="cData.allowServerUpload" (click)="openFileUpload()">Choose files</button>
@@ -15,23 +15,28 @@
   <input #file type="file" multiple hidden (change)="filesUploaded($event.target)">
 
   <!--Uploaded images list-->
-  <ng-container *ngIf="cData.control.value.length">
-    <div class="jms-gallery-list">
-      <div class="jms-gallery-list-image" *ngFor="let val of cData.control.value; index as index">
-        <img class="jms-gallery-list-image-inner" [src]="(val.data || val) | jpSanitize:'resourceUrl'">
-        <button class="jms-gallery-list-image-remove" type="button" mat-icon-button matTooltip="Remove" (click)="removeImage(index, val)">
-          <mat-icon>close</mat-icon>
-        </button>
+  <ng-container>
+    <div class="jms-gallery-list" cdkDropListGroup>
+
+      <div class="jms-gallery-list-placeholder" cdkDropList [cdkDropListEnterPredicate]="dropListEnterPredicate" (cdkDropListDropped)="dropListDropped($event)"></div>
+
+      <div
+        cdkDropList
+        class="jms-gallery-list-image"
+        [cdkDropListEnterPredicate]="dropListEnterPredicate"
+        (cdkDropListDropped)="dropListDropped($event)"
+        *ngFor="let val of cData.control.value; index as index">
+
+        <div cdkDrag (cdkDragMoved)="dragMoved($event);">
+          <img class="jms-gallery-list-image-inner" [src]="(val.data || val) | jpSanitize:'resourceUrl'">
+          <button class="jms-gallery-list-image-remove" type="button" mat-icon-button matTooltip="Remove" (click)="removeImage(index, val)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
       </div>
     </div>
   </ng-container>
-
-  <div class="jms-gallery-dropzone"
-       jmsDropzone
-       (hovered)="toggleHover($event)"
-       (dropped)="filesUploaded($event)"
-       [class.hovering]="isHovering">
-  </div>
 </div>
 
 <!--Uplaod from URL-->
