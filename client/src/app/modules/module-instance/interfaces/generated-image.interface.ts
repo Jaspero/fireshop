@@ -1,6 +1,6 @@
 export interface GeneratedImage {
-  filePrefix: string;
-  webpVersion: boolean;
-  width: number;
-  height: number;
+  webpVersion?: boolean;
+  filePrefix?: string;
+  width?: number;
+  height?: number;
 }

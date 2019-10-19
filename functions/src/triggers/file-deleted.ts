@@ -20,7 +20,7 @@ export const fileDeleted = functions.storage
     ) {
       const storage = new Storage().bucket(data.bucket);
       const lookUpName = (entry?: string) =>
-        join(dirName, (entry || '') + fileName);
+        join(dirName, 'generated', (entry || '') + fileName);
       const webpLookUp = (entry?: string) =>
         lookUpName(entry).replace(/(.jpg|.png|.jpeg)/, '.webp');
 
