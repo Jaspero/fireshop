@@ -340,23 +340,44 @@ export class InstanceOverviewComponent extends RxDestroy
   }
 
   deleteOne(instance: InstanceOverview, item: any) {
-    confirmation([
-      switchMap(() => this.dbService.removeDocument(instance.id, item.id)),
-      notify()
-    ]);
+    confirmation(
+      [
+        switchMap(() => this.dbService.removeDocument(instance.id, item.id)),
+        tap(() => {
+          if (this.selection.selected.length && this.selection.selected.some(it => it === item.id)) {
+            this.selection.deselect(item.id);
+          }
+        }),
+        notify()
+      ],
+      {
+        description: `This action will remove ${item.id} permanently`
+      }
+    );
   }
 
   deleteSelection(instance: InstanceOverview) {
-    confirmation([
-      switchMap(() =>
-        forkJoin(
-          this.selection.selected.map(id =>
-            this.dbService.removeDocument(instance.id, id)
+    confirmation(
+      [
+        switchMap(() =>
+          forkJoin(
+            this.selection.selected.map(id =>
+              this.dbService.removeDocument(instance.id, id)
+            )
           )
+        ),
+        tap(() => {
+          this.selection.clear();
+        }),
+        notify()
+      ],
+      {
+        description: this.selection.selected.reduce((acc, cur) =>
+          acc + cur + '\n',
+          `This action will remove all of the following documents:\n`
         )
-      ),
-      notify()
-    ]);
+      }
+    );
   }
 
   export(collection: string) {
