@@ -1,8 +1,16 @@
+import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
-import {auth} from 'firebase-admin';
 
 export const createUser = functions.https.onCall(async data => {
-  const user = await auth().createUser(data);
+
+  let user: admin.auth.UserRecord;
+
+  try {
+    user = await admin.auth().createUser(data);
+  } catch (e) {
+    throw new functions.https.HttpsError('internal', e.toString());
+  }
+
   return {
     id: user.uid,
     providerData: user.providerData

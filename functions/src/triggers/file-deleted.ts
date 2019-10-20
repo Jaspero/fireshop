@@ -30,9 +30,11 @@ export const fileDeleted = functions.storage
             data.metadata[key]
           );
 
-          try {
-            await storage.file(lookUpName(filePrefix)).delete();
-          } catch (e) {}
+          if (filePrefix) {
+            try {
+              await storage.file(lookUpName(filePrefix)).delete();
+            } catch (e) {}
+          }
 
           if (webpVersion) {
             try {

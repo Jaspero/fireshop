@@ -21,6 +21,7 @@ export const userCreated = functions.auth.user().onCreate(async user => {
         .collection(FirestoreCollection.Admins)
         .doc(user.uid)
         .set({
+          email: user.email,
           providerData: user.providerData.map(item => item.providerId)
         })
     ]);

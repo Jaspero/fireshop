@@ -4,7 +4,7 @@ import {
   Component,
   OnInit
 } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {forkJoin, of} from 'rxjs';
 import {switchMap, takeUntil, tap} from 'rxjs/operators';
@@ -45,7 +45,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   ngOnInit() {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: '',
+      password: ['', Validators.minLength(6)],
       role: Role.Read
     });
 
@@ -58,7 +58,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
         this.settings = settings;
 
         this.users = settings.roles.map(role => {
-          const account = adminUsers.find(acc => acc.id === role.email);
+          const account = adminUsers.find(acc => acc.email === role.email);
 
           return {
             id: account ? account.id : null,
@@ -96,7 +96,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
     };
   }
 
-  add() {
+  add(form: FormGroupDirective) {
     return () => {
       const data = this.form.getRawValue();
 
@@ -127,7 +127,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
         notify(),
         tap(() => {
           this.users = [...this.users, newUser];
-          this.form.reset();
+          form.resetForm();
           this.cdr.detectChanges();
         })
       );

@@ -97,6 +97,11 @@ export const fileCreated = functions
       );
     }
 
+    console.log({
+      toGenerate,
+      webpToGenerate
+    });
+
     await Promise.all([
       ...toGenerate.map(file =>
         storage.upload(file.tmpDir, {
