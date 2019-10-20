@@ -207,7 +207,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
           : []
       ),
       inventory: this.fb.group(
-        data.inventory ? this.formatInventory(data.inventory, true) : {}
+        data.inventory ? this.formatInventory(data.inventory) : {}
       ),
       default: data.default || ''
     });
@@ -262,7 +262,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
     }
 
     this.form.get('default').setValue(Object.keys(obj)[0]);
-    this.form.setControl('inventory', this.fb.group(this.formatInventory(obj)));
+    this.form.setControl('inventory', this.fb.group(this.formatInventory(obj, false)));
   }
 
   addAttributeValue(item, ind) {
@@ -305,7 +305,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
       this.form.setControl(
         'inventory',
-        this.fb.group(this.formatInventory(obj))
+        this.fb.group(this.formatInventory(obj, false))
       );
     }
   }
@@ -327,7 +327,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
     if (!obj[this.form.get('default').value]) {
       this.form.get('default').setValue(Object.keys(obj)[0]);
     }
-    obj = this.formatInventory(obj);
+    obj = this.formatInventory(obj, false);
     this.form.setControl('inventory', this.fb.group(obj));
   }
 
