@@ -5,7 +5,7 @@
 Fireshop is a webshop built on [firebase](https://firebase.google.com/) and
 the [Angular](https://angular.io/) framework.
 
-Note: JMS is in active development and shouldn't be used in a production environment.
+**Note**: Fireshop is in active development and shouldn't be used in a production environment.
 
 ## Supports
 
