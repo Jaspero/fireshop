@@ -6,6 +6,7 @@ const collections = [
   {
     collection: 'products',
     queries: ['search', 'category', 'active'],
+    array: ['search', 'category'],
     sort: ['createdOn', 'name', 'price', 'active', 'quantity', 'order'],
     languages: ['en', 'hr']
   },
@@ -65,7 +66,7 @@ writeFileSync(
                     fields: [
                       {
                         fieldPath: query,
-                        ...query === 'search' ? {arrayConfig: 'CONTAINS'} : {order: 'ASCENDING'}
+                        ...cur.array && cur.array.includes(query) ? {arrayConfig: 'CONTAINS'} : {order: 'ASCENDING'}
                       },
                       {
                         fieldPath: sort,

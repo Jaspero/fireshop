@@ -142,7 +142,7 @@ export class ShopComponent extends RxDestroy implements OnInit {
 
                   this.chipArray = [];
 
-                  if (query.order.name) {
+                  if (query.order && query.order.name) {
                     final = final.orderBy(
                       query.order.type,
                       query.order.direction
