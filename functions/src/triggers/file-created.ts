@@ -47,12 +47,14 @@ export const fileCreated = functions
         const fName = filePrefix + fileName;
         const tmpDir = join(tmpdir(), fName);
 
-        toGenerate.push({
-          tmpDir,
-          fName,
-          height,
-          width
-        });
+        if (!fName && !width && !height) {
+          toGenerate.push({
+            tmpDir,
+            fName,
+            height,
+            width
+          });
+        }
 
         if (webpVersion) {
           webpToGenerate.push({
@@ -95,11 +97,16 @@ export const fileCreated = functions
       );
     }
 
+    console.log({
+      toGenerate,
+      webpToGenerate
+    });
+
     await Promise.all([
       ...toGenerate.map(file =>
         storage.upload(file.tmpDir, {
           metadata: generateMetadata,
-          destination: join(dirName, file.fName)
+          destination: join(dirName, 'generated', file.fName)
         })
       ),
 
@@ -109,7 +116,7 @@ export const fileCreated = functions
             ...generateMetadata,
             contentType: 'image/webp'
           },
-          destination: join(dirName, file.fName)
+          destination: join(dirName, 'generated', file.fName)
         })
       )
     ]);

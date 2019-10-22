@@ -136,12 +136,12 @@ export class FbDatabaseService extends DbService {
   }
 
   createUserAccount(email: string, password: string) {
-    const func = this.aff.functions.httpsCallable('createUser');
+    const func = this.aff.functions.httpsCallable('cms-createUser');
     return from(func({email, password})) as any;
   }
 
   removeUserAccount(id: string) {
-    const func = this.aff.functions.httpsCallable('removeUser');
+    const func = this.aff.functions.httpsCallable('cms-removeUser');
     return from(func({id}));
   }
 

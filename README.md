@@ -11,3 +11,5 @@ be found [here](https://github.com/Jaspero/jms/wiki/Custom-Integrations)
 A live example can be found [here](https://github.com/Jaspero/jms).
 
 For more information consult our wiki [here](https://github.com/Jaspero/jms/wiki).
+
+__Note:__ JMS is in active development and shouldn't be used in a production environment.

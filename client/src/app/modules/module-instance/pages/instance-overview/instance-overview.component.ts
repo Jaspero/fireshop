@@ -55,6 +55,7 @@ import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {confirmation} from '../../../../shared/utils/confirmation';
 import {notify} from '../../../../shared/utils/notify.operator';
+import {queue} from '../../../../shared/utils/queue.operator';
 import {SortDialogComponent} from '../../components/sort-dialog/sort-dialog.component';
 import {InstanceSingleState} from '../../enums/instance-single-state.enum';
 import {ModuleInstanceComponent} from '../../module-instance.component';
@@ -226,7 +227,10 @@ export class InstanceOverviewComponent extends RxDestroy
               this.options.pageSize,
               this.options.sort,
               null
-            );
+            )
+              .pipe(
+                queue()
+              );
           }),
           switchMap(snapshots => {
             let cursor;
@@ -253,6 +257,7 @@ export class InstanceOverviewComponent extends RxDestroy
                       cursor
                     )
                     .pipe(
+                      queue(),
                       tap(snaps => {
                         if (snaps.length < this.options.pageSize) {
                           this.hasMore$.next(false);
@@ -335,23 +340,44 @@ export class InstanceOverviewComponent extends RxDestroy
   }
 
   deleteOne(instance: InstanceOverview, item: any) {
-    confirmation([
-      switchMap(() => this.dbService.removeDocument(instance.id, item.id)),
-      notify()
-    ]);
+    confirmation(
+      [
+        switchMap(() => this.dbService.removeDocument(instance.id, item.id)),
+        tap(() => {
+          if (this.selection.selected.length && this.selection.selected.some(it => it === item.id)) {
+            this.selection.deselect(item.id);
+          }
+        }),
+        notify()
+      ],
+      {
+        description: `This action will remove ${item.id} permanently`
+      }
+    );
   }
 
   deleteSelection(instance: InstanceOverview) {
-    confirmation([
-      switchMap(() =>
-        forkJoin(
-          this.selection.selected.map(id =>
-            this.dbService.removeDocument(instance.id, id)
+    confirmation(
+      [
+        switchMap(() =>
+          forkJoin(
+            this.selection.selected.map(id =>
+              this.dbService.removeDocument(instance.id, id)
+            )
           )
+        ),
+        tap(() => {
+          this.selection.clear();
+        }),
+        notify()
+      ],
+      {
+        description: this.selection.selected.reduce((acc, cur) =>
+          acc + cur + '\n',
+          `This action will remove all of the following documents:\n`
         )
-      ),
-      notify()
-    ]);
+      }
+    );
   }
 
   export(collection: string) {

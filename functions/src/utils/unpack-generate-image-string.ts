@@ -1,10 +1,36 @@
 export function unpackGenerateImageString(data: string) {
-  const [filePrefix, height, width, webpVersion] = data.split('---');
+  return data.split('---').reduce((acc, cur) => {
+    const [key, value] = cur.split(':');
 
-  return {
-    filePrefix,
-    height: parseInt(height, 10),
-    width: parseInt(width, 10),
-    webpVersion
-  };
+    switch (key) {
+      case 'filePrefix':
+        acc[key] = value;
+        break;
+      case 'height':
+      case 'width':
+        let parsed = 0;
+
+        try {
+          parsed = parseInt(value, 10);
+        } catch (e) {}
+
+        if (parsed) {
+          acc[key] = parsed;
+        }
+
+        break;
+      case 'webpVersion':
+        acc[key] = value === 'true';
+        break;
+      default:
+        break;
+    }
+
+    return acc;
+  }, {
+    filePrefix: '',
+    height: 0,
+    width: 0,
+    webpVersion: false
+  });
 }
