@@ -17,6 +17,8 @@ import {LAYOUT_AUTOCOMPLETE} from './consts/layout-autocomplete.const';
 import {LAYOUT_TEMPLATES} from './consts/layout-templates.const';
 import {SCHEMA_AUTOCOMPLETE} from './consts/schema-autocomplete.const';
 import {SCHEMA_TEMPLATES} from './consts/schema-templates.const';
+import {DEFAULT_SCHEMA_VALUE} from './consts/default-schema-value.const';
+import {DEFAULT_LAYOUT_VALUE} from './consts/default-layout-value.const';
 
 @Component({
   selector: 'jms-definition-instance',
@@ -87,8 +89,8 @@ export class DefinitionInstanceComponent implements OnInit {
             this.currentState === ViewState.Edit ? value.createdOn : Date.now(),
           name: [value.name || '', Validators.required],
           description: value.description || '',
-          schema: value.schema || {},
-          layout: value.layout || {},
+          schema: value.schema || DEFAULT_SCHEMA_VALUE,
+          layout: value.layout || DEFAULT_LAYOUT_VALUE,
           definitions: value.definitions || {}
         });
 
