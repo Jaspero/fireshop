@@ -204,6 +204,9 @@
                   <input [formControl]="selectedCurrency.control" matInput type="number">
                 </mat-form-field>
               </div>
+              <div class="p-y-xs" *ngIf="metaForm">
+                <mat-checkbox color="primary" [formControl]="metaForm.get('samePriceForVariants')">Same Price For Variants</mat-checkbox>
+              </div>
             </mat-card>
           </div>
           <div class="col-12">

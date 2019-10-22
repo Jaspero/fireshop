@@ -5,14 +5,16 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {FormArray, FormControl, Validators} from '@angular/forms';
+import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
+import {ProductMetadata} from '@jf/interfaces/product-metadata.interface';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format.ts';
-import {Observable} from 'rxjs';
+import {combineLatest, forkJoin, Observable, of} from 'rxjs';
 import {
   filter,
+  map,
   shareReplay,
   startWith,
   switchMap,
@@ -52,6 +54,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   selectedCurrency: SelectedCurrency;
   currencyControl: FormControl;
+  metaForm: FormGroup;
 
   ngOnInit() {
     super.ngOnInit();
@@ -69,6 +72,31 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       ),
       shareReplay(1)
     );
+
+    combineLatest([this.activatedRoute.params, this.state.language$])
+      .pipe(
+        switchMap(([params, lang]) => {
+          if (params.id !== 'new' && !params.id.includes('copy')) {
+            return this.metadataDoc(params.id, lang)
+              .get()
+              .pipe(map(doc => (doc.exists ? doc.data() : {})));
+          } else {
+            return of({});
+          }
+        }),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe((value: Partial<ProductMetadata>) => {
+        const samePriceForVariants = value.hasOwnProperty(
+          'samePriceForVariants'
+        )
+          ? value.samePriceForVariants
+          : true;
+        this.metaForm = this.fb.group({
+          samePriceForVariants
+        });
+        this.cdr.markForCheck();
+      });
   }
 
   get attributesForms() {
@@ -121,19 +149,21 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
     return this.categories$.pipe(
       take(1),
       switchMap(categories => {
+        const [id, item, lang] = args;
+
         DYNAMIC_CONFIG.currency.supportedCurrencies.forEach(code => {
-          args[1].price[code] = toStripeFormat(args[1].price[code]);
+          item.price[code] = toStripeFormat(item.price[code]);
         });
 
-        args[1].search = args[1].name
+        item.search = item.name
           .split(' ')
           .map(value => value.trim().toLowerCase());
 
-        if (args[1].category) {
-          const category = categories.find(cat => cat.id === args[1].category);
+        if (item.category) {
+          const category = categories.find(cat => cat.id === item.category);
 
           if (category) {
-            args[1].search.push(
+            item.search.push(
               ...category.name
                 .split(' ')
                 .map(value => value.trim().toLowerCase())
@@ -144,9 +174,9 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
         /**
          * Format inventory price
          */
-        if (args[1].inventory) {
-          for (const key in args[1].inventory) {
-            const pr = args[1].inventory[key].price;
+        if (item.inventory) {
+          for (const key in item.inventory) {
+            const pr = item.inventory[key].price;
 
             DYNAMIC_CONFIG.currency.supportedCurrencies.forEach(code => {
               pr[code] = toStripeFormat(pr[code]);
@@ -157,15 +187,20 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
         /**
          * Don't store empty objects in database
          */
-        if (!Object.keys(args[1].attributes).length) {
-          delete args[1].attributes;
-          delete args[1].inventory;
-          delete args[1].default;
+        if (!Object.keys(item.attributes).length) {
+          delete item.attributes;
+          delete item.inventory;
+          delete item.default;
         }
 
-        return this.galleryUploadComponent.save().pipe(
+        return forkJoin([
+          this.galleryUploadComponent.save(),
+          this.metadataDoc(id, lang).set(this.metaForm.getRawValue(), {
+            merge: true
+          })
+        ]).pipe(
           switchMap(() => {
-            args[1].gallery = this.form.get('gallery').value;
+            item.gallery = this.form.get('gallery').value;
             return super.getSaveData(...args);
           })
         );
@@ -227,6 +262,26 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
         };
         this.cdr.markForCheck();
       });
+
+    this.form
+      .get('price')
+      .valueChanges.pipe(takeUntil(this.destroyed$))
+      .subscribe(price => {
+        if (this.metaForm) {
+          const samePriceForVariants = this.metaForm.get('samePriceForVariants')
+            .value;
+
+          if (samePriceForVariants) {
+            this.inventoryKeys.forEach(key => {
+              DYNAMIC_CONFIG.currency.supportedCurrencies.forEach(currency => {
+                this.form
+                  .get(`inventory.${key}.price.${currency}`)
+                  .setValue(price[currency]);
+              });
+            });
+          }
+        }
+      });
   }
 
   view(form) {
@@ -262,7 +317,10 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
     }
 
     this.form.get('default').setValue(Object.keys(obj)[0]);
-    this.form.setControl('inventory', this.fb.group(this.formatInventory(obj, false)));
+    this.form.setControl(
+      'inventory',
+      this.fb.group(this.formatInventory(obj, false))
+    );
   }
 
   addAttributeValue(item, ind) {
@@ -416,5 +474,13 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       });
     }
     return obj;
+  }
+
+  private metadataDoc(id: string, lang: string) {
+    return this.afs.doc<ProductMetadata>(
+      [`${FirestoreCollections.Products}-${lang}`, id, 'metadata', 'main'].join(
+        '/'
+      )
+    );
   }
 }
