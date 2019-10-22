@@ -32,6 +32,14 @@
             (click)="deleteSelection()">
             <mat-icon>delete_forever</mat-icon>
           </button>
+
+          <button
+            mat-icon-button
+            matTooltip="Export {{selection.selected.length}} items"
+            *ngIf="selection.hasValue()"
+            (click)="exportSelected()">
+            <mat-icon>present_to_all</mat-icon>
+          </button>
         </mat-toolbar>
 
         <table
@@ -56,10 +64,10 @@
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Name/ID</th>
             <td mat-cell *matCellDef="let element" data-label="Name/ID">
-              <span>
+              <a [routerLink]="['..', 'single', element.id]">
                 {{element.name}}<br>
               <span class="fs-small fg-secondary">{{element.id}}</span>
-              </span>
+              </a>
             </td>
           </ng-container>
 
@@ -87,6 +95,10 @@
                 <button mat-menu-item [routerLink]="['..', 'single', element.id]">
                   <mat-icon>edit</mat-icon>
                   <span>Edit</span>
+                </button>
+                <button mat-menu-item (click)="export([element.schema])">
+                  <mat-icon>present_to_all</mat-icon>
+                  <span>Export</span>
                 </button>
                 <button mat-menu-item fDisable (click)="deleteOne(element)">
                   <mat-icon>delete_forever</mat-icon>

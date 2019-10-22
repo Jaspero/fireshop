@@ -1,26 +1,18 @@
 import {SelectionModel} from '@angular/cdk/collections';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatSort} from '@angular/material/sort';
-import {
-  BehaviorSubject,
-  combineLatest,
-  forkJoin,
-  merge,
-  Observable
-} from 'rxjs';
-import {map, startWith, switchMap, take, tap} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, forkJoin, from, merge, Observable} from 'rxjs';
+import {map, startWith, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {RouteData} from '../../../../shared/interfaces/route-data.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {confirmation} from '../../../../shared/utils/confirmation';
 import {notify} from '../../../../shared/utils/notify.operator';
+import {AngularFireFunctions} from '@angular/fire/functions';
+import {RxDestroy} from '@jaspero/ng-helpers';
+import {queue} from '../../../../shared/utils/queue.operator';
 
 @Component({
   selector: 'jms-definition-overview',
@@ -28,12 +20,15 @@ import {notify} from '../../../../shared/utils/notify.operator';
   styleUrls: ['./definition-overview.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DefinitionOverviewComponent implements OnInit {
+export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
   constructor(
     private dbService: DbService,
     private state: StateService,
-    private fb: FormBuilder
-  ) {}
+    private fb: FormBuilder,
+    private aff: AngularFireFunctions
+  ) {
+    super();
+  }
 
   @ViewChild(MatSort, {static: true})
   sort: MatSort;
@@ -130,5 +125,48 @@ export class DefinitionOverviewComponent implements OnInit {
       ),
       notify()
     ]);
+  }
+
+  exportSelected() {
+    this.items$
+      .pipe(take(1))
+      .subscribe(items => {
+        this.export(this.selection.selected.map(id => items.find(item => item.id === id)));
+      });
+  }
+
+  export(schemes: any[]) {
+    const func = this.aff.functions.httpsCallable('cms-jsonSchemaToTypescript');
+
+    forkJoin(
+      schemes.map(schema => from(func(schema)))
+    )
+      .pipe(
+        queue(),
+        map(res => res.reduce((acc, item: any) => acc + item.data, '')),
+        tap(res => {
+          if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
+            const textarea = document.createElement('textarea');
+
+            textarea.textContent = res;
+            textarea.style.position = 'fixed';
+
+            document.body.appendChild(textarea);
+
+            textarea.select();
+
+            try {
+              return document.execCommand('copy');
+            } catch (e) {} finally {
+              document.body.removeChild(textarea);
+            }
+          }
+        }),
+        notify({
+          success: 'Copied to clipboard'
+        }),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe();
   }
 }
