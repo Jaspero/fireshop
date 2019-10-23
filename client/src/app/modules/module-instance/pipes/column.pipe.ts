@@ -35,19 +35,27 @@ export class ColumnPipe implements PipeTransform {
 
   pipes: {[key: string]: any};
 
-  transform(value: any, type?: PipeType, args?: any[]): any {
-    if (!type) {
+  transform(value: any, pipeTypes: PipeType | PipeType[], allArgs: any[] = []): any {
+    if (!pipeTypes) {
       return value;
     }
 
+    if (Array.isArray(pipeTypes)) {
+      return pipeTypes.reduce((acc, type, index) => this.executePipeTransform(type, acc, allArgs[index]), value);
+    } else {
+      return this.executePipeTransform(pipeTypes, value, allArgs);
+    }
+  }
+
+  private executePipeTransform(type, val, args) {
     switch (type) {
       case PipeType.Date:
-        if (!value) {
+        if (!val) {
           return '';
         }
 
         try {
-          const test = new Date(value);
+          const test = new Date(val);
         } catch (e) {
           return '';
         }
@@ -56,19 +64,19 @@ export class ColumnPipe implements PipeTransform {
       case PipeType.Titlecase:
       case PipeType.Uppercase:
       case PipeType.Lowercase:
-        if (typeof value !== 'string') {
+        if (typeof val !== 'string') {
           return '';
         }
         break;
       case PipeType.Number:
       case PipeType.Currency:
       case PipeType.Percent:
-        if (typeof value !== 'number') {
+        if (typeof val !== 'number') {
           return '';
         }
         break;
     }
 
-    return this.pipes[type].transform(value, ...(args || []));
+    return this.pipes[type].transform(val, ...(args || []));
   }
 }
