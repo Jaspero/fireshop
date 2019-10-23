@@ -8,5 +8,6 @@ export enum PipeType {
   Lowercase = 'lowercase',
   Titlecase = 'titlecase',
   Uppercase = 'uppercase',
-  Sanitize = 'jpSanitize'
+  Sanitize = 'jpSanitize',
+  Custom = 'custom'
 }

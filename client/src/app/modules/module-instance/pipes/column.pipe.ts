@@ -13,6 +13,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {SanitizePipe} from '@jaspero/ng-helpers';
 import {PipeType} from '../../../shared/enums/pipe-type.enum';
 import {MathPipe} from '../../../shared/pipes/math/math-pipe.';
+import {safeEval} from '../utils/safe-eval';
 
 @Pipe({
   name: 'column'
@@ -29,13 +30,14 @@ export class ColumnPipe implements PipeTransform {
       [PipeType.Lowercase]: new LowerCasePipe(),
       [PipeType.Uppercase]: new UpperCasePipe(),
       [PipeType.Titlecase]: new TitleCasePipe(),
-      [PipeType.Sanitize]: new SanitizePipe(this.sanitizer)
+      [PipeType.Sanitize]: new SanitizePipe(this.sanitizer),
+      [PipeType.Custom]: ''
     };
   }
 
   pipes: {[key: string]: any};
 
-  transform(value: any, pipeTypes: PipeType | PipeType[], allArgs: any[] = []): any {
+  transform(value: any, pipeTypes: PipeType | PipeType[], allArgs: any[] | {[key: string]: any[]} = []): any {
     if (!pipeTypes) {
       return value;
     }
@@ -75,6 +77,14 @@ export class ColumnPipe implements PipeTransform {
           return '';
         }
         break;
+      case PipeType.Custom:
+        const method = safeEval(args);
+
+        if (method && typeof method !== 'function') {
+          return '';
+        }
+
+        return method(val);
     }
 
     return this.pipes[type].transform(val, ...(args || []));
