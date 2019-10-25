@@ -8,6 +8,7 @@ import {fileDeleted} from './triggers/file-deleted';
 import {userCreated} from './triggers/user-created';
 import {userDeleted} from './triggers/user-deleted';
 import {jsonSchemaToTypescript} from './callable/json-schema-to-typescript';
+import {getExamples} from './callable/get-examples';
 
 initializeApp();
 
@@ -21,10 +22,10 @@ export const cms = {
   // Callable
   createUser,
   removeUser,
+  jsonSchemaToTypescript,
+  getExamples,
 
   // Rest
   exportData,
-  importData,
-
-  jsonSchemaToTypescript
+  importData
 };

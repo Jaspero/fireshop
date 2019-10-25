@@ -2,6 +2,8 @@ import {Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {Module} from '../../interfaces/module.interface';
 import {Settings} from '../../interfaces/settings.interface';
+import {ExampleType} from '../../enums/example-type.enum';
+import {Example} from '../../interfaces/example.interface';
 
 @Injectable({providedIn: 'root'})
 export abstract class DbService {
@@ -25,6 +27,10 @@ export abstract class DbService {
   }
 
   updateUserSettings(settings: Partial<Settings>): Observable<void> {
+    return of();
+  }
+
+  getExamples(type: ExampleType): Observable<{data: Example[]}> {
     return of();
   }
 

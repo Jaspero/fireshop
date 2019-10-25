@@ -11,6 +11,8 @@ import {Module} from '../../src/app/shared/interfaces/module.interface';
 import {Settings} from '../../src/app/shared/interfaces/settings.interface';
 import {DbService} from '../../src/app/shared/services/db/db.service';
 import {FirestoreCollection} from './firestore-collection.enum';
+import {ExampleType} from '../../src/app/shared/enums/example-type.enum';
+import {Example} from '../../src/app/shared/interfaces/example.interface';
 
 @Injectable()
 export class FbDatabaseService extends DbService {
@@ -53,6 +55,11 @@ export class FbDatabaseService extends DbService {
         .doc(id)
         .delete()
     );
+  }
+
+  getExamples(type: ExampleType): Observable<{data: Example[]}> {
+    const func = this.aff.functions.httpsCallable('cms-getExamples');
+    return from(func(type)) as any;
   }
 
   getUserSettings() {

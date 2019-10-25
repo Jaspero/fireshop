@@ -1,9 +1,9 @@
 import {SelectionModel} from '@angular/cdk/collections';
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatSort} from '@angular/material/sort';
-import {BehaviorSubject, combineLatest, forkJoin, from, merge, Observable} from 'rxjs';
-import {map, startWith, switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, forkJoin, from, merge, Observable, Subject} from 'rxjs';
+import {map, shareReplay, startWith, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {RouteData} from '../../../../shared/interfaces/route-data.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
@@ -13,6 +13,9 @@ import {notify} from '../../../../shared/utils/notify.operator';
 import {AngularFireFunctions} from '@angular/fire/functions';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {queue} from '../../../../shared/utils/queue.operator';
+import {MatDialog} from '@angular/material/dialog';
+import {ExampleType} from '../../../../shared/enums/example-type.enum';
+import {Example} from '../../../../shared/interfaces/example.interface';
 
 @Component({
   selector: 'jms-definition-overview',
@@ -22,6 +25,7 @@ import {queue} from '../../../../shared/utils/queue.operator';
 })
 export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
   constructor(
+    public dialog: MatDialog,
     private dbService: DbService,
     private state: StateService,
     private fb: FormBuilder,
@@ -29,6 +33,9 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
   ) {
     super();
   }
+
+  @ViewChild('modal', {static: true})
+  modalTemplate: TemplateRef<any>;
 
   @ViewChild(MatSort, {static: true})
   sort: MatSort;
@@ -38,12 +45,16 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
   allChecked$: Observable<{checked: boolean}>;
   emptyState$ = new BehaviorSubject(false);
   dataLoading$ = new BehaviorSubject(true);
+  examples$ = new Observable<Example[]>();
 
   selection = new SelectionModel<string>(true, []);
   filters: FormGroup;
   options: RouteData;
 
   ngOnInit() {
+    this.examples$ = this.dbService.getExamples(ExampleType.Modules)
+      .pipe(map(res => res.data), shareReplay(1));
+
     this.options = this.state.getRouterData();
 
     this.filters = this.fb.group(this.options.filters);
@@ -168,5 +179,11 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
         takeUntil(this.destroyed$)
       )
       .subscribe();
+  }
+
+  openModuleSelection() {
+    this.dialog.open(this.modalTemplate, {
+      width: '600px'
+    });
   }
 }
