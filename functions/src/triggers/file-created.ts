@@ -47,7 +47,7 @@ export const fileCreated = functions
         const fName = filePrefix + fileName;
         const tmpDir = join(tmpdir(), fName);
 
-        if (!fName && !width && !height) {
+        if (fName || width || height) {
           toGenerate.push({
             tmpDir,
             fName,
@@ -68,10 +68,12 @@ export const fileCreated = functions
 
     const generateMetadata = {
       contentType,
-      generated: true,
-      source: fileName,
-      moduleId: metadata.moduleId,
-      documentId: metadata.documentId
+      customMetadata: {
+        generated: true,
+        source: fileName,
+        moduleId: metadata.moduleId,
+        documentId: metadata.documentId
+      }
     };
 
     const storage = new Storage().bucket(bucket);
