@@ -4,24 +4,32 @@ import * as admin from 'firebase-admin';
 
 export const documentDeleted = functions.firestore
   .document('{moduleId}/{documentId}')
-  .onCreate(async (snap, context) => {
-    const storage = new Storage().bucket(
-      admin.storage().bucket().name
-    );
+  .onDelete(async (snap, context) => {
+    const storage = new Storage().bucket(admin.storage().bucket().name);
 
     const [files] = await storage.getFiles({
-      prefix: `${context.params.moduleId}-${context.params.documentId}-`,
-      autoPaginate: true,
-      directory: '/'
+      delimiter: '/',
+      autoPaginate: true
     });
 
-    console.log(files.map(fi => fi.name).join(','));
-
-    await Promise.all(files.map(
-      file => new Promise(resolve =>
-        file.delete()
-          .then(resolve)
-          .catch(resolve)
-      )
-    ));
+    await Promise.all(
+      files
+        .filter(file =>
+          file.name.startsWith(
+            `${context.params.moduleId}-${context.params.documentId}-`
+          )
+        )
+        .map(
+          file =>
+            new Promise(resolve =>
+              file
+                .delete()
+                .then(resolve)
+                .catch(error => {
+                  console.error(error);
+                  resolve();
+                })
+            )
+        )
+    );
   });
