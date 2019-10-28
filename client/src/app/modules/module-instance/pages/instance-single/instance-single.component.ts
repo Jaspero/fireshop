@@ -184,7 +184,9 @@ export class InstanceSingleComponent implements OnInit {
       const toExecute = [];
 
       if (this.state.saveComponents) {
-        toExecute.push(...this.state.saveComponents.map(comp => comp.save()));
+        toExecute.push(...this.state.saveComponents.map(comp =>
+          comp.save(instance.module.id, id)
+        ));
       }
 
       Object.values(instance.parser.pointers).forEach(entry => {

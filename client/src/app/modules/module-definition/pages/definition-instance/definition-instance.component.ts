@@ -19,6 +19,7 @@ import {SCHEMA_AUTOCOMPLETE} from './consts/schema-autocomplete.const';
 import {SCHEMA_TEMPLATES} from './consts/schema-templates.const';
 import {DEFAULT_SCHEMA_VALUE} from './consts/default-schema-value.const';
 import {DEFAULT_LAYOUT_VALUE} from './consts/default-layout-value.const';
+import {Example} from '../../../../shared/interfaces/example.interface';
 
 @Component({
   selector: 'jms-definition-instance',
@@ -63,7 +64,11 @@ export class DefinitionInstanceComponent implements OnInit {
 
     this.form$ = this.activatedRoute.params.pipe(
       switchMap(params => {
-        if (params.id === 'new') {
+        const example: Example = window.history.state.example;
+
+        if (example) {
+          return of(example);
+        } else if (params.id === 'new') {
           this.currentState = ViewState.New;
           return of({});
         } else if (params.id.endsWith('--copy')) {

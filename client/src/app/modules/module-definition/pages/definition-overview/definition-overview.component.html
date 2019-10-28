@@ -128,17 +128,14 @@
 </section>
 
 <ng-template #modal>
+  <h1 class="p-b-s">Select module template</h1>
   <table mat-table [dataSource]="examples$ | async" class="mat-elevation-z8">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef> Name </th>
-      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.name | titlecase}} </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="['name']"></tr>
-    <tr mat-row *matRowDef="let row; columns: ['name'];"></tr>
+    <tr class="pointer" mat-row *matRowDef="let row; columns: ['name'];" (click)="selectExample(row)"></tr>
   </table>
-
-<!--  <div *ngFor="let example of examples$ | async">-->
-<!--    {{example.name | titlecase}}-->
-<!--  </div>-->
 </ng-template>

@@ -16,6 +16,7 @@ import {queue} from '../../../../shared/utils/queue.operator';
 import {MatDialog} from '@angular/material/dialog';
 import {ExampleType} from '../../../../shared/enums/example-type.enum';
 import {Example} from '../../../../shared/interfaces/example.interface';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'jms-definition-overview',
@@ -29,7 +30,8 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
     private dbService: DbService,
     private state: StateService,
     private fb: FormBuilder,
-    private aff: AngularFireFunctions
+    private aff: AngularFireFunctions,
+    private router: Router
   ) {
     super();
   }
@@ -185,5 +187,10 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
     this.dialog.open(this.modalTemplate, {
       width: '600px'
     });
+  }
+
+  selectExample(item: Example) {
+    this.dialog.closeAll();
+    this.router.navigate(['/module-definition/single/new'], {state: {example: item.json}});
   }
 }

@@ -1,7 +1,10 @@
 export interface Example {
   name: string;
   json: {
-    description?: string,
-    jsonContent: object
+    name?: string;
+    description?: string;
+    schema: object;
+    layout: object;
+    definitions: object;
   };
 }

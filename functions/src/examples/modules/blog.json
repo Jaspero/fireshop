@@ -1,3 +1,72 @@
 {
-
+  "name": "Blog",
+  "description": "",
+  "schema": {
+    "properties": {
+      "content": {
+        "type": "string"
+      },
+      "image": {
+        "type": "string"
+      },
+      "publicationDate": {
+        "type": "number"
+      },
+      "subTitle": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      },
+      "url": {
+        "type": "string"
+      }
+    },
+    "type": "object"
+  },
+  "layout": {
+    "icon": "style",
+    "order": 1,
+    "table": {
+      "sort": {
+        "active": "publicationDate",
+        "direction": "desc"
+      },
+      "tableColumns": [
+        {
+          "key": "/title",
+          "label": "Title"
+        },
+        {
+          "key": "/url",
+          "label": "URL"
+        },
+        {
+          "key": "/publicationDate",
+          "label": "Publication Date",
+          "sortable": true
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "content": {
+      "component": {
+        "type": "wysiwyg"
+      },
+      "label": "Content"
+    },
+    "image": {
+      "component": {
+        "type": "image"
+      }
+    },
+    "publicationDate": {
+      "component": {
+        "type": "date"
+      },
+      "format": "yyyy/MM/dd",
+      "label": "Publication Date"
+    }
+  }
 }

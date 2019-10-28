@@ -1,3 +1,48 @@
 {
-
+  "name": "",
+  "description": "",
+  "schema": {
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "createdOn": {
+        "type": "number"
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "name"
+    ]
+  },
+  "layout": {
+    "instance": {
+      "icon": "home",
+      "segments": [
+        {
+          "columnsMobile": 12,
+          "columnsDesktop": 12,
+          "fields": [
+            "/createdOn",
+            "/name"
+          ],
+          "title": "Random"
+        }
+      ],
+      "table": {
+        "tableColumns": [
+          {
+            "key": "/name",
+            "label": "Name"
+          },
+          {
+            "key": "/createdOn",
+            "label": "Created On",
+            "pipe": "date"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {}
 }
