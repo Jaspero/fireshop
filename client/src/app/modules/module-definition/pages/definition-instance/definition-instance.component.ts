@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-// @ts-ignore
 import {Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
@@ -17,8 +16,6 @@ import {LAYOUT_AUTOCOMPLETE} from './consts/layout-autocomplete.const';
 import {LAYOUT_TEMPLATES} from './consts/layout-templates.const';
 import {SCHEMA_AUTOCOMPLETE} from './consts/schema-autocomplete.const';
 import {SCHEMA_TEMPLATES} from './consts/schema-templates.const';
-import {DEFAULT_SCHEMA_VALUE} from './consts/default-schema-value.const';
-import {DEFAULT_LAYOUT_VALUE} from './consts/default-layout-value.const';
 import {Example} from '../../../../shared/interfaces/example.interface';
 
 @Component({
@@ -67,6 +64,7 @@ export class DefinitionInstanceComponent implements OnInit {
         const example: Example = window.history.state.example;
 
         if (example) {
+          this.currentState = ViewState.New;
           return of(example);
         } else if (params.id === 'new') {
           this.currentState = ViewState.New;
@@ -94,8 +92,8 @@ export class DefinitionInstanceComponent implements OnInit {
             this.currentState === ViewState.Edit ? value.createdOn : Date.now(),
           name: [value.name || '', Validators.required],
           description: value.description || '',
-          schema: value.schema || DEFAULT_SCHEMA_VALUE,
-          layout: value.layout || DEFAULT_LAYOUT_VALUE,
+          schema: value.schema || {},
+          layout: value.layout || {},
           definitions: value.definitions || {}
         });
 

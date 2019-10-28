@@ -1,7 +1,6 @@
 <mat-toolbar role="heading" color="primary" class="sticky-header">
   <span>Modules</span>
   <div class="flex-1"></div>
-<!--  <a mat-flat-button routerLink="../single/new">Add module</a>-->
   <button mat-flat-button (click)="openModuleSelection()">Add module</button>
 </mat-toolbar>
 
@@ -128,14 +127,24 @@
 </section>
 
 <ng-template #modal>
-  <h1 class="p-b-s">Select module template</h1>
-  <table mat-table [dataSource]="examples$ | async" class="mat-elevation-z8">
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef> Name </th>
-      <td mat-cell *matCellDef="let element"> {{element.name | titlecase}} </td>
-    </ng-container>
+  <h4 mat-dialog-title>Select module template</h4>
 
-    <tr mat-header-row *matHeaderRowDef="['name']"></tr>
-    <tr class="pointer" mat-row *matRowDef="let row; columns: ['name'];" (click)="selectExample(row)"></tr>
-  </table>
+  <mat-dialog-content>
+    <div class="mat-elevation-z2">
+      <table mat-table [dataSource]="examples$ | async">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let element">{{element.name | titlecase}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>Description</th>
+          <td mat-cell *matCellDef="let element">{{element.json?.description || '-'}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="exampleColumns"></tr>
+        <tr class="pointer" mat-row *matRowDef="let row; columns: exampleColumns;" (click)="selectExample(row)"></tr>
+      </table>
+    </div>
+  </mat-dialog-content>
 </ng-template>

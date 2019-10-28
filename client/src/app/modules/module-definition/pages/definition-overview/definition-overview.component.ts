@@ -17,6 +17,9 @@ import {MatDialog} from '@angular/material/dialog';
 import {ExampleType} from '../../../../shared/enums/example-type.enum';
 import {Example} from '../../../../shared/interfaces/example.interface';
 import {Router} from '@angular/router';
+import {DEFAULT_SCHEMA_VALUE} from '../definition-instance/consts/default-schema-value.const';
+import {DEFAULT_LAYOUT_VALUE} from '../definition-instance/consts/default-layout-value.const';
+import {DEFAULT_DEFINITION_VALUE} from '../definition-instance/consts/default-definition-value.const';
 
 @Component({
   selector: 'jms-definition-overview',
@@ -42,6 +45,7 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
   @ViewChild(MatSort, {static: true})
   sort: MatSort;
   displayedColumns = ['check', 'name', 'createdOn', 'actions'];
+  exampleColumns = ['name', 'description'];
 
   items$: Observable<Module[]>;
   allChecked$: Observable<{checked: boolean}>;
@@ -55,7 +59,29 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
 
   ngOnInit() {
     this.examples$ = this.dbService.getExamples(ExampleType.Modules)
-      .pipe(map(res => res.data), shareReplay(1));
+      .pipe(
+        queue(),
+        map(res => [
+          {
+            name: 'Empty',
+            json: {
+              schema: {},
+              layout: {},
+              definitions: {}
+            }
+          },
+          {
+            name: 'Basic',
+            json: {
+              schema: DEFAULT_SCHEMA_VALUE,
+              layout: DEFAULT_LAYOUT_VALUE,
+              definitions: DEFAULT_DEFINITION_VALUE
+            }
+          },
+          ...res.data
+        ]),
+        shareReplay(1)
+      );
 
     this.options = this.state.getRouterData();
 
