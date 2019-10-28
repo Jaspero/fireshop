@@ -308,9 +308,17 @@ export class GalleryComponent extends FieldComponent<GalleryData>
       ),
       ...this.cData.control.value.reduce((acc, cur) => {
         if (cur.live !== undefined && !cur.live) {
+
+          const name = [
+            moduleId,
+            documentId,
+            cur.pushToLive.name
+          ]
+            .join('-');
+
           acc.push(
             from(
-              this.storage.upload(cur.pushToLive.name, cur.pushToLive, {
+              this.storage.upload(name, cur.pushToLive, {
                 contentType: cur.pushToLive.type,
                 customMetadata: {
                   moduleId,

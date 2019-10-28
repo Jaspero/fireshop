@@ -79,8 +79,16 @@ export class ImageComponent extends FieldComponent<ImageData>
           tap(() => this.cData.control.setValue(this.imageUrl.value))
         );
       } else {
+
+        const name = [
+          moduleId,
+          documentId,
+          this.value.name
+        ]
+          .join('-');
+
         return from(
-          this.storage.upload(this.value.name, this.value, {
+          this.storage.upload(name, this.value, {
             contentType: this.value.type,
             customMetadata: {
               moduleId,

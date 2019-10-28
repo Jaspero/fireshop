@@ -14,8 +14,7 @@ export const fileDeleted = functions.storage
      */
     if (
       data.contentType.startsWith('image/') &&
-      data.contentType !== 'image/webp' &&
-      !data.metadata['generate_1'] &&
+      data.metadata['generate_1'] &&
       (data.metadata.skipDelete ? data.metadata.skipDelete !== 'true' : true)
     ) {
       const storage = new Storage().bucket(data.bucket);
@@ -26,11 +25,14 @@ export const fileDeleted = functions.storage
 
       for (const key in data.metadata) {
         if (key.includes('generate_')) {
-          const {filePrefix, webpVersion} = unpackGenerateImageString(
-            data.metadata[key]
-          );
+          const {
+            filePrefix,
+            webpVersion,
+            height,
+            width
+          } = unpackGenerateImageString(data.metadata[key]);
 
-          if (filePrefix) {
+          if (filePrefix || width || height) {
             try {
               await storage.file(lookUpName(filePrefix)).delete();
             } catch (e) {}

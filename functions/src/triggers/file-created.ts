@@ -47,7 +47,7 @@ export const fileCreated = functions
         const fName = filePrefix + fileName;
         const tmpDir = join(tmpdir(), fName);
 
-        if (!fName && !width && !height) {
+        if (filePrefix || width || height) {
           toGenerate.push({
             tmpDir,
             fName,
@@ -67,8 +67,7 @@ export const fileCreated = functions
     }
 
     const generateMetadata = {
-      contentType,
-      generated: true,
+      generated: 'true',
       source: fileName,
       moduleId: metadata.moduleId,
       documentId: metadata.documentId
@@ -82,7 +81,7 @@ export const fileCreated = functions
     await Promise.all(
       toGenerate.map(file =>
         sharp(fileTemp)
-          .resize(file.width, file.height, {fit: 'inside'})
+          .resize(file.width || null, file.height || null, {fit: 'inside'})
           .toFile(file.tmpDir)
       )
     );
@@ -97,15 +96,13 @@ export const fileCreated = functions
       );
     }
 
-    console.log({
-      toGenerate,
-      webpToGenerate
-    });
-
     await Promise.all([
       ...toGenerate.map(file =>
         storage.upload(file.tmpDir, {
-          metadata: generateMetadata,
+          metadata: {
+            metadata: generateMetadata,
+            contentType
+          },
           destination: join(dirName, 'generated', file.fName)
         })
       ),
@@ -113,7 +110,7 @@ export const fileCreated = functions
       ...webpToGenerate.map(file =>
         storage.upload(file.destination, {
           metadata: {
-            ...generateMetadata,
+            metadata: generateMetadata,
             contentType: 'image/webp'
           },
           destination: join(dirName, 'generated', file.fName)

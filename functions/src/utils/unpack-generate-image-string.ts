@@ -1,5 +1,5 @@
 export function unpackGenerateImageString(data: string) {
-  return data.split('---').reduce((acc, cur) => {
+  return data.split('----').reduce((acc, cur) => {
     const [key, value] = cur.split(':');
 
     switch (key) {
