@@ -323,6 +323,10 @@ app.post('/webhook', async (req, res) => {
         parseEmail(order.email, 'Order Complete', 'order-complete', {
           order,
           items
+        }),
+        parseEmail(order.email, 'Order Complete', 'admin-order-notification', {
+          order,
+          items
         })
       ];
 
@@ -416,12 +420,10 @@ app.post('/webhook', async (req, res) => {
           parseEmail(
             settings.errorNotificationEmail,
             'Error processing payment',
-            'admin-error.hbs',
+            'admin-checkout-failed-notification',
             {
-              title: 'Checkout Error',
-              description: 'There was an error during checkout',
-              additionalProperties: [{key: 'OrderId', value: order.id}],
               message,
+              stripeOrderId: order.id,
               firebaseDashboard:
                 'https://console.firebase.google.com/u/2/project/jaspero-site/overview',
               adminDashboard: 'https://fireshop.admin.jaspero.co/'
@@ -430,8 +432,8 @@ app.post('/webhook', async (req, res) => {
 
           parseEmail(
             order.email,
-            'Error processing order',
-            'customer-error.hbs',
+            'Error processing payment',
+            'checkout-error',
             {
               website: 'https://fireshop.jaspero.co'
             }

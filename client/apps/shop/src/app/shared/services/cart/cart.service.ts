@@ -29,7 +29,7 @@ export class CartService {
         items.reduce((acc, cur) => {
           DYNAMIC_CONFIG.currency.supportedCurrencies.forEach(code => {
             acc[code] = acc[code] || 0;
-            acc[code] += cur.price[code] || 0;
+            acc[code] += (cur.price[code] || 0) * cur.quantity;
           });
 
           return acc;

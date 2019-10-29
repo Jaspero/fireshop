@@ -96,7 +96,9 @@ export class StripeElementsComponent implements OnInit {
         error => {
           // tslint:disable-next-line:no-console
           console.log('error', error);
-          this.error$.next('Error rendering payment methods.');
+          this.error$.next(
+            `Unfortunately stripe isn't supported in your region`
+          );
         }
       );
   }

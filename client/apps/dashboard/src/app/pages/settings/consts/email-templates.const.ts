@@ -33,6 +33,12 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     tags: [EmailTag.Admin]
   },
   {
+    title: 'User deleted account',
+    id: 'admin-user-deleted-account-notification',
+    description: `Sent to admins when a user deleted their account`,
+    tags: [EmailTag.Admin]
+  },
+  {
     title: 'New Order Notification',
     id: 'admin-order-notification',
     description: `Sent to admins when a new order is created.`,

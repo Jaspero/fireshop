@@ -29,7 +29,19 @@ export async function parseEmail(
     );
   }
 
-  [layout, dbTemplate] = (await Promise.all(toExec)).map(
+  const [layoutDoc, templateDoc] = await Promise.all(toExec);
+
+  if (!layoutDoc.exists) {
+    console.error('Email layout document missing');
+    return false;
+  }
+
+  if (templateDoc && !templateDoc.exists) {
+    console.log('Email not sent because document is undefined');
+    return false;
+  }
+
+  [layout, dbTemplate] = [layoutDoc, templateDoc].map(
     item => item.data().value
   );
 
