@@ -19,12 +19,8 @@ export const userCreated = functions.auth.user().onCreate(async user => {
   } else {
     await Promise.all([
       parseEmail(user.email, 'Welcome to Fireshop', 'new-user-signed-up', user),
-      parseEmail(
-        user.email,
-        'New shop sign-up',
-        'admin-sign-up-notification',
-        user
-      )
+      // TODO: Admin email
+      parseEmail('', 'New shop sign-up', 'admin-sign-up-notification', user)
     ]);
   }
 

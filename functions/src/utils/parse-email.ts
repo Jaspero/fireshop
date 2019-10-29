@@ -13,6 +13,11 @@ export async function parseEmail(
   let layout: string;
   let dbTemplate: string;
 
+  if (!to) {
+    console.error('Missing receiver email');
+    return false;
+  }
+
   const toExec = [
     admin
       .firestore()
