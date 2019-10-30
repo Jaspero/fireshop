@@ -1,0 +1,14 @@
+{
+  "definition": {
+    "field": "pointer",
+    "text": "Toggle",
+    "title": "Insert a definition for a toggle component",
+    "value": {
+      "component": "toggle",
+      "label": "Add Label"
+    }
+  },
+  "schema": {
+    "type": "string"
+  }
+}

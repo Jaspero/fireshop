@@ -1,0 +1,18 @@
+{
+  "definition": {
+    "field": "pointer",
+    "text": "Textarea",
+    "title": "Insert a definition for a textarea component",
+    "value": {
+      "configuration": {
+        "rows": 10,
+        "cols": 10
+      },
+      "label": "Add Label",
+      "type": "textarea"
+    }
+  },
+  "schema": {
+    "type": "array"
+  }
+}

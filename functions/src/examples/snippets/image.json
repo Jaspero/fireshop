@@ -1,3 +1,15 @@
 {
-
+  "definition": {
+    "text": "Image",
+    "title": "Insert a definition for a image component",
+    "field": "pointer",
+    "value": {
+      "type": "image",
+      "configuration": {"preventServerUpload": false},
+      "label": "Add Label"
+    }
+  },
+  "schema": {
+    "type": "string"
+  }
 }

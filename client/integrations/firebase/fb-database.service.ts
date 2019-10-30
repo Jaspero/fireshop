@@ -1,6 +1,4 @@
-import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore, CollectionReference} from '@angular/fire/firestore';
 import {AngularFireFunctions} from '@angular/fire/functions';
 // @ts-ignore

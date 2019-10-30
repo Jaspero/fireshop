@@ -1,9 +1,9 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Observable, of} from 'rxjs';
-import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
+import {filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
@@ -16,6 +16,9 @@ import {LAYOUT_AUTOCOMPLETE} from './consts/layout-autocomplete.const';
 import {LAYOUT_TEMPLATES} from './consts/layout-templates.const';
 import {SCHEMA_AUTOCOMPLETE} from './consts/schema-autocomplete.const';
 import {SCHEMA_TEMPLATES} from './consts/schema-templates.const';
+import {ExampleType} from '../../../../shared/enums/example-type.enum';
+import {queue} from '../../../../shared/utils/queue.operator';
+import {MatDialog} from '@angular/material/dialog';
 import {Example} from '../../../../shared/interfaces/example.interface';
 
 @Component({
@@ -26,6 +29,7 @@ import {Example} from '../../../../shared/interfaces/example.interface';
 })
 export class DefinitionInstanceComponent implements OnInit {
   constructor(
+    public dialog: MatDialog,
     private dbService: DbService,
     private router: Router,
     private state: StateService,
@@ -33,6 +37,9 @@ export class DefinitionInstanceComponent implements OnInit {
     private fb: FormBuilder,
     private snackBar: MatSnackBar
   ) {}
+
+  @ViewChild('modal', {static: true})
+  modalTemplate: TemplateRef<any>;
 
   initialValue: string;
   currentValue: string;
@@ -53,10 +60,18 @@ export class DefinitionInstanceComponent implements OnInit {
     templates: DEFINITION_TEMPLATES,
     autocomplete: DEFINITION_AUTOCOMPLETE
   };
-
+  snippetExamples$ = new Observable<Example[]>();
   form$: Observable<FormGroup>;
+  snippetForm: FormGroup;
 
   ngOnInit() {
+    this.snippetExamples$ = this.dbService.getExamples(ExampleType.Snippets)
+      .pipe(
+        queue(),
+        map(res => res.data),
+        shareReplay(1)
+      );
+
     this.schemaValidation = new SchemaValidation();
 
     this.form$ = this.activatedRoute.params.pipe(
@@ -104,6 +119,10 @@ export class DefinitionInstanceComponent implements OnInit {
       }),
       shareReplay(1)
     );
+
+    this.snippetForm = this.fb.group({
+      snippet: ['', Validators.required]
+    });
   }
 
   save(form: FormGroup) {
@@ -156,4 +175,17 @@ export class DefinitionInstanceComponent implements OnInit {
   }
 
   move(forward: boolean, form: FormGroup) {}
+
+  openSnippetSelection() {
+    this.dialog.open(this.modalTemplate, {
+      width: '600px'
+    })
+      .afterClosed()
+      .pipe(
+        filter(res => res)
+      )
+      .subscribe(res => {
+        // todo: insert snippet
+      });
+  }
 }

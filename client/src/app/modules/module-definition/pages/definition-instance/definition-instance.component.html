@@ -40,7 +40,7 @@
         <mat-card-header>
           <div class="flex ai-center h-full w-full jc-between">
             <h1>Module Setup</h1>
-            <mat-icon>info</mat-icon>
+              <button mat-icon-button matTooltip="Add Snippet" (click)="openSnippetSelection()"><mat-icon>add</mat-icon></button>
           </div>
         </mat-card-header>
 
@@ -85,3 +85,20 @@
     </div>
   </section>
 </form>
+
+<ng-template #modal>
+  <h4 mat-dialog-title>Select snippet template</h4>
+
+  <mat-dialog-content>
+    <div [formGroup]="snippetForm">
+      <mat-select placeholder="Snippet" formControlName="snippet">
+        <mat-option *ngFor="let item of snippetExamples$ | async">{{item.name}}</mat-option>
+      </mat-select>
+    </div>
+
+    <div class="flex w-full jc-end m-t-xs">
+      <button mat-button color="primary" [disabled]="snippetForm.invalid">Submit</button>
+    </div>
+  </mat-dialog-content>
+
+</ng-template>

@@ -1,3 +1,17 @@
 {
-
+  "definition": {
+    "text": "Gallery",
+    "title": "Insert a definition for a gallery component",
+    "field": "pointer",
+    "value": {
+      "component": {
+        "type": "gallery",
+        "configuration": {"allowServerUpload": true, "allowUrl": true}
+      },
+      "label": "Add Label"
+    }
+  },
+  "schema": {
+    "type": "array"
+  }
 }

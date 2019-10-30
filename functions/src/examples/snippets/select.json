@@ -1,0 +1,22 @@
+{
+  "definition": {
+    "field": "pointer",
+    "text": "Select",
+    "title": "Insert a definition for a select component",
+    "value": {
+      "configuration": {
+        "dataSet": [
+          {"name": "Option 1", "value": "option-1", "disabled": false},
+          {"name": "Option 2", "value": "option-2", "disabled": false},
+          {"name": "Option 3", "value": "option-3", "disabled": false}
+        ],
+        "multiple": false
+      },
+      "label": "Add Label",
+      "type": "select"
+    }
+  },
+  "schema": {
+    "type": "string"
+  }
+}
