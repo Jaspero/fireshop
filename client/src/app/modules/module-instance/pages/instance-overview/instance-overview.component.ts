@@ -45,7 +45,8 @@ import {
 import {ExportComponent} from '../../../../shared/components/export/export.component';
 import {PAGE_SIZES} from '../../../../shared/consts/page-sizes.const';
 import {
-  ModuleDefinitions,
+  FilterModule,
+  ModuleDefinitions, SearchModule,
   SortModule,
   TableColumn,
   TableSort
@@ -61,6 +62,7 @@ import {InstanceSingleState} from '../../enums/instance-single-state.enum';
 import {ModuleInstanceComponent} from '../../module-instance.component';
 import {ColumnPipe} from '../../pipes/column.pipe';
 import {Parser} from '../../utils/parser';
+import {FilterDialogComponent} from '../../components/filter-dialog/filter-dialog.component';
 
 interface InstanceOverview {
   id: string;
@@ -71,6 +73,14 @@ interface InstanceOverview {
   schema: JSONSchema7;
   sort?: TableSort;
   sortModule?: SortModule;
+  filterModule?: FilterModule;
+  searchModule?: SearchModule;
+  hideCheckbox?: boolean;
+  hideAdd?: boolean;
+  hideEdit?: boolean;
+  hideDelete?: boolean;
+  hideExport?: boolean;
+  hideImport?: boolean;
 }
 
 @Component({
@@ -117,6 +127,9 @@ export class InstanceOverviewComponent extends RxDestroy
   pageSize: FormControl;
   options: RouteData;
   parserCache: {[key: string]: Parser} = {};
+
+  // todo: filip handle search valueChanges
+  searchControl = new FormControl('');
 
   ngOnInit() {
     this.options = this.state.getRouterData({
@@ -173,7 +186,10 @@ export class InstanceOverviewComponent extends RxDestroy
         /**
          * Default displayColumns
          */
-        displayColumns.unshift('check');
+        if (!data.layout || !data.layout.table || !data.layout.table.hideCheckbox) {
+          displayColumns.unshift('check');
+        }
+
         displayColumns.push('actions');
 
         return {
@@ -184,7 +200,19 @@ export class InstanceOverviewComponent extends RxDestroy
           tableColumns,
           sort,
           definitions: data.definitions,
-          sortModule: data.layout.sortModule
+          ...(
+            data.layout ? {
+              sortModule: data.layout.sortModule,
+              filterModule: data.layout.filterModule,
+              searchModule: data.layout.searchModule,
+              hideCheckbox: data.layout.table.hideCheckbox,
+              hideAdd: data.layout.table.hideAdd,
+              hideEdit: data.layout.table.hideEdit,
+              hideDelete: data.layout.table.hideDelete,
+              hideExport: data.layout.table.hideExport,
+              hideImport: data.layout.table.hideImport
+            } : {}
+          )
         };
       }),
       shareReplay(1)
@@ -395,6 +423,21 @@ export class InstanceOverviewComponent extends RxDestroy
     options: SortModule
   ) {
     this.dialog.open(SortDialogComponent, {
+      width: '800px',
+      data: {
+        options,
+        collection,
+        collectionName
+      }
+    });
+  }
+
+  openFilterDialog(
+    collection: string,
+    collectionName: string,
+    options: FilterModule
+  ) {
+    this.dialog.open(FilterDialogComponent, {
       width: '800px',
       data: {
         options,

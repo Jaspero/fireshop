@@ -24,15 +24,17 @@
       <mat-card>
         <mat-card-content class="mat-card-content-inset">
           <mat-toolbar class="b-b">
-            <ng-container *ngIf="allChecked$ | async as ac">
-              <mat-checkbox
-                (change)="$event ? masterToggle() : null"
-                [checked]="selection.hasValue() && ac.checked"
-                [indeterminate]="selection.hasValue() && !ac.checked"
-                color="primary"
-                matTooltip="Select">
-              </mat-checkbox>&nbsp;&nbsp;&nbsp;
-            </ng-container>
+<!--            <ng-container *ngIf="!data.hideCheckbox">-->
+              <ng-container *ngIf="allChecked$ | async as ac">
+                <mat-checkbox
+                  (change)="$event ? masterToggle() : null"
+                  [checked]="selection.hasValue() && ac.checked"
+                  [indeterminate]="selection.hasValue() && !ac.checked"
+                  color="primary"
+                  matTooltip="Select">
+                </mat-checkbox>&nbsp;&nbsp;&nbsp;
+              </ng-container>
+<!--            </ng-container>-->
 
             <button
               mat-icon-button
@@ -59,12 +61,24 @@
             <jms-import [collection]="data.id" [schema]="data.schema"></jms-import>
 
             <button
+              *ngIf="data.filterModule"
+              mat-button
+              (click)="openFilterDialog(data.id, data.name, data.filterModule)">
+              <mat-icon>vertical_split</mat-icon>
+              <span>Filter</span>
+            </button>
+
+            <button
               *ngIf="data.sortModule"
               mat-button
               (click)="openSortDialog(data.id, data.name, data.sortModule)">
               <mat-icon>vertical_split</mat-icon>
               <span>Sort</span>
             </button>
+
+            <div *ngIf="data.searchModule" class="m-l-s">
+              <jms-search-input [formControl]="searchControl"></jms-search-input>
+            </div>
           </mat-toolbar>
 
           <div class="of-x-auto">
@@ -75,7 +89,7 @@
               matSortDisableClear
               [trackBy]="trackById"
               [dataSource]="items$ | async"
-              [matSortActive]="data.sort?.key"
+              [matSortActive]="data.sort?.active"
               [matSortDirection]="data.sort?.direction">
               <ng-container matColumnDef="check" sticky>
                 <th mat-header-cell *matHeaderCellDef></th>

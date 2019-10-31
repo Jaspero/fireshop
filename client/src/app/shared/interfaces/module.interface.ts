@@ -45,13 +45,22 @@ export interface InstanceSegment {
 
 export interface TableSort {
   active: string;
-  direction: OrderByDirection;
+  direction: 'desc' | 'asc';
 }
 
 export interface SortModule {
   sortKey: string;
   sortTitle: string;
   sortSubTitle: string;
+}
+
+export interface FilterModule {
+  // todo: filip
+  dummy: string;
+}
+
+export interface SearchModule {
+  key: string;
 }
 
 export interface ModuleLayout {
@@ -67,8 +76,16 @@ export interface ModuleLayout {
   table?: {
     sort?: TableSort;
     tableColumns?: TableColumn[];
+    hideCheckbox?: boolean;
+    hideAdd?: boolean;
+    hideEdit?: boolean;
+    hideDelete?: boolean;
+    hideExport?: boolean;
+    hideImport?: boolean;
   };
   sortModule?: SortModule;
+  filterModule?: FilterModule;
+  searchModule?: SearchModule;
   instance: {
     segments: InstanceSegment[];
   };

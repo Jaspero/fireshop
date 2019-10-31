@@ -79,6 +79,7 @@ import {DropzoneDirective} from './shared/directives/dropzone/dropzone.directive
 import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
 import {MathPipe} from './shared/pipes/math/math-pipe.';
 import {MatProgressBarModule} from '@angular/material';
+import { FilterDialogComponent } from './modules/module-instance/components/filter-dialog/filter-dialog.component';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -130,7 +131,8 @@ const ENTRY_COMPONENTS = [
 
   // Additional
   ExportComponent,
-  SortDialogComponent
+  SortDialogComponent,
+  FilterDialogComponent
 ];
 
 const DIRECTIVES = [ForceDisableDirective, DropzoneDirective];
