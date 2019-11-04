@@ -29,17 +29,17 @@ service cloud.firestore {
       allow write, delete: if write()
     }
 
-    match /products-en/{product} {
+    match /products-en/{product=**} {
   	  allow read: if readOrWrite() || resource.data.active == true;
   	  allow write, delete: if write()
     }
 
-    match /categories-en/{category} {
+    match /categories-en/{category=**} {
       allow read: if true
       allow write, delete: if write()
     }
 
-    match /discounts-en/{discount} {
+    match /discounts-en/{discount=**} {
       allow read: if true
       allow write, delete: if write()
     }
@@ -49,7 +49,7 @@ service cloud.firestore {
       allow write, delete: if write() || resource.data.customerId == auth.uid;
     }
 
-    match /customers/{customer} {
+    match /customers/{customer=**} {
       allow read: if readOrWrite() || resource.id == auth.uid;
       allow write, delete: if write() || resource.id == auth.uid;
     }
