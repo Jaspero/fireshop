@@ -5,9 +5,9 @@ import {
   Injector,
   OnInit
 } from '@angular/core';
+import {CompiledSegment} from '../../../../../shared/interfaces/compiled-segment.interface';
 import {InstanceSegment} from '../../../../../shared/interfaces/module.interface';
 import {CompiledField} from '../../../interfaces/compiled-field.interface';
-import {CompiledSegment} from '../../../pages/instance-single/instance-single.component';
 import {compileSegment} from '../../../utils/compile-segment';
 import {SEGMENT_DATA} from '../../../utils/create-segment-injector';
 import {SegmentComponent, SegmentData} from '../../segment/segment.component';

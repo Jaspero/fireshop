@@ -80,6 +80,7 @@ import {ForceDisableDirective} from './shared/directives/force-disable/force-dis
 import {MathPipe} from './shared/pipes/math/math-pipe.';
 import {MatProgressBarModule} from '@angular/material';
 import { FilterDialogComponent } from './modules/module-instance/components/filter-dialog/filter-dialog.component';
+import { CompiledFormComponent } from './shared/components/compiled-form/compiled-form.component';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -99,7 +100,8 @@ const COMPONENTS = [
   SearchInputComponent,
   JsonEditorComponent,
   LayoutComponent,
-  ImportComponent
+  ImportComponent,
+  CompiledFormComponent
 ];
 
 const ENTRY_COMPONENTS = [

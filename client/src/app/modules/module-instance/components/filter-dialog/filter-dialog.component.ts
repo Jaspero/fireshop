@@ -1,7 +1,8 @@
-import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
+import {FormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {FilterModule} from '../../../../shared/interfaces/module.interface';
-import {DbService} from '../../../../shared/services/db/db.service';
+import {FilterModule} from '../../../../shared/interfaces/filter-module.interface';
+import {WhereFilter} from '../../../../shared/interfaces/where-filter.interface';
 
 @Component({
   selector: 'jms-filter-dialog',
@@ -9,19 +10,28 @@ import {DbService} from '../../../../shared/services/db/db.service';
   styleUrls: ['./filter-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FilterDialogComponent implements OnInit {
+export class FilterDialogComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA)
-    public data: {
-      options: FilterModule;
-      collection: string;
-      collectionName: string;
-    },
-    private dbService: DbService,
+    public data: FilterModule,
     private dialogRef: MatDialogRef<FilterDialogComponent>
   ) {}
 
-  ngOnInit() {
+  apply(form: FormGroup) {
 
+    const data = form.getRawValue();
+    const toSend: WhereFilter[] = [];
+
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        toSend.push({
+          key,
+          value: data[key],
+          operator: '=='
+        });
+      }
+    }
+
+    this.dialogRef.close(toSend);
   }
 }

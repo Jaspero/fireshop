@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, Inject, Injector, OnInit} from '@angular/core';
+import {CompiledSegment} from '../../../../../shared/interfaces/compiled-segment.interface';
 import {SegmentComponent, SegmentData} from '../../segment/segment.component';
 import {InstanceSegment} from '../../../../../shared/interfaces/module.interface';
 import {CompiledField} from '../../../interfaces/compiled-field.interface';
-import {CompiledSegment} from '../../../pages/instance-single/instance-single.component';
 import {SEGMENT_DATA} from '../../../utils/create-segment-injector';
 import {compileSegment} from '../../../utils/compile-segment';
 

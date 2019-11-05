@@ -28,7 +28,7 @@ import {
   combineLatest,
   forkJoin,
   merge,
-  Observable,
+  Observable, of,
   Subject
 } from 'rxjs';
 import {
@@ -44,14 +44,16 @@ import {
 } from 'rxjs/operators';
 import {ExportComponent} from '../../../../shared/components/export/export.component';
 import {PAGE_SIZES} from '../../../../shared/consts/page-sizes.const';
+import {FilterModule} from '../../../../shared/interfaces/filter-module.interface';
 import {
-  FilterModule,
-  ModuleDefinitions, SearchModule,
-  SortModule,
+  ModuleDefinitions,
   TableColumn,
   TableSort
 } from '../../../../shared/interfaces/module.interface';
 import {RouteData} from '../../../../shared/interfaces/route-data.interface';
+import {SearchModule} from '../../../../shared/interfaces/search-module.interface';
+import {SortModule} from '../../../../shared/interfaces/sort-module.interface';
+import {WhereFilter} from '../../../../shared/interfaces/where-filter.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {confirmation} from '../../../../shared/utils/confirmation';
@@ -118,6 +120,7 @@ export class InstanceOverviewComponent extends RxDestroy
   loading$: Observable<boolean>;
   allChecked$: Observable<{checked: boolean}>;
   emptyState$ = new BehaviorSubject(false);
+  filterChange$ = new BehaviorSubject<WhereFilter[]>(null);
   hasMore$ = new BehaviorSubject(false);
   loadMore$ = new Subject<boolean>();
 
@@ -179,8 +182,14 @@ export class InstanceOverviewComponent extends RxDestroy
           }));
         }
 
-        if (data.layout && data.layout.table) {
-          sort = data.layout.table.sort;
+        if (data.layout) {
+          if (data.layout.table) {
+            sort = data.layout.table.sort;
+          }
+
+          if (data.layout.filterModule && data.layout.filterModule.value) {
+            this.filterChange$.next(data.layout.filterModule.value);
+          }
         }
 
         /**
@@ -205,12 +214,14 @@ export class InstanceOverviewComponent extends RxDestroy
               sortModule: data.layout.sortModule,
               filterModule: data.layout.filterModule,
               searchModule: data.layout.searchModule,
-              hideCheckbox: data.layout.table.hideCheckbox,
-              hideAdd: data.layout.table.hideAdd,
-              hideEdit: data.layout.table.hideEdit,
-              hideDelete: data.layout.table.hideDelete,
-              hideExport: data.layout.table.hideExport,
-              hideImport: data.layout.table.hideImport
+              ...data.layout.table && {
+                hideCheckbox: data.layout.table.hideCheckbox,
+                hideAdd: data.layout.table.hideAdd,
+                hideEdit: data.layout.table.hideEdit,
+                hideDelete: data.layout.table.hideDelete,
+                hideExport: data.layout.table.hideExport,
+                hideImport: data.layout.table.hideImport
+              }
             } : {}
           )
         };
@@ -222,22 +233,25 @@ export class InstanceOverviewComponent extends RxDestroy
   }
 
   ngAfterViewInit() {
+
+    let cachedFilters;
+
     this.items$ = this.data$.pipe(
       switchMap(data =>
         combineLatest([
           this.pageSize.valueChanges.pipe(startWith(this.options.pageSize)),
-          ...(data.sort
-            ? [
-                this.sort.changes.pipe(
-                  filter(change => change.last),
-                  switchMap(change => change.last.sortChange),
-                  startWith(data.sort)
-                )
-              ]
-            : [])
+          data.sort ?
+            this.sort.changes.pipe(
+              filter(change => change.last),
+              switchMap(change => change.last.sortChange),
+              startWith(data.sort)
+            ) :
+            of(null),
+          this.filterChange$
         ]).pipe(
-          switchMap(([pageSize, sort]) => {
+          switchMap(([pageSize, sort, filters]) => {
             this.options.pageSize = pageSize as number;
+            cachedFilters = filters;
 
             if (sort) {
               this.options.sort = sort as TableSort;
@@ -254,7 +268,9 @@ export class InstanceOverviewComponent extends RxDestroy
               data.id,
               this.options.pageSize,
               this.options.sort,
-              null
+              null,
+              null,
+              filters
             )
               .pipe(
                 queue()
@@ -282,7 +298,9 @@ export class InstanceOverviewComponent extends RxDestroy
                       data.id,
                       this.options.pageSize,
                       this.options.sort,
-                      cursor
+                      cursor,
+                      null,
+                      cachedFilters
                     )
                     .pipe(
                       queue(),
@@ -433,18 +451,19 @@ export class InstanceOverviewComponent extends RxDestroy
   }
 
   openFilterDialog(
-    collection: string,
-    collectionName: string,
-    options: FilterModule
+    data: FilterModule
   ) {
     this.dialog.open(FilterDialogComponent, {
       width: '800px',
-      data: {
-        options,
-        collection,
-        collectionName
-      }
-    });
+      data
+    })
+      .afterClosed()
+      .pipe(
+        filter(value => !!value)
+      )
+      .subscribe(value => {
+        this.filterChange$.next(value);
+      });
   }
 
   private mapRow(

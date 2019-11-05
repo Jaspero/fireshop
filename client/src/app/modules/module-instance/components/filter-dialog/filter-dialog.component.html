@@ -1,0 +1,7 @@
+<h4 mat-dialog-title>Filter</h4>
+<mat-dialog-content>
+  <jms-compiled-form #cForm [data]="data"></jms-compiled-form>
+</mat-dialog-content>
+<mat-dialog-actions class="jc-end">
+  <button type="submit" mat-raised-button color="primary" (click)="apply(cForm.form)">Apply</button>
+</mat-dialog-actions>

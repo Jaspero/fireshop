@@ -3,7 +3,9 @@ import {InstanceSingleState} from '../../modules/module-instance/enums/instance-
 import {SegmentType} from '../../modules/module-instance/enums/segment-type.enum';
 import {PipeType} from '../enums/pipe-type.enum';
 import {ComponentType} from './component-type.enum';
-import OrderByDirection = firebase.firestore.OrderByDirection;
+import {FilterModule} from './filter-module.interface';
+import {SearchModule} from './search-module.interface';
+import {SortModule} from './sort-module.interface';
 
 export interface TableColumn {
   /**
@@ -46,21 +48,6 @@ export interface InstanceSegment {
 export interface TableSort {
   active: string;
   direction: 'desc' | 'asc';
-}
-
-export interface SortModule {
-  sortKey: string;
-  sortTitle: string;
-  sortSubTitle: string;
-}
-
-export interface FilterModule {
-  // todo: filip
-  dummy: string;
-}
-
-export interface SearchModule {
-  key: string;
 }
 
 export interface ModuleLayout {
