@@ -6,6 +6,13 @@
   }
 }
 
+.column-inner {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
 // TODO: add this to the table above
 // Don't let images grow out of control
 .column-inner {
