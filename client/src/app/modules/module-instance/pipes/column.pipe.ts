@@ -31,13 +31,14 @@ export class ColumnPipe implements PipeTransform {
       [PipeType.Uppercase]: new UpperCasePipe(),
       [PipeType.Titlecase]: new TitleCasePipe(),
       [PipeType.Sanitize]: new SanitizePipe(this.sanitizer),
+      [PipeType.SanitizeFb]: new SanitizePipe(this.sanitizer),
       [PipeType.Custom]: ''
     };
   }
 
   pipes: {[key: string]: any};
 
-  transform(value: any, pipeTypes: PipeType | PipeType[], allArgs: any[] | {[key: string]: any[]} = []): any {
+  transform(value: any, pipeTypes: PipeType | PipeType[], allArgs?: any[] | {[key: string]: any}): any {
     if (!pipeTypes) {
       return value;
     }
@@ -49,7 +50,7 @@ export class ColumnPipe implements PipeTransform {
     }
   }
 
-  private executePipeTransform(type, val, args) {
+  private executePipeTransform(type, val, args?) {
     switch (type) {
       case PipeType.Date:
         if (!val) {
@@ -78,13 +79,24 @@ export class ColumnPipe implements PipeTransform {
         }
         break;
       case PipeType.Custom:
-        const method = safeEval(args);
 
-        if (method && typeof method !== 'function') {
+        if (!args) {
           return '';
         }
 
-        return method(val);
+        const method = safeEval(args);
+
+        if (!method || typeof method !== 'function') {
+          return '';
+        }
+
+        let response = '';
+
+        try {
+          response = method(val);
+        } catch (e) {}
+
+        return response;
     }
 
     return this.pipes[type].transform(val, ...(args || []));
