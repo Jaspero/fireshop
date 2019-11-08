@@ -1,9 +1,9 @@
 import {Component, HostBinding, Inject, Injector, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {get} from 'json-pointer';
+import {CompiledSegment} from '../../../../shared/interfaces/compiled-segment.interface';
 import {ModuleDefinitions} from '../../../../shared/interfaces/module.interface';
 import {CompiledField} from '../../interfaces/compiled-field.interface';
-import {CompiledSegment} from '../../pages/instance-single/instance-single.component';
 import {compileSegment} from '../../utils/compile-segment';
 import {SEGMENT_DATA} from '../../utils/create-segment-injector';
 import {Parser, Pointers} from '../../utils/parser';

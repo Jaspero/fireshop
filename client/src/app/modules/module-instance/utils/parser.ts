@@ -183,8 +183,18 @@ export class Parser {
     };
   }
 
-  buildForm(value?: any) {
-    const properties = this.buildProperties(this.schema.properties || {});
+  buildForm(
+    value?: any,
+    required: string[] = [],
+    base = '/',
+    addId = true
+  ) {
+    const properties = this.buildProperties(
+      this.schema.properties || {},
+      required,
+      base,
+      addId
+    );
 
     this.form = properties.form;
     this.pointers = properties.pointers;

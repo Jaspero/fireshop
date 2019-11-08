@@ -28,20 +28,20 @@
           ],
           "title": "Random"
         }
-      ],
-      "table": {
-        "tableColumns": [
-          {
-            "key": "/name",
-            "label": "Name"
-          },
-          {
-            "key": "/createdOn",
-            "label": "Created On",
-            "pipe": "date"
-          }
-        ]
-      }
+      ]
+    },
+    "table": {
+      "tableColumns": [
+        {
+          "key": "/name",
+          "label": "Name"
+        },
+        {
+          "key": "/createdOn",
+          "label": "Created On",
+          "pipe": "date"
+        }
+      ]
     }
   },
   "definitions": {}

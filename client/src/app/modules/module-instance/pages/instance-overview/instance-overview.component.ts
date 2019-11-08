@@ -28,7 +28,7 @@ import {
   combineLatest,
   forkJoin,
   merge,
-  Observable,
+  Observable, of,
   Subject
 } from 'rxjs';
 import {
@@ -44,13 +44,16 @@ import {
 } from 'rxjs/operators';
 import {ExportComponent} from '../../../../shared/components/export/export.component';
 import {PAGE_SIZES} from '../../../../shared/consts/page-sizes.const';
+import {FilterModule} from '../../../../shared/interfaces/filter-module.interface';
 import {
   ModuleDefinitions,
-  SortModule,
   TableColumn,
   TableSort
 } from '../../../../shared/interfaces/module.interface';
 import {RouteData} from '../../../../shared/interfaces/route-data.interface';
+import {SearchModule} from '../../../../shared/interfaces/search-module.interface';
+import {SortModule} from '../../../../shared/interfaces/sort-module.interface';
+import {WhereFilter} from '../../../../shared/interfaces/where-filter.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {confirmation} from '../../../../shared/utils/confirmation';
@@ -61,6 +64,7 @@ import {InstanceSingleState} from '../../enums/instance-single-state.enum';
 import {ModuleInstanceComponent} from '../../module-instance.component';
 import {ColumnPipe} from '../../pipes/column.pipe';
 import {Parser} from '../../utils/parser';
+import {FilterDialogComponent} from '../../components/filter-dialog/filter-dialog.component';
 
 interface InstanceOverview {
   id: string;
@@ -71,6 +75,14 @@ interface InstanceOverview {
   schema: JSONSchema7;
   sort?: TableSort;
   sortModule?: SortModule;
+  filterModule?: FilterModule;
+  searchModule?: SearchModule;
+  hideCheckbox?: boolean;
+  hideAdd?: boolean;
+  hideEdit?: boolean;
+  hideDelete?: boolean;
+  hideExport?: boolean;
+  hideImport?: boolean;
 }
 
 @Component({
@@ -108,6 +120,7 @@ export class InstanceOverviewComponent extends RxDestroy
   loading$: Observable<boolean>;
   allChecked$: Observable<{checked: boolean}>;
   emptyState$ = new BehaviorSubject(false);
+  filterChange$ = new BehaviorSubject<WhereFilter[]>(null);
   hasMore$ = new BehaviorSubject(false);
   loadMore$ = new Subject<boolean>();
 
@@ -117,6 +130,7 @@ export class InstanceOverviewComponent extends RxDestroy
   pageSize: FormControl;
   options: RouteData;
   parserCache: {[key: string]: Parser} = {};
+  searchControl = new FormControl('');
 
   ngOnInit() {
     this.options = this.state.getRouterData({
@@ -166,14 +180,23 @@ export class InstanceOverviewComponent extends RxDestroy
           }));
         }
 
-        if (data.layout && data.layout.table) {
-          sort = data.layout.table.sort;
+        if (data.layout) {
+          if (data.layout.table) {
+            sort = data.layout.table.sort;
+          }
+
+          if (data.layout.filterModule && data.layout.filterModule.value) {
+            this.filterChange$.next(data.layout.filterModule.value);
+          }
         }
 
         /**
          * Default displayColumns
          */
-        displayColumns.unshift('check');
+        if (!data.layout || !data.layout.table || !data.layout.table.hideCheckbox) {
+          displayColumns.unshift('check');
+        }
+
         displayColumns.push('actions');
 
         return {
@@ -184,7 +207,21 @@ export class InstanceOverviewComponent extends RxDestroy
           tableColumns,
           sort,
           definitions: data.definitions,
-          sortModule: data.layout.sortModule
+          ...(
+            data.layout ? {
+              sortModule: data.layout.sortModule,
+              filterModule: data.layout.filterModule,
+              searchModule: data.layout.searchModule,
+              ...data.layout.table && {
+                hideCheckbox: data.layout.table.hideCheckbox,
+                hideAdd: data.layout.table.hideAdd,
+                hideEdit: data.layout.table.hideEdit,
+                hideDelete: data.layout.table.hideDelete,
+                hideExport: data.layout.table.hideExport,
+                hideImport: data.layout.table.hideImport
+              }
+            } : {}
+          )
         };
       }),
       shareReplay(1)
@@ -194,22 +231,30 @@ export class InstanceOverviewComponent extends RxDestroy
   }
 
   ngAfterViewInit() {
+
+    let cachedFilters;
+
     this.items$ = this.data$.pipe(
       switchMap(data =>
         combineLatest([
           this.pageSize.valueChanges.pipe(startWith(this.options.pageSize)),
-          ...(data.sort
-            ? [
-                this.sort.changes.pipe(
-                  filter(change => change.last),
-                  switchMap(change => change.last.sortChange),
-                  startWith(data.sort)
-                )
-              ]
-            : [])
+          data.sort ?
+            this.sort.changes.pipe(
+              filter(change => change.last),
+              switchMap(change => change.last.sortChange),
+              startWith(data.sort)
+            ) :
+            of(null),
+          this.filterChange$,
+          this.searchControl
+            .valueChanges
+            .pipe(
+              startWith(this.searchControl.value)
+            )
         ]).pipe(
-          switchMap(([pageSize, sort]) => {
+          switchMap(([pageSize, sort, filters, search]) => {
             this.options.pageSize = pageSize as number;
+            cachedFilters = filters;
 
             if (sort) {
               this.options.sort = sort as TableSort;
@@ -226,7 +271,15 @@ export class InstanceOverviewComponent extends RxDestroy
               data.id,
               this.options.pageSize,
               this.options.sort,
-              null
+              null,
+              null,
+              search ?
+                [{
+                  key: data.searchModule.key,
+                  operator: 'array-contains',
+                  value: search.trim().toLowerCase()
+                }] :
+                filters
             )
               .pipe(
                 queue()
@@ -254,7 +307,9 @@ export class InstanceOverviewComponent extends RxDestroy
                       data.id,
                       this.options.pageSize,
                       this.options.sort,
-                      cursor
+                      cursor,
+                      null,
+                      cachedFilters
                     )
                     .pipe(
                       queue(),
@@ -402,6 +457,34 @@ export class InstanceOverviewComponent extends RxDestroy
         collectionName
       }
     });
+  }
+
+  openFilterDialog(
+    data: FilterModule
+  ) {
+    this.filterChange$
+      .pipe(
+        take(1),
+        switchMap(filterValue =>
+          this.dialog.open(FilterDialogComponent, {
+            width: '800px',
+            data: {
+              ...data,
+              value: filterValue ?
+                filterValue.reduce((acc, cur) => {
+                  acc[cur.key] = cur.value;
+                  return acc;
+                }, {}) :
+                data.value
+            }
+          })
+            .afterClosed()
+        ),
+        filter(value => !!value)
+      )
+      .subscribe(value => {
+        this.filterChange$.next(value);
+      });
   }
 
   private mapRow(
