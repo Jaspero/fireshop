@@ -141,6 +141,10 @@ tr.mat-row.mat-row {
   }
 }
 
+.mat-sort-header-button.mat-sort-header-button {
+  text-align: left;
+}
+
 // Mobile layout
 @media (max-width: $screen-s) {
   .mat-header-row {
