@@ -1,6 +1,6 @@
 export const DEFAULT_LAYOUT_VALUE = {
+  icon: 'home',
   instance: {
-    icon: 'home',
     segments: [
       {
         columnsMobile: 12,
@@ -11,19 +11,19 @@ export const DEFAULT_LAYOUT_VALUE = {
         ],
         title: 'Random'
       }
-    ],
-    table: {
-      tableColumns: [
-        {
-          key: '/name',
-          label: 'Name'
-        },
-        {
-          key: '/createdOn',
-          label: 'Created On',
-          pipe: 'date'
-        }
-      ]
-    }
+    ]
+  },
+  table: {
+    tableColumns: [
+      {
+        key: '/name',
+        label: 'Name'
+      },
+      {
+        key: '/createdOn',
+        label: 'Created On',
+        pipe: 'date'
+      }
+    ]
   }
 };

@@ -6,4 +6,6 @@ export interface FilterModule {
   value?: any;
   definitions?: ModuleDefinitions;
   segments?: InstanceSegment[];
+  clearFilters?: any;
+  clearFiltersLabel?: string;
 }

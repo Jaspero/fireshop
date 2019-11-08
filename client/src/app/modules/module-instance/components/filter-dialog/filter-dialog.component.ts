@@ -17,9 +17,9 @@ export class FilterDialogComponent {
     private dialogRef: MatDialogRef<FilterDialogComponent>
   ) {}
 
-  apply(form: FormGroup) {
+  apply(form: FormGroup, override?: any) {
 
-    const data = form.getRawValue();
+    const data = override || form.getRawValue();
     const toSend: WhereFilter[] = [];
 
     for (const key in data) {

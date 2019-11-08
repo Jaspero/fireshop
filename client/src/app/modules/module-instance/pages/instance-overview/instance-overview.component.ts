@@ -130,8 +130,6 @@ export class InstanceOverviewComponent extends RxDestroy
   pageSize: FormControl;
   options: RouteData;
   parserCache: {[key: string]: Parser} = {};
-
-  // todo: filip handle search valueChanges
   searchControl = new FormControl('');
 
   ngOnInit() {
@@ -247,9 +245,14 @@ export class InstanceOverviewComponent extends RxDestroy
               startWith(data.sort)
             ) :
             of(null),
-          this.filterChange$
+          this.filterChange$,
+          this.searchControl
+            .valueChanges
+            .pipe(
+              startWith(this.searchControl.value)
+            )
         ]).pipe(
-          switchMap(([pageSize, sort, filters]) => {
+          switchMap(([pageSize, sort, filters, search]) => {
             this.options.pageSize = pageSize as number;
             cachedFilters = filters;
 
@@ -270,7 +273,13 @@ export class InstanceOverviewComponent extends RxDestroy
               this.options.sort,
               null,
               null,
-              filters
+              search ?
+                [{
+                  key: data.searchModule.key,
+                  operator: 'array-contains',
+                  value: search.trim().toLowerCase()
+                }] :
+                filters
             )
               .pipe(
                 queue()
@@ -453,12 +462,24 @@ export class InstanceOverviewComponent extends RxDestroy
   openFilterDialog(
     data: FilterModule
   ) {
-    this.dialog.open(FilterDialogComponent, {
-      width: '800px',
-      data
-    })
-      .afterClosed()
+    this.filterChange$
       .pipe(
+        take(1),
+        switchMap(filterValue =>
+          this.dialog.open(FilterDialogComponent, {
+            width: '800px',
+            data: {
+              ...data,
+              value: filterValue ?
+                filterValue.reduce((acc, cur) => {
+                  acc[cur.key] = cur.value;
+                  return acc;
+                }, {}) :
+                data.value
+            }
+          })
+            .afterClosed()
+        ),
         filter(value => !!value)
       )
       .subscribe(value => {
