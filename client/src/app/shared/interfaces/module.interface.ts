@@ -16,8 +16,8 @@ export interface TableColumn {
 
   key: string | string[];
   label?: string;
-  pipe?: PipeType;
-  pipeArguments?: any[] | {[key: string]: any[]};
+  pipe?: PipeType | PipeType[];
+  pipeArguments?: any | {[key: string]: any};
   sortable?: boolean;
   join?: string;
   nestedColumns?: NestedTableColumn[];
