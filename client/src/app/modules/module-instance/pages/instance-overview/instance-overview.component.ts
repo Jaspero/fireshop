@@ -144,6 +144,7 @@ export class InstanceOverviewComponent extends RxDestroy
         let displayColumns: string[];
         let tableColumns: TableColumn[];
         let sort: TableSort;
+        let hide: any = {};
 
         if (
           data.layout &&
@@ -197,7 +198,23 @@ export class InstanceOverviewComponent extends RxDestroy
           displayColumns.unshift('check');
         }
 
-        displayColumns.push('actions');
+        if (data.layout && data.layout.table) {
+          hide = [
+            'hideCheckbox',
+            'hideAdd',
+            'hideEdit',
+            'hideDelete',
+            'hideExport',
+            'hideImport'
+          ].reduce((acc, key) => {
+            acc[key] = data.layout.table[key] ? data.layout.table[key].includes(this.state.role) : false;
+            return acc;
+          }, {})
+        }
+
+        if (!hide.hideDelete || !hide.hideEdit) {
+          displayColumns.push('actions');
+        }
 
         return {
           id: data.id,
@@ -212,14 +229,7 @@ export class InstanceOverviewComponent extends RxDestroy
               sortModule: data.layout.sortModule,
               filterModule: data.layout.filterModule,
               searchModule: data.layout.searchModule,
-              ...data.layout.table && {
-                hideCheckbox: data.layout.table.hideCheckbox,
-                hideAdd: data.layout.table.hideAdd,
-                hideEdit: data.layout.table.hideEdit,
-                hideDelete: data.layout.table.hideDelete,
-                hideExport: data.layout.table.hideExport,
-                hideImport: data.layout.table.hideImport
-              }
+              ...hide
             } : {}
           )
         };

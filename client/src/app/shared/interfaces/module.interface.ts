@@ -6,6 +6,7 @@ import {ComponentType} from './component-type.enum';
 import {FilterModule} from './filter-module.interface';
 import {SearchModule} from './search-module.interface';
 import {SortModule} from './sort-module.interface';
+import {ModuleAuthorization} from './module-authorization.interface';
 
 export interface TableColumn {
   /**
@@ -63,12 +64,12 @@ export interface ModuleLayout {
   table?: {
     sort?: TableSort;
     tableColumns?: TableColumn[];
-    hideCheckbox?: boolean;
-    hideAdd?: boolean;
-    hideEdit?: boolean;
-    hideDelete?: boolean;
-    hideExport?: boolean;
-    hideImport?: boolean;
+    hideCheckbox?: string[];
+    hideAdd?: string[];
+    hideEdit?: string[];
+    hideDelete?: string[];
+    hideExport?: string[];
+    hideImport?: string[];
   };
   sortModule?: SortModule;
   filterModule?: FilterModule;
@@ -110,4 +111,5 @@ export interface Module {
   schema: JSONSchema7;
   layout?: ModuleLayout;
   definitions?: ModuleDefinitions;
+  authorization?: ModuleAuthorization;
 }

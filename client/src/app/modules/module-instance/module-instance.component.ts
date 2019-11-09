@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs';
-import {map, shareReplay, switchMap, take, takeUntil} from 'rxjs/operators';
+import {map, shareReplay, switchMap, take} from 'rxjs/operators';
 import {Module} from '../../shared/interfaces/module.interface';
 import {StateService} from '../../shared/services/state/state.service';
 

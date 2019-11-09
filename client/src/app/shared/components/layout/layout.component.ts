@@ -34,18 +34,29 @@ export class LayoutComponent implements OnInit {
     this.currentUser$ = this.afAuth.user;
     this.links$ = this.state.modules$.pipe(
       map(items =>
-        items.map(item => ({
-          icon:
-            item.layout && item.layout.icon ? item.layout.icon : 'folder_open',
-          name: item.name,
-          link: [
-            '/m',
-            item.id,
-            ...(item.layout && item.layout.directLink
-              ? ['single', item.layout.directLink]
-              : ['overview'])
-          ]
-        }))
+        items.reduce((acc, item) => {
+
+          if (
+            !item.authorization ||
+            !item.authorization.read ||
+            item.authorization.read.includes(this.state.role)
+          ) {
+            acc.push({
+              icon:
+                item.layout && item.layout.icon ? item.layout.icon : 'folder_open',
+              name: item.name,
+              link: [
+                '/m',
+                item.id,
+                ...(item.layout && item.layout.directLink
+                  ? ['single', item.layout.directLink]
+                  : ['overview'])
+              ]
+            });
+          }
+
+          return acc;
+        }, [])
       )
     );
   }

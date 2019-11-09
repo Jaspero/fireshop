@@ -39,7 +39,7 @@
       <mat-card>
         <mat-card-header>
           <div class="flex ai-center h-full w-full jc-between">
-            <h1>Module Setup</h1>
+            <h1>Setup</h1>
             <mat-icon>info</mat-icon>
           </div>
         </mat-card-header>
@@ -63,7 +63,7 @@
     <div class="col-4 col-s-12">
       <mat-card>
         <mat-card-header>
-          <h1>Module Info</h1>
+          <h1>Info</h1>
         </mat-card-header>
 
         <mat-card-content>
@@ -78,7 +78,33 @@
           </mat-form-field>
           <mat-form-field class="w-full" appearance="outline">
             <mat-label>Description</mat-label>
-            <textarea matInput  formControlName="description"></textarea>
+            <textarea matInput formControlName="description"></textarea>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="m-t-m">
+        <mat-card-header>
+          <h1>Authorization</h1>
+        </mat-card-header>
+
+        <mat-card-content formGroupName="authorization">
+          <mat-form-field class="w-full" appearance="outline">
+            <mat-label>Write</mat-label>
+            <mat-select [multiple]="true" formControlName="write">
+              <mat-option *ngFor="let role of role | keyvalue" [value]="role.value">
+                {{role.key}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="w-full" appearance="outline">
+            <mat-label>Read</mat-label>
+            <mat-select [multiple]="true" formControlName="read">
+              <mat-option *ngFor="let role of role | keyvalue" [value]="role.value">
+                {{role.key}}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
         </mat-card-content>
       </mat-card>

@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {
+  AngularFireAuthGuard,
   canActivate,
   redirectLoggedInTo,
   redirectUnauthorizedTo
@@ -16,12 +17,22 @@ import {InstanceSingleComponent} from './modules/module-instance/pages/instance-
 import {ResetPasswordComponent} from './modules/reset-password/reset-password.component';
 import {SettingsComponent} from './modules/settings/settings.component';
 import {LayoutComponent} from './shared/components/layout/layout.component';
+import {HasClaimGuard} from './shared/guards/has-claim/has-claim.guard';
+import {CanReadModuleGuard} from './shared/guards/can-read-module/can-read-module.guard';
+
+const redirectUnauthorized = () => redirectUnauthorizedTo(['/login']);
 
 const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
-    ...canActivate(redirectUnauthorizedTo(['/login'])),
+    canActivate: [
+      AngularFireAuthGuard,
+      HasClaimGuard
+    ],
+    data: {
+      authGuardPipe: redirectUnauthorized
+    },
     children: [
       {
         path: 'dashboard',
@@ -48,6 +59,9 @@ const routes: Routes = [
       {
         path: 'm/:id',
         component: ModuleInstanceComponent,
+        canActivate: [
+          CanReadModuleGuard
+        ],
         children: [
           {
             path: 'overview',
