@@ -19,10 +19,7 @@ export class CanReadModuleGuard implements CanActivate {
 
     return this.state.modules$.pipe(
       map(modules => {
-        const module = modules.find(module => module.id === id);
-
-        console.log({module});
-
+        const module = modules.find(mod => mod.id === id);
         if (
           !module ||
           module.authorization &&
@@ -36,6 +33,6 @@ export class CanReadModuleGuard implements CanActivate {
         return true;
       }),
       take(1),
-    )
+    );
   }
 }

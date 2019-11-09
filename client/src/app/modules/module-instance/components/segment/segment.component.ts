@@ -3,9 +3,10 @@ import {FormControl} from '@angular/forms';
 import {get} from 'json-pointer';
 import {CompiledSegment} from '../../../../shared/interfaces/compiled-segment.interface';
 import {ModuleDefinitions} from '../../../../shared/interfaces/module.interface';
+import {StateService} from '../../../../shared/services/state/state.service';
 import {CompiledField} from '../../interfaces/compiled-field.interface';
-import {compileSegment} from '../../utils/compile-segment';
 import {SEGMENT_DATA} from '../../utils/create-segment-injector';
+import {filterAndCompileSegments} from '../../utils/filter-and-compile-segments';
 import {Parser, Pointers} from '../../utils/parser';
 
 export interface SegmentData {
@@ -21,7 +22,8 @@ export interface SegmentData {
 export class SegmentComponent implements OnInit {
   constructor(
     @Inject(SEGMENT_DATA) public sData: SegmentData,
-    public injector: Injector
+    public injector: Injector,
+    public state: StateService
   ) {}
 
   segment: CompiledSegment;
@@ -44,15 +46,13 @@ export class SegmentComponent implements OnInit {
     /**
      * Each segment compiles all nested segments
      */
-    this.nestedSegments = (this.sData.segment.nestedSegments || []).map(
-      segment =>
-        compileSegment(
-          segment,
-          this.sData.parser,
-          this.sData.definitions,
-          this.injector,
-          this.segment.entryValue
-        )
+    this.nestedSegments = filterAndCompileSegments(
+      this.state.role,
+      this.sData.segment.nestedSegments || [],
+      this.sData.parser,
+      this.sData.definitions,
+      this.injector,
+      this.segment.entryValue
     );
 
     /**

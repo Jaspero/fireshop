@@ -36,8 +36,8 @@ export class HasClaimGuard implements CanActivate {
               this.router.navigate(['/login'])
             );
 
-          return of(false)
+          return of(false);
         })
-      )
+      );
   }
 }

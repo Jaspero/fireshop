@@ -4,10 +4,11 @@ import {OnChange} from '@jaspero/ng-helpers';
 import {JSONSchema7} from 'json-schema';
 import {InstanceSingleState} from '../../../modules/module-instance/enums/instance-single-state.enum';
 import {SegmentType} from '../../../modules/module-instance/enums/segment-type.enum';
-import {compileSegment} from '../../../modules/module-instance/utils/compile-segment';
+import {filterAndCompileSegments} from '../../../modules/module-instance/utils/filter-and-compile-segments';
 import {Parser} from '../../../modules/module-instance/utils/parser';
 import {CompiledSegment} from '../../interfaces/compiled-segment.interface';
 import {InstanceSegment, ModuleDefinitions} from '../../interfaces/module.interface';
+import {StateService} from '../../services/state/state.service';
 
 @Component({
   selector: 'jms-compiled-form',
@@ -17,7 +18,8 @@ import {InstanceSegment, ModuleDefinitions} from '../../interfaces/module.interf
 })
 export class CompiledFormComponent implements OnInit {
   constructor(
-    private injector: Injector
+    private injector: Injector,
+    private state: StateService
   ) { }
 
   @Input()
@@ -58,22 +60,19 @@ export class CompiledFormComponent implements OnInit {
       false
     );
 
-    this.segments = (
+    this.segments = filterAndCompileSegments(
+      this.state.role,
       this.data.segments ||
       [{
         title: '',
         fields: Object.keys(parser.pointers),
         columnsDesktop: 12,
         type: SegmentType.Empty
-      }]
-    ).map(segment =>
-      compileSegment(
-        segment,
-        parser,
-        definitions,
-        this.injector,
-          value
-      )
+      }],
+      parser,
+      definitions,
+      this.injector,
+      value
     );
   }
 

@@ -14,6 +14,7 @@ import {queue} from '../../../../shared/utils/queue.operator';
 import {InstanceSingleState} from '../../enums/instance-single-state.enum';
 import {ModuleInstanceComponent} from '../../module-instance.component';
 import {compileSegment} from '../../utils/compile-segment';
+import {filterAndCompileSegments} from '../../utils/filter-and-compile-segments';
 import {Parser} from '../../utils/parser';
 import {CompiledSegment} from '../../../../shared/interfaces/compiled-segment.interface';
 
@@ -135,14 +136,13 @@ export class InstanceSingleComponent implements OnInit {
             return {
               form,
               parser,
-              segments: segments.map(segment =>
-                compileSegment(
-                  segment,
-                  parser,
-                  module.definitions,
-                  this.injector,
-                  value
-                )
+              segments: filterAndCompileSegments(
+                this.state.role,
+                segments,
+                parser,
+                module.definitions,
+                this.injector,
+                value
               ),
               module: {
                 id: module.id,

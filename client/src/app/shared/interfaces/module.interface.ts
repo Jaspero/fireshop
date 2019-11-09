@@ -43,6 +43,7 @@ export interface InstanceSegment {
   columnsMobile?: number;
   configuration?: any;
   classes?: string[];
+  authorization?: string[];
   id?: string;
 }
 
