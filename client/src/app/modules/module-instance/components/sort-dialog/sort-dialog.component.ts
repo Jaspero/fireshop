@@ -8,7 +8,7 @@ import {
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {forkJoin, from, Observable, of} from 'rxjs';
 import {tap} from 'rxjs/operators';
-import {SortModule} from '../../../../shared/interfaces/module.interface';
+import {SortModule} from '../../../../shared/interfaces/sort-module.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {switchItemLocations} from '../../utils/switch-item-locations';

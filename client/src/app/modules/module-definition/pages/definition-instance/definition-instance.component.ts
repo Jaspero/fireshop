@@ -17,6 +17,7 @@ import {LAYOUT_TEMPLATES} from './consts/layout-templates.const';
 import {SCHEMA_AUTOCOMPLETE} from './consts/schema-autocomplete.const';
 import {SCHEMA_TEMPLATES} from './consts/schema-templates.const';
 import {Example} from '../../../../shared/interfaces/example.interface';
+import {Role} from '../../../../shared/enums/role.enum';
 
 @Component({
   selector: 'jms-definition-instance',
@@ -53,7 +54,7 @@ export class DefinitionInstanceComponent implements OnInit {
     templates: DEFINITION_TEMPLATES,
     autocomplete: DEFINITION_AUTOCOMPLETE
   };
-
+  role = Role;
   form$: Observable<FormGroup>;
 
   ngOnInit() {
@@ -94,7 +95,11 @@ export class DefinitionInstanceComponent implements OnInit {
           description: value.description || '',
           schema: value.schema || {},
           layout: value.layout || {},
-          definitions: value.definitions || {}
+          definitions: value.definitions || {},
+          authorization: this.fb.group({
+            read: [(value.authorization && value.authorization.read) || []],
+            write: [(value.authorization && value.authorization.write) || []],
+          })
         });
 
         this.initialValue = JSON.stringify(form.getRawValue());
@@ -110,7 +115,19 @@ export class DefinitionInstanceComponent implements OnInit {
     return () => {
       const {id, ...data} = form.getRawValue();
 
-      const {error} = this.schemaValidation.validate(data);
+      if (!data.authorization.write.length) {
+        delete data.authorization.write;
+      }
+
+      if (!data.authorization.read.length) {
+        delete data.authorization.read;
+      }
+
+      if (!Object.keys(data.authorization).length) {
+        delete data.authorization;
+      }
+
+      const {error} = this.schemaValidation.validate(data.schema);
 
       if (error) {
         this.snackBar.open(

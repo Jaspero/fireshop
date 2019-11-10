@@ -1,6 +1,4 @@
-import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore, CollectionReference} from '@angular/fire/firestore';
 import {AngularFireFunctions} from '@angular/fire/functions';
 // @ts-ignore
@@ -13,6 +11,8 @@ import {DbService} from '../../src/app/shared/services/db/db.service';
 import {FirestoreCollection} from './firestore-collection.enum';
 import {ExampleType} from '../../src/app/shared/enums/example-type.enum';
 import {Example} from '../../src/app/shared/interfaces/example.interface';
+
+type FilterMethod = (ref: CollectionReference) => CollectionReference;
 
 @Injectable()
 export class FbDatabaseService extends DbService {
@@ -79,12 +79,31 @@ export class FbDatabaseService extends DbService {
     );
   }
 
-  getDocuments(moduleId, pageSize, sort?, cursor?, changes?) {
+  getDocuments(
+    moduleId,
+    pageSize,
+    sort?,
+    cursor?,
+    changes?,
+    filters?
+  ) {
     if (!changes) {
       changes = ['added'];
     }
 
-    return this.collection(moduleId, pageSize, sort, cursor)
+    let fMethod: FilterMethod;
+
+    if (filters) {
+      fMethod = (ref) => {
+        filters.forEach(item => {
+          ref = ref.where(item.key, item.operator, item.value) as CollectionReference;
+        });
+
+        return ref;
+      };
+    }
+
+    return this.collection(moduleId, pageSize, sort, cursor, fMethod)
       .snapshotChanges(changes)
       .pipe(take(1));
   }
@@ -152,7 +171,13 @@ export class FbDatabaseService extends DbService {
     return from(func({id}));
   }
 
-  private collection(moduleId, pageSize, sort, cursor) {
+  private collection(
+    moduleId,
+    pageSize,
+    sort,
+    cursor,
+    filter?: (ref: CollectionReference) => CollectionReference
+  ) {
     return this.afs.collection(moduleId, ref => {
       let final = ref;
 
@@ -161,6 +186,10 @@ export class FbDatabaseService extends DbService {
           sort.active,
           sort.direction
         ) as CollectionReference;
+      }
+
+      if (filter) {
+        final = filter(final);
       }
 
       if (pageSize) {

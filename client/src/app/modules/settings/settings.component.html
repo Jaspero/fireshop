@@ -8,13 +8,13 @@
     <div class="col-8 col-s-10 col-xs-12">
       <mat-card>
         <mat-card-header>
-          <h1>Roles</h1>
+          <h1>Members</h1>
         </mat-card-header>
 
         <mat-card-content class="mat-card-content-inset">
           <table mat-table [dataSource]="users">
             <ng-container matColumnDef="exists">
-              <th mat-header-cell *matHeaderCellDef><!--Account Exists--></th>
+              <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let element" data-label="Exists">
                 <mat-checkbox [checked]="!!element.id" [disabled]="true"></mat-checkbox>
               </td>

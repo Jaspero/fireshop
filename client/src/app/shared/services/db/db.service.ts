@@ -4,6 +4,7 @@ import {Module} from '../../interfaces/module.interface';
 import {Settings} from '../../interfaces/settings.interface';
 import {ExampleType} from '../../enums/example-type.enum';
 import {Example} from '../../interfaces/example.interface';
+import {WhereFilter} from '../../interfaces/where-filter.interface';
 
 @Injectable({providedIn: 'root'})
 export abstract class DbService {
@@ -42,7 +43,8 @@ export abstract class DbService {
       direction: string;
     },
     cursor?: any,
-    changes?: string
+    changes?: string,
+    filters?: WhereFilter[]
   ): Observable<any[]> {
     return of([]);
   }
@@ -50,11 +52,7 @@ export abstract class DbService {
   getDocumentsSimple(
     moduleId: string,
     orderBy?: string,
-    filter?: {
-      key: string;
-      operator: string;
-      value: any;
-    }
+    filter?: WhereFilter
   ): Observable<any[]> {
     return of([]);
   }
