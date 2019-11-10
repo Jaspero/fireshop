@@ -13,6 +13,7 @@ export {userDeleted} from './triggers/user-deleted';
 export {fileCreated} from './triggers/file-created';
 export {fileDeleted} from './triggers/file-deleted';
 export {customerDeleted} from './triggers/customer-deleted';
+export {documentDeleted} from './triggers/document-deleted';
 
 // Rest
 export {exportData} from './rest/export-data';
