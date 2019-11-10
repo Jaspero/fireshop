@@ -96,6 +96,7 @@ export class DefinitionInstanceComponent implements OnInit {
           schema: value.schema || {},
           layout: value.layout || {},
           definitions: value.definitions || {},
+          metadata: value.metadata || {},
           authorization: this.fb.group({
             read: [(value.authorization && value.authorization.read) || []],
             write: [(value.authorization && value.authorization.write) || []],
@@ -125,6 +126,10 @@ export class DefinitionInstanceComponent implements OnInit {
 
       if (!Object.keys(data.authorization).length) {
         delete data.authorization;
+      }
+
+      if (!Object.keys(data.metadata).length) {
+        delete data.metadata;
       }
 
       const {error} = this.schemaValidation.validate(data.schema);

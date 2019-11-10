@@ -4,6 +4,7 @@ import {SegmentType} from '../../modules/module-instance/enums/segment-type.enum
 import {PipeType} from '../enums/pipe-type.enum';
 import {ComponentType} from './component-type.enum';
 import {FilterModule} from './filter-module.interface';
+import {ModuleMetadata} from './module-metadata.interface';
 import {SearchModule} from './search-module.interface';
 import {SortModule} from './sort-module.interface';
 import {ModuleAuthorization} from './module-authorization.interface';
@@ -114,4 +115,5 @@ export interface Module {
   layout?: ModuleLayout;
   definitions?: ModuleDefinitions;
   authorization?: ModuleAuthorization;
+  metadata?: ModuleMetadata;
 }
