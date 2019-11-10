@@ -20,6 +20,7 @@ export interface TableColumn {
   pipeArguments?: any | {[key: string]: any};
   sortable?: boolean;
   join?: string;
+  tooltip?: string;
   nestedColumns?: NestedTableColumn[];
 }
 

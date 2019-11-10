@@ -44,7 +44,7 @@ export class ColumnPipe implements PipeTransform {
     }
 
     if (Array.isArray(pipeTypes)) {
-      return pipeTypes.reduce((acc, type, index) => this.executePipeTransform(type, acc, allArgs[index]), value);
+      return pipeTypes.reduce((acc, type, index) => this.executePipeTransform(type, acc, (allArgs || {})[index]), value);
     } else {
       return this.executePipeTransform(pipeTypes, value, allArgs);
     }

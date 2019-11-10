@@ -61,6 +61,7 @@ import {InstanceSingleState} from '../../enums/instance-single-state.enum';
 import {ModuleInstanceComponent} from '../../module-instance.component';
 import {ColumnPipe} from '../../pipes/column.pipe';
 import {Parser} from '../../utils/parser';
+import {safeEval} from '../../utils/safe-eval';
 
 interface InstanceOverview {
   id: string;
@@ -151,7 +152,12 @@ export class InstanceOverviewComponent extends RxDestroy
             },
             []
           );
-          tableColumns = data.layout.table.tableColumns;
+          tableColumns = data.layout.table.tableColumns.map(column => {
+            return {
+              ...column,
+              ...column.tooltip && {tooltip: safeEval(column.tooltip) || column.tooltip}
+            };
+          });
         } else {
           const topLevelProperties = Object.keys(data.schema.properties || {});
 

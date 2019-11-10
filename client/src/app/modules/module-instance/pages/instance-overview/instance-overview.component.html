@@ -103,7 +103,7 @@
                   </th>
                 </ng-template>
 
-                <td mat-cell *matCellDef="let row;" [attr.data-label]="column.label">
+                <td mat-cell *matCellDef="let row;" [attr.data-label]="column.label" matTooltipPosition="above" [matTooltip]="column.tooltip">
                   <ng-container *ngTemplateOutlet="columnLayout; context: {row: row.parsed, column: column, index: index}"></ng-container>
                 </td>
               </ng-container>
