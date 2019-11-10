@@ -215,7 +215,7 @@ export class InstanceOverviewComponent extends RxDestroy
           ].reduce((acc, key) => {
             acc[key] = data.layout.table[key] ? data.layout.table[key].includes(this.state.role) : false;
             return acc;
-          }, {})
+          }, {});
         }
 
         if (!hide.hideDelete || !hide.hideEdit) {

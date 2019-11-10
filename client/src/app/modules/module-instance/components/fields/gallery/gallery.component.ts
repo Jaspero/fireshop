@@ -1,7 +1,9 @@
 import {
   CdkDrag,
   CdkDragDrop,
-  CdkDragEnter, CdkDragMove, CdkDropList, CdkDropListGroup,
+  CdkDragMove,
+  CdkDropList,
+  CdkDropListGroup,
   moveItemInArray
 } from '@angular/cdk/drag-drop';
 import {ViewportRuler} from '@angular/cdk/overlay';
@@ -323,8 +325,8 @@ export class GalleryComponent extends FieldComponent<GalleryData>
                 customMetadata: {
                   moduleId,
                   documentId,
-                  ...(this.cData.generatedImages &&
-                    formatGeneratedImages(this.cData.generatedImages))
+                  ...this.cData.generatedImages &&
+                    formatGeneratedImages(this.cData.generatedImages)
                 }
               })
             ).pipe(

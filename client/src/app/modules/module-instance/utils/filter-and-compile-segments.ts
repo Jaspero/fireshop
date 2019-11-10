@@ -22,9 +22,9 @@ export function filterAndCompileSegments(
           injector,
           value
         )
-      )
+      );
     }
 
     return acc;
-  }, [])
+  }, []);
 }
