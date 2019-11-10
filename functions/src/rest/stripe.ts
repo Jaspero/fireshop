@@ -66,7 +66,7 @@ async function getItems(
     })
   );
 
-  const error = [];
+  const error: any[] = [];
 
   for (let i = 0; i < snapshots.length; i++) {
     if (snapshots[i].exists) {
@@ -252,7 +252,7 @@ app.post('/checkout', (req, res) => {
 app.post('/webhook', async (req, res) => {
   const sig = req.headers['stripe-signature'];
 
-  let event = null;
+  let event: any = null;
 
   try {
     event = si.webhooks.constructEvent(

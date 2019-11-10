@@ -64,6 +64,7 @@ app.get('*', async (req, res) => {
         ...DEFAULT_META,
         ...(foundPage.meta || {})
       }).forEach(([key, value]) => {
+        // @ts-ignore
         document.querySelector(`meta[name=${key}]`)['content'] = value;
       });
 
@@ -71,6 +72,7 @@ app.get('*', async (req, res) => {
         ...DEFAULT_META_PROPERTIES,
         ...(foundPage.metaProperties || {})
       }).forEach(([key, value]) => {
+        // @ts-ignore
         document.querySelector(`meta[property=${key}]`)['content'] = value;
       });
     }

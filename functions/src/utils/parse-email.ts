@@ -47,6 +47,7 @@ export async function parseEmail(
   }
 
   [layout, dbTemplate] = [layoutDoc, templateDoc].map(
+    // @ts-ignore
     item => item.data().value
   );
 

@@ -23,16 +23,18 @@ app.post('/', (req, res) => {
     const docs = (await admin
       .firestore()
       .collection(collection)
-      .get()).docs.reduce((acc, doc) => {
-      if (!ids || !ids.includes(doc.id)) {
-        acc.push({
-          ...doc.data(),
-          id: doc.id
-        });
-      }
+      .get())
+      .docs
+      .reduce((acc, doc) => {
+        if (!ids || !ids.includes(doc.id)) {
+          acc.push({
+            ...doc.data(),
+            id: doc.id
+          });
+        }
 
-      return acc;
-    }, []);
+        return acc;
+      }, [] as any[]);
 
     if (!docs.length) {
       throw new Error('No data to export');
@@ -64,6 +66,8 @@ app.post('/', (req, res) => {
           type:
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         };
+      default:
+        throw new Error('Unknown type');
     }
   }
 

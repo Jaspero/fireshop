@@ -150,7 +150,11 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
     return this.categories$.pipe(
       take(1),
       switchMap(categories => {
-        const [id, item, lang] = args;
+        let [id, item, lang] = args;
+
+        if (!id) {
+          id = this.createId();
+        }
 
         DYNAMIC_CONFIG.currency.supportedCurrencies.forEach(code => {
           item.price[code] = toStripeFormat(item.price[code]);

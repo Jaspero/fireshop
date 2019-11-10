@@ -42,18 +42,20 @@ app.get('/', async (req, res) => {
 
   const categoryData = (await collection
     .where('category', '==', category)
-    .get()).docs.reduce((acc, cur) => {
-    const data = {
-      id: cur.id,
-      ...cur.data()
-    };
+    .get())
+    .docs
+    .reduce((acc, cur) => {
+      const data = {
+        id: cur.id,
+        ...cur.data()
+      };
 
-    if (data.id !== id) {
-      acc.push(data);
-    }
+      if (data.id !== id) {
+        acc.push(data);
+      }
 
-    return acc;
-  }, []);
+      return acc;
+    }, [] as any[]);
 
   for (let i = 0; i < num; i++) {
     if (categoryData.length) {

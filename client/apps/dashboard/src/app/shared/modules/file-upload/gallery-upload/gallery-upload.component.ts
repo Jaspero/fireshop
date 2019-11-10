@@ -208,9 +208,17 @@ export class GalleryUploadComponent extends RxDestroy
       ),
       ...this.values.reduce((acc, cur) => {
         if (!cur.live) {
+
+          const name = [
+            moduleId,
+            documentId,
+            cur.pushToLive.name
+          ]
+            .join('-');
+
           acc.push(
             from(
-              this.afs.upload(cur.pushToLive.name, cur.pushToLive, {
+              this.afs.upload(name, cur.pushToLive, {
                 contentType: cur.pushToLive.type,
                 customMetadata: {
                   moduleId,

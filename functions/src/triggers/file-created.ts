@@ -34,8 +34,8 @@ export const fileCreated = functions
      * Temporary main file download
      */
     const fileTemp = join(tmpdir(), fileName);
-    const toGenerate = [];
-    const webpToGenerate = [];
+    const toGenerate: any = [];
+    const webpToGenerate: any = [];
 
     for (const key in metadata) {
       if (key.includes('generate_')) {
@@ -104,7 +104,8 @@ export const fileCreated = functions
             metadata: generateMetadata,
             contentType
           },
-          destination: join(dirName, 'generated', file.fName)
+          destination: join(dirName, 'generated', file.fName),
+          resumable: false
         })
       ),
 
@@ -114,7 +115,8 @@ export const fileCreated = functions
             metadata: generateMetadata,
             contentType: 'image/webp'
           },
-          destination: join(dirName, 'generated', file.fName)
+          destination: join(dirName, 'generated', file.fName),
+          resumable: false
         })
       )
     ]);
