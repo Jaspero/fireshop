@@ -8,29 +8,19 @@ export const documentDeleted = functions.firestore
   .onDelete(async (snap, context) => {
     const storage = new Storage().bucket(admin.storage().bucket().name);
     const firestore = admin.firestore();
-    const {
-      moduleId,
-      documentId
-    } = context.params;
+    const {moduleId, documentId} = context.params;
 
-    const [
-      fs,
-      module
-    ] = await Promise.all([
+    const [fs, module] = await Promise.all([
       storage.getFiles({
         delimiter: '/',
         autoPaginate: true
       }),
-      firestore.doc(`modules/${documentId}`).get()
+      firestore.doc(`modules/${moduleId}`).get()
     ]);
     const [files] = fs;
 
     const toExec: Array<Promise<any>> = files
-      .filter(file =>
-        file.name.startsWith(
-          `${moduleId}-${documentId}-`
-        )
-      )
+      .filter(file => file.name.startsWith(`${moduleId}-${documentId}-`))
       .map(
         file =>
           new Promise(resolve =>
@@ -48,15 +38,17 @@ export const documentDeleted = functions.firestore
       const moduleData = module.data() as any;
 
       if (moduleData.metadata && moduleData.metadata.subCollections) {
-        moduleData.metadata.subCollections.forEach(({name, batch}: {name: string, batch?: number}) => {
-          toExec.push(
-            deleteCollection(
-              firestore,
-              `${moduleId}/${documentId}/${name}`,
-              batch || 100
-            )
-          )
-        })
+        moduleData.metadata.subCollections.forEach(
+          ({name, batch}: {name: string; batch?: number}) => {
+            toExec.push(
+              deleteCollection(
+                firestore,
+                `${moduleId}/${documentId}/${name}`,
+                batch || 100
+              )
+            );
+          }
+        );
       }
     }
 
