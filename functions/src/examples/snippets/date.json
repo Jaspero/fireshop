@@ -4,15 +4,16 @@
     "title": "Insert a definition for a date component",
     "field": "pointer",
     "value": {
-      "type": "date",
-      "configuration": {
-        "startYear": 2019,
-        "startAt": 1572360045133,
-        "touchUi": true,
-        "startView": "month",
-        "format": "number"
-      },
-      "label": "Add Label"
+      "component": {
+        "type": "date",
+        "configuration": {
+          "startYear": 2019,
+          "startAt": 1572360045133,
+          "touchUi": true,
+          "startView": "month",
+          "format": "number"
+        }
+      }
     }
   },
   "schema": {

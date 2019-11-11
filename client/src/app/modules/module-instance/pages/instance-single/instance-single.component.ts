@@ -1,10 +1,4 @@
-import {ComponentPortal} from '@angular/cdk/portal';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Injector,
-  OnInit
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Injector, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 // @ts-ignore
@@ -12,28 +6,18 @@ import * as nanoid from 'nanoid';
 import {forkJoin, Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
-import {
-  InstanceSegment,
-  Module
-} from '../../../../shared/interfaces/module.interface';
+import {InstanceSegment, Module} from '../../../../shared/interfaces/module.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {queue} from '../../../../shared/utils/queue.operator';
-import {SegmentComponent} from '../../components/segment/segment.component';
 import {InstanceSingleState} from '../../enums/instance-single-state.enum';
-import {CompiledField} from '../../interfaces/compiled-field.interface';
 import {ModuleInstanceComponent} from '../../module-instance.component';
 import {compileSegment} from '../../utils/compile-segment';
+import {filterAndCompileSegments} from '../../utils/filter-and-compile-segments';
 import {Parser} from '../../utils/parser';
+import {CompiledSegment} from '../../../../shared/interfaces/compiled-segment.interface';
 
-export interface CompiledSegment extends InstanceSegment {
-  classes: string[];
-  fields: CompiledField[] | string[];
-  component?: ComponentPortal<SegmentComponent>;
-  nestedSegments?: CompiledSegment[];
-  entryValue: any;
-}
 
 interface Instance {
   form: FormGroup;
@@ -152,14 +136,13 @@ export class InstanceSingleComponent implements OnInit {
             return {
               form,
               parser,
-              segments: segments.map(segment =>
-                compileSegment(
-                  segment,
-                  parser,
-                  module.definitions,
-                  this.injector,
-                  value
-                )
+              segments: filterAndCompileSegments(
+                this.state.role,
+                segments,
+                parser,
+                module.definitions,
+                this.injector,
+                value
               ),
               module: {
                 id: module.id,

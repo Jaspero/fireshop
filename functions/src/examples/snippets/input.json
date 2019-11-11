@@ -3,7 +3,11 @@
     "text": "Input",
     "title": "Insert a definition for a input component",
     "field": "pointer",
-    "value": {"component": "input", "label": "Add Label"}
+    "value": {
+      "component": {
+        "type": "input"
+      }
+    }
   },
   "schema": {
     "type": "text"

@@ -4,14 +4,15 @@
     "title": "Insert a definition for a chips component",
     "field": "pointer",
     "value": {
-      "type": "chips",
-      "configuration": {
-        "selectable": true,
-        "removable": true,
-        "addOnBlur": true,
-        "unique": true
-      },
-      "label": "Add Label"
+      "component": {
+        "type": "chips",
+        "configuration": {
+          "selectable": true,
+          "removable": true,
+          "addOnBlur": true,
+          "unique": true
+        }
+      }
     }
   },
   "schema": {

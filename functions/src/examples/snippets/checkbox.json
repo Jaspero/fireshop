@@ -4,8 +4,9 @@
     "text": "Checkbox",
     "title": "Insert a definition for a checkbox component",
     "value": {
-      "component": "checkbox",
-      "label": "Add Label"
+      "component": {
+        "type": "checkbox"
+      }
     }
   },
   "schema": {

@@ -1,0 +1,12 @@
+<h4 mat-dialog-title>Filter</h4>
+<mat-dialog-content>
+  <jms-compiled-form #cForm [data]="data"></jms-compiled-form>
+</mat-dialog-content>
+<mat-dialog-actions class="jc-end">
+  <ng-container *ngIf="data.clearFilters">
+    <button type="button" mat-raised-button (click)="apply(cForm.form, data.clearFilters)">
+      {{data.clearFiltersLabel || 'Clear'}}
+    </button>
+  </ng-container>
+  <button type="submit" mat-raised-button color="primary" (click)="apply(cForm.form)">Apply</button>
+</mat-dialog-actions>

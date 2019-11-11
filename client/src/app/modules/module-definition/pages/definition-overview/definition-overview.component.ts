@@ -2,7 +2,7 @@ import {SelectionModel} from '@angular/cdk/collections';
 import {ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatSort} from '@angular/material/sort';
-import {BehaviorSubject, combineLatest, forkJoin, from, merge, Observable, Subject} from 'rxjs';
+import {BehaviorSubject, combineLatest, forkJoin, from, merge, Observable} from 'rxjs';
 import {map, shareReplay, startWith, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {RouteData} from '../../../../shared/interfaces/route-data.interface';

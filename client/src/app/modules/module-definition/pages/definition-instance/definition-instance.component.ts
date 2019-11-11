@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Observable, of} from 'rxjs';
-import {filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
+import {filter, map, shareReplay, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
@@ -19,7 +19,8 @@ import {SCHEMA_TEMPLATES} from './consts/schema-templates.const';
 import {ExampleType} from '../../../../shared/enums/example-type.enum';
 import {queue} from '../../../../shared/utils/queue.operator';
 import {MatDialog} from '@angular/material/dialog';
-import {Example} from '../../../../shared/interfaces/example.interface';
+import {Example, Snippet} from '../../../../shared/interfaces/example.interface';
+import {Role} from '../../../../shared/enums/role.enum';
 
 @Component({
   selector: 'jms-definition-instance',
@@ -60,6 +61,7 @@ export class DefinitionInstanceComponent implements OnInit {
     templates: DEFINITION_TEMPLATES,
     autocomplete: DEFINITION_AUTOCOMPLETE
   };
+  role = Role;
   snippetExamples$ = new Observable<Example[]>();
   form$: Observable<FormGroup>;
   snippetForm: FormGroup;
@@ -69,6 +71,9 @@ export class DefinitionInstanceComponent implements OnInit {
       .pipe(
         queue(),
         map(res => res.data),
+        tap((res) => {
+          console.log(11111, res);
+        }),
         shareReplay(1)
       );
 
@@ -109,7 +114,12 @@ export class DefinitionInstanceComponent implements OnInit {
           description: value.description || '',
           schema: value.schema || {},
           layout: value.layout || {},
-          definitions: value.definitions || {}
+          definitions: value.definitions || {},
+          metadata: value.metadata || {},
+          authorization: this.fb.group({
+            read: [(value.authorization && value.authorization.read) || []],
+            write: [(value.authorization && value.authorization.write) || []],
+          })
         });
 
         this.initialValue = JSON.stringify(form.getRawValue());
@@ -121,7 +131,8 @@ export class DefinitionInstanceComponent implements OnInit {
     );
 
     this.snippetForm = this.fb.group({
-      snippet: ['', Validators.required]
+      snippet: ['', Validators.required],
+      name: ['', Validators.required]
     });
   }
 
@@ -129,7 +140,23 @@ export class DefinitionInstanceComponent implements OnInit {
     return () => {
       const {id, ...data} = form.getRawValue();
 
-      const {error} = this.schemaValidation.validate(data);
+      if (!data.authorization.write.length) {
+        delete data.authorization.write;
+      }
+
+      if (!data.authorization.read.length) {
+        delete data.authorization.read;
+      }
+
+      if (!Object.keys(data.authorization).length) {
+        delete data.authorization;
+      }
+
+      if (!Object.keys(data.metadata).length) {
+        delete data.metadata;
+      }
+
+      const {error} = this.schemaValidation.validate(data.schema);
 
       if (error) {
         this.snackBar.open(
@@ -176,7 +203,8 @@ export class DefinitionInstanceComponent implements OnInit {
 
   move(forward: boolean, form: FormGroup) {}
 
-  openSnippetSelection() {
+  openSnippetSelection(form) {
+    this.snippetForm.reset();
     this.dialog.open(this.modalTemplate, {
       width: '600px'
     })
@@ -184,8 +212,38 @@ export class DefinitionInstanceComponent implements OnInit {
       .pipe(
         filter(res => res)
       )
-      .subscribe(res => {
-        // todo: insert snippet
+      .subscribe(() => {
+        const snippetFormValue = this.snippetForm.getRawValue();
+
+        this.snippetExamples$
+          .pipe(
+            take(1)
+          )
+          .subscribe(res => {
+            const json = res.find(item => item.name === snippetFormValue.snippet).json;
+            const oldValue = form.getRawValue();
+
+            form.get('schema').setValue({
+              ...oldValue.schema,
+              properties: {
+                ...oldValue.schema.properties,
+              [snippetFormValue.name]: (json as Snippet).schema
+              }
+            });
+
+            console.log(33, form.get('definitions').value);
+
+            /*form.get('definitions').setValue({
+              ...oldValue.schema,
+              properties: {
+                ...oldValue.schema.properties,
+              [snippetFormValue.name]: (json as Snippet).schema
+              }
+            });*/
+
+            console.log(1, json);
+            // console.log(2, form.getRawValue());
+          });
       });
   }
 }

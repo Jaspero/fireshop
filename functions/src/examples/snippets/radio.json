@@ -4,15 +4,16 @@
     "title": "Insert a definition for a radio component",
     "field": "pointer",
     "value": {
-      "type": "radio",
-      "configuration": {
-        "options": [
-          {"name": "Option 1", "value": "option-1", "disabled": false},
-          {"name": "Option 2", "value": "option-2", "disabled": false},
-          {"name": "Option 3", "value": "option-3", "disabled": false}
-        ]
-      },
-      "label": "Add Label"
+      "component": {
+        "type": "radio",
+        "configuration": {
+          "options": [
+            {"name": "Option 1", "value": "option-1", "disabled": false},
+            {"name": "Option 2", "value": "option-2", "disabled": false},
+            {"name": "Option 3", "value": "option-3", "disabled": false}
+          ]
+        }
+      }
     }
   },
   "schema": {

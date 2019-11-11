@@ -1,10 +1,9 @@
-import {ChangeDetectionStrategy, Component, Inject, Injector, OnInit} from '@angular/core';
-import {SegmentComponent, SegmentData} from '../../segment/segment.component';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {CompiledSegment} from '../../../../../shared/interfaces/compiled-segment.interface';
 import {InstanceSegment} from '../../../../../shared/interfaces/module.interface';
 import {CompiledField} from '../../../interfaces/compiled-field.interface';
-import {CompiledSegment} from '../../../pages/instance-single/instance-single.component';
-import {SEGMENT_DATA} from '../../../utils/create-segment-injector';
-import {compileSegment} from '../../../utils/compile-segment';
+import {filterAndCompileSegments} from '../../../utils/filter-and-compile-segments';
+import {SegmentComponent} from '../../segment/segment.component';
 
 interface SegmentTab {
   title?: string;
@@ -25,12 +24,6 @@ interface CompiledSegmentTab {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TabsComponent extends SegmentComponent implements OnInit {
-  constructor(
-    @Inject(SEGMENT_DATA) public sData: SegmentData,
-    public injector: Injector
-  ) {
-    super(sData, injector);
-  }
 
   tabs: CompiledSegmentTab[];
 
@@ -47,14 +40,13 @@ export class TabsComponent extends SegmentComponent implements OnInit {
             this.sData.definitions
           )
         ),
-        nestedSegments: (tab.nestedSegments || []).map(segment =>
-          compileSegment(
-            segment,
-            this.sData.parser,
-            this.sData.definitions,
-            this.injector,
-            this.segment.entryValue
-          )
+        nestedSegments: filterAndCompileSegments(
+          this.state.role,
+          tab.nestedSegments || [],
+          this.sData.parser,
+          this.sData.definitions,
+          this.injector,
+          this.segment.entryValue
         )
       })
     );

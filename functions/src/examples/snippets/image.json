@@ -4,9 +4,10 @@
     "title": "Insert a definition for a image component",
     "field": "pointer",
     "value": {
-      "type": "image",
-      "configuration": {"preventServerUpload": false},
-      "label": "Add Label"
+      "component": {
+        "type": "image",
+        "configuration": {"preventServerUpload": false}
+      }
     }
   },
   "schema": {

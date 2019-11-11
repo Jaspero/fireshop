@@ -106,31 +106,43 @@
   background: transparent;
 }
 
+tr.mat-header-row.mat-header-row,
+tr.mat-footer-row.mat-footer-row,
+tr.mat-row.mat-row {
+  height: unset;
+}
+
 .mat-cell.mat-cell,
 .mat-footer-cell.mat-footer-cell,
 .mat-header-cell.mat-header-cell {
-  padding: 0 4px;
+  padding: 8px;
   background: var(--panel-theme);
   font-size: 12px;
   overflow: hidden;
+  vertical-align: top;
 
   // row checkbox
   &:first-of-type {
     padding: 0;
-    text-align: center;
     width: 48px;
     min-width: 48px;
     box-shadow: inset -1px 0 0 0 var(--tertiary);
+    vertical-align: middle;
+    text-align: center;
   }
 
   // row actions
   &:last-of-type {
     padding: 0;
-    text-align: center;
     width: 48px;
     min-width: 48px;
     box-shadow: inset 1px 0 0 0 var(--tertiary);
+    vertical-align: middle;
   }
+}
+
+.mat-sort-header-button.mat-sort-header-button {
+  text-align: left;
 }
 
 // Mobile layout

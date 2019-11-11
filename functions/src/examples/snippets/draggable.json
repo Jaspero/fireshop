@@ -4,15 +4,16 @@
     "title": "Insert a definition for a draggable component",
     "field": "pointer",
     "value": {
-      "type": "draggable",
-      "configuration": {
-        "options": [
-          {"name": "Option 1", "value": "option-1", "disabled": false},
-          {"name": "Option 2", "value": "option-2", "disabled": false},
-          {"name": "Option 3", "value": "option-3", "disabled": false}
-        ]
-      },
-      "label": "Add Label"
+      "component": {
+        "type": "draggable",
+        "configuration": {
+          "options": [
+            {"name": "Option 1", "value": "option-1", "disabled": false},
+            {"name": "Option 2", "value": "option-2", "disabled": false},
+            {"name": "Option 3", "value": "option-3", "disabled": false}
+          ]
+        }
+      }
     }
   },
   "schema": {

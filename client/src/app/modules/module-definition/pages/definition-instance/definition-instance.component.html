@@ -39,8 +39,8 @@
       <mat-card>
         <mat-card-header>
           <div class="flex ai-center h-full w-full jc-between">
-            <h1>Module Setup</h1>
-              <button mat-icon-button matTooltip="Add Snippet" (click)="openSnippetSelection()"><mat-icon>add</mat-icon></button>
+            <h1>Setup</h1>
+            <button mat-icon-button matTooltip="Add Snippet" (click)="openSnippetSelection(form)"><mat-icon>add</mat-icon></button>
           </div>
         </mat-card-header>
 
@@ -55,6 +55,9 @@
             <mat-tab label="Definitions">
               <jms-json-editor formControlName="definitions" [options]="definitionsOptions"></jms-json-editor>
             </mat-tab>
+            <mat-tab label="Metadata">
+              <jms-json-editor formControlName="metadata"></jms-json-editor>
+            </mat-tab>
           </mat-tab-group>
         </mat-card-content>
       </mat-card>
@@ -63,7 +66,7 @@
     <div class="col-4 col-s-12">
       <mat-card>
         <mat-card-header>
-          <h1>Module Info</h1>
+          <h1>Info</h1>
         </mat-card-header>
 
         <mat-card-content>
@@ -78,7 +81,33 @@
           </mat-form-field>
           <mat-form-field class="w-full" appearance="outline">
             <mat-label>Description</mat-label>
-            <textarea matInput  formControlName="description"></textarea>
+            <textarea matInput formControlName="description"></textarea>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="m-t-m">
+        <mat-card-header>
+          <h1>Authorization</h1>
+        </mat-card-header>
+
+        <mat-card-content formGroupName="authorization">
+          <mat-form-field class="w-full" appearance="outline">
+            <mat-label>Write</mat-label>
+            <mat-select [multiple]="true" formControlName="write">
+              <mat-option *ngFor="let role of role | keyvalue" [value]="role.value">
+                {{role.key}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="w-full" appearance="outline">
+            <mat-label>Read</mat-label>
+            <mat-select [multiple]="true" formControlName="read">
+              <mat-option *ngFor="let role of role | keyvalue" [value]="role.value">
+                {{role.key}}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
         </mat-card-content>
       </mat-card>
@@ -91,13 +120,19 @@
 
   <mat-dialog-content>
     <div [formGroup]="snippetForm">
-      <mat-select placeholder="Snippet" formControlName="snippet">
-        <mat-option *ngFor="let item of snippetExamples$ | async">{{item.name}}</mat-option>
-      </mat-select>
+      <mat-form-field class="w-full">
+        <mat-select placeholder="Snippet" formControlName="snippet">
+          <mat-option *ngFor="let item of snippetExamples$ | async" [value]="item.name">{{item.name | titlecase}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="w-full">
+        <input matInput placeholder="Field name" formControlName="name">
+      </mat-form-field>
     </div>
 
     <div class="flex w-full jc-end m-t-xs">
-      <button mat-button color="primary" [disabled]="snippetForm.invalid">Submit</button>
+      <button mat-button color="primary" [disabled]="snippetForm.invalid" [mat-dialog-close]="true">Submit</button>
     </div>
   </mat-dialog-content>
 

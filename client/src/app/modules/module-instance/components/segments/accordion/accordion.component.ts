@@ -1,16 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  Injector,
-  OnInit
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {CompiledSegment} from '../../../../../shared/interfaces/compiled-segment.interface';
 import {InstanceSegment} from '../../../../../shared/interfaces/module.interface';
 import {CompiledField} from '../../../interfaces/compiled-field.interface';
-import {CompiledSegment} from '../../../pages/instance-single/instance-single.component';
-import {compileSegment} from '../../../utils/compile-segment';
-import {SEGMENT_DATA} from '../../../utils/create-segment-injector';
-import {SegmentComponent, SegmentData} from '../../segment/segment.component';
+import {filterAndCompileSegments} from '../../../utils/filter-and-compile-segments';
+import {SegmentComponent} from '../../segment/segment.component';
 
 interface SegmentAccord {
   title?: string;
@@ -35,12 +28,6 @@ interface CompiledSegmentAccord {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccordionComponent extends SegmentComponent implements OnInit {
-  constructor(
-    @Inject(SEGMENT_DATA) public sData: SegmentData,
-    public injector: Injector
-  ) {
-    super(sData, injector);
-  }
 
   accordions: CompiledSegmentAccord[];
 
@@ -57,14 +44,13 @@ export class AccordionComponent extends SegmentComponent implements OnInit {
             this.sData.definitions
           )
         ),
-        nestedSegments: (accord.nestedSegments || []).map(segment =>
-          compileSegment(
-            segment,
-            this.sData.parser,
-            this.sData.definitions,
-            this.injector,
-            this.segment.entryValue
-          )
+        nestedSegments: filterAndCompileSegments(
+          this.state.role,
+          accord.nestedSegments || [],
+          this.sData.parser,
+          this.sData.definitions,
+          this.injector,
+          this.segment.entryValue
         )
       })
     );

@@ -3,7 +3,11 @@
     "text": "Wysiwyg",
     "title": "Insert a definition for a wysiwyg component",
     "field": "pointer",
-    "value": {"component": "wysiwyg", "label": "Add Label"}
+    "value": {
+      "component": {
+        "type": "wysiwyg"
+      }
+    }
   },
   "schema": {
     "type": "text"

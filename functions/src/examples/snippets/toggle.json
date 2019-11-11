@@ -4,8 +4,9 @@
     "text": "Toggle",
     "title": "Insert a definition for a toggle component",
     "value": {
-      "component": "toggle",
-      "label": "Add Label"
+      "component": {
+        "type": "toggle"
+      }
     }
   },
   "schema": {

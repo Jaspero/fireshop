@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {map, startWith, switchMap, tap} from 'rxjs/operators';
+import {WhereFilter} from '../../../../../shared/interfaces/where-filter.interface';
 import {DbService} from '../../../../../shared/services/db/db.service';
 import {FieldData} from '../../../interfaces/field-data.interface';
 import {COMPONENT_DATA} from '../../../utils/create-component-injector';
@@ -18,11 +19,7 @@ interface AutocompleteData extends FieldData {
     nameKey: string;
     valueKey?: string;
     orderBy?: string;
-    filter?: {
-      key: string;
-      operator: string;
-      value: any;
-    };
+    filter?: WhereFilter;
   };
 }
 

@@ -1,12 +1,12 @@
 interface Module {
   name?: string;
   description?: string;
-  schema: object;
-  layout: object;
-  definitions: object;
+  schema: any;
+  layout: any;
+  definitions: any;
 }
 
-interface Snippet {
+export interface Snippet {
   definition: {
     text: string;
     title: string;
@@ -14,6 +14,9 @@ interface Snippet {
     value: object;
   };
   property: {
+    type: string;
+  };
+  schema: {
     type: string;
   };
 }

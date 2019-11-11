@@ -3,7 +3,11 @@ import {InstanceSingleState} from '../../modules/module-instance/enums/instance-
 import {SegmentType} from '../../modules/module-instance/enums/segment-type.enum';
 import {PipeType} from '../enums/pipe-type.enum';
 import {ComponentType} from './component-type.enum';
-import OrderByDirection = firebase.firestore.OrderByDirection;
+import {FilterModule} from './filter-module.interface';
+import {ModuleMetadata} from './module-metadata.interface';
+import {SearchModule} from './search-module.interface';
+import {SortModule} from './sort-module.interface';
+import {ModuleAuthorization} from './module-authorization.interface';
 
 export interface TableColumn {
   /**
@@ -16,10 +20,11 @@ export interface TableColumn {
 
   key: string | string[];
   label?: string;
-  pipe?: PipeType;
-  pipeArguments?: any[] | {[key: string]: any[]};
+  pipe?: PipeType | PipeType[];
+  pipeArguments?: any | {[key: string]: any};
   sortable?: boolean;
   join?: string;
+  tooltip?: string;
   nestedColumns?: NestedTableColumn[];
 }
 
@@ -40,18 +45,13 @@ export interface InstanceSegment {
   columnsMobile?: number;
   configuration?: any;
   classes?: string[];
+  authorization?: string[];
   id?: string;
 }
 
 export interface TableSort {
   active: string;
-  direction: OrderByDirection;
-}
-
-export interface SortModule {
-  sortKey: string;
-  sortTitle: string;
-  sortSubTitle: string;
+  direction: 'desc' | 'asc';
 }
 
 export interface ModuleLayout {
@@ -67,8 +67,16 @@ export interface ModuleLayout {
   table?: {
     sort?: TableSort;
     tableColumns?: TableColumn[];
+    hideCheckbox?: string[];
+    hideAdd?: string[];
+    hideEdit?: string[];
+    hideDelete?: string[];
+    hideExport?: string[];
+    hideImport?: string[];
   };
   sortModule?: SortModule;
+  filterModule?: FilterModule;
+  searchModule?: SearchModule;
   instance: {
     segments: InstanceSegment[];
   };
@@ -106,4 +114,6 @@ export interface Module {
   schema: JSONSchema7;
   layout?: ModuleLayout;
   definitions?: ModuleDefinitions;
+  authorization?: ModuleAuthorization;
+  metadata?: ModuleMetadata;
 }

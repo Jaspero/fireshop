@@ -9,5 +9,10 @@ export enum PipeType {
   Titlecase = 'titlecase',
   Uppercase = 'uppercase',
   Sanitize = 'jpSanitize',
+
+  /**
+   * So users don't have to type jpSanitize
+   */
+  SanitizeFb = 'sanitize',
   Custom = 'custom'
 }
