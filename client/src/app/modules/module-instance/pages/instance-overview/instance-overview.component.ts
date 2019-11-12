@@ -23,33 +23,13 @@ import {get, has} from 'json-pointer';
 import {JSONSchema7} from 'json-schema';
 // @ts-ignore
 import * as nanoid from 'nanoid';
-import {
-  BehaviorSubject,
-  combineLatest,
-  forkJoin,
-  merge,
-  Observable, of,
-  Subject
-} from 'rxjs';
-import {
-  filter,
-  map,
-  shareReplay,
-  skip,
-  startWith,
-  switchMap,
-  take,
-  takeUntil,
-  tap
-} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, forkJoin, merge, Observable, of, Subject} from 'rxjs';
+import {filter, map, shareReplay, skip, startWith, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {ExportComponent} from '../../../../shared/components/export/export.component';
 import {PAGE_SIZES} from '../../../../shared/consts/page-sizes.const';
+import {FilterMethod} from '../../../../shared/enums/filter-method.enum';
 import {FilterModule} from '../../../../shared/interfaces/filter-module.interface';
-import {
-  ModuleDefinitions,
-  TableColumn,
-  TableSort
-} from '../../../../shared/interfaces/module.interface';
+import {ModuleDefinitions, TableColumn, TableSort} from '../../../../shared/interfaces/module.interface';
 import {RouteData} from '../../../../shared/interfaces/route-data.interface';
 import {SearchModule} from '../../../../shared/interfaces/search-module.interface';
 import {SortModule} from '../../../../shared/interfaces/sort-module.interface';
@@ -59,13 +39,13 @@ import {StateService} from '../../../../shared/services/state/state.service';
 import {confirmation} from '../../../../shared/utils/confirmation';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {queue} from '../../../../shared/utils/queue.operator';
+import {FilterDialogComponent} from '../../components/filter-dialog/filter-dialog.component';
 import {SortDialogComponent} from '../../components/sort-dialog/sort-dialog.component';
 import {InstanceSingleState} from '../../enums/instance-single-state.enum';
 import {ModuleInstanceComponent} from '../../module-instance.component';
 import {ColumnPipe} from '../../pipes/column.pipe';
 import {Parser} from '../../utils/parser';
 import {safeEval} from '../../utils/safe-eval';
-import {FilterDialogComponent} from '../../components/filter-dialog/filter-dialog.component';
 
 interface InstanceOverview {
   id: string;
@@ -292,7 +272,7 @@ export class InstanceOverviewComponent extends RxDestroy
               search ?
                 [{
                   key: data.searchModule.key,
-                  operator: 'array-contains',
+                  operator: FilterMethod.ArrayContains,
                   value: search.trim().toLowerCase()
                 }] :
                 filters

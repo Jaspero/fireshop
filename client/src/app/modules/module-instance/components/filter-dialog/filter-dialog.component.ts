@@ -1,7 +1,8 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {FilterModule} from '../../../../shared/interfaces/filter-module.interface';
+import {FilterMethod} from '../../../../shared/enums/filter-method.enum';
+import {FilterModule, FilterModuleDefinition} from '../../../../shared/interfaces/filter-module.interface';
 import {WhereFilter} from '../../../../shared/interfaces/where-filter.interface';
 
 @Component({
@@ -27,7 +28,11 @@ export class FilterDialogComponent {
         toSend.push({
           key,
           value: data[key],
-          operator: '=='
+          operator: (
+            (
+              (this.data.definitions || {})[key] || {}
+            ) as FilterModuleDefinition
+          ).filterMethod || FilterMethod.Equal
         });
       }
     }
