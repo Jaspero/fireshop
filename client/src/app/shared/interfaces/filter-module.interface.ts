@@ -12,6 +12,12 @@ export interface FilterModuleDefinitions {
 
 export interface FilterModule {
   schema: JSONSchema7;
+
+  /**
+   * Method for formatting the WhereFilter[] before
+   * forwarding it to the filter handler
+   */
+  formatOnSubmit?: string;
   value?: any;
   definitions?: FilterModuleDefinitions;
   segments?: InstanceSegment[];

@@ -24,5 +24,10 @@ export function schemaToComponent(schemaType: SchemaType) {
       return {
         type: ComponentType.Checkbox
       };
+
+    case SchemaType.Array:
+      return {
+        type: ComponentType.Chips
+      };
   }
 }

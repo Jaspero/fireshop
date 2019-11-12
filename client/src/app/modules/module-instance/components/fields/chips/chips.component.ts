@@ -18,10 +18,13 @@ interface ChipsData extends FieldData {
 })
 export class ChipsComponent extends FieldComponent<ChipsData>
   implements OnInit {
+
   data = [];
+  removable: boolean;
 
   ngOnInit() {
     this.data = this.cData.control.value;
+    this.removable = this.cData.hasOwnProperty('removable') ? this.cData.removable : true;
   }
 
   add(event: MatChipInputEvent) {

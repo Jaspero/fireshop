@@ -4,6 +4,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FilterMethod} from '../../../../shared/enums/filter-method.enum';
 import {FilterModule, FilterModuleDefinition} from '../../../../shared/interfaces/filter-module.interface';
 import {WhereFilter} from '../../../../shared/interfaces/where-filter.interface';
+import {safeEval} from '../../utils/safe-eval';
 
 @Component({
   selector: 'jms-filter-dialog',
@@ -21,7 +22,7 @@ export class FilterDialogComponent {
   apply(form: FormGroup, override?: any) {
 
     const data = override || form.getRawValue();
-    const toSend: WhereFilter[] = [];
+    let toSend: WhereFilter[] = [];
 
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
@@ -34,6 +35,14 @@ export class FilterDialogComponent {
             ) as FilterModuleDefinition
           ).filterMethod || FilterMethod.Equal
         });
+      }
+    }
+
+    if (this.data.formatOnSubmit) {
+      const formatOnSubmit = safeEval(this.data.formatOnSubmit);
+
+      if (formatOnSubmit) {
+        toSend = formatOnSubmit(toSend);
       }
     }
 
