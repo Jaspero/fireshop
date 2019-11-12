@@ -11,7 +11,7 @@ export interface Snippet {
     text: string;
     title: string;
     field: string;
-    value: object;
+    value: any;
   };
   property: {
     type: string;

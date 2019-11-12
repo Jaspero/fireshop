@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild} from
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Observable, of} from 'rxjs';
+import {Observable, of, Subscription} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
 import {Module} from '../../../../shared/interfaces/module.interface';
@@ -21,6 +21,9 @@ import {queue} from '../../../../shared/utils/queue.operator';
 import {MatDialog} from '@angular/material/dialog';
 import {Example, Snippet} from '../../../../shared/interfaces/example.interface';
 import {Role} from '../../../../shared/enums/role.enum';
+import {RxDestroy} from '@jaspero/ng-helpers';
+import {ComponentType} from '../../../../shared/interfaces/component-type.enum';
+import {SNIPPET_FORM_MAP} from '../../../module-instance/consts/snippet-form-map.const';
 
 @Component({
   selector: 'jms-definition-instance',
@@ -28,7 +31,7 @@ import {Role} from '../../../../shared/enums/role.enum';
   styleUrls: ['./definition-instance.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DefinitionInstanceComponent implements OnInit {
+export class DefinitionInstanceComponent extends RxDestroy implements OnInit {
   constructor(
     public dialog: MatDialog,
     private dbService: DbService,
@@ -37,7 +40,9 @@ export class DefinitionInstanceComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+    super();
+  }
 
   @ViewChild('modal', {static: true})
   modalTemplate: TemplateRef<any>;
@@ -64,16 +69,16 @@ export class DefinitionInstanceComponent implements OnInit {
   role = Role;
   snippetExamples$ = new Observable<Example[]>();
   form$: Observable<FormGroup>;
+  data$: Observable<any>;
   snippetForm: FormGroup;
+
+  private snippetFormListener: Subscription;
 
   ngOnInit() {
     this.snippetExamples$ = this.dbService.getExamples(ExampleType.Snippets)
       .pipe(
         queue(),
         map(res => res.data),
-        tap((res) => {
-          console.log(11111, res);
-        }),
         shareReplay(1)
       );
 
@@ -130,10 +135,23 @@ export class DefinitionInstanceComponent implements OnInit {
       shareReplay(1)
     );
 
+    if (this.snippetFormListener) {
+      this.snippetFormListener.unsubscribe();
+    }
+
     this.snippetForm = this.fb.group({
       snippet: ['', Validators.required],
-      name: ['', Validators.required]
+      name: ['', Validators.required],
+      required: false
     });
+
+    this.data$ = this.snippetForm
+      .get('snippet')
+      .valueChanges
+      .pipe(
+        map(res => SNIPPET_FORM_MAP[res]),
+        shareReplay(1)
+      );
   }
 
   save(form: FormGroup) {
@@ -212,7 +230,7 @@ export class DefinitionInstanceComponent implements OnInit {
       .pipe(
         filter(res => res)
       )
-      .subscribe(() => {
+      .subscribe(data => {
         const snippetFormValue = this.snippetForm.getRawValue();
 
         this.snippetExamples$
@@ -226,23 +244,29 @@ export class DefinitionInstanceComponent implements OnInit {
             form.get('schema').setValue({
               ...oldValue.schema,
               properties: {
-                ...oldValue.schema.properties,
-              [snippetFormValue.name]: (json as Snippet).schema
-              }
+                ...(oldValue.schema.properties || {}),
+              [snippetFormValue.name]: json.schema
+              },
+              required: snippetFormValue.required ? [...(oldValue.schema.required || []), snippetFormValue.name] : [snippetFormValue.name]
             });
 
-            console.log(33, form.get('definitions').value);
-
-            /*form.get('definitions').setValue({
-              ...oldValue.schema,
-              properties: {
-                ...oldValue.schema.properties,
-              [snippetFormValue.name]: (json as Snippet).schema
+            form.get('definitions').setValue({
+              ...oldValue.definitions,
+              [snippetFormValue.name]: {
+                component: {
+                  ...(json as Snippet).definition.value.component,
+                  configuration: {
+                    ...(
+                      (json as Snippet).definition.value.component.configuration ? {
+                        ...(json as Snippet).definition.value.component.configuration,
+                        ...(data.value ? data.value : {})
+                      } : {}
+                    )
+                  }
+                },
+                label: snippetFormValue.name
               }
-            });*/
-
-            console.log(1, json);
-            // console.log(2, form.getRawValue());
+            });
           });
       });
   }

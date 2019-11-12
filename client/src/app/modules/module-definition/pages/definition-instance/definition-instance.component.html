@@ -1,8 +1,8 @@
 <form *ngIf="form$ | async as form" [formGroup]="form" [ngSwitch]="currentState">
   <mat-toolbar role="heading" color="primary" class="sticky-header">
-    <span class="of-x-auto" *ngSwitchCase="viewState.Edit">{{form.get('name').value}}</span>
-    <span class="of-x-auto" *ngSwitchCase="viewState.New">New Module</span>
-    <span class="of-x-auto" *ngSwitchCase="viewState.Copy">Copy of {{form.get('name').value}}</span>
+    <span class="of-x-auto of-y-hidden" *ngSwitchCase="viewState.Edit">{{form.get('name').value}}</span>
+    <span class="of-x-auto of-y-hidden" *ngSwitchCase="viewState.New">New Module</span>
+    <span class="of-x-auto of-y-hidden" *ngSwitchCase="viewState.Copy">Copy of {{form.get('name').value}}</span>
     <div class="flex-1"></div>
     <a mat-button (click)="back()">Cancel</a>&nbsp;
     <button
@@ -129,11 +129,26 @@
       <mat-form-field class="w-full">
         <input matInput placeholder="Field name" formControlName="name">
       </mat-form-field>
+
+      <label class="mat-form-field-wrapper flex jc-between">
+        <span>Required</span>
+        <mat-slide-toggle formControlName="required"></mat-slide-toggle>
+      </label>
     </div>
 
-    <div class="flex w-full jc-end m-t-xs">
-      <button mat-button color="primary" [disabled]="snippetForm.invalid" [mat-dialog-close]="true">Submit</button>
-    </div>
+    <!-- todo: refactor not to be so ugly -->
+    <ng-container *ngIf="data$ | async as data; else elseCase">
+      <jms-compiled-form [data]="data" #cForm></jms-compiled-form>
+      <div class="flex w-full jc-end m-t-xs">
+        <button mat-button color="primary" [disabled]="snippetForm.invalid" [mat-dialog-close]="cForm.form">Submit</button>
+      </div>
+    </ng-container>
+
+    <ng-template #elseCase>
+      <div class="flex w-full jc-end m-t-xs">
+        <button mat-button color="primary" [disabled]="snippetForm.invalid" [mat-dialog-close]="{}">Submit</button>
+      </div>
+    </ng-template>
   </mat-dialog-content>
 
 </ng-template>
