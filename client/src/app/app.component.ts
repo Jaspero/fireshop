@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {debounceTime, map} from 'rxjs/operators';
 import {StateService} from './shared/services/state/state.service';
+import {DEFINITION_TEMPLATES} from './modules/module-definition/pages/definition-instance/consts/definition-templates.const';
 
 @Component({
   selector: 'jms-root',

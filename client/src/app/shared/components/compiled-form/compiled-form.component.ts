@@ -42,7 +42,6 @@ export class CompiledFormComponent implements OnInit {
   segments: CompiledSegment[];
 
   ngOnInit() {
-
     const value = this.data.value || {};
     const definitions = this.data.definitions || {};
 

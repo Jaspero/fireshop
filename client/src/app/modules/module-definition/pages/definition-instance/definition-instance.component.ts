@@ -1,9 +1,9 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Observable, of} from 'rxjs';
-import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
+import {forkJoin, Observable, of} from 'rxjs';
+import {filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
@@ -16,8 +16,12 @@ import {LAYOUT_AUTOCOMPLETE} from './consts/layout-autocomplete.const';
 import {LAYOUT_TEMPLATES} from './consts/layout-templates.const';
 import {SCHEMA_AUTOCOMPLETE} from './consts/schema-autocomplete.const';
 import {SCHEMA_TEMPLATES} from './consts/schema-templates.const';
-import {Example} from '../../../../shared/interfaces/example.interface';
+import {ExampleType} from '../../../../shared/enums/example-type.enum';
+import {queue} from '../../../../shared/utils/queue.operator';
+import {MatDialog} from '@angular/material/dialog';
+import {Example, Snippet} from '../../../../shared/interfaces/example.interface';
 import {Role} from '../../../../shared/enums/role.enum';
+import {SNIPPET_FORM_MAP} from '../../../module-instance/consts/snippet-form-map.const';
 
 @Component({
   selector: 'jms-definition-instance',
@@ -27,13 +31,17 @@ import {Role} from '../../../../shared/enums/role.enum';
 })
 export class DefinitionInstanceComponent implements OnInit {
   constructor(
+    public dialog: MatDialog,
     private dbService: DbService,
     private router: Router,
     private state: StateService,
     private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
     private snackBar: MatSnackBar
-  ) {}
+  ) { }
+
+  @ViewChild('modal', {static: true})
+  modalTemplate: TemplateRef<any>;
 
   initialValue: string;
   currentValue: string;
@@ -55,9 +63,19 @@ export class DefinitionInstanceComponent implements OnInit {
     autocomplete: DEFINITION_AUTOCOMPLETE
   };
   role = Role;
+  snippetExamples$ = new Observable<Example[]>();
   form$: Observable<FormGroup>;
+  data$: Observable<any>;
+  snippetForm: FormGroup;
 
   ngOnInit() {
+    this.snippetExamples$ = this.dbService.getExamples(ExampleType.Snippets)
+      .pipe(
+        queue(),
+        map(res => res.data),
+        shareReplay(1)
+      );
+
     this.schemaValidation = new SchemaValidation();
 
     this.form$ = this.activatedRoute.params.pipe(
@@ -110,6 +128,19 @@ export class DefinitionInstanceComponent implements OnInit {
       }),
       shareReplay(1)
     );
+
+    this.snippetForm = this.fb.group({
+      snippet: ['', Validators.required],
+      name: ['', Validators.required],
+      required: false
+    });
+
+    this.data$ = this.snippetForm
+      .get('snippet')
+      .valueChanges
+      .pipe(
+        map(res => SNIPPET_FORM_MAP[res])
+      );
   }
 
   save(form: FormGroup) {
@@ -178,4 +209,53 @@ export class DefinitionInstanceComponent implements OnInit {
   }
 
   move(forward: boolean, form: FormGroup) {}
+
+  openSnippetSelection(form) {
+    this.snippetForm.reset();
+    this.dialog.open(this.modalTemplate, {
+      width: '600px'
+    })
+      .afterClosed()
+      .pipe(
+        filter(res => res),
+        switchMap(data => {
+          return forkJoin([
+            of(data),
+            this.snippetExamples$.pipe(take(1))
+          ]);
+        })
+      )
+      .subscribe(([data, res]) => {
+        const snippetFormValue = this.snippetForm.getRawValue();
+        const json = res.find(item => item.name === snippetFormValue.snippet).json;
+        const oldValue = form.getRawValue();
+
+        form.get('schema').setValue({
+          ...oldValue.schema,
+          properties: {
+            ...(oldValue.schema.properties || {}),
+            [snippetFormValue.name]: json.schema
+          },
+          required: snippetFormValue.required ? [...(oldValue.schema.required || []), snippetFormValue.name] : [snippetFormValue.name]
+        });
+
+        form.get('definitions').setValue({
+          ...oldValue.definitions,
+          [snippetFormValue.name]: {
+            component: {
+              ...(json as Snippet).definition.value.component,
+              configuration: {
+                ...(
+                  (json as Snippet).definition.value.component.configuration ? {
+                    ...(json as Snippet).definition.value.component.configuration,
+                    ...(data.value ? data.value : {})
+                  } : {}
+                )
+              }
+            },
+            label: snippetFormValue.name
+          }
+        });
+      });
+  }
 }

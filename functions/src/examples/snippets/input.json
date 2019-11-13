@@ -1,11 +1,11 @@
 {
   "definition": {
-    "text": "Wysiwyg",
-    "title": "Insert a definition for a wysiwyg component",
+    "text": "Input",
+    "title": "Insert a definition for a input component",
     "field": "pointer",
     "value": {
       "component": {
-        "type": "wysiwyg"
+        "type": "input"
       }
     }
   },

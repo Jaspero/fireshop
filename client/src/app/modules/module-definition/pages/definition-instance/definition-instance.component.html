@@ -1,8 +1,8 @@
 <form *ngIf="form$ | async as form" [formGroup]="form" [ngSwitch]="currentState">
   <mat-toolbar role="heading" color="primary" class="sticky-header">
-    <span class="of-x-auto" *ngSwitchCase="viewState.Edit">{{form.get('name').value}}</span>
-    <span class="of-x-auto" *ngSwitchCase="viewState.New">New Module</span>
-    <span class="of-x-auto" *ngSwitchCase="viewState.Copy">Copy of {{form.get('name').value}}</span>
+    <span class="of-x-auto of-y-hidden" *ngSwitchCase="viewState.Edit">{{form.get('name').value}}</span>
+    <span class="of-x-auto of-y-hidden" *ngSwitchCase="viewState.New">New Module</span>
+    <span class="of-x-auto of-y-hidden" *ngSwitchCase="viewState.Copy">Copy of {{form.get('name').value}}</span>
     <div class="flex-1"></div>
     <a mat-button (click)="back()">Cancel</a>&nbsp;
     <button
@@ -40,7 +40,7 @@
         <mat-card-header>
           <div class="flex ai-center h-full w-full jc-between">
             <h1>Setup</h1>
-            <mat-icon>info</mat-icon>
+            <button mat-icon-button matTooltip="Add Snippet" (click)="openSnippetSelection(form)"><mat-icon>add</mat-icon></button>
           </div>
         </mat-card-header>
 
@@ -114,3 +114,41 @@
     </div>
   </section>
 </form>
+
+<ng-template #modal>
+  <h4 mat-dialog-title>Select snippet template</h4>
+
+  <mat-dialog-content>
+    <div [formGroup]="snippetForm">
+      <mat-form-field class="w-full">
+        <mat-select placeholder="Snippet" formControlName="snippet">
+          <mat-option *ngFor="let item of snippetExamples$ | async" [value]="item.name">{{item.name | titlecase}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="w-full">
+        <input matInput placeholder="Field name" formControlName="name">
+      </mat-form-field>
+
+      <label class="mat-form-field-wrapper flex jc-between">
+        <span>Required</span>
+        <mat-slide-toggle formControlName="required"></mat-slide-toggle>
+      </label>
+    </div>
+
+    <!-- todo: refactor not to be so ugly -->
+    <ng-container *ngIf="data$ | async as data; else elseCase">
+      <jms-compiled-form [data]="data" #cForm></jms-compiled-form>
+      <div class="flex w-full jc-end m-t-xs">
+        <button mat-button color="primary" [disabled]="snippetForm.invalid" [mat-dialog-close]="cForm.form">Submit</button>
+      </div>
+    </ng-container>
+
+    <ng-template #elseCase>
+      <div class="flex w-full jc-end m-t-xs">
+        <button mat-button color="primary" [disabled]="snippetForm.invalid" [mat-dialog-close]="{}">Submit</button>
+      </div>
+    </ng-template>
+  </mat-dialog-content>
+
+</ng-template>
