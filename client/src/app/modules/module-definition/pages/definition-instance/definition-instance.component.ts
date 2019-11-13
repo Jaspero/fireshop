@@ -2,8 +2,8 @@ import {ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild} from
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Observable, of, Subscription} from 'rxjs';
-import {filter, map, shareReplay, switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import {forkJoin, Observable, of} from 'rxjs';
+import {filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
@@ -21,8 +21,6 @@ import {queue} from '../../../../shared/utils/queue.operator';
 import {MatDialog} from '@angular/material/dialog';
 import {Example, Snippet} from '../../../../shared/interfaces/example.interface';
 import {Role} from '../../../../shared/enums/role.enum';
-import {RxDestroy} from '@jaspero/ng-helpers';
-import {ComponentType} from '../../../../shared/interfaces/component-type.enum';
 import {SNIPPET_FORM_MAP} from '../../../module-instance/consts/snippet-form-map.const';
 
 @Component({
@@ -31,7 +29,7 @@ import {SNIPPET_FORM_MAP} from '../../../module-instance/consts/snippet-form-map
   styleUrls: ['./definition-instance.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DefinitionInstanceComponent extends RxDestroy implements OnInit {
+export class DefinitionInstanceComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private dbService: DbService,
@@ -40,9 +38,7 @@ export class DefinitionInstanceComponent extends RxDestroy implements OnInit {
     private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
     private snackBar: MatSnackBar
-  ) {
-    super();
-  }
+  ) { }
 
   @ViewChild('modal', {static: true})
   modalTemplate: TemplateRef<any>;
@@ -71,8 +67,6 @@ export class DefinitionInstanceComponent extends RxDestroy implements OnInit {
   form$: Observable<FormGroup>;
   data$: Observable<any>;
   snippetForm: FormGroup;
-
-  private snippetFormListener: Subscription;
 
   ngOnInit() {
     this.snippetExamples$ = this.dbService.getExamples(ExampleType.Snippets)
@@ -135,10 +129,6 @@ export class DefinitionInstanceComponent extends RxDestroy implements OnInit {
       shareReplay(1)
     );
 
-    if (this.snippetFormListener) {
-      this.snippetFormListener.unsubscribe();
-    }
-
     this.snippetForm = this.fb.group({
       snippet: ['', Validators.required],
       name: ['', Validators.required],
@@ -149,8 +139,7 @@ export class DefinitionInstanceComponent extends RxDestroy implements OnInit {
       .get('snippet')
       .valueChanges
       .pipe(
-        map(res => SNIPPET_FORM_MAP[res]),
-        shareReplay(1)
+        map(res => SNIPPET_FORM_MAP[res])
       );
   }
 
@@ -228,46 +217,45 @@ export class DefinitionInstanceComponent extends RxDestroy implements OnInit {
     })
       .afterClosed()
       .pipe(
-        filter(res => res)
+        filter(res => res),
+        switchMap(data => {
+          return forkJoin([
+            of(data),
+            this.snippetExamples$.pipe(take(1))
+          ]);
+        })
       )
-      .subscribe(data => {
+      .subscribe(([data, res]) => {
         const snippetFormValue = this.snippetForm.getRawValue();
+        const json = res.find(item => item.name === snippetFormValue.snippet).json;
+        const oldValue = form.getRawValue();
 
-        this.snippetExamples$
-          .pipe(
-            take(1)
-          )
-          .subscribe(res => {
-            const json = res.find(item => item.name === snippetFormValue.snippet).json;
-            const oldValue = form.getRawValue();
+        form.get('schema').setValue({
+          ...oldValue.schema,
+          properties: {
+            ...(oldValue.schema.properties || {}),
+            [snippetFormValue.name]: json.schema
+          },
+          required: snippetFormValue.required ? [...(oldValue.schema.required || []), snippetFormValue.name] : [snippetFormValue.name]
+        });
 
-            form.get('schema').setValue({
-              ...oldValue.schema,
-              properties: {
-                ...(oldValue.schema.properties || {}),
-              [snippetFormValue.name]: json.schema
-              },
-              required: snippetFormValue.required ? [...(oldValue.schema.required || []), snippetFormValue.name] : [snippetFormValue.name]
-            });
-
-            form.get('definitions').setValue({
-              ...oldValue.definitions,
-              [snippetFormValue.name]: {
-                component: {
-                  ...(json as Snippet).definition.value.component,
-                  configuration: {
-                    ...(
-                      (json as Snippet).definition.value.component.configuration ? {
-                        ...(json as Snippet).definition.value.component.configuration,
-                        ...(data.value ? data.value : {})
-                      } : {}
-                    )
-                  }
-                },
-                label: snippetFormValue.name
+        form.get('definitions').setValue({
+          ...oldValue.definitions,
+          [snippetFormValue.name]: {
+            component: {
+              ...(json as Snippet).definition.value.component,
+              configuration: {
+                ...(
+                  (json as Snippet).definition.value.component.configuration ? {
+                    ...(json as Snippet).definition.value.component.configuration,
+                    ...(data.value ? data.value : {})
+                  } : {}
+                )
               }
-            });
-          });
+            },
+            label: snippetFormValue.name
+          }
+        });
       });
   }
 }
