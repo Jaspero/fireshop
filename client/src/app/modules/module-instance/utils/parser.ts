@@ -345,8 +345,6 @@ export class Parser {
       definition.label = '';
     }
 
-    console.log(definition);
-
     if (!definition.component) {
       definition.component = schemaToComponent(type);
     }

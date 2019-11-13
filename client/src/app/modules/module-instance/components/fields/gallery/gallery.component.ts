@@ -254,7 +254,6 @@ export class GalleryComponent extends FieldComponent<GalleryData>
     const dropIndex = __indexOf(dropElement.parentElement.children, dropElement);
 
     if (!this.source) {
-      console.log('in here');
       this.sourceIndex = dragIndex;
       this.source = drag.dropContainer;
 
