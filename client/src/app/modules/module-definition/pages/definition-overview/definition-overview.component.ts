@@ -15,11 +15,11 @@ import {RxDestroy} from '@jaspero/ng-helpers';
 import {queue} from '../../../../shared/utils/queue.operator';
 import {MatDialog} from '@angular/material/dialog';
 import {ExampleType} from '../../../../shared/enums/example-type.enum';
-import {Example} from '../../../../shared/interfaces/example.interface';
 import {Router} from '@angular/router';
 import {DEFAULT_SCHEMA_VALUE} from '../definition-instance/consts/default-schema-value.const';
 import {DEFAULT_LAYOUT_VALUE} from '../definition-instance/consts/default-layout-value.const';
 import {DEFAULT_DEFINITION_VALUE} from '../definition-instance/consts/default-definition-value.const';
+import {Example} from '../../../../shared/interfaces/example.interface';
 
 @Component({
   selector: 'jms-definition-overview',
@@ -51,14 +51,14 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
   allChecked$: Observable<{checked: boolean}>;
   emptyState$ = new BehaviorSubject(false);
   dataLoading$ = new BehaviorSubject(true);
-  examples$ = new Observable<Example[]>();
+  moduleExamples$ = new Observable<Example[]>();
 
   selection = new SelectionModel<string>(true, []);
   filters: FormGroup;
   options: RouteData;
 
   ngOnInit() {
-    this.examples$ = this.dbService.getExamples(ExampleType.Modules)
+    this.moduleExamples$ = this.dbService.getExamples(ExampleType.Modules)
       .pipe(
         queue(),
         map(res => [
@@ -215,7 +215,7 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
     });
   }
 
-  selectExample(item: Example) {
+  selectModuleExample(item: Example) {
     this.dialog.closeAll();
     this.router.navigate(['/module-definition/single/new'], {state: {example: item.json}});
   }
