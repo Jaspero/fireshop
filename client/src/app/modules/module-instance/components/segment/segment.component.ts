@@ -19,16 +19,16 @@ export interface SegmentData {
   selector: 'jms-segment',
   template: ''
 })
-export class SegmentComponent implements OnInit {
+export class SegmentComponent<T = any> implements OnInit {
   constructor(
     @Inject(SEGMENT_DATA) public sData: SegmentData,
     public injector: Injector,
     public state: StateService
   ) {}
 
-  segment: CompiledSegment;
+  segment: CompiledSegment<T>;
   pointers: Pointers;
-  nestedSegments: CompiledSegment[];
+  nestedSegments: CompiledSegment<T>[];
   arrayFields: Array<CompiledField[]> = [];
 
   @HostBinding('class')

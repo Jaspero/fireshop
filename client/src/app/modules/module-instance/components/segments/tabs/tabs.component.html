@@ -8,11 +8,22 @@
 
 <p *ngIf="segment.description">{{segment.description}}</p>
 
-<mat-tab-group>
-  <mat-tab [label]="tab.title" *ngFor="let tab of tabs">
-    <ng-container *ngFor="let field of tab.fields | showField:sData.parser">
-      <ng-template [cdkPortalOutlet]="field.portal"></ng-template>
-    </ng-container>
+<mat-tab-group
+  [selectedIndex]="segment.configuration.selectedIndex"
+  [dynamicHeight]="segment.configuration.dynamicHeight"
+  [disableRipple]="segment.configuration.disableRipple"
+  (selectedTabChange)="tabChange($event)">
+
+  <mat-tab
+    *ngFor="let tab of tabs"
+    [label]="tab.title"
+    [disabled]="tab.disabled">
+
+    <div class="p-a-s">
+      <ng-container *ngFor="let field of tab.fields | showField:sData.parser">
+        <ng-template [cdkPortalOutlet]="field.portal"></ng-template>
+      </ng-container>
+    </div>
 
     <ng-container *ngFor="let nested of tab.nestedSegments">
       <ng-template [cdkPortalOutlet]="nested.component"></ng-template>

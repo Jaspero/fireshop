@@ -3,10 +3,10 @@ import {CompiledField} from '../../modules/module-instance/interfaces/compiled-f
 import {ComponentPortal} from '@angular/cdk/portal';
 import {SegmentComponent} from '../../modules/module-instance/components/segment/segment.component';
 
-export interface CompiledSegment extends InstanceSegment {
+export interface CompiledSegment<T = any> extends InstanceSegment<T> {
   classes: string[];
   fields: CompiledField[] | string[];
   component?: ComponentPortal<SegmentComponent>;
-  nestedSegments?: CompiledSegment[];
+  nestedSegments?: CompiledSegment<T>[];
   entryValue: any;
 }

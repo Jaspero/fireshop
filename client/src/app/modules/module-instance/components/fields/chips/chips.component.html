@@ -3,12 +3,12 @@
   <mat-chip-list #chipList>
     <mat-chip
       *ngFor="let chip of data"
-      [selectable]="cData['selectable']"
-      [removable]="cData['removable']"
+      [selectable]="cData.selectable"
+      [removable]="removable"
       (removed)="remove(chip)"
     >
       {{chip}}
-      <mat-icon *ngIf="cData['removable']" matChipRemove>cancel</mat-icon>
+      <mat-icon *ngIf="removable" matChipRemove>cancel</mat-icon>
     </mat-chip>
     <input
       matInput

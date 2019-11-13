@@ -32,18 +32,18 @@ export interface NestedTableColumn extends TableColumn {
   showLabel?: boolean;
 }
 
-export interface InstanceSegment {
+export interface InstanceSegment<C = any> {
   fields: string[] | any[];
   array?: string;
   type?: SegmentType;
   title?: string;
   subTitle?: string;
   description?: string;
-  nestedSegments?: InstanceSegment[];
+  nestedSegments?: InstanceSegment<C>[];
   columnsDesktop?: number;
   columnsTablet?: number;
   columnsMobile?: number;
-  configuration?: any;
+  configuration?: C;
   classes?: string[];
   authorization?: string[];
   id?: string;
