@@ -5,14 +5,15 @@ import {AngularFireFunctions} from '@angular/fire/functions';
 import * as nanoid from 'nanoid';
 import {from, Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
+import {ExampleType} from '../../src/app/shared/enums/example-type.enum';
+import {FilterMethod} from '../../src/app/shared/enums/filter-method.enum';
+import {Example} from '../../src/app/shared/interfaces/example.interface';
 import {Module} from '../../src/app/shared/interfaces/module.interface';
 import {Settings} from '../../src/app/shared/interfaces/settings.interface';
 import {DbService} from '../../src/app/shared/services/db/db.service';
 import {FirestoreCollection} from './firestore-collection.enum';
-import {ExampleType} from '../../src/app/shared/enums/example-type.enum';
-import {Example} from '../../src/app/shared/interfaces/example.interface';
 
-type FilterMethod = (ref: CollectionReference) => CollectionReference;
+type FilterFunction = (ref: CollectionReference) => CollectionReference;
 
 @Injectable()
 export class FbDatabaseService extends DbService {
@@ -91,12 +92,27 @@ export class FbDatabaseService extends DbService {
       changes = ['added'];
     }
 
-    let fMethod: FilterMethod;
+    let fMethod: FilterFunction;
 
     if (filters) {
       fMethod = (ref) => {
         filters.forEach(item => {
-          ref = ref.where(item.key, item.operator, item.value) as CollectionReference;
+
+          if (
+            item.value !== undefined &&
+            item.value !== null &&
+            (
+              (
+                item.operator === FilterMethod.ArrayContains ||
+                item.operator === FilterMethod.ArrayContainsAny ||
+                item.operator === FilterMethod.In
+              ) ?
+                Array.isArray(item.value) && item.value.length :
+                true
+            )
+          ) {
+            ref = ref.where(item.key, item.operator, item.value) as CollectionReference;
+          }
         });
 
         return ref;

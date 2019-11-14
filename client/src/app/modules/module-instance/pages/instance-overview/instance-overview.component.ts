@@ -463,6 +463,7 @@ export class InstanceOverviewComponent extends RxDestroy
         take(1),
         switchMap(filterValue =>
           this.dialog.open(FilterDialogComponent, {
+            ...data.dialogOptions || {},
             width: '800px',
             data: {
               ...data,

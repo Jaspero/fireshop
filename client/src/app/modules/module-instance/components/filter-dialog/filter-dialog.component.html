@@ -8,5 +8,5 @@
       {{data.clearFiltersLabel || 'Clear'}}
     </button>
   </ng-container>
-  <button type="submit" mat-raised-button color="primary" (click)="apply(cForm.form)">Apply</button>
+  <button type="submit" mat-raised-button color="primary" (click)="apply(cForm.form, cForm.parser)">Apply</button>
 </mat-dialog-actions>

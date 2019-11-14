@@ -1,6 +1,7 @@
 import {ComponentPortal} from '@angular/cdk/portal';
 import {Injector} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import {ViewState} from '../../../shared/enums/view-state.enum';
 import {ModuleDefinitions} from '../../../shared/interfaces/module.interface';
 import {FieldComponent} from '../components/field/field.component';
 import {COMPONENT_TYPE_COMPONENT_MAP} from '../consts/component-type-component-map.const';
@@ -397,6 +398,43 @@ export class Parser {
   removeArrayItem(pointer: string, index: number) {
     this.pointers[pointer].arrayPointers.splice(index, 1);
     (this.pointers[pointer].control as FormArray).removeAt(index);
+  }
+
+  processHooks(
+    currentState: ViewState,
+    statesToProcess = [ViewState.Edit, ViewState.Copy, ViewState.New]
+  ) {
+
+    const preSaveData = this.form.getRawValue();
+
+    Object.values(this.pointers).forEach(entry => {
+      console.log('entries', entry);
+      /**
+       * TODO:
+       * For the moment formatOn methods are
+       * only supported on FormControls.
+       * We might want to expand on this later on.
+       */
+      if (entry.control instanceof FormControl) {
+        let value = entry.control.value;
+
+        if (entry.formatOnSave) {
+          value = entry.formatOnSave(value, preSaveData);
+        }
+
+        if (statesToProcess.includes(currentState)) {
+          if (currentState === ViewState.Edit && entry.formatOnEdit) {
+            value = entry.formatOnEdit(value, preSaveData);
+          } else if (entry.formatOnCreate) {
+            value = entry.formatOnCreate(value, preSaveData);
+          }
+        }
+
+        if (value !== entry.control.value) {
+          entry.control.setValue(value);
+        }
+      }
+    });
   }
 
   /**

@@ -39,20 +39,21 @@ export class CompiledFormComponent implements OnInit {
   value: any;
 
   form: FormGroup;
+  parser: Parser;
   segments: CompiledSegment[];
 
   ngOnInit() {
     const value = this.data.value || {};
     const definitions = this.data.definitions || {};
 
-    const parser = new Parser(
+    this.parser = new Parser(
       this.data.schema,
       this.injector,
       InstanceSingleState.Create,
       definitions
     );
 
-    this.form = parser.buildForm(
+    this.form = this.parser.buildForm(
       value,
       [],
       '/',
@@ -64,11 +65,11 @@ export class CompiledFormComponent implements OnInit {
       this.data.segments ||
       [{
         title: '',
-        fields: Object.keys(parser.pointers),
+        fields: Object.keys(this.parser.pointers),
         columnsDesktop: 12,
         type: SegmentType.Empty
       }],
-      parser,
+      this.parser,
       definitions,
       this.injector,
       value

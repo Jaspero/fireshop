@@ -172,31 +172,7 @@ export class InstanceSingleComponent implements OnInit {
         ));
       }
 
-      Object.values(instance.parser.pointers).forEach(entry => {
-        /**
-         * TODO:
-         * For the moment formatOn methods are
-         * only supported on FormControls.
-         * We might want to expand on this later on.
-         */
-        if (entry.control instanceof FormControl) {
-          let value = entry.control.value;
-
-          if (entry.formatOnSave) {
-            value = entry.formatOnSave(value, preSaveData);
-          }
-
-          if (this.currentState === ViewState.Edit && entry.formatOnEdit) {
-            value = entry.formatOnEdit(value, preSaveData);
-          } else if (entry.formatOnCreate) {
-            value = entry.formatOnCreate(value, preSaveData);
-          }
-
-          if (value !== entry.control.value) {
-            entry.control.setValue(value);
-          }
-        }
-      });
+      instance.parser.processHooks(this.currentState);
 
       return (toExecute.length ? forkJoin(toExecute) : of([])).pipe(
         switchMap(() => {
