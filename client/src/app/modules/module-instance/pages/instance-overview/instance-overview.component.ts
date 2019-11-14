@@ -132,7 +132,15 @@ export class InstanceOverviewComponent extends RxDestroy
           data.layout.table &&
           data.layout.table.tableColumns
         ) {
-          displayColumns = data.layout.table.tableColumns.reduce(
+
+          /**
+           * Filter authorized columns
+           */
+          const pColumns = data.layout.table.tableColumns.filter(column =>
+            column.authorization ? column.authorization.includes(this.state.role) : true
+          );
+
+          displayColumns = pColumns.reduce(
             (acc, column) => {
               let key =
                 typeof column.key === 'string' ? column.key : column.key[0];
@@ -147,7 +155,7 @@ export class InstanceOverviewComponent extends RxDestroy
             },
             []
           );
-          tableColumns = data.layout.table.tableColumns.map(column => {
+          tableColumns = pColumns.map(column => {
             return {
               ...column,
               ...column.tooltip && {tooltip: safeEval(column.tooltip) || column.tooltip}
@@ -305,7 +313,13 @@ export class InstanceOverviewComponent extends RxDestroy
                       this.options.sort,
                       cursor,
                       null,
-                      cachedFilters
+                      this.searchControl.value ?
+                        [{
+                          key: data.searchModule.key,
+                          operator: FilterMethod.ArrayContains,
+                          value: this.searchControl.value.trim().toLowerCase()
+                        }] :
+                        cachedFilters
                     )
                     .pipe(
                       queue(),

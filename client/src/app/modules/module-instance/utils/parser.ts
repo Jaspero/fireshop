@@ -408,7 +408,6 @@ export class Parser {
     const preSaveData = this.form.getRawValue();
 
     Object.values(this.pointers).forEach(entry => {
-      console.log('entries', entry);
       /**
        * TODO:
        * For the moment formatOn methods are

@@ -26,6 +26,7 @@ export interface TableColumn {
   join?: string;
   tooltip?: string;
   nestedColumns?: NestedTableColumn[];
+  authorization?: string[];
 }
 
 export interface NestedTableColumn extends TableColumn {
