@@ -192,13 +192,6 @@ export class InstanceOverviewComponent extends RxDestroy
           }
         }
 
-        /**
-         * Default displayColumns
-         */
-        if (!data.layout || !data.layout.table || !data.layout.table.hideCheckbox) {
-          displayColumns.unshift('check');
-        }
-
         if (data.layout && data.layout.table) {
           hide = [
             'hideCheckbox',
@@ -211,6 +204,10 @@ export class InstanceOverviewComponent extends RxDestroy
             acc[key] = data.layout.table[key] ? data.layout.table[key].includes(this.state.role) : false;
             return acc;
           }, {});
+        }
+
+        if (!hide.hideCheckbox) {
+          displayColumns.unshift('check');
         }
 
         if (!hide.hideDelete || !hide.hideEdit) {
