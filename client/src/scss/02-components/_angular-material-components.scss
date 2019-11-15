@@ -122,7 +122,7 @@ tr.mat-row.mat-row {
   vertical-align: top;
 
   // row checkbox
-  &:first-of-type {
+  &.cta-column {
     padding: 0;
     width: 48px;
     min-width: 48px;
@@ -132,7 +132,7 @@ tr.mat-row.mat-row {
   }
 
   // row actions
-  &:last-of-type {
+  &.cta-column-last {
     padding: 0;
     width: 48px;
     min-width: 48px;
