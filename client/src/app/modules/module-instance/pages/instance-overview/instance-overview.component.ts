@@ -125,7 +125,14 @@ export class InstanceOverviewComponent extends RxDestroy
         let displayColumns: string[];
         let tableColumns: TableColumn[];
         let sort: TableSort;
-        let hide: any = {};
+        let hide: any = {
+          hideCheckbox: false,
+          hideAdd: false,
+          hideEdit: false,
+          hideDelete: false,
+          hideExport: false,
+          hideImport: false,
+        };
 
         if (
           data.layout &&
@@ -206,14 +213,7 @@ export class InstanceOverviewComponent extends RxDestroy
           }, {});
         }
 
-        if (
-          !data.layout ||
-          !data.layout.table ||
-          !data.layout.table.hideDelete ||
-          !data.layout.table.hideEdit ||
-          !data.layout.table.hideDelete.includes(this.state.role) ||
-          !data.layout.table.hideEdit.includes(this.state.role)
-        ) {
+        if (!hide.hideDelete || !hide.hideEdit) {
           displayColumns.push('actions');
         }
 
