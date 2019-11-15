@@ -129,9 +129,17 @@
                   </th>
                 </ng-template>
 
-                <td mat-cell *matCellDef="let row;" [attr.data-label]="column.label" matTooltipPosition="above" [matTooltip]="column.tooltip">
-                  <ng-container *ngTemplateOutlet="columnLayout; context: {row: row.parsed, column: column, index: index}"></ng-container>
-                </td>
+                <ng-container *ngIf="column.tooltip; else noTooltip">
+                  <td mat-cell *matCellDef="let row;" [attr.data-label]="column.label" matTooltipPosition="above" [matTooltip]="column.tooltip">
+                    <ng-container *ngTemplateOutlet="columnLayout; context: {row: row.parsed, column: column, index: index}"></ng-container>
+                  </td>
+                </ng-container>
+
+                <ng-template #noTooltip>
+                  <td mat-cell *matCellDef="let row;" [attr.data-label]="column.label">
+                    <ng-container *ngTemplateOutlet="columnLayout; context: {row: row.parsed, column: column, index: index}"></ng-container>
+                  </td>
+                </ng-template>
               </ng-container>
 
               <ng-container *ngIf="!data.hideEdit || !data.hideDelete" matColumnDef="actions" stickyEnd>

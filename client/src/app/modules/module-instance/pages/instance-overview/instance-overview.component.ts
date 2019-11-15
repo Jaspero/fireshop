@@ -206,7 +206,14 @@ export class InstanceOverviewComponent extends RxDestroy
           }, {});
         }
 
-        if (!hide.hideDelete || !hide.hideEdit) {
+        if (
+          !data.layout ||
+          !data.layout.table ||
+          !data.layout.table.hideDelete ||
+          !data.layout.table.hideEdit ||
+          !data.layout.table.hideDelete.includes(this.state.role) ||
+          !data.layout.table.hideEdit.includes(this.state.role)
+        ) {
           displayColumns.push('actions');
         }
 
