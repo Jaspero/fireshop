@@ -35,6 +35,7 @@ import {LoadClickModule, SanitizeModule} from '@jaspero/ng-helpers';
 import {FirebaseModule} from '../../integrations/firebase/fb.module';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
+import {ELEMENTS} from './elements/elements.const';
 import {DashboardComponent} from './modules/dashboard/dashboard.component';
 import {LoginComponent} from './modules/login/login.component';
 import {ModuleDefinitionComponent} from './modules/module-definition/module-definition.component';
@@ -148,9 +149,13 @@ const PIPES = [ColumnPipe, ShowFieldPipe, MathPipe];
     ...COMPONENTS,
     ...ENTRY_COMPONENTS,
     ...DIRECTIVES,
-    ...PIPES
+    ...PIPES,
+    ...ELEMENTS
   ],
-  entryComponents: ENTRY_COMPONENTS,
+  entryComponents: [
+    ...ENTRY_COMPONENTS,
+    ...ELEMENTS
+  ],
   imports: [
     /**
      * Replace with another implementation

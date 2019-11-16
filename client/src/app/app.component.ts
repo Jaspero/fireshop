@@ -1,8 +1,9 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Injector, OnInit} from '@angular/core';
+import { createCustomElement } from '@angular/elements';
 import {Observable} from 'rxjs';
 import {debounceTime, map} from 'rxjs/operators';
+import {ELEMENT_SELECTOR} from './elements/elements.const';
 import {StateService} from './shared/services/state/state.service';
-import {DEFINITION_TEMPLATES} from './modules/module-definition/pages/definition-instance/consts/definition-templates.const';
 
 @Component({
   selector: 'jms-root',
@@ -12,8 +13,18 @@ import {DEFINITION_TEMPLATES} from './modules/module-definition/pages/definition
 })
 export class AppComponent implements OnInit {
   constructor(
-    private state: StateService
-  ) {}
+    private state: StateService,
+    private injector: Injector
+  ) {
+
+    /**
+     * Register custom elements
+     */
+    ELEMENT_SELECTOR.forEach(({component, selector}) => {
+      const element = createCustomElement(component, {injector});
+      customElements.define(selector, element);
+    });
+  }
 
   loading$: Observable<boolean>;
 

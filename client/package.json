@@ -16,6 +16,7 @@
     "@angular/common": "8.2.10",
     "@angular/compiler": "8.2.10",
     "@angular/core": "8.2.10",
+    "@angular/elements": "8.2.10",
     "@angular/fire": "5.2.1",
     "@angular/forms": "8.2.10",
     "@angular/material": "8.2.3",
@@ -34,7 +35,8 @@
     "rxjs": "6.5.3",
     "tinymce": "5.0.16",
     "tslib": "1.10.0",
-    "zone.js": "0.10.2"
+    "zone.js": "0.10.2",
+    "document-register-element": "1.7.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.803.9",
