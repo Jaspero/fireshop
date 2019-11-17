@@ -67,13 +67,15 @@ export class DateFieldComponent extends FieldComponent<DateData>
       tap(() => {
         let value = this.entryControl.value;
 
-        if (this.cData.format) {
-          if (this.cData.format === 'number') {
-            value = value.getTime();
-          } else {
-            const pipe = new DatePipe('en');
+        if (value) {
+          if (this.cData.format) {
+            if (this.cData.format === 'number') {
+              value = value.getTime();
+            } else {
+              const pipe = new DatePipe('en');
 
-            value = pipe.transform(value, this.cData.format);
+              value = pipe.transform(value, this.cData.format);
+            }
           }
         }
 
