@@ -1,7 +1,91 @@
 {
   "name": "Contact",
-  "description": "",
-  "schema": {},
-  "layout": {},
-  "definitions": {}
+  "description": "Simple Contact Form",
+  "schema": {
+    "properties": {
+      "email": {
+        "type": "string"
+      },
+      "message": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "createdOn": {
+        "type": "number"
+      }
+    },
+    "required": [
+      "email",
+      "name"
+    ]
+  },
+  "layout": {
+    "icon": "email",
+    "instance": {
+      "segments": [
+        {
+          "fields": [
+            "/createdOn",
+            "/name",
+            "/email",
+            "/message"
+          ]
+        }
+      ]
+    },
+    "table": {
+      "tableColumns": [
+        {
+          "key": "/createdOn",
+          "label": "Created On",
+          "pipe": "date"
+        },
+        {
+          "key": "/name",
+          "label": "Name"
+        },
+        {
+          "key": "/email",
+          "label": "Email"
+        },
+        {
+          "key": "/message",
+          "label": "Message"
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "createdOn": {
+      "component": {
+        "configuration": {
+          "hint": "Will be set to today's date if left empty.",
+          "format": "number"
+        },
+        "type": "date"
+      },
+      "formatOnCreate": "value => value || Date.now()",
+      "label": "Created On"
+    },
+    "email": {
+      "component": {
+        "configuration": {
+          "type": "email"
+        },
+        "type": "input"
+      },
+      "label": "Email"
+    },
+    "message": {
+      "component": {
+        "type": "textarea"
+      },
+      "label": "Message"
+    },
+    "name": {
+      "label": "Name"
+    }
+  }
 }
