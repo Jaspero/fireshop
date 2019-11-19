@@ -13,6 +13,7 @@ import {Role} from '../../shared/enums/role.enum';
 import {Settings} from '../../shared/interfaces/settings.interface';
 import {DbService} from '../../shared/services/db/db.service';
 import {notify} from '../../shared/utils/notify.operator';
+import {randomPassword} from '../../shared/utils/random-password';
 
 interface User {
   id?: string;
@@ -94,6 +95,10 @@ export class SettingsComponent extends RxDestroy implements OnInit {
         })
       );
     };
+  }
+
+  generateRandomPassword() {
+    this.form.get('password').setValue(randomPassword());
   }
 
   add(form: FormGroupDirective) {

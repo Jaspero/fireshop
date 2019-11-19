@@ -66,6 +66,7 @@
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Password</mat-label>
               <input type="password" formControlName="password" matInput>
+              <mat-icon class="pointer" matSuffix matTooltip="Generate Random Password" (click)="generateRandomPassword()">cached</mat-icon>
               <mat-hint>A user won't be created if a password isn't provided</mat-hint>
               <mat-error>Must be at least 6 characters</mat-error>
             </mat-form-field>
