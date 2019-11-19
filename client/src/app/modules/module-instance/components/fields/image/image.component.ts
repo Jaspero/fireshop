@@ -46,6 +46,7 @@ export class ImageComponent extends FieldComponent<ImageData>
   value: File;
   imageUrl: FormControl;
   disInput = false;
+  imageSrc;
 
   ngOnInit() {
     this.imageUrl = new FormControl(this.cData.control.value);
@@ -63,6 +64,13 @@ export class ImageComponent extends FieldComponent<ImageData>
 
     this.disInput = true;
     this.imageUrl.setValue(this.value.name);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imageSrc = reader.result;
+      this.cdr.detectChanges();
+    };
+    reader.readAsDataURL(this.value);
   }
 
   remove() {
