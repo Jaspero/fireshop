@@ -7,9 +7,7 @@
       type="number"
       [placeholder]="cData.placeholder"
       [formControl]="cData.control">
-    <mat-hint *ngIf="cData.hint">
-      {{cData.hint}}
-    </mat-hint>
+    <mat-hint *ngIf="cData.hint" [innerHTML]="cData.hint | jpSanitize"></mat-hint>
   </mat-form-field>
 
   <mat-form-field *ngSwitchDefault class="w-full" appearance="outline" [class.mat-form-field-has-hint]="cData.hint">
@@ -19,8 +17,6 @@
         [attr.type]="cData.type"
         [placeholder]="cData.placeholder"
         [formControl]="cData.control">
-    <mat-hint *ngIf="cData.hint">
-      {{cData.hint}}
-    </mat-hint>
+    <mat-hint *ngIf="cData.hint" [innerHTML]="cData.hint | jpSanitize"></mat-hint>
   </mat-form-field>
 </ng-container>
