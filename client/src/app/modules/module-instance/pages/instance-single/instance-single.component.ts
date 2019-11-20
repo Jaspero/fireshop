@@ -88,24 +88,7 @@ export class InstanceSingleComponent implements OnInit {
             );
             const form = parser.buildForm(value);
 
-            console.log('parser', parser);
-            console.log('form', form);
-
-            Object.values(parser.pointers).forEach(entry => {
-              /**
-               * TODO:
-               * For the moment formatOn methods are
-               * only supported on FormControls.
-               * We might want to expand on this later on.
-               */
-              if (entry.control instanceof FormControl && entry.formatOnLoad) {
-                const adjustedValue = entry.formatOnLoad(entry.control.value);
-
-                if (adjustedValue !== entry.control.value) {
-                  entry.control.setValue(adjustedValue);
-                }
-              }
-            });
+            parser.loadHooks();
 
             this.initialValue = JSON.stringify(form.getRawValue());
             this.currentValue = JSON.stringify(this.initialValue);
@@ -172,7 +155,7 @@ export class InstanceSingleComponent implements OnInit {
         ));
       }
 
-      instance.parser.processHooks(this.currentState);
+      instance.parser.preSaveHooks(this.currentState);
 
       return (toExecute.length ? forkJoin(toExecute) : of([])).pipe(
         switchMap(() => {
