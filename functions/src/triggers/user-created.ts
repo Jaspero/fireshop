@@ -33,6 +33,9 @@ export const userCreated = functions.auth.user().onCreate(async user => {
        * for easier reference
        */
       ...role && {providerData: user.providerData.map((it: any) => it.providerId)}
+    })
+    .catch(error => {
+      console.error('Creating user', error);
     });
 
   return true;
