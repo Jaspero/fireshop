@@ -23,6 +23,7 @@ interface SelectData extends FieldData {
     orderBy?: string;
     filter?: WhereFilter
   };
+  autocomplete: string;
 }
 
 @Component({
