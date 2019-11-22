@@ -5,6 +5,7 @@ import {FieldComponent} from '../../field/field.component';
 interface TextareaData extends FieldData {
   rows: number;
   cols: number;
+  autocomplete: string;
 }
 
 @Component({

@@ -5,7 +5,7 @@ import {FirestoreCollection} from '../enums/firestore-collections.enum';
 export const userDeleted = functions.auth.user().onDelete(async user => {
   try {
     await firestore()
-      .collection(FirestoreCollection.Admins)
+      .collection(FirestoreCollection.Users)
       .doc(user.uid)
       .delete();
   } catch (e) {}
