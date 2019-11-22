@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {MatTabChangeEvent} from '@angular/material/tabs';
 import {CompiledSegment} from '../../../../../shared/interfaces/compiled-segment.interface';
-import {InstanceSegment} from '../../../../../shared/interfaces/module.interface';
+import {ModuleInstanceSegment} from '../../../../../shared/interfaces/module-instance-segment.interface';
 import {CompiledField} from '../../../interfaces/compiled-field.interface';
 import {filterAndCompileSegments} from '../../../utils/filter-and-compile-segments';
 import {safeEval} from '../../../utils/safe-eval';
@@ -24,7 +24,7 @@ interface SegmentTabShared {
 
 interface SegmentTab extends SegmentTabShared {
   fields?: string[];
-  nestedSegments?: InstanceSegment[];
+  nestedSegments?: ModuleInstanceSegment[];
 }
 
 interface CompiledSegmentTab extends SegmentTabShared {

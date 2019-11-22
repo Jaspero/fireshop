@@ -1,7 +1,8 @@
 import {MatDialogConfig} from '@angular/material/dialog';
 import {JSONSchema7} from 'json-schema';
 import {FilterMethod} from '../enums/filter-method.enum';
-import {InstanceSegment, ModuleDefinition} from './module.interface';
+import {ModuleInstanceSegment} from './module-instance-segment.interface';
+import {ModuleDefinition} from './module.interface';
 
 export interface FilterModuleDefinition extends ModuleDefinition {
   filterMethod?: FilterMethod;
@@ -21,7 +22,7 @@ export interface FilterModule {
   formatOnSubmit?: string;
   value?: any;
   definitions?: FilterModuleDefinitions;
-  segments?: InstanceSegment[];
+  segments?: ModuleInstanceSegment[];
   clearFilters?: any;
   clearFiltersLabel?: string;
   dialogOptions?: Partial<MatDialogConfig>;

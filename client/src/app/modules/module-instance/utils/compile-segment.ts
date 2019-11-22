@@ -1,11 +1,9 @@
 import {ComponentPortal} from '@angular/cdk/portal';
 import {Injector} from '@angular/core';
 import {CompiledSegment} from '../../../shared/interfaces/compiled-segment.interface';
+import {ModuleInstanceSegment} from '../../../shared/interfaces/module-instance-segment.interface';
 import {SegmentType} from '../enums/segment-type.enum';
-import {
-  InstanceSegment,
-  ModuleDefinitions
-} from '../../../shared/interfaces/module.interface';
+import {ModuleDefinitions} from '../../../shared/interfaces/module.interface';
 import {SegmentComponent} from '../components/segment/segment.component';
 import {SEGMENT_TYPE_COMPONENT_MAP} from '../consts/segment-type-component-map.const';
 import {CompiledField} from '../interfaces/compiled-field.interface';
@@ -13,7 +11,7 @@ import {createSegmentInjector} from './create-segment-injector';
 import {Parser} from './parser';
 
 export function compileSegment(
-  segment: InstanceSegment,
+  segment: ModuleInstanceSegment,
   parser: Parser,
   definitions: ModuleDefinitions,
   injector: Injector,

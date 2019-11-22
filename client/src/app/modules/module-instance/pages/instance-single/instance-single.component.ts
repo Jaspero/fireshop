@@ -6,14 +6,14 @@ import * as nanoid from 'nanoid';
 import {forkJoin, Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
-import {InstanceSegment, Module} from '../../../../shared/interfaces/module.interface';
+import {ModuleInstanceSegment} from '../../../../shared/interfaces/module-instance-segment.interface';
+import {Module} from '../../../../shared/interfaces/module.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {queue} from '../../../../shared/utils/queue.operator';
 import {InstanceSingleState} from '../../enums/instance-single-state.enum';
 import {ModuleInstanceComponent} from '../../module-instance.component';
-import {compileSegment} from '../../utils/compile-segment';
 import {filterAndCompileSegments} from '../../utils/filter-and-compile-segments';
 import {Parser} from '../../utils/parser';
 import {CompiledSegment} from '../../../../shared/interfaces/compiled-segment.interface';
@@ -94,7 +94,7 @@ export class InstanceSingleComponent implements OnInit {
             this.currentValue = JSON.stringify(this.initialValue);
 
             let editTitleKey = 'id';
-            let segments: InstanceSegment[];
+            let segments: ModuleInstanceSegment[];
 
             if (
               module.layout &&

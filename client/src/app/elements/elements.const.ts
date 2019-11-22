@@ -1,3 +1,4 @@
+import {STATIC_CONFIG} from '../../environments/static-config';
 import {LinkComponent} from './link/link.component';
 
 export const ELEMENTS = [
@@ -6,7 +7,7 @@ export const ELEMENTS = [
 
 export const ELEMENT_SELECTOR = [
   {
-    selector: 'jms-e-link',
+    selector: STATIC_CONFIG.elementSelectorPrefix + 'link',
     component: LinkComponent
   }
 ];

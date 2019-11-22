@@ -7,7 +7,8 @@ import {SegmentType} from '../../../modules/module-instance/enums/segment-type.e
 import {filterAndCompileSegments} from '../../../modules/module-instance/utils/filter-and-compile-segments';
 import {Parser} from '../../../modules/module-instance/utils/parser';
 import {CompiledSegment} from '../../interfaces/compiled-segment.interface';
-import {InstanceSegment, ModuleDefinitions} from '../../interfaces/module.interface';
+import {ModuleInstanceSegment} from '../../interfaces/module-instance-segment.interface';
+import {ModuleDefinitions} from '../../interfaces/module.interface';
 import {StateService} from '../../services/state/state.service';
 
 @Component({
@@ -27,7 +28,7 @@ export class CompiledFormComponent implements OnInit {
     value?: any,
     schema: JSONSchema7,
     definitions?: ModuleDefinitions,
-    segments?: InstanceSegment[];
+    segments?: ModuleInstanceSegment[];
   };
 
   @OnChange(function(value) {

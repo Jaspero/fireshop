@@ -1,13 +1,14 @@
 import {JSONSchema7} from 'json-schema';
 import {InstanceSingleState} from '../../modules/module-instance/enums/instance-single-state.enum';
-import {SegmentType} from '../../modules/module-instance/enums/segment-type.enum';
 import {PipeType} from '../enums/pipe-type.enum';
 import {ComponentType} from './component-type.enum';
 import {FilterModule} from './filter-module.interface';
+import {ModuleAuthorization} from './module-authorization.interface';
+import {ModuleInstance} from './module-instance.interface';
 import {ModuleMetadata} from './module-metadata.interface';
+import {ModuleOverview} from './module-overview.interface';
 import {SearchModule} from './search-module.interface';
 import {SortModule} from './sort-module.interface';
-import {ModuleAuthorization} from './module-authorization.interface';
 
 export interface TableColumn {
   /**
@@ -31,23 +32,6 @@ export interface TableColumn {
 
 export interface NestedTableColumn extends TableColumn {
   showLabel?: boolean;
-}
-
-export interface InstanceSegment<C = any> {
-  fields: string[] | any[];
-  array?: string;
-  type?: SegmentType;
-  title?: string;
-  subTitle?: string;
-  description?: string;
-  nestedSegments?: InstanceSegment<C>[];
-  columnsDesktop?: number;
-  columnsTablet?: number;
-  columnsMobile?: number;
-  configuration?: C;
-  classes?: string[];
-  authorization?: string[];
-  id?: string;
 }
 
 export interface TableSort {
@@ -78,9 +62,8 @@ export interface ModuleLayout {
   sortModule?: SortModule;
   filterModule?: FilterModule;
   searchModule?: SearchModule;
-  instance: {
-    segments: InstanceSegment[];
-  };
+  instance?: ModuleInstance;
+  overview?: ModuleOverview;
 }
 
 export interface ComponentDefinition {
