@@ -62,17 +62,21 @@ export class SegmentComponent<T = any> implements OnInit {
       const values = get(this.segment.entryValue, this.segment.array);
 
       if (values) {
-        values.forEach(() => this.addArrayItem());
+        values.forEach(() => this.addArrayItem(false));
 
         (this.pointers[this.segment.array].control as FormControl).patchValue(
           values
         );
+
+        for (let i = 0; i < values.length; i++) {
+          this.sData.parser.loadHooks(this.pointers[this.segment.array].arrayPointers[i]);
+        }
       }
     }
   }
 
-  addArrayItem() {
-    this.sData.parser.addArrayItem(this.segment.array);
+  addArrayItem(loadHook = true) {
+    this.sData.parser.addArrayItem(this.segment.array, loadHook);
 
     const arrayPointers = this.pointers[this.segment.array].arrayPointers;
 
@@ -81,7 +85,7 @@ export class SegmentComponent<T = any> implements OnInit {
         .map(
           ([key, pointer]) =>
             this.sData.parser.field(
-              this.segment.array + '/' + key,
+              key,
               pointer,
               this.sData.definitions,
               true,

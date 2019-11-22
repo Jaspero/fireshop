@@ -372,7 +372,7 @@ export class Parser {
     };
   }
 
-  addArrayItem(pointer: string) {
+  addArrayItem(pointer: string, loadHooks = false) {
     const target = this.pointers[pointer];
     const control = this.pointers[pointer].control as FormArray;
 
@@ -383,10 +383,13 @@ export class Parser {
       const properties = this.buildProperties(
         target.properties,
         target.required,
-        '',
+        pointer + '/',
         false
       );
 
+      if (loadHooks) {
+        this.loadHooks(properties.pointers);
+      }
       target.arrayPointers.push(properties.pointers);
       control.push(properties.form);
     } else {
@@ -400,14 +403,33 @@ export class Parser {
     (this.pointers[pointer].control as FormArray).removeAt(index);
   }
 
-  processHooks(
+  loadHooks(pointers = this.pointers) {
+    Object.values(pointers).forEach(entry => {
+      /**
+       * TODO:
+       * For the moment formatOn methods are
+       * only supported on FormControls.
+       * We might want to expand on this later on.
+       */
+      if (entry.control instanceof FormControl && entry.formatOnLoad) {
+        const adjustedValue = entry.formatOnLoad(entry.control.value);
+
+        if (adjustedValue !== entry.control.value) {
+          entry.control.setValue(adjustedValue);
+        }
+      }
+    });
+  }
+
+  preSaveHooks(
     currentState: ViewState,
-    statesToProcess = [ViewState.Edit, ViewState.Copy, ViewState.New]
+    statesToProcess = [ViewState.Edit, ViewState.Copy, ViewState.New],
+    pointers = this.pointers
   ) {
 
     const preSaveData = this.form.getRawValue();
 
-    Object.values(this.pointers).forEach(entry => {
+    Object.values(pointers).forEach(entry => {
       /**
        * TODO:
        * For the moment formatOn methods are
@@ -432,6 +454,12 @@ export class Parser {
         if (value !== entry.control.value) {
           entry.control.setValue(value);
         }
+      }
+
+      if (entry.arrayPointers) {
+        entry.arrayPointers.forEach(arrayPointers =>
+          this.preSaveHooks(currentState, statesToProcess, arrayPointers)
+        );
       }
     });
   }

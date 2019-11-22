@@ -15,18 +15,28 @@ export const userCreated = functions.auth.user().onCreate(async user => {
       role: role.role
     };
 
-    await Promise.all([
-      auth().setCustomUserClaims(user.uid, customClaims),
-      firestore()
-        .collection(FirestoreCollection.Admins)
-        .doc(user.uid)
-        .set({
-          createdOn: Date.now(),
-          email: user.email,
-          providerData: user.providerData.map((it: any) => it.providerId)
-        })
-    ]);
+    auth().setCustomUserClaims(user.uid, customClaims)
+      .catch(error => {
+        console.error('Setting custom claims', error);
+      });
   }
+
+  firestore()
+    .collection(FirestoreCollection.Users)
+    .doc(user.uid)
+    .set({
+      createdOn: Date.now(),
+      email: user.email,
+
+      /**
+       * Assign providerData if it's an admin
+       * for easier reference
+       */
+      ...role && {providerData: user.providerData.map((it: any) => it.providerId)}
+    })
+    .catch(error => {
+      console.error('Creating user', error);
+    });
 
   return true;
 });

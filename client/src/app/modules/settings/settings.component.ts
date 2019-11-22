@@ -4,7 +4,7 @@ import {
   Component,
   OnInit
 } from '@angular/core';
-import {FormBuilder, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, FormGroupDirective, Validators} from '@angular/forms';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {forkJoin, of} from 'rxjs';
 import {switchMap, takeUntil, tap} from 'rxjs/operators';
@@ -52,7 +52,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
 
     forkJoin([
       this.dbService.getUserSettings(),
-      this.dbService.getDocuments(FirestoreCollection.Admins)
+      this.dbService.getDocuments(FirestoreCollection.Users)
     ])
       .pipe(takeUntil(this.destroyed$))
       .subscribe(([settings, adminUsers]) => {

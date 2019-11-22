@@ -10,7 +10,5 @@
     [startView]="cData['startView'] || 'month'"
     [startAt]="startDate">
   </mat-datepicker>
-  <mat-hint *ngIf="cData.hint">
-    {{cData.hint}}
-  </mat-hint>
+  <mat-hint *ngIf="cData.hint" [innerHTML]="cData.hint | jpSanitize"></mat-hint>
 </mat-form-field>

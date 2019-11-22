@@ -23,7 +23,7 @@ export class FilterDialogComponent {
 
   apply(form: FormGroup, parser: Parser, override?: any) {
 
-    parser.processHooks(
+    parser.preSaveHooks(
       ViewState.New,
       []
     );

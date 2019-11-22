@@ -9,7 +9,5 @@
     matSuffix
     *ngIf="cData.populate && (loading$ | async)"
     [diameter]="20"></mat-spinner>
-  <mat-hint *ngIf="cData.hint">
-    {{cData.hint}}
-  </mat-hint>
+  <mat-hint *ngIf="cData.hint" [innerHTML]="cData.hint | jpSanitize"></mat-hint>
 </mat-form-field>
