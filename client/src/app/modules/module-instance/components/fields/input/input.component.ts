@@ -4,7 +4,7 @@ import {FieldComponent} from '../../field/field.component';
 
 interface InputData extends FieldData {
   type: 'text' | 'number' | 'email';
-  autocomplete: string;
+  autocomplete?: string;
 }
 
 @Component({

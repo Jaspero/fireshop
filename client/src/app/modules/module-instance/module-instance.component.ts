@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {map, shareReplay, switchMap, take} from 'rxjs/operators';
 import {Module} from '../../shared/interfaces/module.interface';
 import {StateService} from '../../shared/services/state/state.service';
+import {InstanceOverviewContextService} from './services/instance-overview-context.service';
 
 @Component({
   selector: 'jms-module-instance',
@@ -14,7 +15,8 @@ import {StateService} from '../../shared/services/state/state.service';
 export class ModuleInstanceComponent implements OnInit {
   constructor(
     private state: StateService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private ioc: InstanceOverviewContextService
   ) {}
 
   module$: Observable<Module>;
@@ -29,5 +31,7 @@ export class ModuleInstanceComponent implements OnInit {
       ),
       shareReplay(1)
     );
+
+    this.ioc.module$ = this.module$;
   }
 }

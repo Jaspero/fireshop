@@ -4,7 +4,7 @@
 </mat-dialog-content>
 <mat-dialog-actions class="jc-end">
   <ng-container *ngIf="data.clearFilters">
-    <button type="button" mat-raised-button (click)="apply(cForm.form, data.clearFilters)">
+    <button type="button" mat-raised-button (click)="apply(cForm.form, cForm.parser, data.clearFilters)">
       {{data.clearFiltersLabel || 'Clear'}}
     </button>
   </ng-container>

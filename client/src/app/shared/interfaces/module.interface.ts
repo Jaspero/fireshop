@@ -3,6 +3,7 @@ import {InstanceSingleState} from '../../modules/module-instance/enums/instance-
 import {PipeType} from '../enums/pipe-type.enum';
 import {ComponentType} from './component-type.enum';
 import {FilterModule} from './filter-module.interface';
+import {InstanceSort} from './instance-sort.interface';
 import {ModuleAuthorization} from './module-authorization.interface';
 import {ModuleInstance} from './module-instance.interface';
 import {ModuleMetadata} from './module-metadata.interface';
@@ -34,11 +35,6 @@ export interface NestedTableColumn extends TableColumn {
   showLabel?: boolean;
 }
 
-export interface TableSort {
-  active: string;
-  direction: 'desc' | 'asc';
-}
-
 export interface ModuleLayout {
   icon?: string;
   editTitleKey?: string;
@@ -49,11 +45,11 @@ export interface ModuleLayout {
    * directly to the provided id.
    */
   directLink?: string;
+  hideAdd?: string[];
+  sort?: InstanceSort;
   table?: {
-    sort?: TableSort;
     tableColumns?: TableColumn[];
     hideCheckbox?: string[];
-    hideAdd?: string[];
     hideEdit?: string[];
     hideDelete?: string[];
     hideExport?: string[];
