@@ -40,13 +40,13 @@
 
           <ng-container *ngIf="!data.hideExport">
             <span class="hide-xs">
-              <button mat-button (click)="ioc.export(data.id)">
+              <button mat-button (click)="ioc.export(data.moduleId)">
                 <mat-icon>vertical_align_top</mat-icon>
                 <span>Export</span>
               </button>
             </span>
             <span class="show-xs">
-              <button mat-icon-button (click)="ioc.export(data.id)" matTooltip="Export">
+              <button mat-icon-button (click)="ioc.export(data.moduleId)" matTooltip="Export">
                 <mat-icon>vertical_align_top</mat-icon>
               </button>
             </span>
@@ -54,7 +54,7 @@
 
           <jms-import
             *ngIf="!data.hideImport"
-            [collection]="data.id"
+            [collection]="data.moduleId"
             [schema]="data.schema">
           </jms-import>
 
@@ -69,7 +69,7 @@
           <button
             *ngIf="data.sortModule"
             mat-button
-            (click)="ioc.openSortDialog(data.id, data.name, data.sortModule)">
+            (click)="ioc.openSortDialog(data.moduleId, data.name, data.sortModule)">
             <mat-icon>vertical_split</mat-icon>
             <span>Sort</span>
           </button>
