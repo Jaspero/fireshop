@@ -10,5 +10,16 @@
     </a>
   </mat-toolbar>
 
+  <div class="flex jc-end p-a-s m-r-s" *ngIf="views && views.length">
+    <button
+      *ngFor="let view of views"
+      [matTooltip]="view.title"
+      [color]="activeView === view.selector ? 'primary' : 'default'"
+      (click)="changeCurrentView(view.selector)"
+      mat-icon-button>
+      <mat-icon>{{view.icon}}</mat-icon>
+    </button>
+  </div>
+
   <div class="contents" [innerHtml]="currentView | jpSanitize"></div>
 </ng-container>

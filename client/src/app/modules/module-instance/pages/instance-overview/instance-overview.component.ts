@@ -34,6 +34,7 @@ export class InstanceOverviewComponent extends RxDestroy
 
   hideAdd: boolean;
   currentView: string;
+  activeView: string;
   showViewSelector: boolean;
   name: string;
   views: ModuleOverviewView[];
@@ -59,9 +60,7 @@ export class InstanceOverviewComponent extends RxDestroy
         this.ioc.selection = new SelectionModel<string>(true, []);
 
         this.name = module.name;
-        this.currentView = this.getCurrentView(
-          STATIC_CONFIG.elementSelectorPrefix + 'table'
-        );
+        this.currentView = this.getCurrentView('table');
         this.showViewSelector = false;
         this.views = [];
         this.hideAdd = false;
@@ -78,15 +77,14 @@ export class InstanceOverviewComponent extends RxDestroy
 
           if (module.layout.overview) {
             if (module.layout.overview.defaultView) {
-              this.currentView = this.getCurrentView(
-                module.layout.overview.defaultView.startsWith(STATIC_CONFIG.elementSelectorPrefix) ?
-                  module.layout.overview.defaultView :
-                  STATIC_CONFIG.elementSelectorPrefix + module.layout.overview.defaultView
-              );
+              this.currentView = this.getCurrentView(module.layout.overview.defaultView);
             }
 
             this.showViewSelector = !!module.layout.overview.showViewSelector;
-            this.views = module.layout.overview.views || [];
+
+            if (this.showViewSelector) {
+              this.views = module.layout.overview.views || [];
+            }
 
             if (module.layout.hideAdd) {
               this.hideAdd = module.layout.hideAdd.includes(this.state.role);
@@ -256,6 +254,15 @@ export class InstanceOverviewComponent extends RxDestroy
   }
 
   getCurrentView(selector: string) {
-    return `<${selector}></${selector}>`;
+    this.activeView = selector;
+
+    const toUse = selector.startsWith(STATIC_CONFIG.elementSelectorPrefix) ? selector : STATIC_CONFIG.elementSelectorPrefix + selector;
+
+    return `<${toUse}></${toUse}>`;
+  }
+
+  changeCurrentView(view: string) {
+    this.currentView = this.getCurrentView(view);
+    this.cdr.markForCheck();
   }
 }
