@@ -206,7 +206,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit {
               )
             )
         )
-      )
+      );
   }
 
   ngAfterViewInit() {
