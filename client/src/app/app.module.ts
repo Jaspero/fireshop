@@ -152,7 +152,6 @@ const PIPES = [ColumnPipe, ShowFieldPipe, MathPipe];
     ...DIRECTIVES,
     ...PIPES,
     ...ELEMENTS,
-    TableComponent
   ],
   entryComponents: [
     ...ENTRY_COMPONENTS,
