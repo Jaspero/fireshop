@@ -14,6 +14,7 @@ interface TabsConfiguration {
   dynamicHeight?: boolean;
   disableRipple?: boolean;
   selectedTabChange?: string | SelectedTabChange;
+  alignment?: 'start' | 'center' | 'end';
   tabs: SegmentTab[];
 }
 
