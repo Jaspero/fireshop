@@ -215,9 +215,10 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit {
       switchMap(change => change.last.sortChange),
       takeUntil(this.destroyed$)
     )
-      .subscribe((value: any) =>
-        this.ioc.sortChange$.next(value)
-      );
+      .subscribe((value: any) => {
+        console.log('value', value);
+        this.ioc.sortChange$.next(value);
+      });
   }
 
   private mapRow(

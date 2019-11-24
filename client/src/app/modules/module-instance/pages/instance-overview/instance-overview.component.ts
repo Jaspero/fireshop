@@ -103,7 +103,7 @@ export class InstanceOverviewComponent extends RxDestroy
               .pipe(
                 startWith(this.ioc.searchControl.value)
               ),
-          ...module.layout.sort ? [this.ioc.sortChange$] : []
+            this.ioc.sortChange$
           ]).pipe(
             switchMap(([pageSize, filters, search, sort]) => {
 
