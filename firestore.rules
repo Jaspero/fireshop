@@ -14,8 +14,8 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     match /users/{user=**} {
-      allow read: if readOrWrite() || resource.id == auth.uid;
-      allow write, delete: if write() || resource.id == auth.uid;
+      allow read: if readOrWrite() || resource.id == request.auth.uid;
+      allow write, delete: if write() || resource.id == request.auth.uid;
     }
 
     match /{document=**} {
