@@ -47,14 +47,17 @@ export class InstanceOverviewComponent extends RxDestroy
       .subscribe(module => {
 
         this.ioc.routeData = this.state.getRouterData({
-          pageSize: 10
+          pageSize: 10,
+          sort: null,
+          filter: null,
+          search: ''
         });
 
         this.ioc.pageSize = new FormControl(this.ioc.routeData.pageSize);
         this.ioc.emptyState$ = new BehaviorSubject(false);
-        this.ioc.filterChange$ = new BehaviorSubject(null);
-        this.ioc.sortChange$ = new BehaviorSubject(null);
-        this.ioc.searchControl = new FormControl('');
+        this.ioc.filterChange$ = new BehaviorSubject(this.ioc.routeData.filter);
+        this.ioc.sortChange$ = new BehaviorSubject(this.ioc.routeData.sort);
+        this.ioc.searchControl = new FormControl(this.ioc.routeData.search);
         this.ioc.hasMore$ = new BehaviorSubject(false);
         this.ioc.loadMore$ = new Subject<boolean>();
         this.ioc.selection = new SelectionModel<string>(true, []);
@@ -67,11 +70,11 @@ export class InstanceOverviewComponent extends RxDestroy
 
         if (module.layout) {
 
-          if (module.layout.sort) {
+          if (module.layout.sort && !this.ioc.routeData.sort) {
             this.ioc.sortChange$.next(module.layout.sort);
           }
 
-          if (module.layout.filterModule && module.layout.filterModule.value) {
+          if (module.layout.filterModule && module.layout.filterModule.value && !this.ioc.routeData.filter) {
             this.ioc.filterChange$.next(module.layout.filterModule.value);
           }
 
@@ -111,6 +114,10 @@ export class InstanceOverviewComponent extends RxDestroy
 
               routeData.pageSize = pageSize as number;
               routeData.filters = filters;
+
+              if (search) {
+                routeData.search = search;
+              }
 
               if (sort) {
                 routeData.sort = sort as InstanceSort;

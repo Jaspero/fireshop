@@ -30,8 +30,10 @@ export class StateService {
    */
   routerData: {[url: string]: any} = {};
 
-  setRouteData(data: any) {
-    const url = this.router.routerState.snapshot.url;
+  setRouteData(
+    data: any,
+    url = this.router.routerState.snapshot.url
+  ) {
     this.routerData[url] = data;
   }
 
