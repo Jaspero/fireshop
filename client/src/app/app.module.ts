@@ -82,7 +82,6 @@ import {MathPipe} from './shared/pipes/math/math-pipe.';
 import {MatProgressBarModule} from '@angular/material';
 import { FilterDialogComponent } from './modules/module-instance/components/filter-dialog/filter-dialog.component';
 import { CompiledFormComponent } from './shared/components/compiled-form/compiled-form.component';
-import { TableComponent } from './elements/table/table.component';
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -205,7 +204,12 @@ const PIPES = [ColumnPipe, ShowFieldPipe, MathPipe];
     LoadClickModule,
     SanitizeModule
   ],
-  providers: [{provide: MAT_DATE_LOCALE, useValue: 'en-GB'}],
+  providers: [
+    {
+      provide: MAT_DATE_LOCALE,
+      useValue: 'en-GB'
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
