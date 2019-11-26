@@ -38,7 +38,12 @@ export class ColumnPipe implements PipeTransform {
 
   pipes: {[key: string]: any};
 
-  transform(value: any, pipeTypes: PipeType | PipeType[], allArgs?: any[] | {[key: string]: any}): any {
+  transform(
+    value: any,
+    pipeTypes: PipeType | PipeType[],
+    allArgs: any[] | {[key: string]: any},
+    row: any
+  ): any {
     if (!pipeTypes) {
       return value;
     }

@@ -309,7 +309,8 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit {
           value = this.ioc.columnPipe.transform(
             get(rowData, column.key),
             column.pipe,
-            column.pipeArguments
+            column.pipeArguments,
+            rowData
           );
         } else {
           value = '';
