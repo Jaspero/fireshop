@@ -59,6 +59,10 @@ export abstract class DbService {
 
   getStateChanges(
     moduleId: string,
+    sort?: {
+      active: string;
+      direction: string;
+    },
     pageSize?: number,
     cursor?: any
   ): Observable<any[]> {

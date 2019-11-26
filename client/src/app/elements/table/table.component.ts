@@ -18,7 +18,7 @@ import {JSONSchema7} from 'json-schema';
 // @ts-ignore
 import * as nanoid from 'nanoid';
 import {Observable} from 'rxjs';
-import {filter, map, shareReplay, switchMap, takeUntil} from 'rxjs/operators';
+import {filter, map, shareReplay, startWith, switchMap, takeUntil} from 'rxjs/operators';
 import {InstanceSingleState} from '../../modules/module-instance/enums/instance-single-state.enum';
 import {InstanceOverviewContextService} from '../../modules/module-instance/services/instance-overview-context.service';
 import {Parser} from '../../modules/module-instance/utils/parser';
@@ -211,12 +211,12 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.sort.changes.pipe(
+      startWith(this.sort),
       filter(change => change.last),
       switchMap(change => change.last.sortChange),
       takeUntil(this.destroyed$)
     )
       .subscribe((value: any) => {
-        console.log('value', value);
         this.ioc.sortChange$.next(value);
       });
   }
