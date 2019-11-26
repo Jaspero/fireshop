@@ -63,7 +63,7 @@ export class ColumnPipe implements PipeTransform {
         }
 
         try {
-          new Date(val);
+          const test = new Date(val);
         } catch (e) {
           return '';
         }
