@@ -1,5 +1,5 @@
 import {SelectionModel} from '@angular/cdk/collections';
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {RxDestroy} from '@jaspero/ng-helpers';
 // @ts-ignore

@@ -1,5 +1,5 @@
 import {SelectionModel} from '@angular/cdk/collections';
-import {Injectable} from '@angular/core';
+import {Injectable, TemplateRef} from '@angular/core';
 import {DocumentChangeAction} from '@angular/fire/firestore';
 import {FormControl} from '@angular/forms';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
@@ -52,6 +52,7 @@ export class InstanceOverviewContextService {
   searchControl: FormControl;
   selection: SelectionModel<string>;
   pageSizes = PAGE_SIZES;
+  subHeaderTemplate$ = new Subject<TemplateRef<any>>();
 
   pageSize: FormControl;
 

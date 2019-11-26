@@ -107,8 +107,8 @@ export class FbDatabaseService extends DbService {
                 item.operator === FilterMethod.ArrayContains ||
                 item.operator === FilterMethod.ArrayContainsAny ||
                 item.operator === FilterMethod.In
-              ) ?
-                Array.isArray(item.value) && item.value.length :
+              ) && Array.isArray(item.value) ?
+                item.value.length :
                 true
             )
           ) {

@@ -26,7 +26,8 @@ export interface TableColumn {
   pipeArguments?: any | {[key: string]: any};
   sortable?: boolean;
   join?: string;
-  tooltip?: string;
+  tooltip?: string | ((data: any) => any);
+  tooltipFunction?: boolean;
   nestedColumns?: NestedTableColumn[];
   authorization?: string[];
 }
