@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component, Injector, OnInit} from '@angular/core';
 import { createCustomElement } from '@angular/elements';
+import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {debounceTime, map} from 'rxjs/operators';
 import {ELEMENT_SELECTOR} from './elements/elements.const';
@@ -14,7 +15,8 @@ import {StateService} from './shared/services/state/state.service';
 export class AppComponent implements OnInit {
   constructor(
     private state: StateService,
-    private injector: Injector
+    private injector: Injector,
+    private router: Router
   ) {
 
     /**
@@ -29,6 +31,13 @@ export class AppComponent implements OnInit {
   loading$: Observable<boolean>;
 
   ngOnInit() {
+
+    /**
+     * Always reload routes
+     */
+    this.router.routeReuseStrategy.shouldReuseRoute = () =>
+      false;
+
     this.loading$ = this.state.loadingQue$.pipe(
       debounceTime(200),
       map(items => !!items.length)
