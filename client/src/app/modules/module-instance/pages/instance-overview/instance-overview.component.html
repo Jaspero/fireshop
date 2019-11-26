@@ -10,15 +10,20 @@
     </a>
   </mat-toolbar>
 
-  <div class="flex jc-end p-a-s m-r-s" *ngIf="views && views.length">
-    <button
-      *ngFor="let view of views"
-      [matTooltip]="view.title"
-      [color]="activeView === view.selector ? 'primary' : 'default'"
-      (click)="changeCurrentView(view.selector)"
-      mat-icon-button>
-      <mat-icon>{{view.icon}}</mat-icon>
-    </button>
+  <div class="flex ai-center fd-row-rev jc-between p-a-s" *ngIf="views && views.length">
+    <div class="m-r-s">
+      <button
+        *ngFor="let view of views"
+        [matTooltip]="view.title"
+        [color]="activeView === view.selector ? 'primary' : 'default'"
+        (click)="changeCurrentView(view.selector)"
+        mat-icon-button>
+        <mat-icon>{{view.icon}}</mat-icon>
+      </button>
+    </div>
+    <ng-container *ngIf="ioc.subHeaderTemplate$ | async as subHeaderTemplate">
+      <ng-container *ngTemplateOutlet="subHeaderTemplate"></ng-container>
+    </ng-container>
   </div>
 
   <div class="contents" [innerHtml]="currentView | jpSanitize"></div>

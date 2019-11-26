@@ -33,14 +33,14 @@ export class FilterDialogComponent {
 
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
+
+        const definition = ((this.data.definitions || {})[key] || {}) as FilterModuleDefinition;
+
         toSend.push({
           key,
           value: data[key],
-          operator: (
-            (
-              (this.data.definitions || {})[key] || {}
-            ) as FilterModuleDefinition
-          ).filterMethod || FilterMethod.Equal
+          operator: definition.filterMethod || FilterMethod.Equal,
+          ...definition.filterLabel && {label: definition.filterLabel}
         });
       }
     }

@@ -107,8 +107,8 @@ export class FbDatabaseService extends DbService {
                 item.operator === FilterMethod.ArrayContains ||
                 item.operator === FilterMethod.ArrayContainsAny ||
                 item.operator === FilterMethod.In
-              ) ?
-                Array.isArray(item.value) && item.value.length :
+              ) && Array.isArray(item.value) ?
+                item.value.length :
                 true
             )
           ) {
@@ -125,8 +125,8 @@ export class FbDatabaseService extends DbService {
       .pipe(take(1));
   }
 
-  getStateChanges(moduleId, pageSize, cursor) {
-    return this.collection(moduleId, pageSize, null, cursor).stateChanges();
+  getStateChanges(moduleId, sort, pageSize, cursor) {
+    return this.collection(moduleId, pageSize, sort, cursor).stateChanges();
   }
 
   getDocument(moduleId, documentId) {

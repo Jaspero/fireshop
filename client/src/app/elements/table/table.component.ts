@@ -2,7 +2,7 @@ import {TemplatePortal} from '@angular/cdk/portal';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
-  Component, Injector,
+  Component, Injector, OnDestroy,
   OnInit,
   QueryList,
   TemplateRef,
@@ -18,7 +18,7 @@ import {JSONSchema7} from 'json-schema';
 // @ts-ignore
 import * as nanoid from 'nanoid';
 import {Observable} from 'rxjs';
-import {filter, map, shareReplay, switchMap, takeUntil} from 'rxjs/operators';
+import {filter, map, shareReplay, startWith, switchMap, takeUntil} from 'rxjs/operators';
 import {InstanceSingleState} from '../../modules/module-instance/enums/instance-single-state.enum';
 import {InstanceOverviewContextService} from '../../modules/module-instance/services/instance-overview-context.service';
 import {Parser} from '../../modules/module-instance/utils/parser';
@@ -56,7 +56,7 @@ interface TableData {
   styleUrls: ['./table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableComponent extends RxDestroy implements OnInit, AfterViewInit {
+export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public ioc: InstanceOverviewContextService,
     private state: StateService,
@@ -73,6 +73,9 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit {
   @ViewChildren(MatSort)
   sort: QueryList<MatSort>;
 
+  @ViewChild('subHeaderTemplate', {static: true})
+  subHeaderTemplate: TemplateRef<any>;
+
   @ViewChild('simpleColumn', {static: true})
   simpleColumnTemplate: TemplateRef<any>;
 
@@ -82,6 +85,15 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit {
   parserCache: {[key: string]: Parser} = {};
 
   ngOnInit() {
+
+    /**
+     * Component isn't necessarily destroyed
+     * before it's instantiated again
+     */
+    setTimeout(() => {
+      this.ioc.subHeaderTemplate$.next(this.subHeaderTemplate);
+    }, 100);
+
     this.data$ = this.ioc.module$.pipe(
       map(data => {
         let displayColumns: string[];
@@ -125,9 +137,15 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit {
             []
           );
           tableColumns = pColumns.map(column => {
+
+            const tooltip = column.tooltip ? safeEval(column.tooltip as string) : column.tooltip;
+
             return {
               ...column,
-              ...column.tooltip && {tooltip: safeEval(column.tooltip) || column.tooltip}
+              ...tooltip && {
+                tooltip,
+                tooltipFunction: typeof tooltip === 'function'
+              }
             };
           });
         } else {
@@ -211,14 +229,19 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.sort.changes.pipe(
+      startWith(this.sort),
       filter(change => change.last),
       switchMap(change => change.last.sortChange),
       takeUntil(this.destroyed$)
     )
       .subscribe((value: any) => {
-        console.log('value', value);
         this.ioc.sortChange$.next(value);
       });
+  }
+
+  ngOnDestroy() {
+    this.ioc.subHeaderTemplate$.next(null);
+    super.ngOnDestroy();
   }
 
   private mapRow(

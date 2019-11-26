@@ -6,6 +6,7 @@ import {ModuleDefinition} from './module.interface';
 
 export interface FilterModuleDefinition extends ModuleDefinition {
   filterMethod?: FilterMethod;
+  filterLabel?: string;
 }
 
 export interface FilterModuleDefinitions {

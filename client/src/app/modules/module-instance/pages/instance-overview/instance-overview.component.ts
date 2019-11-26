@@ -1,5 +1,5 @@
 import {SelectionModel} from '@angular/cdk/collections';
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {RxDestroy} from '@jaspero/ng-helpers';
 // @ts-ignore
@@ -198,12 +198,17 @@ export class InstanceOverviewComponent extends RxDestroy
                   )
                 ),
 
-                this.dbService.getStateChanges(module.id, null, null).pipe(
+                this.dbService.getStateChanges(
+                  module.id,
+                  this.ioc.routeData.sort,
+                  this.ioc.routeData.pageSize,
+                  null
+                ).pipe(
                   skip(1),
                   tap(snaps => {
                     snaps.forEach(snap => {
                       const index = snapshots.findIndex(
-                        doc => doc.id === snap.payload.doc.id
+                        sp => sp.payload.doc.id === snap.payload.doc.id
                       );
 
                       switch (snap.type) {
