@@ -49,13 +49,13 @@ export class ColumnPipe implements PipeTransform {
     }
 
     if (Array.isArray(pipeTypes)) {
-      return pipeTypes.reduce((acc, type, index) => this.executePipeTransform(type, acc, (allArgs || {})[index]), value);
+      return pipeTypes.reduce((acc, type, index) => this.executePipeTransform(type, acc, (allArgs || {})[index], row), value);
     } else {
-      return this.executePipeTransform(pipeTypes, value, allArgs);
+      return this.executePipeTransform(pipeTypes, value, allArgs, row);
     }
   }
 
-  private executePipeTransform(type, val, args?) {
+  private executePipeTransform(type, val, args, row) {
     switch (type) {
       case PipeType.Date:
         if (!val) {
@@ -63,7 +63,7 @@ export class ColumnPipe implements PipeTransform {
         }
 
         try {
-          const test = new Date(val);
+          new Date(val);
         } catch (e) {
           return '';
         }
@@ -98,7 +98,7 @@ export class ColumnPipe implements PipeTransform {
         let response = '';
 
         try {
-          response = method(val);
+          response = method(val, row);
         } catch (e) {}
 
         return response;
