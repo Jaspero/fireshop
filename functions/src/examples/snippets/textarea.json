@@ -14,6 +14,6 @@
     }
   },
   "schema": {
-    "type": "array"
+    "type": "string"
   }
 }
