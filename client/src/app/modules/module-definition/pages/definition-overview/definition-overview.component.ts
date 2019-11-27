@@ -152,7 +152,9 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
     confirmation([
       switchMap(() => this.dbService.removeModule(item.id)),
       notify()
-    ]);
+    ], {
+      description: `This action will remove ${item.name} permanently`
+    });
   }
 
   deleteSelection() {
@@ -163,7 +165,12 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
         )
       ),
       notify()
-    ]);
+    ],{
+      description: this.selection.selected.reduce((acc, cur) =>
+        acc + cur + '\n',
+        `This action will remove all of the following modules:\n`
+      )
+    });
   }
 
   exportSelected() {
