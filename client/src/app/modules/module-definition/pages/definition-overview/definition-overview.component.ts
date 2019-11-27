@@ -165,7 +165,7 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
         )
       ),
       notify()
-    ],{
+    ], {
       description: this.selection.selected.reduce((acc, cur) =>
         acc + cur + '\n',
         `This action will remove all of the following modules:\n`
