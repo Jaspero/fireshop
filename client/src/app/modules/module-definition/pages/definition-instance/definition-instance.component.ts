@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {forkJoin, Observable, of} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
+import {ComponentType} from '../../../../shared/interfaces/component-type.enum';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
@@ -212,7 +213,9 @@ export class DefinitionInstanceComponent implements OnInit {
   move(forward: boolean, form: FormGroup) {}
 
   openSnippetSelection(form) {
-    this.snippetForm.reset();
+    this.snippetForm.reset({
+      snippet: ComponentType.Input
+    });
     this.dialog.open(this.modalTemplate, {
       width: '600px'
     })
