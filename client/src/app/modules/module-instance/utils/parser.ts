@@ -257,8 +257,8 @@ export class Parser {
 
           case SchemaType.Object:
             const objectProperties = this.buildProperties(
-              value.properties,
-              value.required,
+              value.items.properties,
+              value.items.required,
               base + key + '/'
             );
 
