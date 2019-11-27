@@ -246,10 +246,9 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
 
   private mapRow(
     overview: TableData,
-    rowData: DocumentChangeAction<any>
+    rowData: any
   ) {
-    const data = rowData.payload.doc.data();
-    const id = rowData.payload.doc.id;
+    const {id, ...data} = rowData;
 
     return {
       data,

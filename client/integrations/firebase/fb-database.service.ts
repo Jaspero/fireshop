@@ -10,6 +10,7 @@ import {FilterMethod} from '../../src/app/shared/enums/filter-method.enum';
 import {Example} from '../../src/app/shared/interfaces/example.interface';
 import {Module} from '../../src/app/shared/interfaces/module.interface';
 import {Settings} from '../../src/app/shared/interfaces/settings.interface';
+import {WhereFilter} from '../../src/app/shared/interfaces/where-filter.interface';
 import {DbService} from '../../src/app/shared/services/db/db.service';
 import {FirestoreCollection} from './firestore-collection.enum';
 
@@ -85,48 +86,35 @@ export class FbDatabaseService extends DbService {
     pageSize,
     sort?,
     cursor?,
-    changes?,
     filters?
   ) {
-    if (!changes) {
-      changes = ['added'];
-    }
-
-    let fMethod: FilterFunction;
-
-    if (filters) {
-      fMethod = (ref) => {
-        filters.forEach(item => {
-
-          if (
-            item.value !== undefined &&
-            item.value !== null &&
-            item.value !== '' &&
-            (
-              (
-                item.operator === FilterMethod.ArrayContains ||
-                item.operator === FilterMethod.ArrayContainsAny ||
-                item.operator === FilterMethod.In
-              ) && Array.isArray(item.value) ?
-                item.value.length :
-                true
-            )
-          ) {
-            ref = ref.where(item.key, item.operator, item.value) as CollectionReference;
-          }
-        });
-
-        return ref;
-      };
-    }
-
-    return this.collection(moduleId, pageSize, sort, cursor, fMethod)
-      .snapshotChanges(changes)
-      .pipe(take(1));
+    return this.collection(moduleId, pageSize, sort, cursor, this.filterMethod(filters))
+      .get({
+        source: 'server'
+      })
+      .pipe(
+        take(1),
+        map(res =>
+          res.docs
+        )
+      );
   }
 
-  getStateChanges(moduleId, sort, pageSize, cursor) {
-    return this.collection(moduleId, pageSize, sort, cursor).stateChanges();
+  getStateChanges(
+    moduleId,
+    pageSize?,
+    sort?,
+    cursor?,
+    filters?: WhereFilter[],
+  ) {
+    return this.collection(
+      moduleId,
+      pageSize,
+      sort,
+      cursor,
+      this.filterMethod(filters)
+    )
+      .stateChanges();
   }
 
   getDocument(moduleId, documentId) {
@@ -219,5 +207,40 @@ export class FbDatabaseService extends DbService {
 
       return final;
     });
+  }
+
+  private filterMethod(
+    filters?: WhereFilter[]
+  ) {
+    let fMethod: FilterFunction;
+
+    if (filters) {
+      fMethod = (ref) => {
+        filters.forEach(item => {
+
+          if (
+            item.value !== undefined &&
+            item.value !== null &&
+            item.value !== '' &&
+            (
+              (
+                item.operator === FilterMethod.ArrayContains ||
+                item.operator === FilterMethod.ArrayContainsAny ||
+                item.operator === FilterMethod.In
+              ) && Array.isArray(item.value) ?
+                item.value.length :
+                true
+            )
+          ) {
+            // @ts-ignore
+            ref = ref.where(item.key, item.operator, item.value) as CollectionReference;
+          }
+        });
+
+        return ref;
+      };
+    }
+
+    return fMethod;
   }
 }

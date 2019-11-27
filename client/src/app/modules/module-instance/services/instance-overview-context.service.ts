@@ -35,7 +35,7 @@ export class InstanceOverviewContextService {
   ) {}
 
   module$: Observable<Module>;
-  items$: Observable<DocumentChangeAction<any>[]>;
+  items$: Observable<any[]>;
 
   columnPipe = new ColumnPipe(this.domSanitizer);
   loading$ = this.state.loadingQue$
@@ -148,7 +148,7 @@ export class InstanceOverviewContextService {
         if (check.checked) {
           this.selection.clear();
         } else {
-          items.forEach(row => this.selection.select(row.payload.doc.id));
+          items.forEach(row => this.selection.select(row.id));
         }
       });
   }

@@ -96,150 +96,166 @@ export class InstanceOverviewComponent extends RxDestroy
         }
 
         this.ioc.items$ = combineLatest([
-            this.ioc.pageSize.valueChanges
+          this.ioc.pageSize.valueChanges
+            .pipe(
+              startWith(this.ioc.routeData.pageSize)
+            ),
+          this.ioc.filterChange$,
+          this.ioc.searchControl
+            .valueChanges
+            .pipe(
+              startWith(this.ioc.searchControl.value)
+            ),
+          this.ioc.sortChange$
+        ]).pipe(
+          switchMap(([pageSize, filters, search, sort]) => {
+
+            const routeData = {...this.ioc.routeData};
+
+            routeData.pageSize = pageSize as number;
+            routeData.filters = filters;
+
+            if (search) {
+              routeData.search = search;
+            }
+
+            if (sort) {
+              routeData.sort = sort as InstanceSort;
+              routeData.sort.active = Parser.standardizeKey(
+                routeData.sort.active
+              );
+            } else {
+              routeData.sort = null;
+            }
+
+            this.state.setRouteData(routeData);
+            this.ioc.routeData = routeData;
+
+            return this.dbService.getDocuments(
+              module.id,
+              pageSize,
+              sort,
+              null,
+              search ?
+                [{
+                  key: module.layout.searchModule.key,
+                  operator: FilterMethod.ArrayContains,
+                  value: search.trim().toLowerCase()
+                }] :
+                filters
+            )
               .pipe(
-                startWith(this.ioc.routeData.pageSize)
-              ),
-            this.ioc.filterChange$,
-            this.ioc.searchControl
-              .valueChanges
-              .pipe(
-                startWith(this.ioc.searchControl.value)
-              ),
-            this.ioc.sortChange$
-          ]).pipe(
-            switchMap(([pageSize, filters, search, sort]) => {
+                queue()
+              );
+          }),
+          switchMap(snapshots => {
+            let cursor;
 
-              const routeData = {...this.ioc.routeData};
+            this.ioc.hasMore$.next(snapshots.length === this.ioc.routeData.pageSize);
 
-              routeData.pageSize = pageSize as number;
-              routeData.filters = filters;
+            if (snapshots.length) {
+              cursor = snapshots[snapshots.length - 1];
+              this.ioc.emptyState$.next(false);
+            } else {
+              this.ioc.emptyState$.next(true);
+            }
 
-              if (search) {
-                routeData.search = search;
-              }
-
-              if (sort) {
-                routeData.sort = sort as InstanceSort;
-                routeData.sort.active = Parser.standardizeKey(
-                  routeData.sort.active
-                );
-              } else {
-                routeData.sort = null;
-              }
-
-              this.state.setRouteData(routeData);
-              this.ioc.routeData = routeData;
-
-              return this.dbService.getDocuments(
+            const changeListener = (cu = null) => {
+              return this.dbService.getStateChanges(
                 module.id,
-                pageSize,
-                sort,
-                null,
-                null,
-                search ?
+                this.ioc.routeData.pageSize,
+                this.ioc.routeData.sort,
+                cu,
+                this.ioc.searchControl.value ?
                   [{
                     key: module.layout.searchModule.key,
                     operator: FilterMethod.ArrayContains,
-                    value: search.trim().toLowerCase()
+                    value: this.ioc.searchControl.value.trim().toLowerCase()
                   }] :
-                  filters
-              )
+                  this.ioc.routeData.filters
+              ).pipe(
+                skip(1),
+                tap(snaps => {
+                  snaps.forEach(snap => {
+                    const index = snapshots.findIndex(
+                      sp => sp.id === snap.payload.doc.id
+                    );
+
+                    switch (snap.type) {
+                      case 'added':
+                        if (index === -1) {
+                          snapshots.push(snap);
+                        }
+                        break;
+                      case 'modified':
+                        if (index !== -1) {
+                          snapshots[index] = snap;
+                        }
+                        break;
+                      case 'removed':
+                        if (index !== -1) {
+                          snapshots.splice(index, 1);
+                        }
+                        break;
+                    }
+                  });
+                })
+              );
+            };
+
+            return merge(
+              this.ioc.loadMore$
                 .pipe(
-                  queue()
-                );
-            }),
-            switchMap(snapshots => {
-              let cursor;
-
-              this.ioc.hasMore$.next(snapshots.length === this.ioc.routeData.pageSize);
-
-              if (snapshots.length) {
-                cursor = snapshots[snapshots.length - 1].payload.doc;
-                this.ioc.emptyState$.next(false);
-              } else {
-                this.ioc.emptyState$.next(true);
-              }
-
-              return merge(
-                this.ioc.loadMore$.pipe(
                   switchMap(() =>
-                    this.dbService
-                      .getDocuments(
-                        module.id,
-                        this.ioc.routeData.pageSize,
-                        this.ioc.routeData.sort,
-                        cursor,
-                        null,
-                        this.ioc.searchControl.value ?
-                          [{
-                            key: module.layout.searchModule.key,
-                            operator: FilterMethod.ArrayContains,
-                            value: this.ioc.searchControl.value.trim().toLowerCase()
-                          }] :
-                          this.ioc.routeData.filters
-                      )
-                      .pipe(
-                        queue(),
-                        tap(snaps => {
-                          if (snaps.length < this.ioc.routeData.pageSize) {
-                            this.ioc.hasMore$.next(false);
-                          }
+                    merge(
+                      this.dbService
+                        .getDocuments(
+                          module.id,
+                          this.ioc.routeData.pageSize,
+                          this.ioc.routeData.sort,
+                          cursor,
+                          this.ioc.searchControl.value ?
+                            [{
+                              key: module.layout.searchModule.key,
+                              operator: FilterMethod.ArrayContains,
+                              value: this.ioc.searchControl.value.trim().toLowerCase()
+                            }] :
+                            this.ioc.routeData.filters
+                        )
+                        .pipe(
+                          queue(),
+                          tap(snaps => {
+                            if (snaps.length < this.ioc.routeData.pageSize) {
+                              this.ioc.hasMore$.next(false);
+                            }
 
-                          if (snaps.length) {
-                            cursor = snaps[snaps.length - 1].payload.doc;
+                            if (snaps.length) {
+                              cursor = snaps[snaps.length - 1];
 
-                            snapshots.push(
-                              ...snaps
-                            );
-                          }
-                        })
-                      )
+                              snapshots.push(
+                                ...snaps
+                              );
+                            }
+                          })
+                        ),
+                      changeListener(cursor)
+                    )
                   )
                 ),
-
-                this.dbService.getStateChanges(
-                  module.id,
-                  this.ioc.routeData.sort,
-                  this.ioc.routeData.pageSize,
-                  null
-                ).pipe(
-                  skip(1),
-                  tap(snaps => {
-                    snaps.forEach(snap => {
-                      const index = snapshots.findIndex(
-                        sp => sp.payload.doc.id === snap.payload.doc.id
-                      );
-
-                      switch (snap.type) {
-                        case 'added':
-                          if (index === -1) {
-                            snapshots.push(snap);
-                          }
-                          break;
-                        case 'modified':
-                          if (index !== -1) {
-                            snapshots[index] = snap;
-                          }
-                          break;
-                        case 'removed':
-                          if (index !== -1) {
-                            snapshots.splice(index, 1);
-                          }
-                          break;
-                      }
-                    });
-                  })
-                )
-              ).pipe(
+              changeListener(null)
+            )
+              .pipe(
                 startWith({}),
-                map(() => [...snapshots])
+                map(() =>
+                  snapshots.map(it => ({
+                    id: it.id,
+                    ...it.data()
+                  }))
+                )
               );
-            })
-          )
-          .pipe(
-            shareReplay(1)
-          );
+          }),
+          shareReplay(1)
+        );
 
         this.ioc.allChecked$ = combineLatest([
           this.ioc.items$,

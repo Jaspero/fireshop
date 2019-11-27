@@ -43,7 +43,6 @@ export abstract class DbService {
       direction: string;
     },
     cursor?: any,
-    changes?: string,
     filters?: WhereFilter[]
   ): Observable<any[]> {
     return of([]);
@@ -59,12 +58,13 @@ export abstract class DbService {
 
   getStateChanges(
     moduleId: string,
+    pageSize?: number,
     sort?: {
       active: string;
       direction: string;
     },
-    pageSize?: number,
-    cursor?: any
+    cursor?: any,
+    filters?: WhereFilter[],
   ): Observable<any[]> {
     return of([]);
   }
