@@ -164,7 +164,7 @@ export class DefinitionInstanceComponent implements OnInit {
         delete data.metadata;
       }
 
-      const {error} = this.schemaValidation.validate(data.schema);
+      const {error, value} = this.schemaValidation.validate(data.schema);
 
       if (error) {
         this.snackBar.open(
@@ -176,7 +176,7 @@ export class DefinitionInstanceComponent implements OnInit {
           }
         );
 
-        console.error(error);
+        console.warn(value);
 
         return of({});
       }
