@@ -132,6 +132,7 @@ export class DefinitionInstanceComponent implements OnInit {
     this.snippetForm = this.fb.group({
       snippet: ['', Validators.required],
       name: ['', Validators.required],
+      label: '',
       required: false
     });
 
@@ -236,7 +237,9 @@ export class DefinitionInstanceComponent implements OnInit {
             ...(oldValue.schema.properties || {}),
             [snippetFormValue.name]: json.schema
           },
-          required: snippetFormValue.required ? [...(oldValue.schema.required || []), snippetFormValue.name] : [snippetFormValue.name]
+          required: snippetFormValue.required ?
+            [...oldValue.schema.required || [], snippetFormValue.name] :
+            oldValue.schema.required || []
         });
 
         form.get('definitions').setValue({
@@ -253,7 +256,7 @@ export class DefinitionInstanceComponent implements OnInit {
                 )
               }
             },
-            label: snippetFormValue.name
+            label: snippetFormValue.label || snippetFormValue.name
           }
         });
       });
