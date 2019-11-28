@@ -54,7 +54,7 @@ export interface Condition {
 export interface CompiledCondition {
   type: ConditionType;
   action: ConditionAction;
-  condition: Function;
+  condition: (data?: any) => any;
   evaluateStates: ViewState[];
   evaluateOn: ConditionEvaluate;
   data?: any;
