@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, Injector, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 // @ts-ignore
 import * as nanoid from 'nanoid';
@@ -146,7 +146,6 @@ export class InstanceSingleComponent implements OnInit {
       let data = instance.form.getRawValue();
 
       const id = data.id || nanoid();
-      const preSaveData = data;
       const toExecute = [];
 
       if (this.state.saveComponents) {

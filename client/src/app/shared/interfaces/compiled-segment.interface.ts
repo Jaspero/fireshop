@@ -1,6 +1,7 @@
 import {ComponentPortal} from '@angular/cdk/portal';
 import {SegmentComponent} from '../../modules/module-instance/components/segment/segment.component';
 import {CompiledField} from '../../modules/module-instance/interfaces/compiled-field.interface';
+import {CompiledCondition} from './condition.interface';
 import {ModuleInstanceSegment} from './module-instance-segment.interface';
 
 export interface CompiledSegment<T = any> extends ModuleInstanceSegment<T> {
@@ -9,4 +10,5 @@ export interface CompiledSegment<T = any> extends ModuleInstanceSegment<T> {
   component?: ComponentPortal<SegmentComponent>;
   nestedSegments?: CompiledSegment<T>[];
   entryValue: any;
+  conditions?: CompiledCondition[];
 }
