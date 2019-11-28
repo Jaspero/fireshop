@@ -15,13 +15,6 @@ import {DbService} from '../../shared/services/db/db.service';
 import {notify} from '../../shared/utils/notify.operator';
 import {randomPassword} from '../../shared/utils/random-password';
 
-interface User {
-  id?: string;
-  email: string;
-  role: string;
-  providerData: any;
-}
-
 @Component({
   selector: 'jms-settings',
   templateUrl: './settings.component.html',

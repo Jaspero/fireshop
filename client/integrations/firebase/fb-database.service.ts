@@ -4,7 +4,7 @@ import {AngularFireFunctions} from '@angular/fire/functions';
 // @ts-ignore
 import * as nanoid from 'nanoid';
 import {from, Observable} from 'rxjs';
-import {map, take} from 'rxjs/operators';
+import {map, take, tap} from 'rxjs/operators';
 import {ExampleType} from '../../src/app/shared/enums/example-type.enum';
 import {FilterMethod} from '../../src/app/shared/enums/filter-method.enum';
 import {Example} from '../../src/app/shared/interfaces/example.interface';

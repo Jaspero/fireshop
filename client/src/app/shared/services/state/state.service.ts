@@ -15,6 +15,7 @@ export class StateService {
   }
 
   role: Role;
+  user: User;
   loadingQue$ = new Subject<Array<string | boolean>>();
   modules$: Observable<Module[]>;
 
