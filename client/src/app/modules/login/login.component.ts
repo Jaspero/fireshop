@@ -1,19 +1,11 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {auth} from 'firebase/app';
 import {from, throwError} from 'rxjs';
-import {catchError, filter, switchMap} from 'rxjs/operators';
+import {catchError, filter} from 'rxjs/operators';
 import {STATIC_CONFIG} from '../../../environments/static-config';
-import {StateService} from '../../shared/services/state/state.service';
 import {notify} from '../../shared/utils/notify.operator';
 
 @Component({
@@ -26,9 +18,7 @@ export class LoginComponent implements OnInit {
   constructor(
     public router: Router,
     public afAuth: AngularFireAuth,
-    public fb: FormBuilder,
-    private snackBar: MatSnackBar,
-    private state: StateService
+    public fb: FormBuilder
   ) {}
 
   @ViewChild('password', {static: true}) passwordField: ElementRef;
@@ -39,25 +29,10 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     this.afAuth.user
       .pipe(
-        filter(user => !!user),
-        switchMap(user => user.getIdTokenResult())
+        filter(user => !!user)
       )
-      .subscribe(res => {
-        /**
-         * If the user has any kind of role we allow
-         * access to the dashboard
-         */
-        if (res.claims.role) {
-          this.state.role = res.claims.role;
-          this.router.navigate(['/dashboard']);
-        } else {
-          this.afAuth.auth.signOut();
-          this.snackBar.open(
-            'Access to platform denied. Please contact an administrator.',
-            'Dismiss',
-            {duration: 2000}
-          );
-        }
+      .subscribe(() => {
+        this.router.navigate(['/dashboard']);
       });
 
     this.buildForm();
@@ -78,7 +53,6 @@ export class LoginComponent implements OnInit {
         )
       ).pipe(
         notify({
-          success: 'You are now logged in',
           error:
             'The email and password you entered did not match our records. Please double-check and try again.'
         }),
