@@ -40,7 +40,8 @@ function ca(scope: 'write' | 'read') {
     req.collectionDoc = collection;
     req.ref = firestore.collection(req.params.collection);
 
-    return next();
+    next();
+    return;
   }
 }
 
@@ -85,7 +86,7 @@ app.get('/:collection', ca('read'), (req: RequestWithCollection, res: express.Re
   }
 
   exec()
-    .then()
+    .then(data => res.json(data))
     .catch(error =>
       res
         .status(500)
@@ -108,7 +109,7 @@ app.get('/:collection/:id', ca('read'), (req: RequestWithCollection, res: expres
   }
 
   exec()
-    .then()
+    .then(data => res.json(data))
     .catch(error =>
       res
         .status(500)
