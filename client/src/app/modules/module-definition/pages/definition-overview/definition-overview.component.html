@@ -35,7 +35,7 @@
 
           <button
             mat-icon-button
-            matTooltip="Export to files"
+            matTooltip="Export selected to files"
             *ngIf="selection.hasValue()"
             (click)="exportSelected(true)">
             <mat-icon>present_to_all</mat-icon>
@@ -43,7 +43,7 @@
 
           <button
             mat-icon-button
-            matTooltip="Export to interface"
+            matTooltip="Export selected to interfaces"
             *ngIf="selection.hasValue()"
             (click)="exportSelected()">
             <mat-icon>face</mat-icon>
