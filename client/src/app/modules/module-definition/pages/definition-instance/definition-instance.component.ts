@@ -1,8 +1,8 @@
-import {ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {forkJoin, Observable, of} from 'rxjs';
+import {BehaviorSubject, combineLatest, forkJoin, Observable, of} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
 import {ComponentType} from '../../../../shared/interfaces/component-type.enum';
@@ -23,6 +23,8 @@ import {MatDialog} from '@angular/material/dialog';
 import {Example, Snippet} from '../../../../shared/interfaces/example.interface';
 import {Role} from '../../../../shared/enums/role.enum';
 import {SNIPPET_FORM_MAP} from '../../../module-instance/consts/snippet-form-map.const';
+import {confirmation} from '../../../../shared/utils/confirmation';
+import {Color} from '../../../../shared/enums/color.enum';
 
 @Component({
   selector: 'jms-definition-instance',
@@ -43,6 +45,9 @@ export class DefinitionInstanceComponent implements OnInit {
 
   @ViewChild('modal', {static: true})
   modalTemplate: TemplateRef<any>;
+
+  @ViewChild('file', {static: true})
+  fileEl: ElementRef<HTMLInputElement>;
 
   initialValue: string;
   currentValue: string;
@@ -68,6 +73,7 @@ export class DefinitionInstanceComponent implements OnInit {
   form$: Observable<FormGroup>;
   data$: Observable<any>;
   snippetForm: FormGroup;
+  import$ = new BehaviorSubject('');
 
   ngOnInit() {
     this.snippetExamples$ = this.dbService.getExamples(ExampleType.Snippets)
@@ -79,30 +85,37 @@ export class DefinitionInstanceComponent implements OnInit {
 
     this.schemaValidation = new SchemaValidation();
 
-    this.form$ = this.activatedRoute.params.pipe(
-      switchMap(params => {
+    this.form$ = combineLatest([
+      this.activatedRoute.params,
+      this.import$
+    ]).pipe(
+      switchMap(([params, jsonImport]) => {
         const example: Example = window.history.state.example;
 
-        if (example) {
-          this.currentState = ViewState.New;
-          return of(example);
-        } else if (params.id === 'new') {
-          this.currentState = ViewState.New;
-          return of({});
-        } else if (params.id.endsWith('--copy')) {
-          this.currentState = ViewState.Copy;
-          return this.state.modules$.pipe(
-            map(modules =>
-              modules.find(
-                module => module.id === params.id.replace('--copy', '')
-              )
-            )
-          );
+        if (jsonImport) {
+          return of(jsonImport);
         } else {
-          this.currentState = ViewState.Edit;
-          return this.state.modules$.pipe(
-            map(modules => modules.find(module => module.id === params.id))
-          );
+          if (example) {
+            this.currentState = ViewState.New;
+            return of(example);
+          } else if (params.id === 'new') {
+            this.currentState = ViewState.New;
+            return of({});
+          } else if (params.id.endsWith('--copy')) {
+            this.currentState = ViewState.Copy;
+            return this.state.modules$.pipe(
+              map(modules =>
+                modules.find(
+                  module => module.id === params.id.replace('--copy', '')
+                )
+              )
+            );
+          } else {
+            this.currentState = ViewState.Edit;
+            return this.state.modules$.pipe(
+              map(modules => modules.find(module => module.id === params.id))
+            );
+          }
         }
       }),
       map((value: Partial<Module>) => {
@@ -265,5 +278,30 @@ export class DefinitionInstanceComponent implements OnInit {
           }
         });
       });
+  }
+
+  openSelectFile() {
+    confirmation([
+      tap(() => {
+        this.fileEl.nativeElement.click();
+      })
+    ], {
+      description: `This action will override your current module setup.`,
+      confirm: 'Import',
+      color: Color.Primary
+    });
+  }
+
+  selectFile(event) {
+    if (event.target.files[0] && event.target.files[0].type === 'application/json') {
+      const reader = new FileReader();
+      reader.readAsText(event.target.files[0], 'UTF-8');
+      reader.onload = (evt: any) => {
+        try {
+          this.import$.next(JSON.parse(evt.target.result));
+        } catch (e) {}
+
+      };
+    }
   }
 }

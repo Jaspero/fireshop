@@ -40,7 +40,10 @@
         <mat-card-header>
           <div class="flex ai-center h-full w-full jc-between">
             <h1>Setup</h1>
-            <button mat-icon-button matTooltip="Add Snippet" (click)="openSnippetSelection(form)"><mat-icon>add</mat-icon></button>
+            <div>
+              <button mat-icon-button matTooltip="Import module" (click)="openSelectFile()"><mat-icon>settings_input_svideo</mat-icon></button>
+              <button mat-icon-button matTooltip="Add Snippet" (click)="openSnippetSelection(form)"><mat-icon>add</mat-icon></button>
+            </div>
           </div>
         </mat-card-header>
 
@@ -152,3 +155,5 @@
   </form>
 
 </ng-template>
+
+<input type="file" hidden #file (change)="selectFile($event)">
