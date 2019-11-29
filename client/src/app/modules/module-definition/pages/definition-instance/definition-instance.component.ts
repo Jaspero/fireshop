@@ -245,20 +245,22 @@ export class DefinitionInstanceComponent implements OnInit {
             oldValue.schema.required || []
         });
 
+        const component: any = {};
+        const configuation = {
+          ...(json as Snippet).definition.value.component.configuration && {
+            ...(json as Snippet).definition.value.component.configuration,
+            ...(data.value ? data.value : {})
+          }
+        };
+
+        if (Object.keys(configuration).length) {
+          component.configuration = configuration;
+        }
+
         form.get('definitions').setValue({
           ...oldValue.definitions,
           [snippetFormValue.name]: {
-            component: {
-              ...(json as Snippet).definition.value.component,
-              configuration: {
-                ...(
-                  (json as Snippet).definition.value.component.configuration ? {
-                    ...(json as Snippet).definition.value.component.configuration,
-                    ...(data.value ? data.value : {})
-                  } : {}
-                )
-              }
-            },
+            ...Object.keys(component).length && {component},
             label: snippetFormValue.label || snippetFormValue.name
           }
         });

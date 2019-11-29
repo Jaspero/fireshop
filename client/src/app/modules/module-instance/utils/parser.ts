@@ -259,7 +259,8 @@ export class Parser {
             const objectProperties = this.buildProperties(
               value.items.properties,
               value.items.required,
-              base + key + '/'
+              base + key + '/',
+              false
             );
 
             for (const added in objectProperties.pointers) {
@@ -286,18 +287,14 @@ export class Parser {
         group.pointers[pointerKey] = {
           key,
           type: value.type,
-          ...(definition.formatOnLoad
-            ? {formatOnLoad: safeEval(definition.formatOnLoad)}
-            : {}),
-          ...(definition.formatOnSave
-            ? {formatOnSave: safeEval(definition.formatOnSave)}
-            : {}),
-          ...(definition.formatOnCreate
-            ? {formatOnCreate: safeEval(definition.formatOnCreate)}
-            : {}),
-          ...(definition.formatOnEdit
-            ? {formatOnEdit: safeEval(definition.formatOnEdit)}
-            : {}),
+          ...definition.formatOnLoad
+            && {formatOnLoad: safeEval(definition.formatOnLoad)},
+          ...definition.formatOnSave
+            && {formatOnSave: safeEval(definition.formatOnSave)},
+          ...definition.formatOnCreate
+            && {formatOnCreate: safeEval(definition.formatOnCreate)},
+          ...definition.formatOnEdit
+            && {formatOnEdit: safeEval(definition.formatOnEdit)},
           ...parsed
         };
 
