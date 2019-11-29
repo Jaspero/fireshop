@@ -29,5 +29,6 @@ export const cms = {
 
   // Rest
   exportData,
-  importData
+  importData,
+
 };
