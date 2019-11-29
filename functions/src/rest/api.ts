@@ -51,7 +51,7 @@ app.use(cors());
 // @ts-ignore
 app.get('/:collection', ca('read'), (req: RequestWithCollection, res: express.Response) => {
   async function exec() {
-    let {
+    const {
       order,
       direction = 'asc',
       limit,
