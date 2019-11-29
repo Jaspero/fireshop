@@ -35,10 +35,18 @@
 
           <button
             mat-icon-button
-            matTooltip="Export {{selection.selected.length}} items"
+            matTooltip="Export selected to files"
+            *ngIf="selection.hasValue()"
+            (click)="exportSelected(true)">
+            <mat-icon>present_to_all</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            matTooltip="Export selected to interfaces"
             *ngIf="selection.hasValue()"
             (click)="exportSelected()">
-            <mat-icon>present_to_all</mat-icon>
+            <mat-icon>face</mat-icon>
           </button>
         </mat-toolbar>
 
@@ -96,9 +104,13 @@
                   <mat-icon>edit</mat-icon>
                   <span>Edit</span>
                 </button>
-                <button mat-menu-item (click)="export([element.schema])">
+                <button mat-menu-item (click)="exportToFile([element])">
                   <mat-icon>present_to_all</mat-icon>
                   <span>Export</span>
+                </button>
+                <button mat-menu-item (click)="export([element.schema])">
+                  <mat-icon>face</mat-icon>
+                  <span>Generate TS Interface</span>
                 </button>
                 <button mat-menu-item fDisable (click)="deleteOne(element)">
                   <mat-icon>delete_forever</mat-icon>

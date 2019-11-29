@@ -20,6 +20,7 @@ import {DEFAULT_SCHEMA_VALUE} from '../definition-instance/consts/default-schema
 import {DEFAULT_LAYOUT_VALUE} from '../definition-instance/consts/default-layout-value.const';
 import {DEFAULT_DEFINITION_VALUE} from '../definition-instance/consts/default-definition-value.const';
 import {Example} from '../../../../shared/interfaces/example.interface';
+import {saveAs} from 'file-saver';
 
 @Component({
   selector: 'jms-definition-overview',
@@ -173,11 +174,20 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
     });
   }
 
-  exportSelected() {
+  exportToFile(modules: Module[]) {
+    modules.forEach(module => {
+      saveAs(
+        new Blob([JSON.stringify(module)], {type: 'application/json'}),
+        `${module.id}.json`
+      );
+    });
+  }
+
+  exportSelected(file = false) {
     this.items$
       .pipe(take(1))
       .subscribe(items => {
-        this.export(this.selection.selected.map(id => items.find(item => item.id === id)));
+          this[file ? 'exportToFile' : 'export'](this.selection.selected.map(id => items.find(item => item.id === id)));
       });
   }
 
