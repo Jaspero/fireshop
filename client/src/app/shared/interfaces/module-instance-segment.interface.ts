@@ -1,4 +1,5 @@
 import {SegmentType} from '../../modules/module-instance/enums/segment-type.enum';
+import {CompiledCondition, Condition} from './condition.interface';
 
 export interface ModuleInstanceSegment<C = any> {
   fields: string[] | any[];
@@ -15,4 +16,5 @@ export interface ModuleInstanceSegment<C = any> {
   classes?: string[];
   authorization?: string[];
   id?: string;
+  conditions?: Condition[] | CompiledCondition[];
 }

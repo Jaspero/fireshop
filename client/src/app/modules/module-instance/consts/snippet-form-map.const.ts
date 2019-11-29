@@ -25,7 +25,6 @@ export const SNIPPET_FORM_MAP = {
           }
         }
       }
-
     }
   },
   [ComponentType.Image]: {
@@ -48,7 +47,6 @@ export const SNIPPET_FORM_MAP = {
           type: 'boolean'
         }
       }
-
     }
   },
   [ComponentType.Date]: {
@@ -165,10 +163,8 @@ export const SNIPPET_FORM_MAP = {
         },
         unique: {
           type: 'boolean'
-
         }
       }
-
     }
   },
   [ComponentType.Textarea]: {

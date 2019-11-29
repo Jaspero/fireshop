@@ -15,15 +15,20 @@ export function filterAndCompileSegments(
 ) {
   return segments.reduce((acc, cur) => {
     if (!cur.authorization || cur.authorization.includes(role)) {
-      acc.push(
-        compileSegment(
-          cur,
-          parser,
-          definitions,
-          injector,
-          value
-        )
+
+      const compiled = compileSegment(
+        cur,
+        parser,
+        definitions,
+        injector,
+        value
       );
+
+      if (compiled) {
+        acc.push(
+          compiled
+        );
+      }
     }
 
     return acc;
