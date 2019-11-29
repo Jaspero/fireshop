@@ -48,6 +48,7 @@ const app = express();
 
 app.use(cors());
 
+// @ts-ignore
 app.get('/:collection', ca('read'), (req: RequestWithCollection, res: express.Response) => {
   async function exec() {
     let {
@@ -81,6 +82,29 @@ app.get('/:collection', ca('read'), (req: RequestWithCollection, res: express.Re
       id: it.id,
       ...it.data()
     }));
+  }
+
+  exec()
+    .then()
+    .catch(error =>
+      res
+        .status(500)
+        .send({error: error.toString()})
+    )
+});
+
+// @ts-ignore
+app.get('/:collection/:id', ca('read'), (req: RequestWithCollection, res: express.Response) => {
+
+  async function exec() {
+    const {id} = req.params;
+
+    const response = await req.ref.doc(id).get();
+
+    return {
+      id: response.id,
+      ...response.data()
+    }
   }
 
   exec()
