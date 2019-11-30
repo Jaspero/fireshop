@@ -259,7 +259,7 @@ export class DefinitionInstanceComponent implements OnInit {
         });
 
         const component: any = {};
-        const configuation = {
+        const configuration = {
           ...(json as Snippet).definition.value.component.configuration && {
             ...(json as Snippet).definition.value.component.configuration,
             ...(data.value ? data.value : {})
