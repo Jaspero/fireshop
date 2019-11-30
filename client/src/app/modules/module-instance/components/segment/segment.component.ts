@@ -59,7 +59,11 @@ export class SegmentComponent<T = any> implements OnInit {
      * Add array items if necessary
      */
     if (this.segment.array && this.segment.entryValue) {
-      const values = get(this.segment.entryValue, this.segment.array);
+      let values;
+
+      try {
+        values = get(this.segment.entryValue, this.segment.array);
+      } catch (e) {}
 
       if (values) {
         values.forEach(() => this.addArrayItem(false));
