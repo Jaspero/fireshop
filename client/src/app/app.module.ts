@@ -1,7 +1,7 @@
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {PortalModule} from '@angular/cdk/portal';
 import {HttpClientModule} from '@angular/common/http';
-import {APP_INITIALIZER, Injector, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
@@ -79,16 +79,10 @@ import {SearchInputComponent} from './shared/components/search-input/search-inpu
 import {DropzoneDirective} from './shared/directives/dropzone/dropzone.directive';
 import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
 import {MathPipe} from './shared/pipes/math/math-pipe.';
+import {MatProgressBarModule} from '@angular/material';
 import {FilterDialogComponent} from './modules/module-instance/components/filter-dialog/filter-dialog.component';
 import {CompiledFormComponent} from './shared/components/compiled-form/compiled-form.component';
 import {FilterTagsComponent} from './shared/components/filter-tags/filter-tags.component';
-import {appInit} from './shared/utils/app-init';
-
-export function init(injector: Injector) {
-  return () => {
-    return appInit(injector);
-  };
-}
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -97,8 +91,19 @@ const PAGES = [
   InstanceOverviewComponent,
   DefinitionOverviewComponent,
   DefinitionInstanceComponent,
+  SettingsComponent,
   DashboardComponent,
+
+  LoginComponent,
   ResetPasswordComponent
+];
+
+const COMPONENTS = [
+  SearchInputComponent,
+  JsonEditorComponent,
+  LayoutComponent,
+  ImportComponent,
+  CompiledFormComponent
 ];
 
 const ENTRY_COMPONENTS = [
@@ -126,14 +131,27 @@ const ENTRY_COMPONENTS = [
   EmptyComponent,
   AccordionComponent,
   TabsComponent,
-  StepperComponent
+  StepperComponent,
+
+  // Additional
+  ExportComponent,
+  SortDialogComponent,
+  FilterDialogComponent,
+  FilterTagsComponent
 ];
+
+const DIRECTIVES = [ForceDisableDirective, DropzoneDirective];
+
+const PIPES = [ColumnPipe, ShowFieldPipe, MathPipe];
 
 @NgModule({
   declarations: [
     AppComponent,
     ...PAGES,
+    ...COMPONENTS,
     ...ENTRY_COMPONENTS,
+    ...DIRECTIVES,
+    ...PIPES,
     ...ELEMENTS,
   ],
   entryComponents: [
@@ -149,18 +167,50 @@ const ENTRY_COMPONENTS = [
 
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ReactiveFormsModule,
+    FormsModule,
+    HttpClientModule,
+
+    // Material
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatToolbarModule,
+    MatCheckboxModule,
+    MatTableModule,
+    MatSortModule,
+    MatSnackBarModule,
+    MatMenuModule,
+    MatDialogModule,
+    MatListModule,
+    MatTooltipModule,
+    MatProgressSpinnerModule,
+    MatTabsModule,
+    MatSelectModule,
+    PortalModule,
+    MatExpansionModule,
+    MatSlideToggleModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSliderModule,
+    DragDropModule,
+    MatAutocompleteModule,
+    MatRadioModule,
+    MatChipsModule,
+    MatBottomSheetModule,
+    MatProgressBarModule,
+
+    // Ng Helpers
+    LoadClickModule,
+    SanitizeModule
   ],
   providers: [
     {
       provide: MAT_DATE_LOCALE,
       useValue: 'en-GB'
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: init,
-      deps: [Injector],
-      multi: true
     }
   ],
   bootstrap: [AppComponent]

@@ -36,21 +36,25 @@ const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadChildren: () =>
-          import('./modules/dashboard/dashboard.module')
-            .then(mod => mod.DashboardModule)
+        component: DashboardComponent
       },
       {
         path: 'settings',
-        loadChildren: () =>
-          import('./modules/settings/settings.module')
-            .then(mod => mod.SettingsModule)
+        component: SettingsComponent
       },
       {
         path: 'module-definition',
-        loadChildren: () =>
-          import('./modules/module-definition/module-definition.module')
-            .then(mod => mod.ModuleDefinitionModule)
+        component: ModuleDefinitionComponent,
+        children: [
+          {
+            path: 'overview',
+            component: DefinitionOverviewComponent
+          },
+          {
+            path: 'single/:id',
+            component: DefinitionInstanceComponent
+          }
+        ]
       },
       {
         path: 'm/:id',
@@ -78,16 +82,12 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: () =>
-      import('./modules/login/login.module')
-        .then(mod => mod.LoginModule),
+    component: LoginComponent,
     ...canActivate(redirectLoggedInTo(['/dashboard']))
   },
   {
     path: 'reset-password',
-    loadChildren: () =>
-      import('./modules/reset-password/reset-password.module')
-        .then(mod => mod.ResetPasswordModule),
+    component: ResetPasswordComponent,
     ...canActivate(redirectLoggedInTo(['/dashboard']))
   },
   {
@@ -98,7 +98,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {onSameUrlNavigation: 'reload'})],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}
