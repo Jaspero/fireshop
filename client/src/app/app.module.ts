@@ -1,7 +1,7 @@
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {PortalModule} from '@angular/cdk/portal';
 import {HttpClientModule} from '@angular/common/http';
-import {NgModule} from '@angular/core';
+import {APP_INITIALIZER, Injector, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
@@ -83,6 +83,13 @@ import {MatProgressBarModule} from '@angular/material';
 import {FilterDialogComponent} from './modules/module-instance/components/filter-dialog/filter-dialog.component';
 import {CompiledFormComponent} from './shared/components/compiled-form/compiled-form.component';
 import {FilterTagsComponent} from './shared/components/filter-tags/filter-tags.component';
+import {appInit} from './shared/utils/app-init';
+
+export function init(injector: Injector) {
+  return () => {
+    return appInit(injector);
+  };
+}
 
 const PAGES = [
   ModuleDefinitionComponent,
@@ -211,6 +218,12 @@ const PIPES = [ColumnPipe, ShowFieldPipe, MathPipe];
     {
       provide: MAT_DATE_LOCALE,
       useValue: 'en-GB'
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: init,
+      deps: [Injector],
+      multi: true
     }
   ],
   bootstrap: [AppComponent]
