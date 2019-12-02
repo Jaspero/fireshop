@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod",
+    "build": "node timestamp.js && ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -59,6 +59,7 @@
     "karma-jasmine": "2.0.1",
     "karma-jasmine-html-reporter": "1.4.0",
     "protractor": "5.4.0",
+    "replace-in-file": "^4.2.0",
     "ts-node": "8.2.0",
     "tslint": "5.17.0",
     "typescript": "3.4.5"

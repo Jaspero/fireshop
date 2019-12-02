@@ -9,6 +9,7 @@ import {RxDestroy} from '@jaspero/ng-helpers';
 import {forkJoin, of} from 'rxjs';
 import {switchMap, takeUntil, tap} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../integrations/firebase/firestore-collection.enum';
+import {environment} from '../../../environments/environment';
 import {Role} from '../../shared/enums/role.enum';
 import {Settings} from '../../shared/interfaces/settings.interface';
 import {DbService} from '../../shared/services/db/db.service';
@@ -35,6 +36,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   settings: Settings;
   users: User[];
   columns = ['exists', 'email', 'role', 'providerData', 'actions'];
+  timeStamp = environment.timeStamp;
 
   ngOnInit() {
     this.form = this.fb.group({
