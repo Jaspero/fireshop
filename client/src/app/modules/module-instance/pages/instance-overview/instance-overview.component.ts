@@ -184,12 +184,12 @@ export class InstanceOverviewComponent extends RxDestroy
                     switch (snap.type) {
                       case 'added':
                         if (index === -1) {
-                          snapshots.push(snap);
+                          snapshots.push(snap.payload.doc);
                         }
                         break;
                       case 'modified':
                         if (index !== -1) {
-                          snapshots[index] = snap;
+                          snapshots[index] = snap.payload.doc;
                         }
                         break;
                       case 'removed':
