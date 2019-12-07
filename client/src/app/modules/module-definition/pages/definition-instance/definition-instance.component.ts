@@ -258,7 +258,10 @@ export class DefinitionInstanceComponent implements OnInit {
             oldValue.schema.required || []
         });
 
-        const component: any = {};
+        const component: any = {...(json as Snippet).definition.value.component};
+
+        delete component.configuration;
+
         const configuration = {
           ...(json as Snippet).definition.value.component.configuration && {
             ...(json as Snippet).definition.value.component.configuration,
@@ -273,7 +276,7 @@ export class DefinitionInstanceComponent implements OnInit {
         form.get('definitions').setValue({
           ...oldValue.definitions,
           [snippetFormValue.name]: {
-            ...Object.keys(component).length && {component},
+            component,
             label: snippetFormValue.label || snippetFormValue.name
           }
         });
