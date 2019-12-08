@@ -48,6 +48,7 @@ export interface ModuleLayout {
   directLink?: string;
   hideAdd?: string[];
   sort?: InstanceSort;
+  pageSize?: number;
   table?: {
     tableColumns?: TableColumn[];
     hideCheckbox?: string[];

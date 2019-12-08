@@ -6,6 +6,7 @@ import {RxDestroy} from '@jaspero/ng-helpers';
 import {BehaviorSubject, combineLatest, merge, Subject} from 'rxjs';
 import {map, shareReplay, skip, startWith, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {STATIC_CONFIG} from '../../../../../environments/static-config';
+import {DEFAULT_PAGE_SIZE} from '../../../../shared/consts/page-sizes.const';
 import {FilterMethod} from '../../../../shared/enums/filter-method.enum';
 import {InstanceSort} from '../../../../shared/interfaces/instance-sort.interface';
 import {ModuleOverviewView} from '../../../../shared/interfaces/module-overview-view.interface';
@@ -47,13 +48,13 @@ export class InstanceOverviewComponent extends RxDestroy
       .subscribe(module => {
 
         this.ioc.routeData = this.state.getRouterData({
-          pageSize: 10,
+          pageSize: null,
           sort: null,
           filter: null,
           search: ''
         });
 
-        this.ioc.pageSize = new FormControl(this.ioc.routeData.pageSize);
+        this.ioc.pageSize = new FormControl(this.ioc.routeData.pageSize || DEFAULT_PAGE_SIZE);
         this.ioc.emptyState$ = new BehaviorSubject(false);
         this.ioc.filterChange$ = new BehaviorSubject(this.ioc.routeData.filter);
         this.ioc.sortChange$ = new BehaviorSubject(this.ioc.routeData.sort);
@@ -69,6 +70,10 @@ export class InstanceOverviewComponent extends RxDestroy
         this.hideAdd = false;
 
         if (module.layout) {
+
+          if (module.layout.pageSize && !this.ioc.routeData.pageSize) {
+            this.ioc.pageSize.setValue(module.layout.pageSize);
+          }
 
           if (module.layout.sort && !this.ioc.routeData.sort) {
             this.ioc.sortChange$.next(module.layout.sort);
