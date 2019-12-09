@@ -13,7 +13,7 @@ export class LibraryImageDirective {
     private _el: ElementRef
   ) {}
 
-  static FIRESHOP_URL = `https://firebasestorage.googleapis.com/v0/b/${ENV_CONFIG.firebase.storageBucket}/o/generated%2F`;
+  static FIRESHOP_URL = `https://firebasestorage.googleapis.com/v0/b/${ENV_CONFIG.firebase.storageBucket}/o/`;
 
   @Input()
   webp = true;
@@ -31,15 +31,31 @@ export class LibraryImageDirective {
       return;
     }
 
-    let valToUse = item.replace(
-      /(\.jpg|\.jpeg|\.png)/i,
-      `${this.webp && BROWSER_CONFIG.webpSupported ? '.webp' : '$1'}`
-    );
+    let valToUse = item;
 
     if (this.size === 'm' || this.size === 's') {
       valToUse = `${LibraryImageDirective.FIRESHOP_URL}thumb_${this.size}_${
         valToUse.split(LibraryImageDirective.FIRESHOP_URL)[1]
       }`;
+    }
+
+
+    if (
+      (this.webp && BROWSER_CONFIG.webpSupported) ||
+      this.size === 'm' ||
+      this.size === 's'
+    ) {
+      valToUse = valToUse.replace(
+        LibraryImageDirective.FIRESHOP_URL,
+        LibraryImageDirective.FIRESHOP_URL + 'generated%2F'
+      );
+    }
+
+    if (this.webp && BROWSER_CONFIG.webpSupported) {
+      valToUse = valToUse.replace(
+        /(\.jpg|\.jpeg|\.png)/i,
+        `${this.webp && BROWSER_CONFIG.webpSupported ? '.webp' : '$1'}`
+      );
     }
 
     this._http
