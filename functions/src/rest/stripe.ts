@@ -395,13 +395,15 @@ app.post('/webhook', async (req, res) => {
               const lookUp = getLookUp(current);
               const inventory = item.inventory[lookUp];
 
-              item.inventory[lookUp].quantity -= current.quantity;
+              if (inventory) {
+                inventory.quantity -= current.quantity;
 
-              toUpdate.inventory = {
-                [inventory]: {
-                  quantity: item.inventory[lookUp].quantity
-                }
-              };
+                toUpdate.inventory = {
+                  [lookUp]: {
+                    quantity: inventory.quantity
+                  }
+                };
+              }
 
               let hasQuantity = false;
 
