@@ -13,7 +13,7 @@ export class LibraryImageDirective {
     private _el: ElementRef
   ) {}
 
-  static FIRESHOP_URL = `https://firebasestorage.googleapis.com/v0/b/${ENV_CONFIG.firebase.storageBucket}/o/`;
+  static FIRESHOP_URL = `https://firebasestorage.googleapis.com/v0/b/${ENV_CONFIG.firebase.storageBucket}/o/generated%2F`;
 
   @Input()
   webp = true;
