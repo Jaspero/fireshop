@@ -183,7 +183,7 @@
       </mat-step>
 
       <mat-step label="Payment" #payment>
-        <div class="grid fw-rev" *ngIf="stepper.selected == payment">
+        <div class="grid fw-rev" *ngIf="stepper.selected == payment || stepper.selected == review">
           <div class="col-8 col-s-12">
             <mat-card>
               <form *ngIf="elementConfig$ | async as elementConfigs">
