@@ -166,12 +166,14 @@ app.post('/checkout', (req, res) => {
        * Try to retrieve a customer if the
        * checkout is from a logged in user
        */
-      ...(req.body.customer ? [
-        si.customers.list({
-          email: req.body.customer.email,
-          limit: 1
-        })
-      ] : [])
+      ...(req.body.customer
+        ? [
+            si.customers.list({
+              email: req.body.customer.email,
+              limit: 1
+            })
+          ]
+        : [])
     ]);
 
     currency = currency.data();
@@ -412,9 +414,9 @@ app.post('/webhook', async (req, res) => {
                * when out of quantity, loop over the inventory and check
                * if we should deactive the product
                */
-              if (settings.inactiveForQuantity) {
-                for (const inventoryItem of item.inventory) {
-                  if (inventoryItem.quantity) {
+              if (settings.inactiveForQuantity && item.inventory) {
+                for (const key in item.inventory) {
+                  if (item.inventory[key].quantity) {
                     hasQuantity = true;
                     break;
                   }
