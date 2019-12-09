@@ -45,18 +45,18 @@ service cloud.firestore {
     }
 
     match /orders/{order} {
-      allow read: if readOrWrite() || resource.data.customerId == auth.uid;
-      allow write, delete: if write() || resource.data.customerId == auth.uid;
+      allow read: if readOrWrite() || resource.data.customerId == request.auth.uid;
+      allow write, delete: if write() || resource.data.customerId == request.auth.uid;
     }
 
     match /customers/{customer=**} {
-      allow read: if readOrWrite() || resource.id == auth.uid;
-      allow write, delete: if write() || resource.id == auth.uid;
+      allow read: if readOrWrite() || resource.id == request.auth.uid;
+      allow write, delete: if write() || resource.id == request.auth.uid;
     }
 
     match /reviews/{review} {
       allow read: if true
-      allow write, delete: if resource.data.customerId == auth.uid;
+      allow write, delete: if resource.data.customerId == request.auth.uid;
     }
   }
 }
