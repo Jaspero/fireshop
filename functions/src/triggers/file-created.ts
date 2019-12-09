@@ -91,7 +91,7 @@ export const fileCreated = functions
       await Promise.all(
         webpToGenerate.map(file =>
           sharp(file.source)
-            .webp({lossless: true})
+            .webp({lossless: false, alphaQuality: 80})
             .toFile(file.destination)
         )
       );
