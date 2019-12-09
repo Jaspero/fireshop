@@ -216,7 +216,7 @@ app.post('/checkout', (req, res) => {
 
     const paymentIntent = await si.paymentIntents.create({
       amount,
-      currency: currency.primary,
+      currency: req.body.currency,
       metadata: {
         lang: req.body.lang
       },
