@@ -166,12 +166,12 @@ app.post('/checkout', (req, res) => {
        * Try to retrieve a customer if the
        * checkout is from a logged in user
        */
-      ...(req.body.customer && [
+      ...(req.body.customer ? [
         si.customers.list({
           email: req.body.customer.email,
           limit: 1
         })
-      ])
+      ] : [])
     ]);
 
     currency = currency.data();
