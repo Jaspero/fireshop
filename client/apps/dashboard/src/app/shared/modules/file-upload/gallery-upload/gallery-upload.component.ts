@@ -16,7 +16,7 @@ import {
   FormControl,
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
-import {MatDialog, MatSort} from '@angular/material';
+import {MatDialog} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {Breakpoint, currentBreakpoint$} from '@jf/consts/breakpoint.const';
 import {ENV_CONFIG} from '@jf/consts/env-config.const';
@@ -208,13 +208,7 @@ export class GalleryUploadComponent extends RxDestroy
       ),
       ...this.values.reduce((acc, cur) => {
         if (!cur.live) {
-
-          const name = [
-            moduleId,
-            documentId,
-            cur.pushToLive.name
-          ]
-            .join('-');
+          const name = [moduleId, documentId, cur.pushToLive.name].join('-');
 
           acc.push(
             from(
@@ -223,8 +217,7 @@ export class GalleryUploadComponent extends RxDestroy
                 customMetadata: {
                   moduleId,
                   documentId,
-                  ...generatedImages &&
-                    formatGeneratedImages(generatedImages)
+                  ...(generatedImages && formatGeneratedImages(generatedImages))
                 }
               })
             ).pipe(

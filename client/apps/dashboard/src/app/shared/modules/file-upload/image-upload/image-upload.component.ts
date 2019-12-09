@@ -8,9 +8,15 @@ import {
   ViewChild
 } from '@angular/core';
 import {AngularFireStorage} from '@angular/fire/storage';
-import {FormControl, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormControl,
+  NG_VALUE_ACCESSOR
+} from '@angular/forms';
 import {from, of} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
+import {GeneratedImage} from '../../../interfaces/generated-image.interface';
+import {formatGeneratedImages} from '../../../utils/format-generated-images';
 
 @Component({
   selector: 'jfsc-image-upload',
@@ -25,7 +31,7 @@ import {switchMap, tap} from 'rxjs/operators';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImageUploadComponent {
+export class ImageUploadComponent implements ControlValueAccessor {
   constructor(
     private afs: AngularFireStorage,
     private cdr: ChangeDetectorRef
@@ -76,16 +82,27 @@ export class ImageUploadComponent {
     this.cdr.detectChanges();
   }
 
-  save() {
+  save(
+    moduleId: string,
+    documentId: string,
+    generatedImages?: GeneratedImage[]
+  ) {
     if (this.value) {
       if (this.imageUrl.value && this.imageUrl.value !== this.value.name) {
         return of(this.imageUrl.value).pipe(
           tap(() => this.onChange(this.imageUrl.value))
         );
       } else {
+        const name = [moduleId, documentId, this.value.name].join('-');
+
         return from(
-          this.afs.upload(this.value.name, this.value, {
-            contentType: this.value.type
+          this.afs.upload(name, this.value, {
+            contentType: this.value.type,
+            customMetadata: {
+              moduleId,
+              documentId,
+              ...(generatedImages && formatGeneratedImages(generatedImages))
+            }
           })
         ).pipe(
           switchMap(res => res.ref.getDownloadURL()),
