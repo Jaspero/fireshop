@@ -154,7 +154,7 @@ app.post('/checkout', (req, res) => {
       generalSettings,
       stripeCustomer
     ]: any = await Promise.all([
-      ['currency', 'shipping', 'general-settings'].map(key =>
+      ...['currency', 'shipping', 'general-settings'].map(key =>
         admin
           .firestore()
           .collection('settings')
