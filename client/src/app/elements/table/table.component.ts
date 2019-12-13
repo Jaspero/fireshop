@@ -10,7 +10,6 @@ import {
   ViewChildren,
   ViewContainerRef
 } from '@angular/core';
-import {DocumentChangeAction} from '@angular/fire/firestore';
 import {MatSort} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {get, has} from 'json-pointer';
@@ -45,6 +44,7 @@ interface TableData {
   searchModule?: SearchModule;
   hideCheckbox?: boolean;
   hideEdit?: boolean;
+  hideAdd?: boolean;
   hideDelete?: boolean;
   hideExport?: boolean;
   hideImport?: boolean;
@@ -177,6 +177,10 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
               acc[key] = data.layout.table[key] ? data.layout.table[key].includes(this.state.role) : false;
               return acc;
             }, {});
+          }
+
+          if (data.layout.hideAdd) {
+            hide.hideAdd = data.layout.hideAdd.includes(this.state.role);
           }
         }
 

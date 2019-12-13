@@ -158,10 +158,12 @@
           </table>
         </div>
 
-        <mat-toolbar class="jc-center" *ngIf="ioc.emptyState$ | async; else hasContent;">
-          <p>No {{data.name}} yet.</p>
-          <button mat-button color="primary" [routerLink]="['../single/new']">Add {{data.name}}</button>
-        </mat-toolbar>
+        <ng-container *ngIf="ioc.emptyState$ | async; else hasContent;">
+          <mat-toolbar class="jc-center" *ngIf="!data.hideAdd">
+            <p>No {{data.name}} yet.</p>
+            <button mat-button color="primary" [routerLink]="['../single/new']">Add {{data.name}}</button>
+          </mat-toolbar>
+        </ng-container>
 
         <ng-template #hasContent>
           <mat-toolbar class="jc-between">
