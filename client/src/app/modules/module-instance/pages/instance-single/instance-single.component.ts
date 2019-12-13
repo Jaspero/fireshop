@@ -21,6 +21,8 @@ import {CompiledSegment} from '../../../../shared/interfaces/compiled-segment.in
 
 interface Instance {
   form: FormGroup;
+  hideDuplicate: boolean;
+  hideNavigation: boolean;
   module: {
     id: string;
     name: string;
@@ -94,31 +96,41 @@ export class InstanceSingleComponent implements OnInit {
             this.currentValue = JSON.stringify(this.initialValue);
 
             let editTitleKey = 'id';
-            let segments: ModuleInstanceSegment[];
+            let hideDuplicate = false;
+            let hideNavigation = false;
+            let segments: ModuleInstanceSegment[] = [
+              {
+                title: '',
+                fields: Object.keys(parser.pointers),
+                columnsDesktop: 12
+              }
+            ];
 
-            if (
-              module.layout &&
-              module.layout.instance &&
-              module.layout.instance.segments
-            ) {
-              segments = module.layout.instance.segments;
-            } else {
-              segments = [
-                {
-                  title: '',
-                  fields: Object.keys(parser.pointers),
-                  columnsDesktop: 12
+            if (module.layout) {
+              if (module.layout.editTitleKey) {
+                editTitleKey = module.layout.editTitleKey;
+              }
+
+              if (module.layout.instance) {
+                if (module.layout.instance.segments) {
+                  segments = module.layout.instance.segments;
                 }
-              ];
-            }
 
-            if (module.layout && module.layout.editTitleKey) {
-              editTitleKey = module.layout.editTitleKey;
+                if (module.layout.instance.hideDuplicate) {
+                  hideDuplicate = module.layout.instance.hideDuplicate.includes(this.state.role);
+                }
+
+                if (module.layout.instance.hideNavigation) {
+                  hideNavigation = module.layout.instance.hideNavigation.includes(this.state.role);
+                }
+              }
             }
 
             return {
               form,
               parser,
+              hideDuplicate,
+              hideNavigation,
               segments: filterAndCompileSegments(
                 this.state.role,
                 segments,
