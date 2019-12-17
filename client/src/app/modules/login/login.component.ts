@@ -42,6 +42,10 @@ export class LoginComponent implements OnInit {
     this.afAuth.auth.signInWithPopup(new auth.GoogleAuthProvider());
   }
 
+  loginFacebook() {
+    this.afAuth.auth.signInWithPopup(new auth.FacebookAuthProvider());
+  }
+
   loginEmail() {
     return () => {
       const data = this.loginForm.getRawValue();
