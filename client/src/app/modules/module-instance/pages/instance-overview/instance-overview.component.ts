@@ -103,7 +103,7 @@ export class InstanceOverviewComponent extends RxDestroy
         this.ioc.items$ = combineLatest([
           this.ioc.pageSize.valueChanges
             .pipe(
-              startWith(this.ioc.routeData.pageSize)
+              startWith(this.ioc.pageSize.value)
             ),
           this.ioc.filterChange$,
           this.ioc.searchControl
