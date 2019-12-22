@@ -6,6 +6,7 @@ import * as nanoid from 'nanoid';
 import {forkJoin, Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
+import {CompiledSegment} from '../../../../shared/interfaces/compiled-segment.interface';
 import {ModuleInstanceSegment} from '../../../../shared/interfaces/module-instance-segment.interface';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
@@ -16,7 +17,7 @@ import {InstanceSingleState} from '../../enums/instance-single-state.enum';
 import {ModuleInstanceComponent} from '../../module-instance.component';
 import {filterAndCompileSegments} from '../../utils/filter-and-compile-segments';
 import {Parser} from '../../utils/parser';
-import {CompiledSegment} from '../../../../shared/interfaces/compiled-segment.interface';
+import {safeEval} from '../../utils/safe-eval';
 
 
 interface Instance {
@@ -31,6 +32,9 @@ interface Instance {
   parser: Parser;
   segments: CompiledSegment[];
   directLink: boolean;
+  formatOnSave: (data: any) => any;
+  formatOnEdit: (data: any) => any;
+  formatOnCreate: (data: any) => any;
 }
 
 @Component({
@@ -106,6 +110,8 @@ export class InstanceSingleComponent implements OnInit {
               }
             ];
 
+            const formatOn: any = {};
+
             if (module.layout) {
               if (module.layout.editTitleKey) {
                 editTitleKey = module.layout.editTitleKey;
@@ -123,6 +129,24 @@ export class InstanceSingleComponent implements OnInit {
                 if (module.layout.instance.hideNavigation) {
                   hideNavigation = module.layout.instance.hideNavigation.includes(this.state.role);
                 }
+
+                if (module.layout.instance.formatOnLoad) {
+                  const method = safeEval(module.layout.instance.formatOnLoad);
+
+                  if (method) {
+                    method(form);
+                  }
+                }
+
+                ['formatOnSave', 'formatOnEdit', 'formatOnCreate'].forEach(it => {
+                  if (module.layout.instance[it]) {
+                    const method = safeEval(it);
+
+                    if (method) {
+                      formatOn[it] = method;
+                    }
+                  }
+                });
               }
             }
 
@@ -144,7 +168,8 @@ export class InstanceSingleComponent implements OnInit {
                 name: module.name,
                 editTitleKey
               },
-              directLink: !!(module.layout && module.layout.directLink)
+              directLink: !!(module.layout && module.layout.directLink),
+              ...formatOn
             };
           })
         )
@@ -167,6 +192,16 @@ export class InstanceSingleComponent implements OnInit {
       }
 
       instance.parser.preSaveHooks(this.currentState);
+
+      if (this.currentState === ViewState.Edit && instance.formatOnEdit) {
+        data = instance.formatOnEdit(data);
+      } else if (this.currentState === ViewState.New && instance.formatOnCreate) {
+        data = instance.formatOnCreate(data);
+      }
+
+      if (instance.formatOnSave) {
+        data = instance.formatOnSave(data);
+      }
 
       return (toExecute.length ? forkJoin(toExecute) : of([])).pipe(
         switchMap(() => {
