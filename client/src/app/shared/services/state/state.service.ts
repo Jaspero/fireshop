@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable, Subject} from 'rxjs';
 import {shareReplay} from 'rxjs/operators';
-import {Role} from '../../enums/role.enum';
 import {Module} from '../../interfaces/module.interface';
 import {DbService} from '../db/db.service';
 
@@ -14,7 +13,7 @@ export class StateService {
     this.modules$ = this.dbService.getModules().pipe(shareReplay(1));
   }
 
-  role: Role;
+  role: string;
   user: User;
   loadingQue$ = new Subject<Array<string | boolean>>();
   modules$: Observable<Module[]>;

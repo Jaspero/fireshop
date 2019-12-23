@@ -1,5 +1,6 @@
 export enum FirestoreCollection {
   Modules = 'modules',
   Settings = 'settings',
-  Users = 'users'
+  Users = 'users',
+  Roles = 'roles'
 }

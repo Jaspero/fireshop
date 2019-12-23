@@ -1,26 +1,17 @@
 service cloud.firestore {
-  function write() {
-    return request.auth.token.role == 'write'
-  }
-
-  function read() {
-    return request.auth.token.role == 'read'
-  }
-
-  function readOrWrite() {
-    return write() || read()
+  function access(database, module, operation) {
+    return request.auth.token.role in get(/databases/$(database)/documents/modules/$(module).data.authorization[operation]
   }
 
   match /databases/{database}/documents {
 
     match /users/{user=**} {
-      allow read: if readOrWrite() || resource.id == request.auth.uid;
-      allow write, delete: if write() || resource.id == request.auth.uid;
+      allow read, write, delete: access(database, 'users', 'read') || resource.id == request.auth.uid;
     }
 
     match /{document=**} {
-      allow read: if readOrWrite();
-      allow write, delete: if write();
+      allow read: if access(database, document, 'read');
+      allow write: if access(database, document, 'write');
     }
   }
 }

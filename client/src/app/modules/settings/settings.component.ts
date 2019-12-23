@@ -6,11 +6,11 @@ import {
 } from '@angular/core';
 import {FormBuilder, FormGroup, FormGroupDirective, Validators} from '@angular/forms';
 import {RxDestroy} from '@jaspero/ng-helpers';
-import {forkJoin, of} from 'rxjs';
+import {forkJoin, Observable, of} from 'rxjs';
 import {switchMap, takeUntil, tap} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../integrations/firebase/firestore-collection.enum';
 import {environment} from '../../../environments/environment';
-import {Role} from '../../shared/enums/role.enum';
+import {Role} from '../../shared/interfaces/role.interface';
 import {Settings} from '../../shared/interfaces/settings.interface';
 import {DbService} from '../../shared/services/db/db.service';
 import {notify} from '../../shared/utils/notify.operator';
@@ -31,19 +31,21 @@ export class SettingsComponent extends RxDestroy implements OnInit {
     super();
   }
 
-  role = Role;
   form: FormGroup;
   settings: Settings;
   users: User[];
   columns = ['exists', 'email', 'role', 'providerData', 'actions'];
   timeStamp = environment.timeStamp;
+  roles$: Observable<Role[]>;
 
   ngOnInit() {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.minLength(6)],
-      role: Role.Read
+      role: ''
     });
+
+    this.roles$ = this.dbService.getDocumentsSimple(FirestoreCollection.Roles);
 
     forkJoin([
       this.dbService.getUserSettings(),

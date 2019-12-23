@@ -1,5 +1,4 @@
 import {Directive, ElementRef, OnInit, Renderer2} from '@angular/core';
-import {Role} from '../../enums/role.enum';
 import {StateService} from '../../services/state/state.service';
 
 @Directive({
@@ -14,8 +13,9 @@ export class ForceDisableDirective implements OnInit {
   ) {}
 
   ngOnInit() {
-    if (this.state.role === Role.Read) {
-      this.renderer.addClass(this.el.nativeElement, 'disabled');
-    }
+    // TODO: refactor to work with dynamic roles
+    // if (this.state.role === Role.Read) {
+    //   this.renderer.addClass(this.el.nativeElement, 'disabled');
+    // }
   }
 }

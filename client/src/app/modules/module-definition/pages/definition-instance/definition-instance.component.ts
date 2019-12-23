@@ -21,7 +21,6 @@ import {ExampleType} from '../../../../shared/enums/example-type.enum';
 import {queue} from '../../../../shared/utils/queue.operator';
 import {MatDialog} from '@angular/material/dialog';
 import {Example, Snippet} from '../../../../shared/interfaces/example.interface';
-import {Role} from '../../../../shared/enums/role.enum';
 import {SNIPPET_FORM_MAP} from '../../../module-instance/consts/snippet-form-map.const';
 import {confirmation} from '../../../../shared/utils/confirmation';
 import {Color} from '../../../../shared/enums/color.enum';
