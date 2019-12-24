@@ -24,6 +24,7 @@ import {Parser} from '../../modules/module-instance/utils/parser';
 import {safeEval} from '../../modules/module-instance/utils/safe-eval';
 import {FilterModule} from '../../shared/interfaces/filter-module.interface';
 import {InstanceSort} from '../../shared/interfaces/instance-sort.interface';
+import {ModuleAuthorization} from '../../shared/interfaces/module-authorization.interface';
 import {ModuleDefinitions, TableColumn} from '../../shared/interfaces/module.interface';
 import {SearchModule} from '../../shared/interfaces/search-module.interface';
 import {SortModule} from '../../shared/interfaces/sort-module.interface';
@@ -33,6 +34,7 @@ import {notify} from '../../shared/utils/notify.operator';
 
 interface TableData {
   moduleId: string;
+  authorization?: ModuleAuthorization;
   name: string;
   displayColumns: string[];
   definitions: ModuleDefinitions;
@@ -194,6 +196,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
 
         return {
           moduleId: data.id,
+          moduleAuthorization: data.authorization,
           name: data.name,
           schema: data.schema,
           displayColumns,

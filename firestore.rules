@@ -9,6 +9,11 @@ service cloud.firestore {
       allow read, write, delete: access(database, 'users', 'read') || resource.id == request.auth.uid;
     }
 
+    match /modules/{module=**} {
+      allow read: if request.auth.uid != null;
+      allow write: if request.auth.token.role === 'admin';
+    }
+
     match /{document=**} {
       allow read: if access(database, document, 'read');
       allow write: if access(database, document, 'write');

@@ -145,7 +145,7 @@
                     <mat-icon>edit</mat-icon>
                     <span>Edit</span>
                   </button>
-                  <button *ngIf="!data.hideDelete" mat-menu-item fDisable (click)="ioc.deleteOne(data.moduleId, element)">
+                  <button *ngIf="!data.hideDelete" mat-menu-item [fDisable]="data.authorization" (click)="ioc.deleteOne(data.moduleId, element)">
                     <mat-icon>delete_forever</mat-icon>
                     <span>Delete</span>
                   </button>

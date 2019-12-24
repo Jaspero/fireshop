@@ -29,12 +29,14 @@ const COLLECTIONS = [
       {
         id: 'admin',
         name: 'Admin',
-        description: 'A user with access to all collections'
+        description: 'A user with access to all collections',
+        createdOn: Date.now()
       },
       {
         id: 'user',
         name: 'User',
-        description: 'A user with limited application access'
+        description: 'A user with limited application access',
+        createdOn: Date.now()
       }
     ]
   },
@@ -60,6 +62,7 @@ const MODULES = [
       instance: {
         segments: [{
           fields: [
+            '/createdOn',
             '/name',
             '/email'
           ]
@@ -112,6 +115,8 @@ const MODULES = [
       },
       createdOn: {
         label: 'Created On',
+        formatOnCreate: "(value) => value || Date.now()",
+        hint: 'Set to todays date if left empty',
         component: {
           type: 'date',
           configuration: {
@@ -125,13 +130,22 @@ const MODULES = [
     id: 'roles',
     name: 'Roles',
     description: 'Collection of roles that can be assigned to users',
+    authorization: {
+      read: ['admin'],
+      write: ['admin']
+    },
     layout: {
       order: 1,
       editTitleKey: 'name',
       icon: 'vpn_key',
+      sort: {
+        active: 'createdOn',
+        direction: 'desc'
+      },
       instance: {
         segments: [{
           fields: [
+            '/createdOn',
             '/name',
             '/description'
           ]
@@ -139,6 +153,12 @@ const MODULES = [
       },
       table: {
         tableColumns: [
+          {
+            key: '/createdOn',
+            label: 'Created On',
+            pipe: ['date'],
+            sortable: true
+          },
           {
             key: '/name',
             label: 'Name'
@@ -158,9 +178,23 @@ const MODULES = [
         description: {
           type: 'string',
         },
+        createdOn: {
+          type: 'number'
+        }
       }
     },
     definitions: {
+      createdOn: {
+        label: 'Created On',
+        formatOnCreate: "(value) => value || Date.now()",
+        hint: 'Set to todays date if left empty',
+        component: {
+          type: 'date',
+          configuration: {
+            format: 'number'
+          }
+        }
+      },
       name: {
         label: 'Name'
       },
@@ -182,7 +216,7 @@ const serviceAccount = require('./serviceAccountKey.json');
  */
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://eko-trznica.firebaseio.com'
+  databaseURL: 'https://jaspero-jms.firebaseio.com'
 });
 
 async function exec() {
@@ -201,7 +235,10 @@ async function exec() {
 
     const {id, ...data} = module;
 
-    await fStore.collection('modules').doc(id).set(data);
+    await fStore.collection('modules').doc(id).set({
+      ...data,
+      createdOn: Date.now()
+    });
   }
 }
 

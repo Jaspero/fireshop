@@ -4,9 +4,11 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BehaviorSubject, combineLatest, forkJoin, Observable, of} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
+import {FirestoreCollection} from '../../../../../../integrations/firebase/firestore-collection.enum';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
 import {ComponentType} from '../../../../shared/interfaces/component-type.enum';
 import {Module} from '../../../../shared/interfaces/module.interface';
+import {Role} from '../../../../shared/interfaces/role.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {notify} from '../../../../shared/utils/notify.operator';
@@ -67,14 +69,19 @@ export class DefinitionInstanceComponent implements OnInit {
     templates: DEFINITION_TEMPLATES,
     autocomplete: DEFINITION_AUTOCOMPLETE
   };
-  role = Role;
   snippetExamples$ = new Observable<Example[]>();
   form$: Observable<FormGroup>;
   data$: Observable<any>;
+  roles$: Observable<Role[]>;
   snippetForm: FormGroup;
   import$ = new BehaviorSubject('');
 
   ngOnInit() {
+    this.roles$ = this.dbService.getDocumentsSimple(FirestoreCollection.Roles)
+      .pipe(
+        shareReplay(1)
+      );
+
     this.snippetExamples$ = this.dbService.getExamples(ExampleType.Snippets)
       .pipe(
         queue(),

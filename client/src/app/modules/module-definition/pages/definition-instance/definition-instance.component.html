@@ -7,7 +7,6 @@
     <a mat-button (click)="back()">Cancel</a>&nbsp;
     <button
       mat-flat-button
-      fDisable
       [disabled]="form.invalid"
       [jpLoadClick]="save(form)">
       Save
@@ -98,8 +97,8 @@
           <mat-form-field class="w-full" appearance="outline">
             <mat-label>Write</mat-label>
             <mat-select [multiple]="true" formControlName="write">
-              <mat-option *ngFor="let role of role | keyvalue" [value]="role.value">
-                {{role.key}}
+              <mat-option *ngFor="let role of roles$ | async" [value]="role.id">
+                {{role.name}}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -107,8 +106,8 @@
           <mat-form-field class="w-full" appearance="outline">
             <mat-label>Read</mat-label>
             <mat-select [multiple]="true" formControlName="read">
-              <mat-option *ngFor="let role of role | keyvalue" [value]="role.value">
-                {{role.key}}
+              <mat-option *ngFor="let role of roles$ | async" [value]="role.id">
+                {{role.name}}
               </mat-option>
             </mat-select>
           </mat-form-field>

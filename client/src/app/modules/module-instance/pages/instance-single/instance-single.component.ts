@@ -7,6 +7,7 @@ import {forkJoin, Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
 import {CompiledSegment} from '../../../../shared/interfaces/compiled-segment.interface';
+import {ModuleAuthorization} from '../../../../shared/interfaces/module-authorization.interface';
 import {ModuleInstanceSegment} from '../../../../shared/interfaces/module-instance-segment.interface';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
@@ -35,6 +36,7 @@ interface Instance {
   formatOnSave: (data: any) => any;
   formatOnEdit: (data: any) => any;
   formatOnCreate: (data: any) => any;
+  authorization?: ModuleAuthorization;
 }
 
 @Component({
@@ -169,6 +171,7 @@ export class InstanceSingleComponent implements OnInit {
                 editTitleKey
               },
               directLink: !!(module.layout && module.layout.directLink),
+              authorization: module.authorization,
               ...formatOn
             };
           })
@@ -193,19 +196,19 @@ export class InstanceSingleComponent implements OnInit {
 
       instance.parser.preSaveHooks(this.currentState);
 
-      if (this.currentState === ViewState.Edit && instance.formatOnEdit) {
-        data = instance.formatOnEdit(data);
-      } else if (this.currentState === ViewState.New && instance.formatOnCreate) {
-        data = instance.formatOnCreate(data);
-      }
-
-      if (instance.formatOnSave) {
-        data = instance.formatOnSave(data);
-      }
-
       return (toExecute.length ? forkJoin(toExecute) : of([])).pipe(
         switchMap(() => {
           data = instance.form.getRawValue();
+
+          if (this.currentState === ViewState.Edit && instance.formatOnEdit) {
+            data = instance.formatOnEdit(data);
+          } else if (this.currentState === ViewState.New && instance.formatOnCreate) {
+            data = instance.formatOnCreate(data);
+          }
+
+          if (instance.formatOnSave) {
+            data = instance.formatOnSave(data);
+          }
 
           delete data.id;
 
