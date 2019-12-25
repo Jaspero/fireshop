@@ -1,17 +1,18 @@
+rules_version = '2';
 service cloud.firestore {
   function access(database, module, operation) {
-    return request.auth.token.role in get(/databases/$(database)/documents/modules/$(module).data.authorization[operation]
+    return request.auth.token.role in get(/databases/$(database)/documents/modules/$(module)).data.authorization[operation]
   }
 
   match /databases/{database}/documents {
 
     match /users/{user=**} {
-      allow read, write, delete: access(database, 'users', 'read') || resource.id == request.auth.uid;
+      allow read, write, delete: if access(database, 'users', 'read') || resource.id == request.auth.uid;
     }
 
     match /modules/{module=**} {
       allow read: if request.auth.uid != null;
-      allow write: if request.auth.token.role === 'admin';
+      allow write: if request.auth.token.role == 'admin';
     }
 
     match /{document=**} {
