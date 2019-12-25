@@ -15,9 +15,9 @@ service cloud.firestore {
       allow write: if request.auth.token.role == 'admin';
     }
 
-    match /{document=**} {
-      allow read: if access(database, document, 'read');
-      allow write: if access(database, document, 'write');
+    match /{module}/{document=**} {
+      allow read: if access(database, module, 'read');
+      allow write: if access(database, module, 'write');
     }
   }
 }
