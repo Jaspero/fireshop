@@ -1,7 +1,7 @@
 <mat-toolbar role="heading" color="primary" class="sticky-header">
   <span>Modules</span>
   <div class="flex-1"></div>
-  <button mat-flat-button (click)="openModuleSelection()">Add module</button>
+  <button mat-flat-button (click)="openModuleSelection()">{{'MODULES.ADD_MODULE' | transloco}}</button>
 </mat-toolbar>
 
 <section class="grid">
@@ -21,13 +21,13 @@
               [checked]="selection.hasValue() && ac.checked"
               [indeterminate]="selection.hasValue() && !ac.checked"
               color="primary"
-              matTooltip="Select">
+              [matTooltip]="'GENERAL.SELECT' | transloco">
             </mat-checkbox>&nbsp;&nbsp;&nbsp;
           </ng-container>
 
           <button
             mat-icon-button
-            matTooltip="Remove {{selection.selected.length}} items"
+            [matTooltip]="'MODULES.REMOVE_ITEMS' | transloco:{value: selection.selected.length} "
             *ngIf="selection.hasValue()"
             (click)="deleteSelection()">
             <mat-icon>delete_forever</mat-icon>
@@ -35,7 +35,7 @@
 
           <button
             mat-icon-button
-            matTooltip="Export selected to files"
+            [matTooltip]="'MODULES.EXPORT_SELECTED_FILES' | transloco"
             *ngIf="selection.hasValue()"
             (click)="exportSelected(true)">
             <mat-icon>present_to_all</mat-icon>
@@ -43,7 +43,7 @@
 
           <button
             mat-icon-button
-            matTooltip="Export selected to interfaces"
+            [matTooltip]="'CREATE_INTERFACES_FOR_SELECTION' | transloco"
             *ngIf="selection.hasValue()"
             (click)="exportSelected()">
             <mat-icon>face</mat-icon>
@@ -59,7 +59,7 @@
           [matSortDirection]="options.sort.direction">
           <ng-container matColumnDef="check">
             <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let row" data-label="Select">
+            <td mat-cell *matCellDef="let row" [attr.data-label]="'GENERAL.SELECT' | transloco">
               <mat-checkbox
                 (click)="$event.stopPropagation()"
                 (change)="$event ? selection.toggle(row.id) : null"
@@ -70,8 +70,8 @@
           </ng-container>
 
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name/ID</th>
-            <td mat-cell *matCellDef="let element" data-label="Name/ID">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'MODULES.NAME_ID' | transloco}}</th>
+            <td mat-cell *matCellDef="let element" [attr.data-label]="'MODULES.NAME_ID' | transloco">
               <a [routerLink]="['..', 'single', element.id]">
                 {{element.name}}<br>
               <span class="fs-small fg-secondary">{{element.id}}</span>
@@ -80,41 +80,41 @@
           </ng-container>
 
           <ng-container matColumnDef="createdOn">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Created on</th>
-            <td mat-cell *matCellDef="let element" data-label="Created on">{{element.createdOn | date}}</td>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'MODULES.CREATED_ON' | transloco}}</th>
+            <td mat-cell *matCellDef="let element" [attr.data-label]="'MODULES.CREATED_ON' | transloco">{{element.createdOn | date}}</td>
           </ng-container>
 
           <ng-container matColumnDef="description">
-            <th mat-header-cell *matHeaderCellDef>Description</th>
-            <td mat-cell *matCellDef="let element" data-label="Description">{{element.description}}</td>
+            <th mat-header-cell *matHeaderCellDef>{{'MODULES.DESCRIPTION' | transloco}}</th>
+            <td mat-cell *matCellDef="let element" [attr.data-label]="'MODULES.DESCRIPTION' | transloco">{{element.description}}</td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let element" data-label="Actions">
-              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions" matTooltip="Actions">
+            <td mat-cell *matCellDef="let element" [attr.data-label]="'GENERAL.ACTIONS' | transloco">
+              <button mat-icon-button [matMenuTriggerFor]="menu" [attr.aria-label]="'GENERAL.ACTIONS' | transloco" [matTooltip]="'GENERAL.ACTIONS' | transloco">
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
                 <button mat-menu-item [routerLink]="['/m', element.id, 'overview']">
                   <mat-icon>forward</mat-icon>
-                  <span>Go to {{element.name}}</span>
+                  <span>{{'MODULES.GO_TO' | transloco}} {{element.name}}</span>
                 </button>
                 <button mat-menu-item [routerLink]="['..', 'single', element.id]">
                   <mat-icon>edit</mat-icon>
-                  <span>Edit</span>
+                  <span>{{'GENERAL.EDIT' | transloco}}</span>
                 </button>
                 <button mat-menu-item (click)="exportToFile([element])">
                   <mat-icon>present_to_all</mat-icon>
-                  <span>Export</span>
+                  <span>{{'GENERAL.EXPORT' | transloco}}</span>
                 </button>
                 <button mat-menu-item (click)="export([element.schema])">
                   <mat-icon>face</mat-icon>
-                  <span>Generate TS Interface</span>
+                  <span>{{'MODULES.GENERATE_TS_INTERFACE' | transloco}}</span>
                 </button>
                 <button mat-menu-item (click)="deleteOne(element)">
                   <mat-icon>delete_forever</mat-icon>
-                  <span>Delete</span>
+                  <span>{{'GENERAL.DELETE' | transloco}}</span>
                 </button>
               </mat-menu>
             </td>
@@ -132,25 +132,25 @@
 
       <!--Empty state-->
       <p class="ta-center p-y-l" *ngIf="emptyState$ | async">
-        No modules yet. <button mat-button color="primary" routerLink="../single/new">Add module</button>
+        {{'MODULES.NO_MODULES' | transloco}} <button mat-button color="primary" routerLink="../single/new">{{'MODULES.ADD_MODULE' | transloco}}</button>
       </p>
     </mat-card>
   </div>
 </section>
 
 <ng-template #modal>
-  <h4 mat-dialog-title>Select module template</h4>
+  <h4 mat-dialog-title>{{'MODULES.SELECT_TEMPLATE' | transloco}}</h4>
 
   <mat-dialog-content>
     <div class="mat-elevation-z2">
       <table mat-table [dataSource]="moduleExamples$ | async">
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MODULES.NAME' | transloco}}</th>
           <td mat-cell *matCellDef="let element">{{element.name | titlecase}}</td>
         </ng-container>
 
         <ng-container matColumnDef="description">
-          <th mat-header-cell *matHeaderCellDef>Description</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MODULES.DESCRIPTION' | transloco}}</th>
           <td mat-cell *matCellDef="let element">{{element.json?.description || '-'}}</td>
         </ng-container>
 

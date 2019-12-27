@@ -6,7 +6,7 @@
       <section>
         <div class="m-b-s">
           <button class="w-full" mat-stroked-button (click)="loginGoogle()">
-            Log in with Google
+            {{'LOGIN.LOGIN_WITH' | transloco:{value: 'Google'} }}
           </button>
         </div>
       </section>
@@ -14,7 +14,7 @@
       <section>
         <div class="m-b-s">
           <button class="w-full" mat-stroked-button (click)="loginFacebook()">
-            Log in with Facebook
+            {{'LOGIN.LOGIN_WITH' | transloco:{value: 'Facebook'} }}
           </button>
         </div>
       </section>
@@ -22,14 +22,14 @@
       <!--Divider-->
       <div class="flex ai-center m-y-m disabled">
         <hr class="flex1">
-        <p class="p-x-s">or</p>
+        <p class="p-x-s">{{'GENERAL.OR' | transloco}}</p>
         <hr class="flex1">
       </div>
 
       <!--Regular login-->
       <form [formGroup]="loginForm">
         <mat-form-field class="w-full" appearance="outline">
-          <mat-label>Email</mat-label>
+          <mat-label>{{'GENERAL.EMAIL' | transloco}}</mat-label>
           <input
             matInput
             type="email"
@@ -37,7 +37,7 @@
           />
         </mat-form-field>
         <mat-form-field class="w-full" appearance="outline">
-          <mat-label>Password</mat-label>
+          <mat-label>{{'LOGIN.PASSWORD' | transloco}}</mat-label>
           <input
             matInput
             #password
@@ -51,9 +51,9 @@
           class="w-full"
           [disabled]="loginForm.invalid"
           [jpLoadClick]="loginEmail()">
-          Login
+          {{'LOGIN.LOGIN' | transloco}}
         </button>
-        <a routerLink="/reset-password" class="block ta-right fg-secondary fs-small">Forgot password?</a>
+        <a routerLink="/reset-password" class="block ta-right fg-secondary fs-small">{{'LOGIN.FORGOT_PASSWORD' | transloco}}</a>
       </form>
 
     </mat-card>

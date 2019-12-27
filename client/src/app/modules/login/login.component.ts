@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild} from 
 import {AngularFireAuth} from '@angular/fire/auth';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
+import {TranslocoService} from '@ngneat/transloco';
 import {auth} from 'firebase/app';
 import {from, throwError} from 'rxjs';
 import {catchError, filter} from 'rxjs/operators';
@@ -18,7 +19,8 @@ export class LoginComponent implements OnInit {
   constructor(
     public router: Router,
     public afAuth: AngularFireAuth,
-    public fb: FormBuilder
+    public fb: FormBuilder,
+    private transloco: TranslocoService
   ) {}
 
   @ViewChild('password', {static: true}) passwordField: ElementRef;
@@ -58,8 +60,7 @@ export class LoginComponent implements OnInit {
       ).pipe(
         notify({
           success: null,
-          error:
-            'The email and password you entered did not match our records. Please double-check and try again.'
+          error: this.transloco.translate('LOGIN.ERROR_MESSAGE')
         }),
         catchError(error => {
           this.loginForm.get('passwordLogin').reset();

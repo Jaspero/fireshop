@@ -1,0 +1,66 @@
+{
+  "GENERAL": {
+    "NEW": "New",
+    "ADD": "Add",
+    "DELETE": "Delete",
+    "EDIT": "Edit",
+    "ACTIONS": "Actions",
+    "SORT": "Sort",
+    "FILTER": "Filter",
+    "IMPORT": "Import",
+    "EXPORT": "Export",
+    "SELECT": "Select",
+    "OK": "Ok",
+    "ERROR": "Error",
+    "SUCCESS": "Success",
+    "OR": "Or",
+    "EMAIL": "Email",
+    "SEARCH": "Search",
+    "DUPLICATE": "Duplicate",
+    "PREVIOUS": "Previous",
+    "NEXT": "Next",
+    "CANCEL": "Cancel",
+    "SAVE": "Save"
+  },
+  "LOGIN": {
+    "LOGIN": "Login",
+    "LOGIN_WITH": "Log in with {{value}}",
+    "PASSWORD": "Password",
+    "FORGOT_PASSWORD": "Forgot password?",
+    "ERROR_MESSAGE": "The email and password you entered did not match our records. Please double-check and try again."
+  },
+  "RESET_PASSWORD": {
+    "PASSWORD_RESET": "Password Reset",
+    "EMAIL_DOESNT_EXIST": "Email doesn't exist",
+    "GO_BACK": "Go back",
+    "RESET_MY_PASSWORD": "Reset my password",
+    "SUCCESS_MESSAGE": "Password reset email has been sent to your email",
+    "ERROR_MESSAGE": "Email is invalid"
+  },
+  "LAYOUT": {
+    "DASHBOARD": "Dashboard",
+    "MODULES": "Modules",
+    "SETTINGS": "Settings",
+    "LOG_OUT": "Log out"
+  },
+  "MODULES": {
+    "ADD_MODULE": "Add module",
+    "REMOVE_ITEMS": "Remove {{value}} items",
+    "EXPORT_SELECTED_FILES": "Export selected files",
+    "CREATE_INTERFACES_FOR_SELECTION": "Create interfaces for selection",
+    "NAME_ID": "Name/ID",
+    "CREATED_ON": "Created on",
+    "DESCRIPTION": "Description",
+    "GO_TO": "Go to",
+    "GENERATE_TS_INTERFACE": "Generate TS Interface",
+    "SELECT_TEMPLATE": "Selecte template",
+    "NAME": "Name",
+    "NO_MODULES": "No modules yet."
+  },
+  "IMPORT": {
+    "TYPE": "Type",
+    "DELIMITER": "Delimiter",
+    "PROBLEM_UPLOADING": "Problem uploading",
+    "SUCCESS_MESSAGE": "You have successfully uploaded {{value}} items"
+  }
+}

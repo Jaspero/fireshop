@@ -1,11 +1,11 @@
 <span class="hide-xs">
   <button mat-button (click)="openDialog()">
     <mat-icon>vertical_align_bottom</mat-icon>
-    <span>Import</span>
+    <span>{{'GENERAL.IMPORT' | transloco}}</span>
   </button>
 </span>
 <span class="show-xs">
-  <button mat-icon-button (click)="openDialog()" matTooltip="Import">
+  <button mat-icon-button (click)="openDialog()" [matTooltip]="'GENERAL.IMPORT' | transloco">
     <mat-icon>vertical_align_bottom</mat-icon>
   </button>
 </span>
@@ -15,20 +15,20 @@
 <ng-template #overview>
   <div *ngIf="data">
     <div *ngIf="data.created">
-      <h4 mat-dialog-title>Success</h4>
-      <p mat-dialog-content>You have successfully uploaded {{data.created}} items</p>
+      <h4 mat-dialog-title>{{'GENERAL.SUCCESS' | transloco}}</h4>
+      <p mat-dialog-content>{{'IMPORT.SUCCESS_MESSAGE' | transloco:{value: data.created} }}</p>
     </div>
     <div *ngIf="data.errors && data.errors.length">
-      <h4 mat-dialog-title>Error</h4>
+      <h4 mat-dialog-title>{{'GENERAL.ERROR' | transloco}}</h4>
       <div mat-dialog-content>
         <div class="m-b-xs" *ngFor="let error of data.errors">
-          <b>Problem uploading: {{error.index}}</b>
+          <b>{{'IMPORT.PROBLEM_UPLOADING' | transloco}}: {{error.index}}</b>
           <pre>{{error.errors | json}}</pre>
         </div>
       </div>
     </div>
     <div mat-dialog-actions class="jc-end">
-      <button mat-button mat-dialog-close>Ok</button>
+      <button mat-button mat-dialog-close>{{'GENERAL.OK' | transloco}}</button>
     </div>
   </div>
 </ng-template>
@@ -36,19 +36,21 @@
 <ng-template #dialog>
   <form [formGroup]="form" (ngSubmit)="file.click()">
     <mat-form-field class="w-full" appearance="outline">
-      <mat-select placeholder="Type" formControlName="type">
+      <mat-label>{{'IMPORT.TYPE' | transloco}}</mat-label>
+      <mat-select formControlName="type">
         <mat-option *ngFor="let option of importType | keyvalue" [value]="option.value">{{option.key}}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field class="w-full" appearance="outline" *ngIf="form.get('type').value === importType.CSV">
-      <input matInput formControlName="delimiter" placeholder="delimiter">
+      <mat-label>{{'IMPORT.DELIMITER' | transloco}}</mat-label>
+      <input matInput formControlName="delimiter">
     </mat-form-field>
 
     <mat-dialog-actions class="jc-end">
       <button mat-button type="submit">
         <mat-icon>vertical_align_bottom</mat-icon>
-        <span>Import</span>
+        <span>{{'GENERAL.IMPORT' | transloco}}</span>
       </button>
     </mat-dialog-actions>
   </form>

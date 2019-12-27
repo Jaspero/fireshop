@@ -45,7 +45,7 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
 
   @ViewChild(MatSort, {static: true})
   sort: MatSort;
-  displayedColumns = ['check', 'name', 'createdOn', 'actions'];
+  displayedColumns = ['check', 'name', 'createdOn', 'description', 'actions'];
   exampleColumns = ['name', 'description'];
 
   items$: Observable<Module[]>;
