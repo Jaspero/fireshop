@@ -353,6 +353,8 @@ export class Parser {
       createComponentInjector(this.injector, {
         control,
         validation,
+        single,
+        pointers: this.pointers,
         ...definition,
         ...(definition.component.configuration || {})
       })
