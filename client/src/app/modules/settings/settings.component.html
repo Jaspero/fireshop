@@ -2,7 +2,7 @@
   <mat-toolbar role="heading" color="primary" class="sticky-header">
     <span>Settings</span>
     <div class="flex-1"></div>
-    <span class="m-r-s">Latest release:</span>
+    <span class="m-r-s">{{'SETTINGS.LATEST_RELEASE' | transloco}}:</span>
     <mat-chip-list>
       <mat-chip>{{timeStamp}}</mat-chip>
     </mat-chip-list>
@@ -12,37 +12,37 @@
     <div class="col-8 col-s-10 col-xs-12">
       <mat-card>
         <mat-card-header>
-          <h1>Members</h1>
+          <h1>{{'SETTINGS.MEMBERS' | transloco}}</h1>
         </mat-card-header>
 
         <mat-card-content class="mat-card-content-inset">
           <table mat-table [dataSource]="users">
             <ng-container matColumnDef="exists">
               <th mat-header-cell *matHeaderCellDef></th>
-              <td mat-cell *matCellDef="let element" data-label="Exists">
+              <td mat-cell *matCellDef="let element" [attr.data-label]="'SETTINGS.EXISTS' | transloco">
                 <mat-checkbox [checked]="!!element.id" [disabled]="true"></mat-checkbox>
               </td>
             </ng-container>
 
             <ng-container matColumnDef="email">
-              <th mat-header-cell *matHeaderCellDef>Email</th>
-              <td mat-cell *matCellDef="let element" data-label="Email">{{element.email}}</td>
+              <th mat-header-cell *matHeaderCellDef>{{'GENERAL.EMAIL' | transloco}}</th>
+              <td mat-cell *matCellDef="let element" [attr.data-label]="'GENERAL.EMAIL' | transloco">{{element.email}}</td>
             </ng-container>
 
             <ng-container matColumnDef="role">
-              <th mat-header-cell *matHeaderCellDef>Role</th>
-              <td mat-cell *matCellDef="let element" data-label="role">{{element.role}}</td>
+              <th mat-header-cell *matHeaderCellDef>{{'SETTINGS.ROLE' | transloco}}</th>
+              <td mat-cell *matCellDef="let element" [attr.data-label]="'SETTINGS.ROLE' | transloco">{{element.role}}</td>
             </ng-container>
 
             <ng-container matColumnDef="providerData">
-              <th mat-header-cell *matHeaderCellDef>Provider</th>
-              <td mat-cell *matCellDef="let element" data-label="Provider">{{element.providerData | json}}</td>
+              <th mat-header-cell *matHeaderCellDef>{{'SETTINGS.PROVIDER' | transloco}}</th>
+              <td mat-cell *matCellDef="let element" [attr.data-label]="'SETTINGS.PROVIDER' | transloco">{{element.providerData | json}}</td>
             </ng-container>
 
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef></th>
-              <td mat-cell *matCellDef="let element" data-label="Remove">
-                <button mat-icon-button type="button" aria-label="Remove" matTooltip="Remove" [jpLoadClick]="remove(element)">
+              <td mat-cell *matCellDef="let element" [attr.data-label]="'GENERAL.REMOVE' | transloco">
+                <button mat-icon-button type="button" [attr.aria-label]="'GENERAL.REMOVE' | transloco" [matTooltip]="'GENERAL.REMOVE' | transloco" [jpLoadClick]="remove(element)">
                   <mat-icon>delete</mat-icon>
                 </button>
               </td>
@@ -57,26 +57,26 @@
     <div class="col-4 col-s-10 col-xs-12">
       <mat-card>
         <mat-card-header>
-          <h1>Add members</h1>
+          <h1>{{'SETTINGS.ADD_MEMBERS' | transloco}}</h1>
         </mat-card-header>
 
         <form [formGroup]="form" #nForm="ngForm" autocomplete="off">
           <mat-card-content>
             <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Email</mat-label>
+              <mat-label>{{'GENERAL.EMAIL' | transloco}}</mat-label>
               <input type="email" formControlName="email" matInput>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Password</mat-label>
+              <mat-label>{{'GENERAL.PASSWORD' | transloco}}</mat-label>
               <input type="password" formControlName="password" matInput>
               <mat-icon class="pointer" matSuffix matTooltip="Generate Random Password" (click)="generateRandomPassword()">cached</mat-icon>
-              <mat-hint>A user won't be created if a password isn't provided</mat-hint>
-              <mat-error>Must be at least 6 characters</mat-error>
+              <mat-hint>{{'SETTINGS.PASSWORD_INSTRUCTIONS' | transloco}}</mat-hint>
+              <mat-error>{{'SETTINGS.PASSWORD_RULES' | transloco}}</mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-full m-t-m">
-              <mat-label>Role</mat-label>
+              <mat-label>{{'SETTINGS.ROLE' | transloco}}</mat-label>
               <mat-select formControlName="role">
                 <mat-option *ngFor="let role of roles$ | async" [value]="role.id">{{role.name}}</mat-option>
               </mat-select>
@@ -85,7 +85,7 @@
 
           <mat-card-actions>
             <div class="ta-right">
-              <button type="submit" mat-flat-button color="primary" [disabled]="form.invalid" [jpLoadClick]="add(nForm)">Add</button>
+              <button type="submit" mat-flat-button color="primary" [disabled]="form.invalid" [jpLoadClick]="add(nForm)">{{'GENERAL.ADD' | transloco}}</button>
             </div>
           </mat-card-actions>
         </form>

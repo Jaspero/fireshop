@@ -64,7 +64,7 @@ export class ExportComponent extends RxDestroy {
       .pipe(
         notify({
           success: null,
-          error: `Unknown export error`
+          error: 'EXPORT.ERROR'
         }),
         finalize(() => this.sheetRef.dismiss()),
         takeUntil(this.destroyed$)

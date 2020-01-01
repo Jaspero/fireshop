@@ -24,7 +24,9 @@
     "@angular/platform-browser-dynamic": "8.2.10",
     "@angular/router": "8.2.10",
     "@jaspero/ng-helpers": "3.0.0",
+    "@ngneat/transloco": "^2.12.3",
     "ajv": "6.10.2",
+    "document-register-element": "1.7.2",
     "file-saver": "2.0.2",
     "firebase": "7.0.0",
     "hammerjs": "2.0.8",
@@ -35,8 +37,7 @@
     "rxjs": "6.5.3",
     "tinymce": "5.0.16",
     "tslib": "1.10.0",
-    "zone.js": "0.10.2",
-    "document-register-element": "1.7.2"
+    "zone.js": "0.10.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.803.9",

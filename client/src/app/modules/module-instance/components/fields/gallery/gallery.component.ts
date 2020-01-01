@@ -111,7 +111,10 @@ export class GalleryComponent extends FieldComponent<GalleryData>
         withCredentials: false,
         responseType: 'blob'
       })
-      .pipe(notify({error: 'Error on uploading image.', success: ''}))
+      .pipe(notify({
+        error: 'FIELDS.GALLERY.UPLOAD_ERROR',
+        success: null
+      }))
       .subscribe(res => {
         const urlCreator = window.URL || (window as any).webkitURL;
         const value = this.cData.control.value;

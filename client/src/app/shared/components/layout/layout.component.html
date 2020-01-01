@@ -3,13 +3,13 @@
     <!--<img class="dashboard-nav-welcome-logo" src="assets/logo.svg" alt="Logo" width="60">-->
     <h1 class="dashboard-nav-welcome-logo">{{staticConfig.displayName}}</h1>
     <p *ngIf="currentUser$ | async as user" class="dashboard-nav-welcome-user">{{user.email}}</p>
-    <mat-icon class="dashboard-nav-welcome-menu" role="button" aria-label="Menu" (click)="toggleMenu()">menu</mat-icon>
+    <mat-icon class="dashboard-nav-welcome-menu" role="button" [attr.aria-label]="'LAYOUT.MENU' | transloco" (click)="toggleMenu()">menu</mat-icon>
   </section>
 
   <div class="dashboard-nav-scrollable">
     <a class="dashboard-nav-item" routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">
       <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">dashboard</mat-icon>
-      <span class="dashboard-nav-item-text">Dashboard</span>
+      <span class="dashboard-nav-item-text">{{'LAYOUT.DASHBOARD' | transloco}}</span>
     </a>
 
     <a
@@ -24,18 +24,18 @@
 
     <a class="dashboard-nav-item" routerLink="/module-definition/overview" routerLinkActive="active" (click)="closeMenu()">
       <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">view_module</mat-icon>
-      <span class="dashboard-nav-item-text">Modules</span>
+      <span class="dashboard-nav-item-text">{{'LAYOUT.MODULES' | transloco}}</span>
     </a>
 
     <a class="dashboard-nav-item" routerLink="/settings" routerLinkActive="active" (click)="closeMenu()">
       <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">settings</mat-icon>
-      <span class="dashboard-nav-item-text">Settings</span>
+      <span class="dashboard-nav-item-text">{{'LAYOUT.SETTINGS' | transloco}}</span>
     </a>
   </div>
 
   <a class="dashboard-nav-footer" (click)="logOut()">
     <mat-icon aria-hidden="true" class="dashboard-nav-footer-icon">power_settings_new</mat-icon>
-    <span class="dashboard-nav-footer-text">Log out</span>
+    <span class="dashboard-nav-footer-text">{{'LAYOUT.LOG_OUT' | transloco}}</span>
   </a>
 </nav>
 

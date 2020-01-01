@@ -84,6 +84,7 @@ import {FilterDialogComponent} from './modules/module-instance/components/filter
 import {CompiledFormComponent} from './shared/components/compiled-form/compiled-form.component';
 import {FilterTagsComponent} from './shared/components/filter-tags/filter-tags.component';
 import {appInit} from './shared/utils/app-init';
+import {TranslocoRootModule} from './transloco-root.module';
 
 export function init(injector: Injector) {
   return () => {
@@ -212,12 +213,13 @@ const PIPES = [ColumnPipe, ShowFieldPipe, MathPipe];
 
     // Ng Helpers
     LoadClickModule,
-    SanitizeModule
+    SanitizeModule,
+    TranslocoRootModule
   ],
   providers: [
     {
       provide: MAT_DATE_LOCALE,
-      useValue: 'en-GB'
+      useValue: 'en-US'
     },
     {
       provide: APP_INITIALIZER,

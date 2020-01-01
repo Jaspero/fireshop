@@ -16,7 +16,7 @@ export class ResetPasswordComponent implements OnInit {
   constructor(
     public afAuth: AngularFireAuth,
     public router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {}
 
   resetControl: FormControl;
@@ -33,8 +33,8 @@ export class ResetPasswordComponent implements OnInit {
     from(this.afAuth.auth.sendPasswordResetEmail(this.resetControl.value))
       .pipe(
         notify({
-          success: 'Password reset email has been sent to your email',
-          error: 'Email is invalid'
+          success: 'RESET_PASSWORD.SUCCESS_MESSAGE',
+          error: 'RESET_PASSWORD.ERROR_MESSAGE'
         })
       )
       .subscribe();

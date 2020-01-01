@@ -45,7 +45,7 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
 
   @ViewChild(MatSort, {static: true})
   sort: MatSort;
-  displayedColumns = ['check', 'name', 'createdOn', 'actions'];
+  displayedColumns = ['check', 'name', 'createdOn', 'description', 'actions'];
   exampleColumns = ['name', 'description'];
 
   items$: Observable<Module[]>;
@@ -154,7 +154,10 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
       switchMap(() => this.dbService.removeModule(item.id)),
       notify()
     ], {
-      description: `This action will remove ${item.name} permanently`
+      description: 'MODULES.REMOVE_ONE',
+      variables: {
+        value: item.name
+      }
     });
   }
 
@@ -219,7 +222,7 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
           }
         }),
         notify({
-          success: 'Copied to clipboard'
+          success: 'MODULES.COPIED_TO_CLIPBOARD'
         }),
         takeUntil(this.destroyed$)
       )

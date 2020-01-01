@@ -6,4 +6,5 @@ export interface ConfirmationOptions {
   header: string;
   description?: string;
   color?: Color;
+  variables?: any;
 }

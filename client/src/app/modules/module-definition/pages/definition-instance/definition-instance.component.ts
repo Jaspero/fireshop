@@ -295,8 +295,8 @@ export class DefinitionInstanceComponent implements OnInit {
         this.fileEl.nativeElement.click();
       })
     ], {
-      description: `This action will override your current module setup.`,
-      confirm: 'Import',
+      description: 'MODULES.REMOVE_MODULE_SETUP',
+      confirm: 'GENERAL.IMPORT',
       color: Color.Primary
     });
   }

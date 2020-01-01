@@ -136,7 +136,10 @@ export class InstanceOverviewContextService {
         notify()
       ],
       {
-        description: `This action will remove ${item.id} permanently`
+        description: 'INSTANCE_OVERVIEW.REMOVE_ONE',
+        variables: {
+          value: item.id
+        }
       }
     );
   }

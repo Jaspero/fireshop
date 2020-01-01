@@ -58,8 +58,7 @@ export class LoginComponent implements OnInit {
       ).pipe(
         notify({
           success: null,
-          error:
-            'The email and password you entered did not match our records. Please double-check and try again.'
+          error: 'LOGIN.ERROR_MESSAGE'
         }),
         catchError(error => {
           this.loginForm.get('passwordLogin').reset();
