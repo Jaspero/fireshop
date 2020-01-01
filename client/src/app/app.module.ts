@@ -84,7 +84,7 @@ import {FilterDialogComponent} from './modules/module-instance/components/filter
 import {CompiledFormComponent} from './shared/components/compiled-form/compiled-form.component';
 import {FilterTagsComponent} from './shared/components/filter-tags/filter-tags.component';
 import {appInit} from './shared/utils/app-init';
-import { TranslocoRootModule } from './transloco-root.module';
+import {TranslocoRootModule} from './transloco-root.module';
 
 export function init(injector: Injector) {
   return () => {

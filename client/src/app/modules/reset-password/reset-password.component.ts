@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {TranslocoService} from '@ngneat/transloco';
 import {from} from 'rxjs';
 import {STATIC_CONFIG} from '../../../environments/static-config';
 import {notify} from '../../shared/utils/notify.operator';
@@ -18,7 +17,6 @@ export class ResetPasswordComponent implements OnInit {
     public afAuth: AngularFireAuth,
     public router: Router,
     private fb: FormBuilder,
-    private transloco: TranslocoService
   ) {}
 
   resetControl: FormControl;
@@ -35,8 +33,8 @@ export class ResetPasswordComponent implements OnInit {
     from(this.afAuth.auth.sendPasswordResetEmail(this.resetControl.value))
       .pipe(
         notify({
-          success: this.transloco.translate('RESET_PASSWORD.SUCCESS_MESSAGE'),
-          error: this.transloco.translate('RESET_PASSWORD.ERROR_MESSAGE')
+          success: 'RESET_PASSWORD.SUCCESS_MESSAGE',
+          error: 'RESET_PASSWORD.ERROR_MESSAGE'
         })
       )
       .subscribe();

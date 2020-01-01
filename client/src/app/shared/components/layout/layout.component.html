@@ -3,7 +3,7 @@
     <!--<img class="dashboard-nav-welcome-logo" src="assets/logo.svg" alt="Logo" width="60">-->
     <h1 class="dashboard-nav-welcome-logo">{{staticConfig.displayName}}</h1>
     <p *ngIf="currentUser$ | async as user" class="dashboard-nav-welcome-user">{{user.email}}</p>
-    <mat-icon class="dashboard-nav-welcome-menu" role="button" aria-label="Menu" (click)="toggleMenu()">menu</mat-icon>
+    <mat-icon class="dashboard-nav-welcome-menu" role="button" [attr.aria-label]="'LAYOUT.MENU' | transloco" (click)="toggleMenu()">menu</mat-icon>
   </section>
 
   <div class="dashboard-nav-scrollable">

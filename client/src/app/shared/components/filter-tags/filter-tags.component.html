@@ -10,7 +10,7 @@
 
   </ng-container>
   <mat-chip *ngIf="searchValue" [removable]="true" (removed)="search.setValue('')">
-    Search: {{searchValue}}
+    {{'GENERAL.SEARCH' | transloco}}: {{searchValue}}
     <mat-icon matChipRemove>cancel</mat-icon>
   </mat-chip>
 </mat-chip-list>

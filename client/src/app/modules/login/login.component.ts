@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild} from 
 import {AngularFireAuth} from '@angular/fire/auth';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {TranslocoService} from '@ngneat/transloco';
 import {auth} from 'firebase/app';
 import {from, throwError} from 'rxjs';
 import {catchError, filter} from 'rxjs/operators';
@@ -19,8 +18,7 @@ export class LoginComponent implements OnInit {
   constructor(
     public router: Router,
     public afAuth: AngularFireAuth,
-    public fb: FormBuilder,
-    private transloco: TranslocoService
+    public fb: FormBuilder
   ) {}
 
   @ViewChild('password', {static: true}) passwordField: ElementRef;
@@ -60,7 +58,7 @@ export class LoginComponent implements OnInit {
       ).pipe(
         notify({
           success: null,
-          error: this.transloco.translate('LOGIN.ERROR_MESSAGE')
+          error: 'LOGIN.ERROR_MESSAGE'
         }),
         catchError(error => {
           this.loginForm.get('passwordLogin').reset();

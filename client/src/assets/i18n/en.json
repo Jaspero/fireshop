@@ -3,6 +3,7 @@
     "NEW": "New",
     "ADD": "Add",
     "DELETE": "Delete",
+    "REMOVE": "Remove",
     "EDIT": "Edit",
     "ACTIONS": "Actions",
     "SORT": "Sort",
@@ -15,17 +16,21 @@
     "SUCCESS": "Success",
     "OR": "Or",
     "EMAIL": "Email",
+    "PASSWORD": "Password",
     "SEARCH": "Search",
     "DUPLICATE": "Duplicate",
     "PREVIOUS": "Previous",
     "NEXT": "Next",
     "CANCEL": "Cancel",
-    "SAVE": "Save"
+    "SAVE": "Save",
+    "PAGE_SIZE": "Page size",
+    "DISMISS": "Dismiss",
+    "OPERATION_COMPLETED": "Operation completed",
+    "OPERATION_FAILED": "Operation failed"
   },
   "LOGIN": {
     "LOGIN": "Login",
     "LOGIN_WITH": "Log in with {{value}}",
-    "PASSWORD": "Password",
     "FORGOT_PASSWORD": "Forgot password?",
     "ERROR_MESSAGE": "The email and password you entered did not match our records. Please double-check and try again."
   },
@@ -38,6 +43,7 @@
     "ERROR_MESSAGE": "Email is invalid"
   },
   "LAYOUT": {
+    "MENU": "Menu",
     "DASHBOARD": "Dashboard",
     "MODULES": "Modules",
     "SETTINGS": "Settings",
@@ -46,6 +52,8 @@
   "MODULES": {
     "ADD_MODULE": "Add module",
     "REMOVE_ITEMS": "Remove {{value}} items",
+    "REMOVE_ONE": "This action will remove {{value}} permanently",
+    "REMOVE_MODULE_SETUP": "This action will override your current module setup.",
     "EXPORT_SELECTED_FILES": "Export selected files",
     "CREATE_INTERFACES_FOR_SELECTION": "Create interfaces for selection",
     "NAME_ID": "Name/ID",
@@ -55,12 +63,66 @@
     "GENERATE_TS_INTERFACE": "Generate TS Interface",
     "SELECT_TEMPLATE": "Selecte template",
     "NAME": "Name",
-    "NO_MODULES": "No modules yet."
+    "NO_MODULES": "No modules yet.",
+    "COPIED_TO_CLIPBOARD": "Copied to clipboard"
+  },
+  "INSTANCE_OVERVIEW": {
+    "REMOVE_ITEMS": "Remove {{value}} items",
+    "REMOVE_ONE": "This action will remove {{value}} permanently",
+    "NO_ITEMS": "No {{value}} yet.",
+    "LOAD_MORE": "More...",
+    "APPLY": "Apply",
+    "UPDATE_ORDER": "Update Order"
+  },
+  "INSTANCE_SINGLE": {
+    "EDITING": "Editing",
+    "COPY_OF": "Copy of"
+  },
+  "FIELDS": {
+    "IMAGE": {
+      "PREVIEW": "Image preview"
+    },
+    "GALLERY": {
+      "ENTER_URL": "Enter URL",
+      "CHOOSE_FILES": "Choose files",
+      "SORT_IMAGES": "Sort images",
+      "IMAGE_URL": "Image URL",
+      "ADD_IMAGE": "Add image",
+      "UPLOAD_ERROR": "Error on uploading image."
+    },
+    "WYSIWYG": {
+      "EMBED_YOUTUBE": "Embed YouTube",
+      "VIDEO_ID": "Video ID",
+      "FULL_WIDTH": "Full Width",
+      "SHOW_PLAYER_CONTROLS": "Show Player Controls",
+      "PRIVACY_ENHANCED_MODE": "Privacy Enhanced Mode",
+      "ALIGNMENT": "Alignment",
+      "LEFT": "Left",
+      "CENTER": "Center",
+      "RIGHT": "Right"
+    }
   },
   "IMPORT": {
     "TYPE": "Type",
     "DELIMITER": "Delimiter",
     "PROBLEM_UPLOADING": "Problem uploading",
-    "SUCCESS_MESSAGE": "You have successfully uploaded {{value}} items"
+    "SUCCESS_MESSAGE": "You have successfully uploaded {{value}} items",
+    "ERROR": "There was an error while importing data."
+  },
+  "EXPORT": {
+    "ERROR": "Unknown export error"
+  },
+  "CONFIRMATION": {
+    "TITLE": "Are you sure?"
+  },
+  "SETTINGS": {
+    "LATEST_RELEASE": "Latest release",
+    "MEMBERS": "Members",
+    "EXISTS": "Exists",
+    "ROLE": "Role",
+    "PROVIDER": "Provider",
+    "ADD_MEMBERS": "Add members",
+    "PASSWORD_INSTRUCTIONS": "A user will only be automatically created if a password is provided",
+    "PASSWORD_RULES": "Must be at least 6 characters"
   }
 }

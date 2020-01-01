@@ -34,7 +34,7 @@
           </ng-container>
           <button
             mat-icon-button
-            matTooltip="Remove {{ioc.selection.selected.length}} items"
+            [matTooltip]="'INSTANCE_OVERVIEW.REMOVE_ITEMS' | transloco:{value: ioc.selection.selected.length} "
             *ngIf="ioc.selection.hasValue()"
             (click)="ioc.deleteSelection(data.moduleId)">
             <mat-icon>delete_forever</mat-icon>
@@ -67,7 +67,7 @@
             mat-button
             (click)="ioc.openFilterDialog(data.filterModule)">
             <mat-icon>vertical_split</mat-icon>
-            <span>Filter</span>
+            <span>{{'GENERAL.FILTER' | transloco}}</span>
           </button>
 
           <button
@@ -75,7 +75,7 @@
             mat-button
             (click)="ioc.openSortDialog(data.moduleId, data.name, data.sortModule)">
             <mat-icon>vertical_split</mat-icon>
-            <span>Sort</span>
+            <span>{{'GENERAL.SORT' | transloco}}</span>
           </button>
 
           <div *ngIf="data.searchModule" class="m-l-s">
@@ -96,7 +96,7 @@
             <ng-container *ngIf="!data.hideCheckbox">
               <ng-container matColumnDef="check" sticky>
                 <th class="cta-column" mat-header-cell *matHeaderCellDef></th>
-                <td class="cta-column" mat-cell *matCellDef="let row" data-label="Select">
+                <td class="cta-column" mat-cell *matCellDef="let row" [attr.data-label]="'GENERAL.SELECT' | transloco">
                   <mat-checkbox
                     (click)="$event.stopPropagation()"
                     (change)="$event ? ioc.selection.toggle(row.id) : null"
@@ -136,18 +136,18 @@
 
             <ng-container *ngIf="!data.hideEdit || !data.hideDelete" matColumnDef="actions" stickyEnd>
               <th class="cta-column-last" mat-header-cell *matHeaderCellDef></th>
-              <td class="cta-column-last" mat-cell *matCellDef="let element" data-label="Actions">
-                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions" matTooltip="Actions">
+              <td class="cta-column-last" mat-cell *matCellDef="let element" [attr.data-label]="'GENERAL.ACTIONS' | transloco">
+                <button mat-icon-button [matMenuTriggerFor]="menu" [attr.aria-label]="'GENERAL.ACTIONS' | transloco" [matTooltip]="'GENERAL.ACTIONS' | transloco">
                   <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
                   <button *ngIf="!data.hideEdit" mat-menu-item [routerLink]="['/m', data.moduleId, 'single', element.id]">
                     <mat-icon>edit</mat-icon>
-                    <span>Edit</span>
+                    <span>{{'GENERAL.EDIT' | transloco}}</span>
                   </button>
                   <button *ngIf="!data.hideDelete" mat-menu-item [fDisable]="data.authorization" (click)="ioc.deleteOne(data.moduleId, element)">
                     <mat-icon>delete_forever</mat-icon>
-                    <span>Delete</span>
+                    <span>{{'GENERAL.DELETE' | transloco}}</span>
                   </button>
                 </mat-menu>
               </td>
@@ -160,8 +160,10 @@
 
         <ng-container *ngIf="ioc.emptyState$ | async; else hasContent;">
           <mat-toolbar class="jc-center" *ngIf="!data.hideAdd">
-            <p>No {{data.name}} yet.</p>
-            <button mat-button color="primary" [routerLink]="['/m', data.moduleId, 'single/new']">Add {{data.name}}</button>
+            <p>{{'INSTANCE_OVERVIEW.NO_ITEMS' | transloco:{value: data.name} }}</p>
+            <button mat-button color="primary" [routerLink]="['/m', data.moduleId, 'single/new']">
+              {{'GENERAL.ADD' | transloco}} {{data.name}}
+            </button>
           </mat-toolbar>
         </ng-container>
 
@@ -173,10 +175,10 @@
               [disabled]="(ioc.hasMore$ | async) === false"
               [class.loading]="ioc.loading$ | async"
               (click)="ioc.loadMore$.next(true)">
-              More…
+              {{'INSTANCE_OVERVIEW.LOAD_MORE' | transloco}}
             </button>
             <mat-form-field appearance="outline" class="mat-form-field-no-hint">
-              <mat-label>Page size</mat-label>
+              <mat-label>{{'GENERAL.PAGE_SIZE' | transloco}}</mat-label>
               <mat-select [formControl]="ioc.pageSize">
                 <mat-option *ngFor="let size of ioc.pageSizes" [value]="size">
                   {{size}}

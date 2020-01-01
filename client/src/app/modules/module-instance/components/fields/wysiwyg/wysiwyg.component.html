@@ -4,41 +4,43 @@
 </div>
 
 <ng-template #youTubeDialog>
-  <h1 mat-dialog-title>Embed YouTube</h1>
+  <h1 mat-dialog-title>{{'FIELDS.WYSIWYG.EMBED_YOUTUBE' | transloco}}</h1>
 
   <form [formGroup]="ytForm">
     <mat-dialog-content>
       <mat-form-field class="w-full">
-        <input placeholder="Video ID" matInput formControlName="value">
+        <mat-label>{{'FIELDS.WYSIWYG.VIDEO_ID' | transloco}}</mat-label>
+        <input matInput formControlName="value">
       </mat-form-field>
 
       <label class="mat-form-field-wrapper flex jc-between">
-        <span>Full Width</span>
+        <span>{{'FIELDS.WYSIWYG.FULL_WIDTH' | transloco}}</span>
         <mat-slide-toggle formControlName="fullWidth"></mat-slide-toggle>
       </label>
 
       <label class="mat-form-field-wrapper flex jc-between">
-        <span>Show Player Controls</span>
+        <span>{{'FIELDS.WYSIWYG.SHOW_PLAYER_CONTROLS' | transloco}}</span>
         <mat-slide-toggle formControlName="showPlayerControls"></mat-slide-toggle>
       </label>
 
       <label class="mat-form-field-wrapper flex jc-between">
-        <span>Privacy Enhanced Mode</span>
+        <span>{{'FIELDS.WYSIWYG.PRIVACY_ENHANCED_MODE' | transloco}}</span>
         <mat-slide-toggle formControlName="privacyEnhancedMode"></mat-slide-toggle>
       </label>
 
       <mat-form-field class="w-full">
-        <mat-select formControlName="align" placeholder="Alignment">
-          <mat-option value="left">Left</mat-option>
-          <mat-option value="center">Center</mat-option>
-          <mat-option value="right">Right</mat-option>
+        <mat-label>{{'FIELDS.WYSIWYG.ALIGNMENT' | transloco}}</mat-label>
+        <mat-select formControlName="align">
+          <mat-option value="left">{{'FIELDS.WYSIWYG.LEFT' | transloco}}</mat-option>
+          <mat-option value="center">{{'FIELDS.WYSIWYG.CENTER' | transloco}}</mat-option>
+          <mat-option value="right">{{'FIELDS.WYSIWYG.RIGHT' | transloco}}</mat-option>
         </mat-select>
       </mat-form-field>
     </mat-dialog-content>
 
     <mat-dialog-actions class="jc-end">
-      <button mat-button mat-dialog-close>Close</button>
-      <button mat-raised-button color="primary" [mat-dialog-close]="true">Save</button>
+      <button mat-button mat-dialog-close>{{'GENERAL.CLOSE' | transloco}}</button>
+      <button mat-raised-button color="primary" [mat-dialog-close]="true">{{'GENERAL.SAVE' | transloco}}</button>
     </mat-dialog-actions>
   </form>
 </ng-template>

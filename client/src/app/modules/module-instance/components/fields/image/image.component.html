@@ -12,7 +12,7 @@
         <button class="jms-image-suffix-preview-button" mat-icon-button>
           <mat-icon>visibility</mat-icon>
         </button>
-        <img class="jms-image-suffix-preview-image" [attr.src]="imageSrc || imageUrl.value || value" alt="Image Preview">
+        <img class="jms-image-suffix-preview-image" [attr.src]="imageSrc || imageUrl.value || value" [alt]="'FIELDS.IMAGE.PREVIEW' | transloco">
       </div>
     </ng-container>
     <button mat-icon-button *ngIf="!imageUrl.value && !cData['preventServerUpload']">

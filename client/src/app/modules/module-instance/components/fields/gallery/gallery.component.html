@@ -2,9 +2,9 @@
 
 <div class="jms-gallery" jmsDropzone (dropped)="filesUploaded($event)">
   <div class="ta-center p-y-l">
-    <button mat-button *ngIf="cData.allowUrl" (click)="openUploadDialog()">Enter URL</button>
-    <button mat-button *ngIf="cData.allowServerUpload" (click)="openFileUpload()">Choose files</button>
-    <button mat-button *ngIf="cData.allowServerUpload" (click)="openSortImages()">Sort images</button>
+    <button mat-button *ngIf="cData.allowUrl" (click)="openUploadDialog()">{{'FIELDS.GALLERY.ENTER_URL' | transloco}}</button>
+    <button mat-button *ngIf="cData.allowServerUpload" (click)="openFileUpload()">{{'FIELDS.GALLERY.CHOOSE_FILES' | transloco}}</button>
+    <button mat-button *ngIf="cData.allowServerUpload" (click)="openSortImages()">{{'FIELDS.GALLERY.SORT_IMAGES' | transloco}}</button>
   </div>
 
   <!--<div *ngFor="let file of files">-->
@@ -29,7 +29,7 @@
 
         <div cdkDrag (cdkDragMoved)="dragMoved($event);">
           <img class="jms-gallery-list-image-inner" [src]="(val.data || val) | jpSanitize:'resourceUrl'">
-          <button class="jms-gallery-list-image-remove" type="button" mat-icon-button matTooltip="Remove" (click)="removeImage(index, val)">
+          <button class="jms-gallery-list-image-remove" type="button" mat-icon-button [matTooltip]="'GENERAL.REMOVE' | transloco" (click)="removeImage(index, val)">
             <mat-icon>close</mat-icon>
           </button>
         </div>
@@ -43,20 +43,20 @@
 <ng-template #modal>
   <mat-dialog-content>
     <mat-form-field class="w-full" appearance="outline">
-      <mat-label>Image URL</mat-label>
+      <mat-label>{{'FIELDS.GALLERY.IMAGE_URL' | transloco}}</mat-label>
       <input matInput #url>
     </mat-form-field>
   </mat-dialog-content>
 
   <mat-dialog-actions class="jc-end">
-    <button mat-button mat-dialog-close>Cancel</button>&nbsp;
-    <button mat-flat-button color="primary" [disabled]="!url.value" (click)="addImage(url.value)" mat-dialog-close>Add image</button>
+    <button mat-button mat-dialog-close>{{'GENERAL.CANCEL' | transloco}}</button>&nbsp;
+    <button mat-flat-button color="primary" [disabled]="!url.value" (click)="addImage(url.value)" mat-dialog-close>{{'FIELDS.GALLERY.ADD_IMAGE' | transloco}}</button>
   </mat-dialog-actions>
 </ng-template>
 
 <!--Image sort-->
 <ng-template #imagesSort>
-  <h1 mat-dialog-title>Sort images</h1>
+  <h1 mat-dialog-title>{{'FIELDS.GALLERY.SORT_IMAGES' | transloco}}</h1>
 
   <mat-dialog-content>
 

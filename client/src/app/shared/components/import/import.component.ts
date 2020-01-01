@@ -7,7 +7,7 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {environment} from '../../../../environments/environment';
 import {notify} from '../../utils/notify.operator';
@@ -82,7 +82,7 @@ export class ImportComponent {
       .pipe(
         notify({
           success: null,
-          error: 'There was an error while importing data.'
+          error: 'IMPORT.ERROR'
         })
       )
       .subscribe((res: ImportResponse) => {

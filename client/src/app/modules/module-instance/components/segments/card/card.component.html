@@ -5,7 +5,7 @@
       <h2 class="fs-small" *ngIf="segment.subTitle">{{segment.subTitle}}</h2>
     </div>
     <div class="flex-1"></div>
-    <button *ngIf="segment.array" mat-icon-button (click)="addArrayItem()" matTooltip="Add">
+    <button *ngIf="segment.array" mat-icon-button (click)="addArrayItem()" [matTooltip]="'GENERAL.ADD' | transloco">
       <mat-icon>add</mat-icon>
     </button>
   </mat-card-header>
@@ -19,7 +19,7 @@
           <ng-template [cdkPortalOutlet]="field.portal"></ng-template>
         </ng-container>
         <div class="ta-right">
-          <button mat-button color="warn" (click)="removeArrayItem(index)">Remove</button>
+          <button mat-button color="warn" (click)="removeArrayItem(index)">{{'GENERAL.REMOVE' | transloco}}</button>
         </div>
         <hr *ngIf="!last" class="m-y-m">
       </div>
