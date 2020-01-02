@@ -6,6 +6,10 @@ service cloud.firestore {
 
   match /databases/{database}/documents {
 
+    match /settings/user {
+      allow read, write, delete: if request.auth.token.role == 'admin';
+    }
+
     match /users/{user=**} {
       allow read, write, delete: if access(database, 'users', 'read') || resource.id == request.auth.uid;
     }
