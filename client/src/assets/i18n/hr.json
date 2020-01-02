@@ -1,0 +1,128 @@
+{
+  "GENERAL": {
+    "NEW": "Novo",
+    "ADD": "Dodaj",
+    "DELETE": "Obriši",
+    "REMOVE": "Ukloni",
+    "EDIT": "Uredi",
+    "ACTIONS": "Akcije",
+    "SORT": "Sortiraj",
+    "FILTER": "Filteri",
+    "IMPORT": "Import",
+    "EXPORT": "Export",
+    "SELECT": "Odaberi",
+    "OK": "Ok",
+    "ERROR": "Error",
+    "SUCCESS": "Success",
+    "OR": "ili",
+    "EMAIL": "Email",
+    "PASSWORD": "Lozinka",
+    "SEARCH": "Pretraga",
+    "DUPLICATE": "Dupliciraj",
+    "PREVIOUS": "Prethodno",
+    "NEXT": "Slijedeće",
+    "CANCEL": "Prekini",
+    "SAVE": "Snimi",
+    "PAGE_SIZE": "Veličina stranice",
+    "DISMISS": "Dismiss",
+    "OPERATION_COMPLETED": "Operacija završena",
+    "OPERATION_FAILED": "Operacija neuspješna"
+  },
+  "LOGIN": {
+    "LOGIN": "Login",
+    "LOGIN_WITH": "Log in koristeći {{value}}",
+    "FORGOT_PASSWORD": "Zaboravljena lozinka?",
+    "ERROR_MESSAGE": "Uneseni Email i Lozinka nisu pronađeni. Molim vas pokušajte ponovo."
+  },
+  "RESET_PASSWORD": {
+    "PASSWORD_RESET": "Resetiraj Lozinku",
+    "EMAIL_DOESNT_EXIST": "Email ne postoji",
+    "GO_BACK": "Nazad",
+    "RESET_MY_PASSWORD": "Resetiraj lozinku",
+    "SUCCESS_MESSAGE": "Nova lozinka vam je poslana na email.",
+    "ERROR_MESSAGE": "Email nije valjan"
+  },
+  "LAYOUT": {
+    "MENU": "Izbornik",
+    "DASHBOARD": "Nadzorna ploča",
+    "MODULES": "Moduli",
+    "SETTINGS": "Postavke",
+    "LOG_OUT": "Log out"
+  },
+  "MODULES": {
+    "ADD_MODULE": "Dodaj Modul",
+    "REMOVE_ITEMS": "Ukloni {{value}} predmete",
+    "REMOVE_ONE": "Ova akcija će u potpunosti ukloniti {{value}}",
+    "REMOVE_MODULE_SETUP": "Ova akcija će prepraviti trenutnu kofiguraciju modula.",
+    "EXPORT_SELECTED_FILES": "Export odabrane dokumente",
+    "CREATE_INTERFACES_FOR_SELECTION": "Kreiraj sučelja za odabir.",
+    "NAME_ID": "Ime/ID",
+    "CREATED_ON": "Kreirano na",
+    "DESCRIPTION": "Opis",
+    "GO_TO": "Idi na",
+    "GENERATE_TS_INTERFACE": "Generiraj TS Sučelje",
+    "SELECT_TEMPLATE": "Odaberi predložak",
+    "NAME": "Ime",
+    "NO_MODULES": "Nijedan Modul ne postoji.",
+    "COPIED_TO_CLIPBOARD": "Kopirano u međuspremnik"
+  },
+  "INSTANCE_OVERVIEW": {
+    "REMOVE_ITEMS": "Ukloni {{value}} predmete",
+    "REMOVE_ONE": "Ova akcija će u potpunosti ukloniti {{value}}",
+    "NO_ITEMS": "{{value}} još ne postoji.",
+    "LOAD_MORE": "Učitaj još...",
+    "APPLY": "Primjeni",
+    "UPDATE_ORDER": "Ažuriraj poredak"
+  },
+  "INSTANCE_SINGLE": {
+    "EDITING": "Uređivanje",
+    "COPY_OF": "Kopija od"
+  },
+  "FIELDS": {
+    "IMAGE": {
+      "PREVIEW": "Pregled slike"
+    },
+    "GALLERY": {
+      "ENTER_URL": "Unesi URL",
+      "CHOOSE_FILES": "Odaberi datoteke",
+      "SORT_IMAGES": "Sortiraj slike",
+      "IMAGE_URL": "URL Slike",
+      "ADD_IMAGE": "Dodaj sliku",
+      "UPLOAD_ERROR": "Error s upload slike."
+    },
+    "WYSIWYG": {
+      "EMBED_YOUTUBE": "Embed YouTube",
+      "VIDEO_ID": "Video ID",
+      "FULL_WIDTH": "Puna širina",
+      "SHOW_PLAYER_CONTROLS": "Prikaži kontrole video playera",
+      "PRIVACY_ENHANCED_MODE": "Privatni način",
+      "ALIGNMENT": "Poravnanje",
+      "LEFT": "Lijevo",
+      "CENTER": "Sredina",
+      "RIGHT": "Desno"
+    }
+  },
+  "IMPORT": {
+    "TYPE": "Type",
+    "DELIMITER": "Delimiter",
+    "PROBLEM_UPLOADING": "Problem s prenošenjem podataka",
+    "SUCCESS_MESSAGE": "Uspješno preneseno {{value}} stavki",
+    "ERROR": "Došlo je do pogreške pri importu podataka"
+  },
+  "EXPORT": {
+    "ERROR": "Nepoznati error pri exportu"
+  },
+  "CONFIRMATION": {
+    "TITLE": "Jeste li sigurni?"
+  },
+  "SETTINGS": {
+    "LATEST_RELEASE": "Najnovija Verzija",
+    "MEMBERS": "Korisnici",
+    "EXISTS": "Postoji",
+    "ROLE": "Uloga",
+    "PROVIDER": "Pružatelj usluge",
+    "ADD_MEMBERS": "Dodaj korisnike",
+    "PASSWORD_INSTRUCTIONS": "Korisnik će se automatski kreirati jedino ako je šifra unesena",
+    "PASSWORD_RULES": "Najmanje 6 znamenki"
+  }
+}
