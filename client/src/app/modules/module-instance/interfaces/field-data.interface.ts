@@ -1,4 +1,4 @@
-import {FormControl} from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 import {Pointers} from '../utils/parser';
 
 export interface FieldData {
@@ -9,6 +9,7 @@ export interface FieldData {
    */
   single: boolean;
   pointers: Pointers;
+  form: FormGroup;
   control: FormControl;
   label: string;
   hint?: string;

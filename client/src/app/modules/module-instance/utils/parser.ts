@@ -355,6 +355,7 @@ export class Parser {
         validation,
         single,
         pointers: this.pointers,
+        form: this.form,
         ...definition,
         ...(definition.component.configuration || {})
       })
