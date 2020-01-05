@@ -7,30 +7,26 @@
   </section>
 
   <div class="dashboard-nav-scrollable">
-    <a class="dashboard-nav-item" routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">
-      <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">dashboard</mat-icon>
-      <span class="dashboard-nav-item-text">{{'LAYOUT.DASHBOARD' | transloco}}</span>
-    </a>
+    <ng-container *ngFor="let item of links$ | async" [ngSwitch]="item.type">
 
-    <a
-      class="dashboard-nav-item"
-      *ngFor="let item of links$ | async"
-      [routerLink]="item.link"
-      routerLinkActive="active"
-      (click)="closeMenu()">
-      <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">{{item.icon}}</mat-icon>
-      <span class="dashboard-nav-item-text">{{item.name}}</span>
-    </a>
+      <a *ngSwitchCase="navigationItemType.Link" class="dashboard-nav-item" [routerLink]="item.value" routerLinkActive="active" (click)="closeMenu()">
+        <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-item-icon">{{item.icon}}</mat-icon>
+        <span class="dashboard-nav-item-text">{{item.label | transloco}}</span>
+      </a>
 
-    <a class="dashboard-nav-item" routerLink="/module-definition/overview" routerLinkActive="active" (click)="closeMenu()">
-      <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">view_module</mat-icon>
-      <span class="dashboard-nav-item-text">{{'LAYOUT.MODULES' | transloco}}</span>
-    </a>
+      <ng-container *ngSwitchCase="navigationItemType.Empty">
 
-    <a class="dashboard-nav-item" routerLink="/settings" routerLinkActive="active" (click)="closeMenu()">
-      <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">settings</mat-icon>
-      <span class="dashboard-nav-item-text">{{'LAYOUT.SETTINGS' | transloco}}</span>
-    </a>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="navigationItemType.Expandable">
+
+      </ng-container>
+
+      <ng-container *ngSwitchCase="navigationItemType.Expanded">
+
+      </ng-container>
+
+    </ng-container>
   </div>
 
   <a class="dashboard-nav-footer" (click)="logOut()">

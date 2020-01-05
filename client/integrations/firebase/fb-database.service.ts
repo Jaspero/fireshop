@@ -117,17 +117,32 @@ export class FbDatabaseService extends DbService {
       .stateChanges();
   }
 
-  getDocument(moduleId, documentId) {
+  getDocument<T = any>(
+    moduleId,
+    documentId,
+    stream = false
+  ): Observable<T> {
+
+    const pipes = [];
+
+    if (!stream) {
+      pipes.push(take(1));
+    }
+
+    pipes.push(
+      map(value => ({
+        ...value,
+        id: documentId
+      }))
+    );
+
     return this.afs
       .collection(moduleId)
-      .doc(documentId)
+      .doc<T>(documentId)
       .valueChanges()
       .pipe(
-        take(1),
-        map(value => ({
-          ...value,
-          id: documentId
-        }))
+        // @ts-ignore
+        ...pipes
       );
   }
 

@@ -64,7 +64,8 @@
     "SELECT_TEMPLATE": "Selecte template",
     "NAME": "Name",
     "NO_MODULES": "No modules yet.",
-    "COPIED_TO_CLIPBOARD": "Copied to clipboard"
+    "COPIED_TO_CLIPBOARD": "Copied to clipboard",
+    "LAYOUT_SETTINGS": "Layout Settings"
   },
   "INSTANCE_OVERVIEW": {
     "REMOVE_ITEMS": "Remove {{value}} items",

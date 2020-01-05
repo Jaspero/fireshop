@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatSort} from '@angular/material/sort';
 import {BehaviorSubject, combineLatest, forkJoin, from, merge, Observable} from 'rxjs';
 import {map, shareReplay, startWith, switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import {LayoutSettingsComponent} from '../../../../shared/components/layout-settings/layout-settings.component';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {RouteData} from '../../../../shared/interfaces/route-data.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
@@ -238,5 +239,14 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
   selectModuleExample(item: Example) {
     this.dialog.closeAll();
     this.router.navigate(['/module-definition/single/new'], {state: {example: item.json}});
+  }
+
+  openLayout() {
+    this.dialog.open(
+      LayoutSettingsComponent,
+      {
+        width: '700px'
+      }
+    );
   }
 }

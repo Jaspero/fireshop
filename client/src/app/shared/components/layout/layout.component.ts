@@ -1,9 +1,11 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
-import {Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {STATIC_CONFIG} from '../../../../environments/static-config';
+import {NavigationItemType} from '../../enums/navigation-item-type.enum';
+import {NavigationItem} from '../../interfaces/navigation-item.interface';
 import {StateService} from '../../services/state/state.service';
 
 @Component({
@@ -20,45 +22,92 @@ export class LayoutComponent implements OnInit {
   ) {}
 
   currentUser$: Observable<any>;
-  links$: Observable<
-    Array<{
-      icon: string;
-      name: string;
-      link: string[];
-    }>
-  >;
+  links$: Observable<NavigationItem[]>;
   staticConfig = STATIC_CONFIG;
   navigationExpanded = false;
 
+  navigationItemType = NavigationItemType;
+
   ngOnInit() {
     this.currentUser$ = this.afAuth.user;
-    this.links$ = this.state.modules$.pipe(
-      map(items =>
-        items.reduce((acc, item) => {
 
-          if (
-            !item.authorization ||
-            !item.authorization.read ||
-            item.authorization.read.includes(this.state.role)
-          ) {
-            acc.push({
-              icon:
-                item.layout && item.layout.icon ? item.layout.icon : 'folder_open',
-              name: item.name,
-              link: [
-                '/m',
-                item.id,
-                ...(item.layout && item.layout.directLink
-                  ? ['single', item.layout.directLink]
-                  : ['overview'])
-              ]
-            });
+    this.links$ = combineLatest([
+      this.state.layout$,
+      this.state.modules$
+    ])
+      .pipe(
+        map(([layout, modules]) => {
+          if (layout.navigation) {
+            return layout.navigation.items.reduce((acc, item) => {
+              if (
+                !item.authorized ||
+                item.authorized.includes(this.state.role)
+              ) {
+                acc.push({
+                  ...item,
+                  ...item.children ?
+                    {
+                      children: item.children
+                        .filter(it => !it.authorized || it.authorized.includes(this.state.role))
+                    } : {}
+                });
+              }
+
+              return acc;
+            }, []);
+          } else {
+             const links: NavigationItem[] = modules.reduce((acc, item) => {
+
+               if (
+                 !item.authorization ||
+                 !item.authorization.read ||
+                 item.authorization.read.includes(this.state.role)
+               ) {
+                 acc.push({
+                   icon:
+                     item.layout && item.layout.icon ? item.layout.icon : 'folder_open',
+                   label: item.name,
+                   type: NavigationItemType.Link,
+                   value: [
+                     '/m',
+                     item.id,
+                     ...(item.layout && item.layout.directLink
+                       ? ['single', item.layout.directLink]
+                       : ['overview'])
+                   ]
+                     .join('/')
+                 });
+               }
+
+               return acc;
+             }, []);
+
+             links.unshift({
+               label: 'LAYOUT.DASHBOARD',
+               icon: 'dashboard',
+               type: NavigationItemType.Link,
+               value: '/dashboard'
+             });
+
+             links.push(
+               {
+                 label: 'LAYOUT.MODULES',
+                 icon: 'view_module',
+                 type: NavigationItemType.Link,
+                 value: '/module-definition/overview'
+               },
+               {
+                 label: 'LAYOUT.SETTINGS',
+                 icon: 'settings',
+                 type: NavigationItemType.Link,
+                 value: '/settings'
+               }
+             );
+
+             return links;
           }
-
-          return acc;
-        }, [])
-      )
-    );
+        })
+      );
   }
 
   toggleMenu() {

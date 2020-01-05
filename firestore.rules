@@ -4,10 +4,23 @@ service cloud.firestore {
     return request.auth.token.role in get(/databases/$(database)/documents/modules/$(module)).data.authorization[operation]
   }
 
+  function authenticated() {
+    return request.auth.token != null;
+  }
+
+  function admin() {
+    return request.auth.token.role == 'admin';
+  }
+
   match /databases/{database}/documents {
 
     match /settings/user {
-      allow read, write, delete: if request.auth.token.role == 'admin';
+      allow read, write: if admin();
+    }
+
+    match /settings/layout {
+      allow read: if authenticated();
+      allow write: if admin();
     }
 
     match /users/{user=**} {
