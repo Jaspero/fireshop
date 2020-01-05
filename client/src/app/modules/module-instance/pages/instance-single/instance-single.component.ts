@@ -183,6 +183,9 @@ export class InstanceSingleComponent implements OnInit {
 
   save(instance: Instance) {
     return () => {
+
+      instance.parser.preSaveHooks(this.currentState);
+
       let data = instance.form.getRawValue();
 
       const id = data.id || nanoid();
@@ -193,8 +196,6 @@ export class InstanceSingleComponent implements OnInit {
           comp.save(instance.module.id, id)
         ));
       }
-
-      instance.parser.preSaveHooks(this.currentState);
 
       return (toExecute.length ? forkJoin(toExecute) : of([])).pipe(
         switchMap(() => {

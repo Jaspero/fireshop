@@ -296,6 +296,7 @@ export class GalleryComponent extends FieldComponent<GalleryData>
   save(moduleId: string, documentId: string) {
     if (
       !this.toRemove.length &&
+      !this.cData.control.value ||
       !this.cData.control.value.find(val => !val.live)
     ) {
       return of([]);
