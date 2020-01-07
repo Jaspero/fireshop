@@ -7,6 +7,63 @@
   </section>
 
   <div class="dashboard-nav-scrollable">
+
+    <a class="dashboard-nav-link active">
+      <mat-icon aria-hidden="true" class="dashboard-nav-link-icon">menu</mat-icon>
+      <span class="dashboard-nav-link-text">Link</span>
+    </a>
+    <a class="dashboard-nav-link">
+      <mat-icon aria-hidden="true" class="dashboard-nav-link-icon">menu</mat-icon>
+      <span class="dashboard-nav-link-text">Link</span>
+    </a>
+
+    <div class="dashboard-nav-empty">
+      <mat-icon aria-hidden="true" class="dashboard-nav-empty-icon">menu</mat-icon>
+      <span class="dashboard-nav-empty-text">Empty</span>
+    </div>
+    <div class="dashboard-nav-empty">
+      <mat-icon aria-hidden="true" class="dashboard-nav-empty-icon">menu</mat-icon>
+      <span class="dashboard-nav-empty-text">Empty</span>
+    </div>
+
+    <div class="dashboard-nav-expandable">
+      <button class="dashboard-nav-expandable-label">
+        <mat-icon aria-hidden="true" class="dashboard-nav-expandable-label-icon">menu</mat-icon>
+        <span class="dashboard-nav-expandable-label-text">Expandable label</span>
+      </button>
+      <a class="dashboard-nav-expandable-item">
+        <mat-icon aria-hidden="true" class="dashboard-nav-expandable-item-icon">menu</mat-icon>
+        <span class="dashboard-nav-expandable-item-text">Expandable item</span>
+      </a>
+      <a class="dashboard-nav-expandable-item">
+        <mat-icon aria-hidden="true" class="dashboard-nav-expandable-item-icon">menu</mat-icon>
+        <span class="dashboard-nav-expandable-item-text">Expandable item</span>
+      </a>
+      <a class="dashboard-nav-expandable-item">
+        <mat-icon aria-hidden="true" class="dashboard-nav-expandable-item-icon">menu</mat-icon>
+        <span class="dashboard-nav-expandable-item-text">Expandable item</span>
+      </a>
+    </div>
+
+    <div class="dashboard-nav-expanded">
+      <div class="dashboard-nav-expanded-label">
+        <mat-icon aria-hidden="true" class="dashboard-nav-expanded-label-icon">menu</mat-icon>
+        <span class="dashboard-nav-expanded-label-text">Expanded label</span>
+      </div>
+      <a class="dashboard-nav-expanded-item">
+        <mat-icon aria-hidden="true" class="dashboard-nav-expanded-item-icon">menu</mat-icon>
+        <span class="dashboard-nav-expanded-item-text">Expanded item</span>
+      </a>
+      <a class="dashboard-nav-expanded-item active">
+        <mat-icon aria-hidden="true" class="dashboard-nav-expanded-item-icon">menu</mat-icon>
+        <span class="dashboard-nav-expanded-item-text">Expanded item</span>
+      </a>
+      <a class="dashboard-nav-expanded-item">
+        <mat-icon aria-hidden="true" class="dashboard-nav-expanded-item-icon">menu</mat-icon>
+        <span class="dashboard-nav-expanded-item-text">Expanded item</span>
+      </a>
+    </div>
+
     <ng-container *ngFor="let item of links$ | async" [ngSwitch]="item.type">
 
       <a *ngSwitchCase="navigationItemType.Link" class="dashboard-nav-item" [routerLink]="item.value" routerLinkActive="active" (click)="closeMenu()">
@@ -15,15 +72,15 @@
       </a>
 
       <ng-container *ngSwitchCase="navigationItemType.Empty">
-
+        <p>example</p>
       </ng-container>
 
       <ng-container *ngSwitchCase="navigationItemType.Expandable">
-
+        <p>example</p>
       </ng-container>
 
       <ng-container *ngSwitchCase="navigationItemType.Expanded">
-
+        <p>example</p>
       </ng-container>
 
     </ng-container>
