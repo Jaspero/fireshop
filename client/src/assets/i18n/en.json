@@ -47,7 +47,9 @@
     "DASHBOARD": "Dashboard",
     "MODULES": "Modules",
     "SETTINGS": "Settings",
-    "LOG_OUT": "Log out"
+    "LOG_OUT": "Log out",
+    "MANAGEMENT": "Management",
+    "SYSTEM": "System"
   },
   "MODULES": {
     "ADD_MODULE": "Add module",

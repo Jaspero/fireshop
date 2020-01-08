@@ -7,81 +7,50 @@
   </section>
 
   <div class="dashboard-nav-scrollable">
-
-    <a class="dashboard-nav-link active">
-      <mat-icon aria-hidden="true" class="dashboard-nav-link-icon">menu</mat-icon>
-      <span class="dashboard-nav-link-text">Link</span>
-    </a>
-    <a class="dashboard-nav-link">
-      <mat-icon aria-hidden="true" class="dashboard-nav-link-icon">menu</mat-icon>
-      <span class="dashboard-nav-link-text">Link</span>
-    </a>
-
-    <div class="dashboard-nav-empty">
-      <mat-icon aria-hidden="true" class="dashboard-nav-empty-icon">menu</mat-icon>
-      <span class="dashboard-nav-empty-text">Empty</span>
-    </div>
-    <div class="dashboard-nav-empty">
-      <mat-icon aria-hidden="true" class="dashboard-nav-empty-icon">menu</mat-icon>
-      <span class="dashboard-nav-empty-text">Empty</span>
-    </div>
-
-    <div class="dashboard-nav-expandable">
-      <button class="dashboard-nav-expandable-label">
-        <mat-icon aria-hidden="true" class="dashboard-nav-expandable-label-icon">menu</mat-icon>
-        <span class="dashboard-nav-expandable-label-text">Expandable label</span>
-      </button>
-      <a class="dashboard-nav-expandable-item">
-        <mat-icon aria-hidden="true" class="dashboard-nav-expandable-item-icon">menu</mat-icon>
-        <span class="dashboard-nav-expandable-item-text">Expandable item</span>
-      </a>
-      <a class="dashboard-nav-expandable-item">
-        <mat-icon aria-hidden="true" class="dashboard-nav-expandable-item-icon">menu</mat-icon>
-        <span class="dashboard-nav-expandable-item-text">Expandable item</span>
-      </a>
-      <a class="dashboard-nav-expandable-item">
-        <mat-icon aria-hidden="true" class="dashboard-nav-expandable-item-icon">menu</mat-icon>
-        <span class="dashboard-nav-expandable-item-text">Expandable item</span>
-      </a>
-    </div>
-
-    <div class="dashboard-nav-expanded">
-      <div class="dashboard-nav-expanded-label">
-        <mat-icon aria-hidden="true" class="dashboard-nav-expanded-label-icon">menu</mat-icon>
-        <span class="dashboard-nav-expanded-label-text">Expanded label</span>
-      </div>
-      <a class="dashboard-nav-expanded-item">
-        <mat-icon aria-hidden="true" class="dashboard-nav-expanded-item-icon">menu</mat-icon>
-        <span class="dashboard-nav-expanded-item-text">Expanded item</span>
-      </a>
-      <a class="dashboard-nav-expanded-item active">
-        <mat-icon aria-hidden="true" class="dashboard-nav-expanded-item-icon">menu</mat-icon>
-        <span class="dashboard-nav-expanded-item-text">Expanded item</span>
-      </a>
-      <a class="dashboard-nav-expanded-item">
-        <mat-icon aria-hidden="true" class="dashboard-nav-expanded-item-icon">menu</mat-icon>
-        <span class="dashboard-nav-expanded-item-text">Expanded item</span>
-      </a>
-    </div>
-
     <ng-container *ngFor="let item of links$ | async" [ngSwitch]="item.type">
 
-      <a *ngSwitchCase="navigationItemType.Link" class="dashboard-nav-item" [routerLink]="item.value" routerLinkActive="active" (click)="closeMenu()">
-        <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-item-icon">{{item.icon}}</mat-icon>
-        <span class="dashboard-nav-item-text">{{item.label | transloco}}</span>
+      <a *ngSwitchCase="navigationItemType.Link" class="dashboard-nav-link" [routerLink]="item.value" routerLinkActive="active" (click)="closeMenu()">
+        <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-link-icon">{{item.icon}}</mat-icon>
+        <span class="dashboard-nav-link-text">{{item.label | transloco}}</span>
       </a>
 
-      <ng-container *ngSwitchCase="navigationItemType.Empty">
-        <p>example</p>
-      </ng-container>
+      <div *ngSwitchCase="navigationItemType.Empty" class="dashboard-nav-empty">
+        <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-empty-icon">{{item.icon}}</mat-icon>
+        <span class="dashboard-nav-empty-text">{{item.label | transloco}}</span>
+      </div>
 
-      <ng-container *ngSwitchCase="navigationItemType.Expandable">
-        <p>example</p>
-      </ng-container>
+      <div
+        *ngSwitchCase="navigationItemType.Expandable"
+        class="dashboard-nav-expandable"
+        [class.active]="item.active">
+        <button class="dashboard-nav-expandable-label" (click)="item.active = !item.active">
+          <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-expandable-label-icon">{{item.icon}}</mat-icon>
+          <span class="dashboard-nav-expandable-label-text">{{item.label | transloco}}</span>
+        </button>
+        <a class="dashboard-nav-expandable-item" *ngFor="let child of item.children" [routerLink]="child.value" routerLinkActive="active" (click)="closeMenu()">
+          <mat-icon *ngIf="child.icon" aria-hidden="true" class="dashboard-nav-expandable-item-icon">{{child.icon}}</mat-icon>
+          <span class="dashboard-nav-expandable-item-text">{{child.label | transloco}}</span>
+        </a>
+      </div>
 
-      <ng-container *ngSwitchCase="navigationItemType.Expanded">
-        <p>example</p>
-      </ng-container>
+      <div *ngSwitchCase="navigationItemType.Expanded" class="dashboard-nav-expanded">
+        <a *ngIf="item.value; else empty;" class="dashboard-nav-expanded-label" routerLinkActive="active" [routerLink]="item.value">
+          <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-expanded-label-icon">{{item.icon}}</mat-icon>
+          <span class="dashboard-nav-expanded-label-text">{{item.label | transloco}}</span>
+        </a>
+
+        <ng-template #empty>
+          <div class="dashboard-nav-expanded-label">
+            <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-expanded-label-icon">{{item.icon}}</mat-icon>
+            <span class="dashboard-nav-expanded-label-text">{{item.label | transloco}}</span>
+          </div>
+        </ng-template>
+
+        <a *ngFor="let child of item.children" class="dashboard-nav-expanded-item" [routerLink]="child.value" routerLinkActive="active" (click)="closeMenu()">
+          <mat-icon *ngIf="child.icon" aria-hidden="true" class="dashboard-nav-expanded-item-icon">{{child.icon}}</mat-icon>
+          <span class="dashboard-nav-expanded-item-text">{{child.label | transloco}}</span>
+        </a>
+      </div>
 
     </ng-container>
   </div>

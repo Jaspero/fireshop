@@ -8,6 +8,10 @@ import {NavigationItemType} from '../../enums/navigation-item-type.enum';
 import {NavigationItem} from '../../interfaces/navigation-item.interface';
 import {StateService} from '../../services/state/state.service';
 
+interface NavigationItemWithActive extends NavigationItem {
+  active?: boolean;
+}
+
 @Component({
   selector: 'jms-layout',
   templateUrl: './layout.component.html',
@@ -22,7 +26,7 @@ export class LayoutComponent implements OnInit {
   ) {}
 
   currentUser$: Observable<any>;
-  links$: Observable<NavigationItem[]>;
+  links$: Observable<NavigationItemWithActive[]>;
   staticConfig = STATIC_CONFIG;
   navigationExpanded = false;
 

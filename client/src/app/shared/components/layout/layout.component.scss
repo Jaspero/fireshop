@@ -245,10 +245,6 @@
 .dashboard-nav-expanded {
   border-bottom: 1px solid var(--sidebar-tertiary);
 
-  &.active > .dashboard-nav-expandable-label {
-    color: var(--primary-theme);
-  }
-
   &-label {
     white-space: nowrap;
     display: flex;
@@ -258,6 +254,11 @@
     padding-left: 24px;
     border-right: 3px solid transparent;
     transition: .2s;
+
+    &.active {
+      background: var(--sidebar-tertiary);
+      border-right: 3px solid var(--primary-theme);
+    }
 
     @media (max-width: $screen-m) {
       padding-left: 8px;
