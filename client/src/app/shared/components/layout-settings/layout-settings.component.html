@@ -1,0 +1,11 @@
+<h4 mat-dialog-title>{{'MODULES.LAYOUT_SETTINGS' | transloco}}</h4>
+
+<form *ngIf="value$ | async as value">
+  <mat-dialog-content>
+    <jms-json-editor [formControl]="value"></jms-json-editor>
+  </mat-dialog-content>
+
+  <div mat-dialog-actions class="jc-end">
+    <button mat-raised-button color="primary" [jpLoadClick]="save(value)">{{'GENERAL.SAVE' | transloco}}</button>
+  </div>
+</form>

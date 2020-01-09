@@ -69,7 +69,11 @@ export abstract class DbService {
     return of([]);
   }
 
-  getDocument(moduleId: string, documentId: string): Observable<any> {
+  getDocument<T = any>(
+    moduleId: string,
+    documentId: string,
+    stream = false
+  ): Observable<T> {
     return of(null);
   }
 

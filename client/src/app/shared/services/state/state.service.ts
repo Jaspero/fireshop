@@ -1,7 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable, Subject} from 'rxjs';
-import {shareReplay} from 'rxjs/operators';
+import {map, shareReplay} from 'rxjs/operators';
+import {FirestoreCollection} from '../../../../../integrations/firebase/firestore-collection.enum';
+import {Layout} from '../../interfaces/layout.interface';
 import {Module} from '../../interfaces/module.interface';
 import {DbService} from '../db/db.service';
 
@@ -11,12 +13,25 @@ import {DbService} from '../db/db.service';
 export class StateService {
   constructor(private dbService: DbService, private router: Router) {
     this.modules$ = this.dbService.getModules().pipe(shareReplay(1));
+    this.layout$ = this.dbService.getDocument(
+      FirestoreCollection.Settings,
+      'layout',
+      true
+    )
+      .pipe(
+        map(value => {
+          delete value.id;
+          return value;
+        }),
+        shareReplay(1)
+      );
   }
 
   role: string;
   user: User;
   loadingQue$ = new Subject<Array<string | boolean>>();
   modules$: Observable<Module[]>;
+  layout$: Observable<Layout>;
 
   /**
    * Array of components that need to

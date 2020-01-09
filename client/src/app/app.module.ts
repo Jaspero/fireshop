@@ -74,6 +74,7 @@ import {ConfirmationComponent} from './shared/components/confirmation/confirmati
 import {ExportComponent} from './shared/components/export/export.component';
 import {ImportComponent} from './shared/components/import/import.component';
 import {JsonEditorComponent} from './shared/components/json-editor/json-editor.component';
+import {LayoutSettingsComponent} from './shared/components/layout-settings/layout-settings.component';
 import {LayoutComponent} from './shared/components/layout/layout.component';
 import {SearchInputComponent} from './shared/components/search-input/search-input.component';
 import {DropzoneDirective} from './shared/directives/dropzone/dropzone.directive';
@@ -145,7 +146,8 @@ const ENTRY_COMPONENTS = [
   ExportComponent,
   SortDialogComponent,
   FilterDialogComponent,
-  FilterTagsComponent
+  FilterTagsComponent,
+  LayoutSettingsComponent
 ];
 
 const DIRECTIVES = [ForceDisableDirective, DropzoneDirective];

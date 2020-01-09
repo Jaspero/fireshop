@@ -4,24 +4,77 @@
 const COLLECTIONS = [
   {
     name: 'settings',
-    documents: [{
-      id: 'user',
-      roles: [
+    documents: [
+      {
+        id: 'user',
+        roles: [
 
-        /**
-         * List all users that should be created initially.
-         * Initially created users can only login through
-         * third party provides (google, facebook...).
-         * If you want to create a user with email/password
-         * add an account for him in Authentication in the
-         * firebase dashboard.
-         */
-        {
-          email: 'test@test.com',
-          role: 'user'
-        },
-      ]
-    }]
+          /**
+           * List all users that should be created initially.
+           * Initially created users can only login through
+           * third party provides (google, facebook...).
+           * If you want to create a user with email/password
+           * add an account for him in Authentication in the
+           * firebase dashboard.
+           */
+          {
+            email: 'test@test.com',
+            role: 'user'
+          },
+        ]
+      },
+      {
+        id: 'layout',
+        navigation: {
+          items: [
+            {
+              icon: 'dashboard',
+              label: 'LAYOUT.DASHBOARD',
+              type: 'link',
+              value: '/dashboard'
+            },
+            {
+              children: [
+                {
+                  icon: 'supervised_user_circle',
+                  label: 'Users',
+                  type: 'link',
+                  value: '/m/users/overview'
+                },
+                {
+                  icon: 'vpn_key',
+                  label: 'Roles',
+                  type: 'link',
+                  value: '/m/roles/overview'
+                }
+              ],
+              icon: 'account_box',
+              label: 'LAYOUT.MANAGEMENT',
+              type: 'expandable'
+            },
+            {
+              children: [
+                {
+                  icon: 'view_module',
+                  label: 'LAYOUT.MODULES',
+                  type: 'link',
+                  value: '/module-definition/overview'
+                },
+                {
+                  icon: 'settings',
+                  label: 'LAYOUT.SETTINGS',
+                  type: 'link',
+                  value: '/settings'
+                }
+              ],
+              icon: 'dns',
+              label: 'LAYOUT.SYSTEM',
+              type: 'expandable'
+            }
+          ]
+        }
+      }
+    ]
   },
   {
     name: 'roles',
@@ -115,7 +168,7 @@ const MODULES = [
       },
       createdOn: {
         label: 'Created On',
-        formatOnCreate: "(value) => value || Date.now()",
+        formatOnCreate: '(value) => value || Date.now()',
         hint: 'Set to todays date if left empty',
         component: {
           type: 'date',
@@ -186,7 +239,7 @@ const MODULES = [
     definitions: {
       createdOn: {
         label: 'Created On',
-        formatOnCreate: "(value) => value || Date.now()",
+        formatOnCreate: '(value) => value || Date.now()',
         hint: 'Set to todays date if left empty',
         component: {
           type: 'date',

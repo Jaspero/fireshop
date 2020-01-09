@@ -7,30 +7,52 @@
   </section>
 
   <div class="dashboard-nav-scrollable">
-    <a class="dashboard-nav-item" routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">
-      <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">dashboard</mat-icon>
-      <span class="dashboard-nav-item-text">{{'LAYOUT.DASHBOARD' | transloco}}</span>
-    </a>
+    <ng-container *ngFor="let item of links$ | async" [ngSwitch]="item.type">
 
-    <a
-      class="dashboard-nav-item"
-      *ngFor="let item of links$ | async"
-      [routerLink]="item.link"
-      routerLinkActive="active"
-      (click)="closeMenu()">
-      <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">{{item.icon}}</mat-icon>
-      <span class="dashboard-nav-item-text">{{item.name}}</span>
-    </a>
+      <a *ngSwitchCase="navigationItemType.Link" class="dashboard-nav-link" [routerLink]="item.value" routerLinkActive="active" (click)="closeMenu()">
+        <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-link-icon">{{item.icon}}</mat-icon>
+        <span class="dashboard-nav-link-text">{{item.label | transloco}}</span>
+      </a>
 
-    <a class="dashboard-nav-item" routerLink="/module-definition/overview" routerLinkActive="active" (click)="closeMenu()">
-      <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">view_module</mat-icon>
-      <span class="dashboard-nav-item-text">{{'LAYOUT.MODULES' | transloco}}</span>
-    </a>
+      <div *ngSwitchCase="navigationItemType.Empty" class="dashboard-nav-empty">
+        <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-empty-icon">{{item.icon}}</mat-icon>
+        <span class="dashboard-nav-empty-text">{{item.label | transloco}}</span>
+      </div>
 
-    <a class="dashboard-nav-item" routerLink="/settings" routerLinkActive="active" (click)="closeMenu()">
-      <mat-icon aria-hidden="true" class="dashboard-nav-item-icon">settings</mat-icon>
-      <span class="dashboard-nav-item-text">{{'LAYOUT.SETTINGS' | transloco}}</span>
-    </a>
+      <div
+        *ngSwitchCase="navigationItemType.Expandable"
+        class="dashboard-nav-expandable"
+        [class.active]="item.active">
+        <button class="dashboard-nav-expandable-label" (click)="item.active = !item.active">
+          <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-expandable-label-icon">{{item.icon}}</mat-icon>
+          <span class="dashboard-nav-expandable-label-text">{{item.label | transloco}}</span>
+        </button>
+        <a class="dashboard-nav-expandable-item" *ngFor="let child of item.children" [routerLink]="child.value" routerLinkActive="active" (click)="closeMenu()">
+          <mat-icon *ngIf="child.icon" aria-hidden="true" class="dashboard-nav-expandable-item-icon">{{child.icon}}</mat-icon>
+          <span class="dashboard-nav-expandable-item-text">{{child.label | transloco}}</span>
+        </a>
+      </div>
+
+      <div *ngSwitchCase="navigationItemType.Expanded" class="dashboard-nav-expanded">
+        <a *ngIf="item.value; else empty;" class="dashboard-nav-expanded-label" routerLinkActive="active" [routerLink]="item.value">
+          <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-expanded-label-icon">{{item.icon}}</mat-icon>
+          <span class="dashboard-nav-expanded-label-text">{{item.label | transloco}}</span>
+        </a>
+
+        <ng-template #empty>
+          <div class="dashboard-nav-expanded-label">
+            <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-expanded-label-icon">{{item.icon}}</mat-icon>
+            <span class="dashboard-nav-expanded-label-text">{{item.label | transloco}}</span>
+          </div>
+        </ng-template>
+
+        <a *ngFor="let child of item.children" class="dashboard-nav-expanded-item" [routerLink]="child.value" routerLinkActive="active" (click)="closeMenu()">
+          <mat-icon *ngIf="child.icon" aria-hidden="true" class="dashboard-nav-expanded-item-icon">{{child.icon}}</mat-icon>
+          <span class="dashboard-nav-expanded-item-text">{{child.label | transloco}}</span>
+        </a>
+      </div>
+
+    </ng-container>
   </div>
 
   <a class="dashboard-nav-footer" (click)="logOut()">
