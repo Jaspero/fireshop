@@ -112,12 +112,11 @@ export class InstanceOverviewComponent extends RxDestroy
             ),
           this.ioc.sortChange$
         ]).pipe(
-          switchMap(([pageSize, filters, search, sort]) => {
-
+          switchMap(([pageSize, filter, search, sort]) => {
             const routeData = {...this.ioc.routeData};
 
             routeData.pageSize = pageSize as number;
-            routeData.filters = filters;
+            routeData.filter = filter;
 
             if (search) {
               routeData.search = search;
@@ -146,7 +145,7 @@ export class InstanceOverviewComponent extends RxDestroy
                   operator: FilterMethod.ArrayContains,
                   value: search.trim().toLowerCase()
                 }] :
-                filters
+                filter
             )
               .pipe(
                 queue()
@@ -176,7 +175,7 @@ export class InstanceOverviewComponent extends RxDestroy
                     operator: FilterMethod.ArrayContains,
                     value: this.ioc.searchControl.value.trim().toLowerCase()
                   }] :
-                  this.ioc.routeData.filters
+                  this.ioc.routeData.filter
               ).pipe(
                 skip(1),
                 tap(snaps => {
@@ -224,7 +223,7 @@ export class InstanceOverviewComponent extends RxDestroy
                               operator: FilterMethod.ArrayContains,
                               value: this.ioc.searchControl.value.trim().toLowerCase()
                             }] :
-                            this.ioc.routeData.filters
+                            this.ioc.routeData.filter
                         )
                         .pipe(
                           queue(),
