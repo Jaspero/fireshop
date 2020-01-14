@@ -47,6 +47,7 @@ import {CheckboxComponent} from './modules/module-instance/components/fields/che
 import {ChipsComponent} from './modules/module-instance/components/fields/chips/chips.component';
 import {DateFieldComponent} from './modules/module-instance/components/fields/date-field/date-field.component';
 import {DraggableListComponent} from './modules/module-instance/components/fields/draggable-list/draggable-list.component';
+import {FileComponent} from './modules/module-instance/components/fields/file/file.component';
 import {GalleryComponent} from './modules/module-instance/components/fields/gallery/gallery.component';
 import {ImageComponent} from './modules/module-instance/components/fields/image/image.component';
 import {InputComponent} from './modules/module-instance/components/fields/input/input.component';
@@ -133,6 +134,7 @@ const ENTRY_COMPONENTS = [
   ChipsComponent,
   TextareaComponent,
   AutocompleteComponent,
+  FileComponent,
 
   // Segments
   SegmentComponent,
