@@ -3,8 +3,9 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {CanActivate, Router} from '@angular/router';
 import {Observable, of} from 'rxjs';
 import {catchError, map, switchMap, take} from 'rxjs/operators';
-import {DbService} from '../../services/db/db.service';
 import {StateService} from '../../services/state/state.service';
+import {AngularFirestore} from '@angular/fire/firestore';
+import {FirestoreCollection} from '../../../../../integrations/firebase/firestore-collection.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,8 @@ export class HasClaimGuard implements CanActivate {
   constructor(
     private afAuth: AngularFireAuth,
     private state: StateService,
-    private dbService: DbService,
-    private router: Router
+    private router: Router,
+    private afs: AngularFirestore
   ) {}
 
   canActivate(): Observable<boolean> {
@@ -28,10 +29,18 @@ export class HasClaimGuard implements CanActivate {
         take(1),
         switchMap(({claims}) => {
           this.state.role = claims.role;
-          return this.dbService.getDocument(
-            'users',
-            claims.user_id
-          );
+          return this.afs
+            .collection(FirestoreCollection.Users)
+            .doc(claims.user_id)
+            .get({
+              source: 'server'
+            })
+            .pipe(
+              map((user: any) => ({
+                id: user.id,
+                ...user.data()
+              }))
+            );
         }),
         map((user) => {
           this.state.user = user;
