@@ -10,6 +10,9 @@ import {StateService} from '../../services/state/state.service';
 
 interface NavigationItemWithActive extends NavigationItem {
   active?: boolean;
+  routerOptions: {
+    exact: boolean
+  };
 }
 
 @Component({
@@ -52,15 +55,30 @@ export class LayoutComponent implements OnInit {
                   ...item.children ?
                     {
                       children: item.children
-                        .filter(it => !it.authorized || it.authorized.includes(this.state.role))
-                    } : {}
+                        .reduce((a, c) => {
+
+                          if (!c.authorized || c.authorized.includes(this.state.role)) {
+                            a.push({
+                              ...c,
+                              routerOptions: {
+                                exact: c.matchExact || false
+                              }
+                            });
+                          }
+
+                          return a;
+                        }, [])
+                    } : {},
+                  routerOptions: {
+                    exact: item.matchExact || false
+                  }
                 });
               }
 
               return acc;
             }, []);
           } else {
-             const links: NavigationItem[] = modules.reduce((acc, item) => {
+             const links: NavigationItemWithActive[] = modules.reduce((acc, item) => {
 
                if (
                  !item.authorization ||
@@ -72,6 +90,9 @@ export class LayoutComponent implements OnInit {
                      item.layout && item.layout.icon ? item.layout.icon : 'folder_open',
                    label: item.name,
                    type: NavigationItemType.Link,
+                   routerOptions: {
+                     exact: false
+                   },
                    value: [
                      '/m',
                      item.id,
@@ -90,7 +111,10 @@ export class LayoutComponent implements OnInit {
                label: 'LAYOUT.DASHBOARD',
                icon: 'dashboard',
                type: NavigationItemType.Link,
-               value: '/dashboard'
+               value: '/dashboard',
+               routerOptions: {
+                 exact: false
+               }
              });
 
              links.push(
@@ -98,13 +122,19 @@ export class LayoutComponent implements OnInit {
                  label: 'LAYOUT.MODULES',
                  icon: 'view_module',
                  type: NavigationItemType.Link,
-                 value: '/module-definition/overview'
+                 value: '/module-definition/overview',
+                 routerOptions: {
+                   exact: false
+                 }
                },
                {
                  label: 'LAYOUT.SETTINGS',
                  icon: 'settings',
                  type: NavigationItemType.Link,
-                 value: '/settings'
+                 value: '/settings',
+                 routerOptions: {
+                   exact: false
+                 }
                }
              );
 

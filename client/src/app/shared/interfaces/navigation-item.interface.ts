@@ -16,4 +16,9 @@ export interface NavigationItem {
    * this item
    */
   authorized?: string[];
+
+  /**
+   * Should the router link option {exact: true} be applied
+   */
+  matchExact?: boolean;
 }
