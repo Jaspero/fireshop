@@ -6,6 +6,7 @@ import {auth} from 'firebase/app';
 import {from, throwError} from 'rxjs';
 import {catchError, filter} from 'rxjs/operators';
 import {STATIC_CONFIG} from '../../../environments/static-config';
+import {StateService} from '../../shared/services/state/state.service';
 import {notify} from '../../shared/utils/notify.operator';
 
 @Component({
@@ -18,7 +19,8 @@ export class LoginComponent implements OnInit {
   constructor(
     public router: Router,
     public afAuth: AngularFireAuth,
-    public fb: FormBuilder
+    public fb: FormBuilder,
+    private state: StateService
   ) {}
 
   @ViewChild('password', {static: true}) passwordField: ElementRef;
@@ -27,6 +29,13 @@ export class LoginComponent implements OnInit {
   staticConfig = STATIC_CONFIG;
 
   ngOnInit() {
+
+    /**
+     * Makes sure roles aren't preserved
+     * between logout/login
+     */
+    this.state.role = null;
+
     this.afAuth.user
       .pipe(
         filter(user => !!user)
