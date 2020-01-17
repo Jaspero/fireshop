@@ -1,31 +1,28 @@
-import {ChangeDetectionStrategy, Component, ElementRef, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BehaviorSubject, combineLatest, forkJoin, Observable, of} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../../../integrations/firebase/firestore-collection.enum';
+import {Color} from '../../../../shared/enums/color.enum';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
-import {ComponentType} from '../../../../shared/interfaces/component-type.enum';
+import {Example, Snippet} from '../../../../shared/interfaces/example.interface';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {Role} from '../../../../shared/interfaces/role.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
+import {confirmation} from '../../../../shared/utils/confirmation';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {SchemaValidation} from '../../../../shared/utils/schema-validation';
+import {SnippetDialogComponent} from '../../components/snippet-dialog/snippet-dialog.component';
 import {DEFINITION_AUTOCOMPLETE} from './consts/definition-autocomplete.const';
 import {DEFINITION_TEMPLATES} from './consts/definition-templates.const';
 import {LAYOUT_AUTOCOMPLETE} from './consts/layout-autocomplete.const';
 import {LAYOUT_TEMPLATES} from './consts/layout-templates.const';
 import {SCHEMA_AUTOCOMPLETE} from './consts/schema-autocomplete.const';
 import {SCHEMA_TEMPLATES} from './consts/schema-templates.const';
-import {ExampleType} from '../../../../shared/enums/example-type.enum';
-import {queue} from '../../../../shared/utils/queue.operator';
-import {MatDialog} from '@angular/material/dialog';
-import {Example, Snippet} from '../../../../shared/interfaces/example.interface';
-import {SNIPPET_FORM_MAP} from '../../../module-instance/consts/snippet-form-map.const';
-import {confirmation} from '../../../../shared/utils/confirmation';
-import {Color} from '../../../../shared/enums/color.enum';
 
 @Component({
   selector: 'jms-definition-instance',
@@ -43,9 +40,6 @@ export class DefinitionInstanceComponent implements OnInit {
     private fb: FormBuilder,
     private snackBar: MatSnackBar
   ) { }
-
-  @ViewChild('modal', {static: true})
-  modalTemplate: TemplateRef<any>;
 
   @ViewChild('file', {static: true})
   fileEl: ElementRef<HTMLInputElement>;
@@ -69,23 +63,13 @@ export class DefinitionInstanceComponent implements OnInit {
     templates: DEFINITION_TEMPLATES,
     autocomplete: DEFINITION_AUTOCOMPLETE
   };
-  snippetExamples$ = new Observable<Example[]>();
   form$: Observable<FormGroup>;
-  data$: Observable<any>;
   roles$: Observable<Role[]>;
-  snippetForm: FormGroup;
   import$ = new BehaviorSubject('');
 
   ngOnInit() {
     this.roles$ = this.dbService.getDocumentsSimple(FirestoreCollection.Roles)
       .pipe(
-        shareReplay(1)
-      );
-
-    this.snippetExamples$ = this.dbService.getExamples(ExampleType.Snippets)
-      .pipe(
-        queue(),
-        map(res => res.data),
         shareReplay(1)
       );
 
@@ -148,20 +132,6 @@ export class DefinitionInstanceComponent implements OnInit {
       }),
       shareReplay(1)
     );
-
-    this.snippetForm = this.fb.group({
-      snippet: ['', Validators.required],
-      name: ['', Validators.required],
-      label: '',
-      required: false
-    });
-
-    this.data$ = this.snippetForm
-      .get('snippet')
-      .valueChanges
-      .pipe(
-        map(res => SNIPPET_FORM_MAP[res])
-      );
   }
 
   save(form: FormGroup) {
@@ -232,24 +202,14 @@ export class DefinitionInstanceComponent implements OnInit {
   move(forward: boolean, form: FormGroup) {}
 
   openSnippetSelection(form) {
-    this.snippetForm.reset({
-      snippet: ComponentType.Input
-    });
-    this.dialog.open(this.modalTemplate, {
+    this.dialog.open(SnippetDialogComponent, {
       width: '600px'
     })
       .afterClosed()
       .pipe(
         filter(res => res),
-        switchMap(data => {
-          return forkJoin([
-            of(data),
-            this.snippetExamples$.pipe(take(1))
-          ]);
-        })
       )
-      .subscribe(([data, res]) => {
-        const snippetFormValue = this.snippetForm.getRawValue();
+      .subscribe(([snippetFormValue, data, res]) => {
         const json = res.find(item => item.name === snippetFormValue.snippet).json;
         const oldValue = form.getRawValue();
 

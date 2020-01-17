@@ -38,6 +38,7 @@ import {AppComponent} from './app.component';
 import {ELEMENTS} from './elements/elements.const';
 import {DashboardComponent} from './modules/dashboard/dashboard.component';
 import {LoginComponent} from './modules/login/login.component';
+import {SnippetDialogComponent} from './modules/module-definition/components/snippet-dialog/snippet-dialog.component';
 import {ModuleDefinitionComponent} from './modules/module-definition/module-definition.component';
 import {DefinitionInstanceComponent} from './modules/module-definition/pages/definition-instance/definition-instance.component';
 import {DefinitionOverviewComponent} from './modules/module-definition/pages/definition-overview/definition-overview.component';
@@ -147,7 +148,8 @@ const ENTRY_COMPONENTS = [
   SortDialogComponent,
   FilterDialogComponent,
   FilterTagsComponent,
-  LayoutSettingsComponent
+  LayoutSettingsComponent,
+  SnippetDialogComponent
 ];
 
 const DIRECTIVES = [ForceDisableDirective, DropzoneDirective];
