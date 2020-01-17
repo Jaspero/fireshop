@@ -15,7 +15,7 @@ export interface TableColumn {
   /**
    * This flags indicates that the column
    * should be turned in to a form control
-   * if it's true the key property needs
+   * if it's applied the key property needs
    * to be a string
    */
   control?: boolean;

@@ -32,7 +32,12 @@ export const userCreated = functions.auth.user().onCreate(async user => {
        * Assign providerData if it's an admin
        * for easier reference
        */
-      ...role && {providerData: user.providerData.map((it: any) => it.providerId)}
+      ...role ? {
+        providerData: user.providerData.map((it: any) => it.providerId),
+        role: role.role
+      } : {
+        role: ''
+      }
     })
     .catch(error => {
       console.error('Creating user', error);

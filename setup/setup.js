@@ -117,7 +117,8 @@ const MODULES = [
           fields: [
             '/createdOn',
             '/name',
-            '/email'
+            '/email',
+            '/role'
           ]
         }]
       },
@@ -136,6 +137,11 @@ const MODULES = [
           {
             key: '/email',
             label: 'Email'
+          },
+          {
+            key: '/role',
+            label: 'Role',
+            control: true
           }
         ]
       }
@@ -150,6 +156,9 @@ const MODULES = [
         },
         createdOn: {
           type: 'number'
+        },
+        role: {
+          type: 'string'
         }
       }
     },
@@ -174,6 +183,18 @@ const MODULES = [
           type: 'date',
           configuration: {
             format: 'number'
+          }
+        }
+      },
+      role: {
+        label: 'Role',
+        component: {
+          type: 'select',
+          configuration: {
+            populate: {
+              collection: 'roles',
+              orderBy: 'name'
+            }
           }
         }
       }

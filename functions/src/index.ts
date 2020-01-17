@@ -11,6 +11,7 @@ import {userDeleted} from './triggers/user-deleted';
 import {jsonSchemaToTypescript} from './callable/json-schema-to-typescript';
 import {documentDeleted} from './triggers/document-deleted';
 import {getExamples} from './callable/get-examples';
+import {userDocumentUpdated} from './triggers/user-document-updated';
 
 initializeApp();
 
@@ -18,6 +19,7 @@ export const cms = {
   // Triggers
   userCreated,
   userDeleted,
+  userDocumentUpdated,
   fileCreated,
   fileDeleted,
   documentDeleted,

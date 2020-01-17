@@ -17,6 +17,11 @@ interface SelectData extends FieldData {
     nameKey?: string;
     valueKey?: string;
     orderBy?: string;
+
+    /**
+     * A method for mapping all of the results
+     * (items: T[]) => any[]
+     */
     mapResults?: string;
 
     /**
