@@ -199,7 +199,7 @@ app.post('/checkout', (req, res) => {
       } else {
         stripeCustomer = await si.customers.create({
           email: req.body.customer.email,
-          name: req.body.customer.name,
+          name: req.body.customer.fullName,
           metadata: {
             id: req.body.customer.id
           }

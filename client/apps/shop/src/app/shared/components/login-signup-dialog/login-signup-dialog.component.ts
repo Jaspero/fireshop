@@ -113,7 +113,7 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
         };
 
         if (user.displayName) {
-          signUpData.name = user.displayName;
+          signUpData.fullName = user.displayName;
         }
 
         if (user.photoURL) {
