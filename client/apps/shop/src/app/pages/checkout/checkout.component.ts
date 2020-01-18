@@ -159,7 +159,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
             ...(user && {
               customer: {
                 email: user.authData.email,
-                name: user.customerData.name,
+                name: user.customerData.fullName,
                 id: user.authData.uid
               }
             })
@@ -322,7 +322,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
               ...(user &&
                 user.authData && {
                   customerId: user.authData.uid,
-                  customerName: user.customerData.name,
+                  customerName: user.customerData.fullName,
                   email: user.authData.email
                 }),
 

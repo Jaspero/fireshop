@@ -23,7 +23,7 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Customer} from '@jf/interfaces/customer.interface';
 import {notify} from '@jf/utils/notify.operator';
 import {auth, firestore, User} from 'firebase/app';
-import {from, throwError} from 'rxjs';
+import {from, of, throwError} from 'rxjs';
 import {
   catchError,
   filter,
@@ -273,6 +273,14 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
           docRef = this.afs.doc(
             `${FirestoreCollections.Customers}/${user.uid}`
           );
+
+          if (this.currentView === LoginSignUpView.SignUp) {
+            return of({
+              doc: {},
+              user
+            });
+          }
+
           return docRef.get({source: 'server'}).pipe(map(doc => ({doc, user})));
         }),
         take(1),
