@@ -2,9 +2,10 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as XLSX from 'xlsx';
 import * as express from 'express';
-import * as cors from 'cors';
 import {Parser} from 'json2csv';
 import {constants} from 'http2';
+import {CORS} from '../consts/cors-whitelist.const';
+import {authenticated} from './middlewares/authenticated';
 
 enum Type {
   csv = 'csv',
@@ -14,9 +15,9 @@ enum Type {
 }
 
 const app = express();
-app.use(cors());
+app.use(CORS);
 
-app.post('/', (req, res) => {
+app.post('/', authenticated, (req, res) => {
   // @ts-ignore
   async function exec() {
     const {collection, type, ids} = req.body;

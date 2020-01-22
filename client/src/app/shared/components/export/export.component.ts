@@ -1,12 +1,14 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, Inject} from '@angular/core';
+import {AngularFireAuth} from '@angular/fire/auth';
 import {
   MAT_BOTTOM_SHEET_DATA,
   MatBottomSheetRef
 } from '@angular/material/bottom-sheet';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {saveAs} from 'file-saver';
-import {finalize, takeUntil} from 'rxjs/operators';
+import {from} from 'rxjs';
+import {finalize, switchMap, takeUntil} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
 import {notify} from '../../utils/notify.operator';
 
@@ -30,7 +32,8 @@ export class ExportComponent extends RxDestroy {
       ids?: string[];
     },
     private http: HttpClient,
-    private sheetRef: MatBottomSheetRef<ExportComponent>
+    private sheetRef: MatBottomSheetRef<ExportComponent>,
+    private afa: AngularFireAuth
   ) {
     super();
   }
@@ -49,19 +52,27 @@ export class ExportComponent extends RxDestroy {
       }
     };
 
-    this.http
-      .post(
-        `${environment.restApi}/exportData`,
-        {
-          type,
-          collection: this.data.collection,
-          ...(this.data.ids && this.data.ids.length ? {ids: this.data.ids} : {})
-        },
-        {
-          responseType: 'blob'
-        }
-      )
+    from(
+      this.afa.auth.currentUser.getIdToken()
+    )
       .pipe(
+        switchMap(token =>
+          this.http
+            .post(
+              `${environment.restApi}/exportData`,
+              {
+                type,
+                collection: this.data.collection,
+                ...(this.data.ids && this.data.ids.length ? {ids: this.data.ids} : {})
+              },
+              {
+                responseType: 'blob',
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
+              }
+            )
+        ),
         notify({
           success: null,
           error: 'EXPORT.ERROR'

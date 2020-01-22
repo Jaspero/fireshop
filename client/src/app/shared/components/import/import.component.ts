@@ -7,8 +7,11 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
+import {AngularFireAuth} from '@angular/fire/auth';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
+import {from} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
 import {notify} from '../../utils/notify.operator';
 
@@ -32,7 +35,8 @@ export class ImportComponent {
   constructor(
     public dialog: MatDialog,
     private http: HttpClient,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private afa: AngularFireAuth
   ) {}
 
   @ViewChild('file', {static: true})
@@ -77,9 +81,22 @@ export class ImportComponent {
 
     this.dialog.closeAll();
 
-    this.http
-      .post(`${environment.restApi}/importData`, formData)
+    from(
+      this.afa.auth.currentUser.getIdToken()
+    )
       .pipe(
+        switchMap(token =>
+          this.http
+            .post(
+              `${environment.restApi}/importData`,
+              formData,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
+              }
+            )
+        ),
         notify({
           success: null,
           error: 'IMPORT.ERROR'

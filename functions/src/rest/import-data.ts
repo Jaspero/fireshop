@@ -1,5 +1,4 @@
 import * as Busboy from 'busboy';
-import * as cors from 'cors';
 import * as express from 'express';
 import * as csv from 'csvtojson';
 import * as functions from 'firebase-functions';
@@ -7,11 +6,13 @@ import * as ajv from 'ajv';
 import * as admin from 'firebase-admin';
 import nanoid = require('nanoid');
 import {constants} from 'http2';
+import {CORS} from '../consts/cors-whitelist.const';
+import {authenticated} from './middlewares/authenticated';
 
 const app = express();
-app.use(cors());
+app.use(CORS);
 
-app.post('/', (req, res) => {
+app.post('/', authenticated, (req, res) => {
   const ajvInstance = new ajv();
   const busboy = new Busboy({headers: req.headers});
   const parsedData: any = {};
