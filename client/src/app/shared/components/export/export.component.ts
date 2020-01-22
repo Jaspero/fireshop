@@ -59,7 +59,7 @@ export class ExportComponent extends RxDestroy {
         switchMap(token =>
           this.http
             .post(
-              `${environment.restApi}/exportData`,
+              `${environment.restApi}/cms-exportData`,
               {
                 type,
                 collection: this.data.collection,

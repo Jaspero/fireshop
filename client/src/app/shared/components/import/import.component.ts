@@ -88,7 +88,7 @@ export class ImportComponent {
         switchMap(token =>
           this.http
             .post(
-              `${environment.restApi}/importData`,
+              `${environment.restApi}/cms-importData`,
               formData,
               {
                 headers: {
