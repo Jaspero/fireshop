@@ -1,10 +1,10 @@
+import * as cors from 'cors';
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as XLSX from 'xlsx';
 import * as express from 'express';
 import {Parser} from 'json2csv';
 import {constants} from 'http2';
-import {CORS} from '../consts/cors-whitelist.const';
 import {authenticated} from './middlewares/authenticated';
 
 enum Type {
@@ -15,7 +15,12 @@ enum Type {
 }
 
 const app = express();
-app.use(CORS);
+app.use(
+  cors({
+    origin: ['https://jaspero-jms.web.app/'],
+    optionsSuccessStatus: 200
+  })
+);
 
 app.post('/', authenticated, (req, res) => {
   // @ts-ignore
