@@ -28,8 +28,8 @@ service cloud.firestore {
     }
 
     match /modules/{module=**} {
-      allow read: if request.auth.uid != null;
-      allow write: if request.auth.token.role == 'admin';
+      allow read: if authenticated();
+      allow write: if admin();
     }
 
     match /{module}/{document=**} {
