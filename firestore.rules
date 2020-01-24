@@ -24,7 +24,7 @@ service cloud.firestore {
     }
 
     match /users/{user=**} {
-      allow read, write, delete: if access(database, 'users', 'read') || resource.id == request.auth.uid;
+      allow read, write: if access(database, 'users', 'read') || resource.id == request.auth.uid;
     }
 
     match /modules/{module=**} {
