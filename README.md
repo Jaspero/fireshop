@@ -53,7 +53,23 @@ respectively and the shared folder holds any code shared between the two.
 ### Authorization
 
 A lot of CRUD operations are limited to admin access. You can read the full set of rules under `firestore.rules`.
-To add an admin claim to an account add it to the `email` property of the `settings/allowed-admins` document.
+To add an admin claim to an account add the account email to the `roles` array in the `settings/user` document.
+
+**role**
+
+```
+{
+    "email": {
+        "type": "string"
+    },
+    "role": {
+        "type": "string"
+    }
+}
+```
+
+**note:**
+This document needs to exist before the user is created.
 
 ### Products
 
