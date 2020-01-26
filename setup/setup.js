@@ -116,6 +116,7 @@ const MODULES = [
         segments: [{
           fields: [
             '/createdOn',
+            '/id',
             '/name',
             '/email',
             '/role'
@@ -163,6 +164,9 @@ const MODULES = [
       }
     },
     definitions: {
+      id: {
+        type: 'ID'
+      },
       name: {
         label: 'Name'
       },
