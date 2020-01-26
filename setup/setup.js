@@ -177,8 +177,7 @@ const MODULES = [
       },
       createdOn: {
         label: 'Created On',
-        formatOnCreate: '(value) => value || Date.now()',
-        hint: 'Set to todays date if left empty',
+        formatOnLoad: '(value) => value || Date.now()',
         component: {
           type: 'date',
           configuration: {
@@ -260,8 +259,7 @@ const MODULES = [
     definitions: {
       createdOn: {
         label: 'Created On',
-        formatOnCreate: '(value) => value || Date.now()',
-        hint: 'Set to todays date if left empty',
+        formatOnLoad: '(value) => value || Date.now()',
         component: {
           type: 'date',
           configuration: {
