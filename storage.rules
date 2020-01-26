@@ -1,8 +1,12 @@
 service firebase.storage {
+  function admin() {
+    return request.auth.token.role == 'admin'
+  }
+
   match /b/{bucket}/o {
     match /{allPaths=**} {
       allow read: if true;
-      allow write: if false;
+      allow write: if admin();
     }
   }
 }
