@@ -146,10 +146,6 @@ export class DefinitionInstanceComponent implements OnInit {
         delete data.authorization.read;
       }
 
-      if (!Object.keys(data.authorization).length) {
-        delete data.authorization;
-      }
-
       if (!Object.keys(data.metadata).length) {
         delete data.metadata;
       }

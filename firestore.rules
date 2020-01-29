@@ -1,7 +1,9 @@
 rules_version = '2';
 service cloud.firestore {
   function access(database, module, operation) {
-    return request.auth.token.role in get(/databases/$(database)/documents/modules/$(module)).data.authorization[operation]
+    return
+      !get(/databases/$(database)/documents/modules/$(module)).data.authorization.keys().hasAll([operation])||
+      request.auth.token.role in get(/databases/$(database)/documents/modules/$(module)).data.authorization[operation]
   }
 
   function authenticated() {

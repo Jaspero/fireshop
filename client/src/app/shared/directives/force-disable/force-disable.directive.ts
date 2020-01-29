@@ -17,7 +17,7 @@ export class ForceDisableDirective implements OnInit {
   fDisable: ModuleAuthorization;
 
   ngOnInit() {
-    if (this.fDisable && !this.fDisable.write.includes(this.state.role)) {
+    if (this.fDisable && this.fDisable.write && !this.fDisable.write.includes(this.state.role)) {
       this.renderer.addClass(this.el.nativeElement, 'disabled');
     }
   }
