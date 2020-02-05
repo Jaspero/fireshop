@@ -1,0 +1,19 @@
+{
+  "definition": {
+    "text": "File",
+    "title": "Insert a definition for a file component",
+    "field": "pointer",
+    "value": {
+      "component": {
+        "type": "file",
+        "configuration": {
+          "emptyLabel": "",
+          "preventClear": false
+        }
+      }
+    }
+  },
+  "schema": {
+    "type": "string"
+  }
+}
