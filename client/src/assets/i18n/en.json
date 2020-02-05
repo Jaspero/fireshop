@@ -85,6 +85,9 @@
     "IMAGE": {
       "PREVIEW": "Image preview"
     },
+    "FILE": {
+      "EMPTY": "No file selected"
+    },
     "GALLERY": {
       "ENTER_URL": "Enter URL",
       "CHOOSE_FILES": "Choose files",

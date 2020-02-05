@@ -1,6 +1,7 @@
 export enum ComponentType {
   Input = 'input',
   Select = 'select',
+  File = 'file',
   Image = 'image',
   Gallery = 'gallery',
   Toggle = 'toggle',

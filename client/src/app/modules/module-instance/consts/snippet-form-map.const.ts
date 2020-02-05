@@ -27,6 +27,20 @@ export const SNIPPET_FORM_MAP = {
       }
     }
   },
+  [ComponentType.File]: {
+    schema: {
+      properties: {
+        emptyLabel: {
+          type: 'string',
+          description: 'Label of the field when no file is uploaded'
+        },
+        preventClear: {
+          type: 'boolean',
+          description: 'Should clearing a selected file be allowed'
+        }
+      }
+    }
+  },
   [ComponentType.Image]: {
     schema: {
       properties: {

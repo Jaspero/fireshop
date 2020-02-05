@@ -1,3 +1,12 @@
-<span>{{cData.label}}</span>
+<input #file type="file" hidden (change)="fileChange($event)">
 
-<input #file type="file" hidden (change)="fileChange($event.target)">
+<span class="m-l-s f-label">{{cData.label}}</span>
+<div class="flex jc-between ai-center">
+  <span class="m-l-s">{{name || (emptyLabel | transloco)}}</span>
+  <div class="flex ai-center">
+    <button class="m-r-xs" mat-icon-button *ngIf="!cData.preventClear && name" (click)="clear()">
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button mat-button (click)="file.click()">Add File</button>
+  </div>
+</div>
