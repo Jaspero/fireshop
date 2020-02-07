@@ -68,15 +68,6 @@
     }
   }
 
-  &-user {
-    font-size: .85em;
-    margin-top: .5em;
-
-    @media (max-width: $screen-m) {
-      display: none;
-    }
-  }
-
   &-menu {
     display: none;
     cursor: pointer;
@@ -325,6 +316,10 @@
   color: var(--sidebar-secondary);
   transition: .2s;
 
+  &.inactive {
+    pointer-events: none;
+  }
+
   @media (max-width: $screen-m) {
     padding-left: 8px;
   }
@@ -344,6 +339,8 @@
   &-text {
     font-size: .85em;
     margin-left: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

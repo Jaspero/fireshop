@@ -2,7 +2,6 @@
   <section class="dashboard-nav-welcome">
     <!--<img class="dashboard-nav-welcome-logo" src="assets/logo.svg" alt="Logo" width="60">-->
     <h1 class="dashboard-nav-welcome-logo">{{staticConfig.displayName}}</h1>
-    <p *ngIf="currentUser$ | async as user" class="dashboard-nav-welcome-user">{{user.email}}</p>
     <mat-icon class="dashboard-nav-welcome-menu" role="button" [attr.aria-label]="'LAYOUT.MENU' | transloco" (click)="toggleMenu()">menu</mat-icon>
   </section>
 
@@ -54,6 +53,11 @@
 
     </ng-container>
   </div>
+
+  <span class="dashboard-nav-footer inactive" *ngIf="currentUser$ | async as user">
+    <mat-icon aria-hidden="true" class="dashboard-nav-footer-icon">account_circle</mat-icon>
+    <span class="dashboard-nav-footer-text">{{user.email}}</span>
+  </span>
 
   <a class="dashboard-nav-footer" (click)="logOut()">
     <mat-icon aria-hidden="true" class="dashboard-nav-footer-icon">power_settings_new</mat-icon>
