@@ -1,3 +1,44 @@
-.f-label {
-  color: rgba(0, 0, 0, 0.6);
+.jms-file {
+  border: solid 1px var(--panel-tertiary);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: .2s;
+
+  &:hover {
+    border: solid 1px var(--panel-primary);
+    box-shadow: 0 0 0 1px var(--panel-primary);
+  }
+
+  &:focus-within {
+    border: solid 1px var(--primary-theme);
+    box-shadow: 0 0 0 1px var(--primary-theme);
+  }
+
+  &-legend {
+    padding: 0 4px;
+    margin-left: -8px;
+    background: var(--panel-theme);
+    color: var(--panel-secondary);
+    font-size: 0.8em;
+  }
+
+  &-field {
+    display: flex;
+    align-items: center;
+
+    &-name {
+      flex: 1;
+      min-width: 0;
+      width: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--panel-secondary);
+    }
+
+    &-actions {
+      margin-left: auto;
+      white-space: nowrap;
+    }
+  }
 }

@@ -1,12 +1,18 @@
-<input #file type="file" hidden (change)="fileChange($event)">
+<div class="mat-form-field-wrapper">
+  <fieldset class="jms-file">
+    <input #file type="file" hidden (change)="fileChange($event)">
 
-<span class="m-l-s f-label">{{cData.label}}</span>
-<div class="flex jc-between ai-center">
-  <span class="m-l-s">{{name || (emptyLabel | transloco)}}</span>
-  <div class="flex ai-center">
-    <button class="m-r-xs" mat-icon-button *ngIf="!cData.preventClear && name" (click)="clear()">
-      <mat-icon>clear</mat-icon>
-    </button>
-    <button mat-button (click)="file.click()">Add File</button>
-  </div>
+    <legend class="jms-file-legend">{{cData.label}}</legend>
+
+    <div class="jms-file-field">
+      <span class="jms-file-field-name">{{name || (emptyLabel | transloco)}}</span>
+
+      <div class="jms-file-field-actions">
+        <ng-container *ngIf="!cData.preventClear && name">
+          <button mat-button (click)="clear()">Remove</button>|
+        </ng-container>
+        <button mat-button (click)="file.click()">Add</button>
+      </div>
+    </div>
+  </fieldset>
 </div>
