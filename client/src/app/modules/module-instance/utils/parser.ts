@@ -257,7 +257,11 @@ export class Parser {
 
           case SchemaType.Object:
             const objectProperties = this.buildProperties(
-              value.items.properties,
+              /**
+               * Supporting both {type: 'object', properties: {}} and
+               * {type: 'object', items: {properties: {}}}
+               */
+              value.properties || value.items && value.items.properties ? value.items.properties || {},
               value.items.required,
               base + key + '/',
               false
