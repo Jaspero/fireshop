@@ -20,7 +20,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {AngularFireStorage} from '@angular/fire/storage';
-import {MatDialog} from '@angular/material';
+import {MatDialog} from '@angular/material/dialog';
 import {forkJoin, from, of} from 'rxjs';
 import {catchError, map, switchMap, tap} from 'rxjs/operators';
 import {ENV_CONFIG} from '../../../../../../env-config';

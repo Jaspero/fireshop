@@ -9,14 +9,13 @@ export function confirmation(
 ) {
   const dialog: MatDialog = (window as any).rootInjector.get(MatDialog);
 
-  // @ts-ignore
-  dialog
+  (dialog
     .open(ConfirmationComponent, {
       width: '400px',
       data: options
     })
     .afterClosed()
-    .pipe(
+    .pipe as any)(
       filter(val => !!val),
       ...pipes
     )

@@ -18,6 +18,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatListModule} from '@angular/material/list';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSelectModule} from '@angular/material/select';
@@ -82,7 +83,6 @@ import {SearchInputComponent} from './shared/components/search-input/search-inpu
 import {DropzoneDirective} from './shared/directives/dropzone/dropzone.directive';
 import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
 import {MathPipe} from './shared/pipes/math/math-pipe.';
-import {MatProgressBarModule} from '@angular/material';
 import {FilterDialogComponent} from './modules/module-instance/components/filter-dialog/filter-dialog.component';
 import {CompiledFormComponent} from './shared/components/compiled-form/compiled-form.component';
 import {FilterTagsComponent} from './shared/components/filter-tags/filter-tags.component';

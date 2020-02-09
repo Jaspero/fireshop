@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import {AngularFireStorage} from '@angular/fire/storage';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatDialog} from '@angular/material';
+import {MatDialog} from '@angular/material/dialog';
 import {filter, take} from 'rxjs/operators';
 import {FieldData} from '../../../interfaces/field-data.interface';
 import {ModuleInstanceComponent} from '../../../module-instance.component';

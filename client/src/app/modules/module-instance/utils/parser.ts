@@ -261,7 +261,7 @@ export class Parser {
                * Supporting both {type: 'object', properties: {}} and
                * {type: 'object', items: {properties: {}}}
                */
-              value.properties || value.items && value.items.properties ? value.items.properties || {},
+              value.properties || value.items && value.items.properties ? value.items.properties : {},
               value.items.required,
               base + key + '/',
               false

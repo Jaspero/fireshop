@@ -1,3 +1,4 @@
+import {Clipboard} from '@angular/cdk/clipboard';
 import {SelectionModel} from '@angular/cdk/collections';
 import {ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
@@ -36,7 +37,8 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
     private state: StateService,
     private fb: FormBuilder,
     private aff: AngularFireFunctions,
-    private router: Router
+    private router: Router,
+    private clipboard: Clipboard
   ) {
     super();
   }
@@ -205,22 +207,7 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
         queue(),
         map(res => res.reduce((acc, item: any) => acc + item.data, '')),
         tap(res => {
-          if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
-            const textarea = document.createElement('textarea');
-
-            textarea.textContent = res;
-            textarea.style.position = 'fixed';
-
-            document.body.appendChild(textarea);
-
-            textarea.select();
-
-            try {
-              return document.execCommand('copy');
-            } catch (e) {} finally {
-              document.body.removeChild(textarea);
-            }
-          }
+          this.clipboard.copy(res);
         }),
         notify({
           success: 'MODULES.COPIED_TO_CLIPBOARD'

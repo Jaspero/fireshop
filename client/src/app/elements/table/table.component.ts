@@ -10,7 +10,7 @@ import {
   ViewChildren,
   ViewContainerRef
 } from '@angular/core';
-import {MatSort} from '@angular/material';
+import {MatSort} from '@angular/material/sort';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {get, has} from 'json-pointer';
 import {JSONSchema7} from 'json-schema';
