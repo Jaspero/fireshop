@@ -262,7 +262,7 @@ export class Parser {
                * {type: 'object', items: {properties: {}}}
                */
               value.properties || value.items && value.items.properties ? value.items.properties : {},
-              value.items.required,
+              value.required || value.items && value.items.required ? value.items.required : [],
               base + key + '/',
               false
             );
