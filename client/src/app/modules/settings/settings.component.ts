@@ -54,7 +54,8 @@ export class SettingsComponent extends RxDestroy implements OnInit {
               this.dbService.getDocuments('users', 1, null, null, [{key: 'email', value: role.email, operator: FilterMethod.Equal}])
             )
           ]);
-        })
+        }),
+        takeUntil(this.destroyed$)
       )
       .subscribe(([roles, ...users]: any) => {
 
@@ -139,7 +140,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
                   newUser = {
                     ...newUser,
                     id: dt.data.id
-                  }
+                  };
                 })
               );
           }
