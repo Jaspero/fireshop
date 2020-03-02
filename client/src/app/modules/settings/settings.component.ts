@@ -1,15 +1,12 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnInit
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormGroupDirective, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {forkJoin, Observable, of} from 'rxjs';
 import {switchMap, takeUntil, tap} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../integrations/firebase/firestore-collection.enum';
 import {environment} from '../../../environments/environment';
+import {FilterMethod} from '../../shared/enums/filter-method.enum';
 import {Role} from '../../shared/interfaces/role.interface';
 import {Settings} from '../../shared/interfaces/settings.interface';
 import {DbService} from '../../shared/services/db/db.service';
@@ -26,7 +23,8 @@ export class SettingsComponent extends RxDestroy implements OnInit {
   constructor(
     private dbService: DbService,
     private fb: FormBuilder,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {
     super();
   }
@@ -47,16 +45,23 @@ export class SettingsComponent extends RxDestroy implements OnInit {
 
     this.roles$ = this.dbService.getDocumentsSimple(FirestoreCollection.Roles);
 
-    forkJoin([
-      this.dbService.getUserSettings(),
-      this.dbService.getDocuments(FirestoreCollection.Users)
-    ])
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(([settings, adminUsers]) => {
-        this.settings = settings;
+    this.dbService.getDocument(`settings`, 'user')
+      .pipe(
+        switchMap(({roles}) => {
+          return forkJoin([
+            of(roles),
+            ...roles.map(role =>
+              this.dbService.getDocuments('users', 1, null, null, [{key: 'email', value: role.email, operator: FilterMethod.Equal}])
+            )
+          ]);
+        })
+      )
+      .subscribe(([roles, ...users]: any) => {
 
-        this.users = settings.roles.map(role => {
-          const account = adminUsers.find(acc => acc.email === role.email);
+        users = users.map(it => it[0] ? {...it[0].data(), id: it[0].id} : null);
+
+        this.users = roles.map(role => {
+          const account = users.find(acc => acc && acc.email === role.email);
 
           return {
             id: account ? account.id : null,
@@ -65,20 +70,25 @@ export class SettingsComponent extends RxDestroy implements OnInit {
             providerData: account ? account.providerData : []
           };
         });
+
         this.cdr.detectChanges();
       });
   }
 
   remove(user: User) {
     return () => {
-      this.settings.roles.splice(
-        this.settings.roles.findIndex(it => it.email === user.email),
-        1
-      );
-
       this.users.splice(this.users.findIndex(it => it.email === user.email), 1);
 
-      const toExec = [this.dbService.updateUserSettings(this.settings)];
+      const toExec = [this.dbService.setDocument(
+        'settings',
+        'user',
+        {
+          roles: this.users.map(({role, email}) => ({role, email}))
+        },
+        {
+          merge: true
+        }
+      )];
 
       if (user.id) {
         toExec.push(this.dbService.removeUserAccount(user.id));
@@ -107,19 +117,29 @@ export class SettingsComponent extends RxDestroy implements OnInit {
         role: data.role
       };
 
-      this.settings.roles.push(newUser);
-
-      return this.dbService.updateUserSettings(this.settings).pipe(
+      return this.dbService.setDocument(
+        'settings',
+        'user',
+        {
+          roles: [
+            newUser,
+            ...this.users.map(({role, email}) => ({role, email}))
+          ]
+        },
+        {
+          merge: true
+        }
+      ).pipe(
         switchMap(() => {
           if (data.password) {
             return this.dbService
               .createUserAccount(data.email, data.password)
               .pipe(
-                tap(({id}) => {
+                tap((dt: any) => {
                   newUser = {
                     ...newUser,
-                    id
-                  };
+                    id: dt.data.id
+                  }
                 })
               );
           }
@@ -128,11 +148,15 @@ export class SettingsComponent extends RxDestroy implements OnInit {
         }),
         notify(),
         tap(() => {
-          this.users = [...this.users, newUser];
+          this.users = [newUser, ...this.users];
           form.resetForm();
           this.cdr.detectChanges();
         })
       );
     };
+  }
+
+  edit(user: User) {
+    this.router.navigate(['/m/users/single/', user.id])
   }
 }
