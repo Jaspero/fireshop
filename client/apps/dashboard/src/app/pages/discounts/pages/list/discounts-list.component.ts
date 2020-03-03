@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Discount} from '@jf/interfaces/discount.interface';
 import {LangListComponent} from '../../../../shared/components/lang-list/lang-list.component';
@@ -6,7 +6,8 @@ import {LangListComponent} from '../../../../shared/components/lang-list/lang-li
 @Component({
   selector: 'jfsc-discounts-list',
   templateUrl: './discounts-list.component.html',
-  styleUrls: ['./discounts-list.component.scss']
+  styleUrls: ['./discounts-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DiscountsListComponent extends LangListComponent<Discount> {
   displayedColumns: string[] = [

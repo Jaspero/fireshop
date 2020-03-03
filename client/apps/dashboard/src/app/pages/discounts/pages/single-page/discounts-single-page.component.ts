@@ -1,8 +1,7 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
-import {URL_REGEX} from '../../../../shared/const/url-regex.const';
 import * as nanoid from 'nanoid';
 
 export enum DiscountValueType {
@@ -18,7 +17,8 @@ export enum LimitType {
 @Component({
   selector: 'jfsc-discounts-single-page',
   templateUrl: './discounts-single-page.component.html',
-  styleUrls: ['./discounts-single-page.component.scss']
+  styleUrls: ['./discounts-single-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DiscountsSinglePageComponent extends LangSinglePageComponent {
   collection = FirestoreCollections.Discounts;
@@ -26,9 +26,12 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
   limitType = LimitType;
 
   public buildForm(data: any) {
-
-    const startingDate = data.startingDate ? new Date(data.startingDate.seconds * 1000) : '';
-    const endingDate = data.endingDate ? new Date(data.endingDate.seconds * 1000) : '';
+    const startingDate = data.startingDate
+      ? new Date(data.startingDate.seconds * 1000)
+      : '';
+    const endingDate = data.endingDate
+      ? new Date(data.endingDate.seconds * 1000)
+      : '';
 
     this.form = this.fb.group({
       id: [data.id || '', Validators.required],

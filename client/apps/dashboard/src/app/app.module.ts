@@ -14,9 +14,6 @@ import {LayoutComponent} from './shared/components/layout/layout.component';
 import {appInit} from './shared/helpers/app-init';
 import {FileUploadModule} from './shared/modules/file-upload/file-upload.module';
 import {SharedModule} from './shared/shared.module';
-import {SinglePageComponent} from './shared/components/single-page/single-page.component';
-import {LangSinglePageComponent} from './shared/components/lang-single-page/lang-single-page.component';
-import {DiscountsSinglePageComponent} from './pages/discounts/pages/single-page/discounts-single-page.component';
 
 export function init(injector: Injector) {
   return () => {
@@ -24,14 +21,8 @@ export function init(injector: Injector) {
   };
 }
 
-const DECLARATIONS = [
-  SinglePageComponent,
-  LangSinglePageComponent,
-  DiscountsSinglePageComponent
-];
-
 @NgModule({
-  declarations: [AppComponent, LayoutComponent, ...DECLARATIONS],
+  declarations: [AppComponent, LayoutComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

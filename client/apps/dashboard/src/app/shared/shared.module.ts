@@ -129,10 +129,8 @@ const COMPONENTS = [
   CustomerLookupComponent,
   JsonEditorComponent,
   AfAutocompleteComponent,
-  ProductAutocompleteComponent
-];
+  ProductAutocompleteComponent,
 
-const ENTRY_COMPONENTS = [
   ConfirmationComponent,
   ExportComponent,
   ColorPickerComponent,
@@ -149,7 +147,7 @@ const DIRECTIVES = [ForceDisableDirective, LibraryImageDirective];
 const PIPES = [StripePipe];
 
 @NgModule({
-  declarations: [...ENTRY_COMPONENTS, ...COMPONENTS, ...PIPES, ...DIRECTIVES],
+  declarations: [...COMPONENTS, ...PIPES, ...DIRECTIVES],
   imports: [...IMPORTS],
   exports: [...IMPORTS, ...COMPONENTS, ...PIPES, ...DIRECTIVES],
   providers: [{provide: MAT_DATE_LOCALE, useValue: 'en-GB'}]
