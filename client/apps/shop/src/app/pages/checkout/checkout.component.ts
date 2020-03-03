@@ -23,10 +23,18 @@ import {OrderItem} from '@jf/interfaces/order.interface';
 import {Price} from '@jf/interfaces/product.interface';
 import {Shipping} from '@jf/interfaces/shipping.interface';
 import * as nanoid from 'nanoid';
-import {combineLatest, from, Observable, Subscription, throwError} from 'rxjs';
 import {
-  catchError, distinctUntilChanged,
-  map, pluck,
+  combineLatest,
+  from,
+  Observable,
+  of,
+  Subject,
+  Subscription,
+  throwError
+} from 'rxjs';
+import {
+  catchError,
+  map,
   shareReplay,
   startWith,
   switchMap,
@@ -44,6 +52,9 @@ import {ElementConfig} from '../../shared/modules/stripe-elements/interfaces/ele
 import {StripeElementsComponent} from '../../shared/modules/stripe-elements/stripe-elements.component';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {StateService} from '../../shared/services/state/state.service';
+import {Discount} from '@jf/interfaces/discount.interface';
+import {notify} from '@jf/utils/notify.operator';
+import {DiscountValueType} from '../../../../../dashboard/src/app/pages/discounts/pages/single-page/discounts-single-page.component';
 
 interface Item extends OrderItem {
   id: string;
@@ -97,6 +108,9 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   elementType = ElementType;
 
   code = new FormControl('');
+  discount = new FormControl(0);
+
+  validCode$ = new Subject<Discount>();
 
   private shippingSubscription: Subscription;
 
@@ -123,24 +137,15 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     this.loggedOut$ = this.state.user$.pipe(map(user => !user));
 
     this.form$ = this.state.user$.pipe(
-      map(user =>
-        this.buildForm(user ? user.customerData : {})
-      ),
+      map(user => this.buildForm(user ? user.customerData : {})),
       shareReplay(1)
     );
 
     this.formData$ = this.form$.pipe(
-      switchMap(form =>
-        form.valueChanges
-          .pipe(
-            startWith(form.getRawValue())
-          )
-      )
+      switchMap(form => form.valueChanges.pipe(startWith(form.getRawValue())))
     );
 
-    this.items$ = combineLatest([
-      this.cartService.items$
-    ]).pipe(
+    this.items$ = combineLatest([this.cartService.items$]).pipe(
       map(([items]) => {
         return items.map(val => ({
           id: val.productId,
@@ -149,7 +154,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
           name: val.name,
           attributes: val.filters,
           identifier: val.identifier
-        }))
+        }));
       })
     );
 
@@ -190,15 +195,30 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
           data.shippingInfo ? data.billing.country : data.shipping.country
         )
       ),
-      this.shipping$
+      this.shipping$,
+      this.validCode$
     ]).pipe(
-      map(([cartTotal, country, shippingData]) => {
+      map(([cartTotal, country, shippingData, discount]) => {
         const shippingItem = shippingData.find(it => it.code === country);
         const shipping =
           shippingItem && Number.isInteger(shippingItem.value)
             ? shippingItem.value
             : DYNAMIC_CONFIG.currency.shippingCost || 0;
-        const total = cartTotal[DYNAMIC_CONFIG.currency.primary] + shipping;
+        let total = cartTotal[DYNAMIC_CONFIG.currency.primary] + shipping;
+
+        if (discount) {
+          switch (discount.valueType) {
+            case DiscountValueType.Percentage:
+              const deduct = total * (discount.value / 100);
+              this.discount.setValue(-deduct);
+              total -= deduct;
+              break;
+            case DiscountValueType.FixedAmount:
+              total = Math.max(0, total - discount.value * 100);
+              this.discount.setValue(-discount.value * 100);
+              break;
+          }
+        }
 
         return {
           total,
@@ -327,6 +347,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
               paymentIntentId: paymentIntent.id,
               billing: data.billing,
               createdOn: Date.now(),
+              code: this.code.value,
 
               ...(data.shippingInfo ? {} : {shipping: data.shipping}),
               ...(user &&
@@ -391,6 +412,61 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   }
 
   applyCode() {
-    return () => {}
+    return () => {
+      const code = this.code.value;
+
+      this.validCode$.next(null);
+
+      let errorMessage = 'Discount is invalid';
+
+      return this.afs
+        .collection<Discount>(`${FirestoreCollections.Discounts}-en`)
+        .doc(code)
+        .get()
+        .pipe(
+          switchMap(value => {
+            if (!value.exists) {
+              errorMessage = 'Invalid discount';
+              return throwError(errorMessage);
+            }
+
+            const discount = value.data();
+
+            if (!discount.active) {
+              errorMessage = 'Discount is not active';
+              return throwError(errorMessage);
+            }
+
+            if (
+              !(
+                discount.startingDate.seconds <
+                Date.now() <
+                discount.endingDate.seconds
+              )
+            ) {
+              errorMessage = 'Discount is expired';
+              return throwError(errorMessage);
+            }
+
+            if (discount.type === 'limited') {
+              if (discount.limitedNumber <= 0) {
+                errorMessage = 'Discount limit reached';
+                return throwError(errorMessage);
+              }
+            }
+
+            this.validCode$.next({
+              ...value.data(),
+              id: value.id
+            } as any);
+
+            return of();
+          }),
+          notify({
+            success: 'Discount applied',
+            error: errorMessage
+          })
+        );
+    };
   }
 }

@@ -187,6 +187,10 @@
                     <td class="w-half p-a-xs">Shipping:</td>
                     <td class="w-half p-a-xs">{{price.shipping ? (price.shipping | sp) : 'Free'}}</td>
                   </tr>
+                  <tr *ngIf="validCode$ | async">
+                    <td class="w-half p-a-xs">Discount:</td>
+                    <td class="w-half p-a-xs">{{discount.value | sp}}</td>
+                  </tr>
                   <tr class="fw-bold">
                     <td class="w-half p-a-xs">Total:</td>
                     <td class="w-half p-a-xs">{{price.total | sp}}</td>
