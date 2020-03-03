@@ -8,13 +8,13 @@ import {
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {MatDialog} from '@angular/material';
+import {MatDialog} from '@angular/material/dialog';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {GiftCard} from '@jf/interfaces/gift-card.interface';
 import {notify} from '@jf/utils/notify.operator';
 import * as nanoid from 'nanoid';
-import {from, Observable, pipe} from 'rxjs';
+import {from, Observable} from 'rxjs';
 import {filter, map, switchMap} from 'rxjs/operators';
 
 @Component({
@@ -31,8 +31,11 @@ export class GiftCardsComponent implements OnInit {
     private afAuth: AngularFireAuth
   ) {}
 
-  @ViewChild('giftTemplate') giftTemplate: TemplateRef<any>;
-  @ViewChild('applyTemplate') applyTemplate: TemplateRef<any>;
+  @ViewChild('giftTemplate')
+  giftTemplate: TemplateRef<any>;
+
+  @ViewChild('applyTemplate')
+  applyTemplate: TemplateRef<any>;
 
   giftCards$: Observable<any>;
   giftCardsInstances$: Observable<any>;
