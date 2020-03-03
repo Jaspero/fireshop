@@ -6,7 +6,7 @@ describe('NetworkService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: NetworkService = TestBed.get(NetworkService);
+    const service: NetworkService = TestBed.inject(NetworkService);
     expect(service).toBeTruthy();
   });
 });

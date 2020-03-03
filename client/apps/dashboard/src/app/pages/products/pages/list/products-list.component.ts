@@ -5,7 +5,6 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import {MatCheckboxChange} from '@angular/material';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
@@ -15,6 +14,7 @@ import {from, Observable} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {LangListComponent} from '../../../../shared/components/lang-list/lang-list.component';
 import {SortDialogComponent} from '../../../../shared/components/sort-dialog/sort-dialog.component';
+import {MatCheckboxChange} from '@angular/material/checkbox';
 
 @Component({
   selector: 'jfsc-list',

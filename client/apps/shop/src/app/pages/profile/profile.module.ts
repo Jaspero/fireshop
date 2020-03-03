@@ -24,7 +24,6 @@ const ENTRY_COMPONENTS = [DeleteUserComponent];
     ReviewsComponent,
     ...ENTRY_COMPONENTS
   ],
-  entryComponents: ENTRY_COMPONENTS,
   imports: [
     AngularFireStorageModule,
     SharedModule,

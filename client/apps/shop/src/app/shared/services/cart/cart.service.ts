@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
-import {MatSnackBar} from '@angular/material';
 import {BROWSER_CONFIG} from '@jf/consts/browser-config.const';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {Price, Product} from '@jf/interfaces/product.interface';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {CartItem} from '../../interfaces/cart-item.interface';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'

@@ -2,12 +2,12 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatDialog} from '@angular/material';
 import {notify} from '@jf/utils/notify.operator';
 import {from, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {LoginSignupDialogComponent} from '../../../../shared/components/login-signup-dialog/login-signup-dialog.component';
 import {RepeatPasswordValidator} from '../../../../shared/helpers/compare-passwords';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'jfs-change-password',

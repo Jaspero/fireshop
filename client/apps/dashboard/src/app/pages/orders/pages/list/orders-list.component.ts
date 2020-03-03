@@ -5,12 +5,12 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import {MatAutocompleteSelectedEvent} from '@angular/material';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
 import {Order} from '@jf/interfaces/order.interface';
 import {ListComponent} from '../../../../shared/components/list/list.component';
+import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 
 @Component({
   selector: 'jfsc-list',

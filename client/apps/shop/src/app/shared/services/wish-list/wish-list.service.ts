@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {MatDialog} from '@angular/material';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {CustomerWishList} from '@jf/interfaces/customer.interface';
 import {Observable} from 'rxjs';
 import {filter, map, startWith, take} from 'rxjs/operators';
 import {LoginSignupDialogComponent} from '../../components/login-signup-dialog/login-signup-dialog.component';
 import {StateService} from '../state/state.service';
+import {MatDialog} from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root'

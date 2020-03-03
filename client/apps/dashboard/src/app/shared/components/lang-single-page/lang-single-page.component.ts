@@ -30,7 +30,7 @@ export class LangSinglePageComponent extends SinglePageComponent
               .valueChanges()
               .pipe(
                 take(1),
-                map(value => ({
+                map((value: object) => ({
                   ...value
                 })),
                 queue()
@@ -43,7 +43,7 @@ export class LangSinglePageComponent extends SinglePageComponent
               .valueChanges()
               .pipe(
                 take(1),
-                map(value => ({
+                map((value: object) => ({
                   ...value,
                   id: params.id
                 })),
