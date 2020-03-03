@@ -108,7 +108,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   elementType = ElementType;
 
   code = new FormControl('');
-  discount = new FormControl(0);
+  discount = 0;
 
   validCode$ = new Subject<Discount>();
 
@@ -210,12 +210,12 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
           switch (discount.valueType) {
             case DiscountValueType.Percentage:
               const deduct = total * (discount.value / 100);
-              this.discount.setValue(-deduct);
+              this.discount = -deduct;
               total -= deduct;
               break;
             case DiscountValueType.FixedAmount:
               total = Math.max(0, total - discount.value * 100);
-              this.discount.setValue(-discount.value * 100);
+              this.discount = (-discount.value * 100);
               break;
           }
         }
@@ -421,8 +421,6 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
 
       this.validCode$.next(null);
 
-      let errorMessage = 'Discount is invalid';
-
       return this.afs
         .collection<Discount>(`${FirestoreCollections.Discounts}-en`)
         .doc(code)
@@ -430,37 +428,16 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
         .pipe(
           switchMap(value => {
             if (!value.exists) {
-              errorMessage = 'Invalid discount';
-              return throwError(errorMessage);
+              return throwError('Invalid discount');
             }
 
             const discount = value.data();
 
-            if (!discount.active) {
-              errorMessage = 'Discount is not active';
-              return throwError(errorMessage);
+            if (!discount.active || (discount.type === 'limited' && discount.limitedNumber <= 0) ||
+              !(discount.startingDate.seconds < Date.now() < discount.endingDate.seconds)) {
+              return throwError('Invalid discount');
             }
 
-            if (
-              !(
-                discount.startingDate.seconds <
-                Date.now() <
-                discount.endingDate.seconds
-              )
-            ) {
-              errorMessage = 'Discount is expired';
-              return throwError(errorMessage);
-            }
-
-            if (discount.type === 'limited') {
-              if (discount.limitedNumber <= 0) {
-                errorMessage = 'Discount limit reached';
-                return throwError(errorMessage);
-              }
-            }
-
-
-            this.code.setValue('');
             this.validCode$.next({
               ...value.data(),
               id: value.id
@@ -470,7 +447,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
           }),
           notify({
             success: 'Discount applied',
-            error: errorMessage
+            error: 'Discount is invalid'
           })
         );
     };
