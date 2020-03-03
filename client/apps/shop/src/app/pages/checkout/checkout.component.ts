@@ -145,25 +145,26 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
       switchMap(form => form.valueChanges.pipe(startWith(form.getRawValue())))
     );
 
-    this.items$ = combineLatest([this.cartService.items$]).pipe(
-      map(([items]) => {
-        return items.map(val => ({
+    this.items$ = this.cartService.items$.pipe(
+      map(items =>
+        items.map(val => ({
           id: val.productId,
           quantity: val.quantity,
           price: val.price,
           name: val.name,
           attributes: val.filters,
           identifier: val.identifier
-        }));
-      })
+        }))
+      )
     );
 
     this.clientSecret$ = combineLatest([
       this.state.user$.pipe(take(1)),
       this.formData$,
-      this.items$
+      this.items$,
+      this.validCode$
     ]).pipe(
-      switchMap(([user, data, orderItems]) =>
+      switchMap(([user, data, orderItems, discount]) =>
         this.http.post<{clientSecret: string}>(
           `${environment.restApi}/stripe/checkout`,
           {
@@ -178,7 +179,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
                 name: user.customerData.fullName,
                 id: user.authData.uid
               }
-            })
+            }),
+            code: discount ? discount.id : null
           }
         )
       ),
@@ -187,10 +189,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
 
     this.price$ = combineLatest([
       this.cartService.totalPrice$.pipe(take(1)),
-      this.form$.pipe(
-        switchMap(form =>
-          form.valueChanges.pipe(startWith(form.getRawValue()))
-        ),
+      this.formData$.pipe(
         map(data =>
           data.shippingInfo ? data.billing.country : data.shipping.country
         )
@@ -215,7 +214,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
               break;
             case DiscountValueType.FixedAmount:
               total = Math.max(0, total - discount.value * 100);
-              this.discount = (-discount.value * 100);
+              this.discount = -discount.value * 100;
               break;
           }
         }
@@ -348,6 +347,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
               billing: data.billing,
               createdOn: Date.now(),
               code: this.code.value,
+              lang: STATIC_CONFIG.lang,
 
               ...(data.shippingInfo ? {} : {shipping: data.shipping}),
               ...(user &&
@@ -422,19 +422,25 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
       this.validCode$.next(null);
 
       return this.afs
-        .collection<Discount>(`${FirestoreCollections.Discounts}-en`)
+        .collection<Discount>(
+          `${FirestoreCollections.Discounts}-${STATIC_CONFIG.lang}`
+        )
         .doc(code)
         .get()
         .pipe(
           switchMap(value => {
-            if (!value.exists) {
-              return throwError('Invalid discount');
-            }
-
             const discount = value.data();
 
-            if (!discount.active || (discount.type === 'limited' && discount.limitedNumber <= 0) ||
-              !(discount.startingDate.seconds < Date.now() < discount.endingDate.seconds)) {
+            if (
+              !value.exists ||
+              !discount.active ||
+              (discount.type === 'limited' && discount.limitedNumber <= 0) ||
+              !(
+                discount.startingDate.seconds <
+                Date.now() <
+                discount.endingDate.seconds
+              )
+            ) {
               return throwError('Invalid discount');
             }
 

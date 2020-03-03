@@ -148,15 +148,17 @@ async function getItems(
 
 app.post('/checkout', (req, res) => {
   async function exec() {
+    const fs = admin.firestore();
+
     let [
       currency,
       shipping,
       generalSettings,
-      stripeCustomer
+      stripeCustomer,
+      discount
     ]: any = await Promise.all([
       ...['currency', 'shipping', 'general-settings'].map(key =>
-        admin
-          .firestore()
+        fs
           .collection('settings')
           .doc(key)
           .get()
@@ -166,18 +168,24 @@ app.post('/checkout', (req, res) => {
        * Try to retrieve a customer if the
        * checkout is from a logged in user
        */
-      ...(req.body.customer
-        ? [
-            si.customers.list({
-              email: req.body.customer.email,
-              limit: 1
-            })
-          ]
-        : [])
+      req.body.customer
+        ? si.customers.list({email: req.body.customer.email, limit: 1})
+        : Promise.resolve(null),
+
+      req.body.code
+        ? fs
+            .collection(`discounts-${req.body.lang}`)
+            .doc(req.body.code)
+            .get()
+        : Promise.resolve(null)
     ]);
 
     currency = currency.data();
     generalSettings = generalSettings.data();
+
+    if (discount && discount.exists) {
+      discount = discount.data();
+    }
 
     const shippingData = shipping.exists ? shipping.data() : {};
     const country = req.body.form.shippingInfo
@@ -207,7 +215,7 @@ app.post('/checkout', (req, res) => {
       }
     }
 
-    const amount = items.reduce(
+    let amount = items.reduce(
       (acc, cur, curIndex) =>
         acc +
         req.body.orderItems[curIndex].quantity * cur.price[req.body.currency],
@@ -215,6 +223,17 @@ app.post('/checkout', (req, res) => {
         ? shippingData[country].value
         : currency.shippingCost || 0
     );
+
+    if (discount) {
+      switch (discount.valueType) {
+        case 'percentage':
+          amount -= Math.round(amount * (discount.value / 100));
+          break;
+        case 'fixedAmount':
+          amount = Math.max(0, amount - discount.value);
+          break;
+      }
+    }
 
     const paymentIntent = await si.paymentIntents.create({
       amount,
@@ -252,6 +271,7 @@ app.post('/checkout', (req, res) => {
 });
 
 app.post('/webhook', async (req, res) => {
+  const fs = admin.firestore();
   const sig = req.headers['stripe-signature'];
 
   let event: any = null;
@@ -270,51 +290,67 @@ app.post('/webhook', async (req, res) => {
   }
 
   const intent = event.data.object;
-  const [order, settings, currency] = await Promise.all([
-    admin
-      .firestore()
+
+  let [order, settings, currency, shipping]: any = await Promise.all([
+    fs
       .collection('orders')
       .where('paymentIntentId', '==', intent.id)
-      .get()
-      .then(snapshots => {
-        const docs = snapshots.docs.map(d => ({
-          ...(d.data() as {
-            orderItems: string[];
-            orderItemsData: OrderItem[];
-            status: string;
-            billing?: any;
-            price?: any;
-          }),
-          id: d.id
-        }));
-
-        return docs[0];
-      }),
-
-    admin
-      .firestore()
+      .get(),
+    fs
       .collection('settings')
       .doc('general-settings')
-      .get()
-      .then(snapshot => ({
-        id: snapshot.id,
-        ...(snapshot.data() as GeneralSettings)
-      })),
-
-    admin
-      .firestore()
+      .get(),
+    fs
       .collection('settings')
       .doc('currency')
+      .get(),
+    fs
+      .collection('settings')
+      .doc('shipping')
       .get()
-      .then(snapshot => ({
-        id: snapshot.id,
-        ...(snapshot.data() as Currency)
-      }))
   ]);
+  let discount: any;
+
+  if (order && order.docs[0]) {
+    order = {
+      ...order.docs[0].data(),
+      id: order.docs[0].id
+    };
+  } else {
+    order = null;
+  }
+
+  settings = {
+    ...settings.data(),
+    id: settings.id
+  } as GeneralSettings;
+
+  currency = {
+    ...currency.data(),
+    id: currency.id
+  } as Currency;
+
+  shipping = {
+    ...shipping.data(),
+    id: shipping.id
+  } as any;
 
   if (!order) {
     res.sendStatus(HttpStatus.Ok);
     return;
+  }
+
+  if (order.code) {
+    try {
+      discount = await fs
+        .collection(`discounts-${order.lang}`)
+        .doc(order.code)
+        .get();
+    } catch (e) {}
+
+    if (discount && discount.exists) {
+      discount = discount.data();
+    }
   }
 
   /**
@@ -340,16 +376,53 @@ app.post('/webhook', async (req, res) => {
         return;
       }
 
-      const emailData = {
+      const emailData: any = {
         order: {
           ...order,
           orderItemsData: order.orderItemsData.map(item => {
-            item.price = currencyFormat(order.price.total, currency.primary);
+            item.price = currencyFormat(item.price, order.currency);
             return item;
           }),
-          total: currencyFormat(order.price.total, currency.primary)
+          total: order.price.total
         }
       };
+
+      if (order.shipping) {
+        const shippingItem = shipping.value.find(
+          it => it.code === order.shipping.country
+        );
+        const shippingCost =
+          shippingItem && Number.isInteger(shippingItem.value)
+            ? shippingItem.value
+            : currency.shippingCost || 0;
+
+        emailData.shipping = currencyFormat(shippingCost, order.currency);
+        emailData.order.total += shippingCost;
+      }
+
+      if (discount) {
+        let discountValue = 0;
+
+        switch (discount.valueType) {
+          case 'percentage':
+            discountValue = Math.round(
+              emailData.order.total * (discount.value / 100)
+            );
+            emailData.order.total -= discountValue;
+            break;
+          case 'fixedAmount':
+            discountValue = Math.max(0, emailData.order.total - discount.value);
+            emailData.order.total = discountValue;
+            break;
+        }
+
+        emailData.discount = currencyFormat(discountValue, order.currency);
+      }
+
+      emailData.order.total = currencyFormat(
+        emailData.order.total,
+        order.currency
+      );
 
       exec = [
         admin
