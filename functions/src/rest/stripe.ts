@@ -333,7 +333,7 @@ app.post('/webhook', async (req, res) => {
   shipping = {
     ...shipping.data(),
     id: shipping.id
-  } as any;
+  };
 
   if (!order) {
     res.sendStatus(HttpStatus.Ok);
