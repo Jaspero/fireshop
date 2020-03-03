@@ -1,0 +1,10 @@
+<section>
+  <div class="grid" *ngIf="giftCards$ | async as giftcard">
+    <div class="col-12" *ngFor="let gc of giftcard">
+      <mat-card>
+        <p>Users who bought this gift card: <b class="cs-pointer" [routerLink]="['/customers', gc.customerId]">{{gc.customerId}}</b></p>
+        <p>Users who used this gift card: <b class="cs-pointer" [routerLink]="['/customers', gc.usedBy]">{{gc.customerId}}</b></p>
+      </mat-card>
+    </div>
+  </div>
+</section>

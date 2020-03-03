@@ -51,6 +51,10 @@ const routes: Routes = [
           )
       },
       {
+        path: 'gift-cards',
+        loadChildren: './pages/gift-card/gift-cards.module#GiftCardsModule'
+      },
+      {
         path: 'reviews',
         loadChildren: () =>
           import('./pages/reviews/reviews.module').then(

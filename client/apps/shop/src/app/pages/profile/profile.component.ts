@@ -52,6 +52,10 @@ export class ProfileComponent implements OnInit {
     {
       label: 'Change password',
       route: 'change-password'
+    },
+    {
+      label: 'Gift cards',
+      route: 'gift-cards'
     }
   ];
 
