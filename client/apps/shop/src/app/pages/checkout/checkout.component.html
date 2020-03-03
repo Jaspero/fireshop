@@ -190,6 +190,7 @@
                   <tr *ngIf="validCode$ | async">
                     <td class="w-half p-a-xs">Discount:</td>
                     <td class="w-half p-a-xs">{{discount.value | sp}}</td>
+                    <td><a (click)="clearDiscount()"><mat-icon>close</mat-icon></a></td>
                   </tr>
                   <tr class="fw-bold">
                     <td class="w-half p-a-xs">Total:</td>

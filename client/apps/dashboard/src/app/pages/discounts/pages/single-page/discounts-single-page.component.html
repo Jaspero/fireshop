@@ -49,13 +49,9 @@
                 <span>Active</span>
                 <mat-slide-toggle formControlName="active"></mat-slide-toggle>
               </div>
-              <mat-form-field class="w-full" appearance="outline">
-                <mat-label>URL</mat-label>
-                <input matInput formControlName="id">
-              </mat-form-field>
                 <mat-form-field class="w-full" appearance="outline">
-                  <mat-label>Code</mat-label>
-                  <input matInput formControlName="code">
+                  <mat-label>ID</mat-label>
+                  <input matInput formControlName="id">
                   <mat-icon class="cs-pointer" matSuffix (click)="generate()">refresh</mat-icon>
                 </mat-form-field>
               <mat-form-field class="w-full" appearance="outline">
@@ -67,7 +63,7 @@
                 <textarea matInput  formControlName="description"></textarea>
               </mat-form-field>
               <mat-form-field class="w-full" appearance="outline">
-                <mat-label>Discounts value</mat-label>
+                <mat-label>Discount value</mat-label>
                 <mat-select formControlName="valueType">
                   <mat-option *ngFor="let option of discountValueType | keyvalue" [value]="option.value">
                     {{option.key}}

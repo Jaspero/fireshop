@@ -12,7 +12,6 @@ export class DiscountsListComponent extends LangListComponent<Discount> {
   displayedColumns: string[] = [
     'checkBox',
     'id',
-    'code',
     'createdOn',
     'name',
     'description',

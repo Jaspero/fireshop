@@ -411,6 +411,10 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     });
   }
 
+  clearDiscount() {
+    this.validCode$.next(null);
+  }
+
   applyCode() {
     return () => {
       const code = this.code.value;
@@ -455,6 +459,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
               }
             }
 
+
+            this.code.setValue('');
             this.validCode$.next({
               ...value.data(),
               id: value.id
