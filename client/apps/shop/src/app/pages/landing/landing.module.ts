@@ -15,8 +15,9 @@ import {LandingComponent} from './landing.component';
         component: LandingComponent,
         data: {
           meta: {
-            title: 'Home page',
-            description: 'Home page of the fireshop webshop'
+            title: 'Home',
+            description: 'A modern pwa webshop built on Firebase with Angular',
+            keywords: 'e-commerce,angular,firebase,pwa'
           },
           structuredData: {
             '@type': 'WebSite',

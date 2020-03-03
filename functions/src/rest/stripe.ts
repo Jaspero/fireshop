@@ -5,12 +5,14 @@ import * as functions from 'firebase-functions';
 import * as stripeLib from 'stripe';
 import {ENV_CONFIG} from '../consts/env-config.const';
 import {HttpStatus} from '../enums/http-status.enum';
+import {currencyFormat} from '../utils/currency-format';
 import {parseEmail} from '../utils/parse-email';
 
 interface OrderItem {
   id: string;
   quantity: number;
   identifier: string;
+  price?: number | string;
   attributes: any;
 }
 
@@ -19,6 +21,11 @@ interface GeneralSettings {
   inactiveForQuantity: boolean;
   autoReduceQuantity: boolean;
   errorNotificationEmail: string;
+}
+
+interface Currency {
+  primary: string;
+  shipping: number;
 }
 
 class CheckoutError extends Error {
@@ -59,7 +66,7 @@ async function getItems(
     })
   );
 
-  const error = [];
+  const error: any[] = [];
 
   for (let i = 0; i < snapshots.length; i++) {
     if (snapshots[i].exists) {
@@ -82,9 +89,7 @@ async function getItems(
          */
         if (!snapshots[i].inventory[lookUp]) {
           error.push({
-            message: `${
-              snapshots[i].name
-            } with these attributes no longer exists`,
+            message: `${snapshots[i].name} with these attributes no longer exists`,
             type: 'product_missing',
             data: {
               id: snapshots[i].id,
@@ -107,9 +112,7 @@ async function getItems(
         snapshots[i].quantity < orderItems[i].quantity
       ) {
         error.push({
-          message: `We currently don't have enough of ${
-            snapshots[i].name
-          } in inventory`,
+          message: `We currently don't have enough of ${snapshots[i].name} in inventory`,
           data: {
             id: snapshots[i].id,
             quantity: snapshots[i].quantity,
@@ -145,17 +148,19 @@ async function getItems(
 
 app.post('/checkout', (req, res) => {
   async function exec() {
-    let [currency, generalSettings, stripeCustomer]: any = await Promise.all([
-      admin
-        .firestore()
-        .collection('settings')
-        .doc('currency')
-        .get(),
-      admin
-        .firestore()
-        .collection('settings')
-        .doc('general-settings')
-        .get(),
+    let [
+      currency,
+      shipping,
+      generalSettings,
+      stripeCustomer
+    ]: any = await Promise.all([
+      ...['currency', 'shipping', 'general-settings'].map(key =>
+        admin
+          .firestore()
+          .collection('settings')
+          .doc(key)
+          .get()
+      ),
 
       /**
        * Try to retrieve a customer if the
@@ -174,6 +179,11 @@ app.post('/checkout', (req, res) => {
     currency = currency.data();
     generalSettings = generalSettings.data();
 
+    const shippingData = shipping.exists ? shipping.data() : {};
+    const country = req.body.form.shippingInfo
+      ? req.body.form.billing.country
+      : req.body.form.shipping.country;
+
     const items = await getItems(
       req.body.orderItems,
       req.body.lang,
@@ -189,7 +199,7 @@ app.post('/checkout', (req, res) => {
       } else {
         stripeCustomer = await si.customers.create({
           email: req.body.customer.email,
-          name: req.body.customer.name,
+          name: req.body.customer.fullName,
           metadata: {
             id: req.body.customer.id
           }
@@ -199,13 +209,16 @@ app.post('/checkout', (req, res) => {
 
     const amount = items.reduce(
       (acc, cur, curIndex) =>
-        acc + req.body.orderItems[curIndex].quantity * cur.price,
-      currency.shippingCost || 0
+        acc +
+        req.body.orderItems[curIndex].quantity * cur.price[req.body.currency],
+      shippingData.hasOwnProperty(country)
+        ? shippingData[country].value
+        : currency.shippingCost || 0
     );
 
     const paymentIntent = await si.paymentIntents.create({
       amount,
-      currency: currency.primary,
+      currency: req.body.currency,
       metadata: {
         lang: req.body.lang
       },
@@ -241,7 +254,7 @@ app.post('/checkout', (req, res) => {
 app.post('/webhook', async (req, res) => {
   const sig = req.headers['stripe-signature'];
 
-  let event = null;
+  let event: any = null;
 
   try {
     event = si.webhooks.constructEvent(
@@ -257,7 +270,7 @@ app.post('/webhook', async (req, res) => {
   }
 
   const intent = event.data.object;
-  const [order, settings] = await Promise.all([
+  const [order, settings, currency] = await Promise.all([
     admin
       .firestore()
       .collection('orders')
@@ -266,9 +279,11 @@ app.post('/webhook', async (req, res) => {
       .then(snapshots => {
         const docs = snapshots.docs.map(d => ({
           ...(d.data() as {
-            email: string;
             orderItems: string[];
             orderItemsData: OrderItem[];
+            status: string;
+            billing?: any;
+            price?: any;
           }),
           id: d.id
         }));
@@ -284,8 +299,23 @@ app.post('/webhook', async (req, res) => {
       .then(snapshot => ({
         id: snapshot.id,
         ...(snapshot.data() as GeneralSettings)
+      })),
+
+    admin
+      .firestore()
+      .collection('settings')
+      .doc('currency')
+      .get()
+      .then(snapshot => ({
+        id: snapshot.id,
+        ...(snapshot.data() as Currency)
       }))
   ]);
+
+  if (!order) {
+    res.sendStatus(HttpStatus.Ok);
+    return;
+  }
 
   /**
    * Join orderItems[] and orderItemsData[]
@@ -305,6 +335,22 @@ app.post('/webhook', async (req, res) => {
 
   switch (event['type']) {
     case 'payment_intent.succeeded':
+      if (order.status === 'payed') {
+        res.sendStatus(HttpStatus.Ok);
+        return;
+      }
+
+      const emailData = {
+        order: {
+          ...order,
+          orderItemsData: order.orderItemsData.map(item => {
+            item.price = currencyFormat(order.price.total, currency.primary);
+            return item;
+          }),
+          total: currencyFormat(order.price.total, currency.primary)
+        }
+      };
+
       exec = [
         admin
           .firestore()
@@ -316,11 +362,27 @@ app.post('/webhook', async (req, res) => {
             },
             {merge: true}
           ),
-        parseEmail(order.email, 'Order Complete', 'order-complete', {
-          order,
-          items
-        })
+        parseEmail(
+          settings.errorNotificationEmail,
+          'Order Complete',
+          'admin-order-notification',
+          {
+            order,
+            items
+          }
+        )
       ];
+
+      if (order.billing.email) {
+        exec.push(
+          parseEmail(
+            order.billing.email,
+            'Order Complete',
+            'order-complete',
+            emailData
+          )
+        );
+      }
 
       if (settings.autoReduceQuantity) {
         exec.push(
@@ -335,13 +397,15 @@ app.post('/webhook', async (req, res) => {
               const lookUp = getLookUp(current);
               const inventory = item.inventory[lookUp];
 
-              item.inventory[lookUp].quantity -= current.quantity;
+              if (inventory) {
+                inventory.quantity -= current.quantity;
 
-              toUpdate.inventory = {
-                [inventory]: {
-                  quantity: item.inventory[lookUp].quantity
-                }
-              };
+                toUpdate.inventory = {
+                  [lookUp]: {
+                    quantity: inventory.quantity
+                  }
+                };
+              }
 
               let hasQuantity = false;
 
@@ -350,9 +414,9 @@ app.post('/webhook', async (req, res) => {
                * when out of quantity, loop over the inventory and check
                * if we should deactive the product
                */
-              if (settings.inactiveForQuantity) {
-                for (const inventoryItem of item.inventory) {
-                  if (inventoryItem.quantity) {
+              if (settings.inactiveForQuantity && item.inventory) {
+                for (const key in item.inventory) {
+                  if (item.inventory[key].quantity) {
                     hasQuantity = true;
                     break;
                   }
@@ -412,27 +476,29 @@ app.post('/webhook', async (req, res) => {
           parseEmail(
             settings.errorNotificationEmail,
             'Error processing payment',
-            'admin-error.hbs',
+            'admin-checkout-failed-notification',
             {
-              title: 'Checkout Error',
-              description: 'There was an error during checkout',
-              additionalProperties: [{key: 'OrderId', value: order.id}],
               message,
+              stripeOrderId: order.id,
               firebaseDashboard:
                 'https://console.firebase.google.com/u/2/project/jaspero-site/overview',
               adminDashboard: 'https://fireshop.admin.jaspero.co/'
             }
-          ),
-
-          parseEmail(
-            order.email,
-            'Error processing order',
-            'customer-error.hbs',
-            {
-              website: 'https://fireshop.jaspero.co'
-            }
           )
         );
+
+        if (order.billing.email) {
+          exec.push(
+            parseEmail(
+              order.billing.email,
+              'Error processing payment',
+              'checkout-error',
+              {
+                website: 'https://fireshop.jaspero.co'
+              }
+            )
+          );
+        }
       }
 
       await Promise.all(exec);

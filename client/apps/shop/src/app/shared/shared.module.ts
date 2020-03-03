@@ -40,6 +40,7 @@ import {
   StopPropagationModule
 } from '@jaspero/ng-helpers';
 import {JpImagePreloadModule} from '@jaspero/ng-image-preload';
+import {JpSliderModule} from '@jaspero/ng-slider';
 import {ColorPickerComponent} from '@jf/components/color-picker/color-picker.component';
 import {ConfirmationComponent} from '@jf/components/confirmation/confirmation.component';
 import {RatingScaleComponent} from '@jf/components/rating-scale/rating-scale.component';
@@ -54,6 +55,7 @@ import {ReviewsDialogComponent} from './components/reviews/reviews-dialog.compon
 import {SearchComponent} from './components/search/search.component';
 import {LibraryImageDirective} from '@jf/directives/library-image.directive';
 import {StripePipe} from '@jf/pipes/stripe.pipe';
+import {LightboxComponent} from './components/lightbox/lightbox.component';
 
 const MODULES = [
   CommonModule,
@@ -101,6 +103,7 @@ const MODULES = [
   SanitizeModule,
   LoadClickModule,
 
+  JpSliderModule,
   JpImagePreloadModule,
   NgxJsonLdModule
 ];
@@ -111,7 +114,8 @@ const ENTRY_COMPONENTS = [
   CartComponent,
   SearchComponent,
   ReviewsDialogComponent,
-  RatingScaleComponent
+  RatingScaleComponent,
+  LightboxComponent
 ];
 const COMPONENTS = [
   NetworkWidgetComponent,

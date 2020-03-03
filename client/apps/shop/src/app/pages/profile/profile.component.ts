@@ -8,7 +8,6 @@ import {
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {AngularFireStorage} from '@angular/fire/storage';
-import {MatSort} from '@angular/material';
 import {Router} from '@angular/router';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {BehaviorSubject, from, Observable} from 'rxjs';
@@ -87,11 +86,13 @@ export class ProfileComponent implements OnInit {
     this.fileEl.nativeElement.click();
   }
 
-  filesImage(file) {
+  filesImage(el: HTMLInputElement) {
     this.loading$.next(true);
 
-    const fileToUpload = Array.from(file)[0];
+    const fileToUpload = Array.from(el.files)[0];
     const userID = this.afAuth.auth.currentUser.uid;
+
+    el.value = '';
 
     if (fileToUpload) {
       from(

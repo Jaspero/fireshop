@@ -52,7 +52,7 @@ export class CustomerLookupComponent implements OnInit, ControlValueAccessor {
     ]).pipe(
       map(([customers, value]) =>
         customers.filter(customer =>
-          (customer.name || '').toLowerCase().includes(value)
+          (customer.fullName || '').toLowerCase().includes(value)
         )
       )
     );
@@ -81,7 +81,7 @@ export class CustomerLookupComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-  writeValue(value: string | {id: string; name: string}) {
-    this.search.setValue(typeof value === 'string' ? value : value.name);
+  writeValue(value: string | {id: string; fullName: string}) {
+    this.search.setValue(typeof value === 'string' ? value : value.fullName);
   }
 }

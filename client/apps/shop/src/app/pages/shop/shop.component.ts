@@ -116,7 +116,8 @@ export class ShopComponent extends RxDestroy implements OnInit {
 
     this.afs
       .collection<Category>(
-        `${FirestoreCollections.Categories}-${STATIC_CONFIG.lang}`
+        `${FirestoreCollections.Categories}-${STATIC_CONFIG.lang}`,
+        ref => ref.orderBy('order', 'asc')
       )
       .valueChanges('id');
 
@@ -141,7 +142,7 @@ export class ShopComponent extends RxDestroy implements OnInit {
 
                   this.chipArray = [];
 
-                  if (query.order.name) {
+                  if (query.order && query.order.name) {
                     final = final.orderBy(
                       query.order.type,
                       query.order.direction

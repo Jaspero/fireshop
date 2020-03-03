@@ -112,24 +112,6 @@
             ],
             "exclude": ["**/node_modules/**"]
           }
-        },
-        "server": {
-          "builder": "@angular-devkit/build-angular:server",
-          "options": {
-            "outputPath": "../functions/dist/server",
-            "main": "apps/shop/src/main-ssr.ts",
-            "tsConfig": "apps/shop/src/tsconfig.app-ssr.json"
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "apps/shop/src/environments/environment.ts",
-                  "with": "apps/shop/src/environments/environment.prod.ts"
-                }
-              ]
-            }
-          }
         }
       }
     },
@@ -226,8 +208,13 @@
                 "output": "/skins/content/default"
               }
             ],
-            "styles": ["apps/dashboard/src/styles.scss"],
-            "scripts": ["./node_modules/tinymce/tinymce.min.js"]
+            "styles": [
+              "node_modules/jsoneditor/dist/jsoneditor.min.css",
+              "apps/dashboard/src/styles.scss"
+            ],
+            "scripts": [
+              "./node_modules/tinymce/tinymce.min.js"
+            ]
           },
           "configurations": {
             "production": {

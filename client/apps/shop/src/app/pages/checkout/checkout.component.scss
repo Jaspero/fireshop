@@ -12,7 +12,7 @@
 }
 
 :host::ng-deep .mat-horizontal-stepper-header-container {
-  max-width: 400px;
+  max-width: 500px;
 }
 
 :host::ng-deep .mat-horizontal-content-container {
@@ -21,29 +21,4 @@
 
 :host .grid > [class*='col'] {
   padding-right: 10px;
-}
-
-.StripeElement {
-  box-sizing: border-box;
-  margin: .25em 0;
-  padding: 16px 8px;
-  border: 1px solid rgba(0,0,0,.12);
-  border-radius: 4px;
-  transition: .2s;
-}
-
-.StripeElement:hover {
-  border: 1px solid currentColor;
-  box-shadow: inset 0 0 0 1px currentColor;
-}
-
-.StripeElement--focus.StripeElement--focus {
-  border: 1px solid var(--primary);
-  box-shadow: inset 0 0 0 1px var(--primary);
-}
-
-.StripeElement--invalid {
-  border: 1px solid var(--warn);
-  box-shadow: inset 0 0 0 1px var(--warn);
-  color: var(--warn);
 }

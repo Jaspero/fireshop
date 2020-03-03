@@ -1,0 +1,19 @@
+<mat-form-field class="w-full" appearance="outline">
+  <mat-label>{{placeholder}}</mat-label>
+  <input matInput [formControl]="search" [matAutocomplete]="auto">
+
+  <mat-spinner [class.hidden]="(loading$ | async) === false" [diameter]="25" matSuffix></mat-spinner>
+
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+    <mat-option *ngFor="let result of results$ | async" [value]="result">
+
+      <ng-container *ngIf="optionTemplate; else showKey">
+        <ng-container *ngTemplateOutlet="optionTemplate; context: {value: result}"></ng-container>
+      </ng-container>
+
+      <ng-template #showKey>
+        {{result[displayKey]}}
+      </ng-template>
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

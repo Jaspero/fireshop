@@ -47,6 +47,7 @@ import {
 } from '@jaspero/ng-helpers';
 import {ColorPickerComponent} from '@jf/components/color-picker/color-picker.component';
 import {ConfirmationComponent} from '@jf/components/confirmation/confirmation.component';
+import {LibraryImageDirective} from '@jf/directives/library-image.directive';
 import {StripePipe} from '@jf/pipes/stripe.pipe';
 import {ChipsComponent} from './components/chips/chips.component';
 import {CustomerLookupComponent} from './components/customer-lookup/customer-lookup.component';
@@ -60,6 +61,11 @@ import {WysiwygComponent} from './components/wysiwyg/wysiwyg.component';
 import {FileUploadModule} from './modules/file-upload/file-upload.module';
 import {ImportComponent} from './components/import/import.component';
 import {ForceDisableDirective} from './directives/force-disable/force-disable.directive';
+import {JsonEditorComponent} from './components/json-editor/json-editor.component';
+import {ProductSelectDialogComponent} from './components/product-select-dialog/product-select-dialog.component';
+import {AfAutocompleteComponent} from './components/af-autocomplete/af-autocomplete.component';
+import {ProductAutocompleteComponent} from './components/product-autocomplete/product-autocomplete.component';
+import {SortDialogComponent} from './components/sort-dialog/sort-dialog.component';
 
 const IMPORTS = [
   CommonModule,
@@ -123,7 +129,10 @@ const COMPONENTS = [
   ChipsComponent,
   SearchInputComponent,
   ImportComponent,
-  CustomerLookupComponent
+  CustomerLookupComponent,
+  JsonEditorComponent,
+  AfAutocompleteComponent,
+  ProductAutocompleteComponent
 ];
 
 const ENTRY_COMPONENTS = [
@@ -133,10 +142,12 @@ const ENTRY_COMPONENTS = [
   ListComponent,
   LangListComponent,
   SinglePageComponent,
-  LangSinglePageComponent
+  LangSinglePageComponent,
+  ProductSelectDialogComponent,
+  SortDialogComponent
 ];
 
-const DIRECTIVES = [ForceDisableDirective];
+const DIRECTIVES = [ForceDisableDirective, LibraryImageDirective];
 
 const PIPES = [StripePipe];
 

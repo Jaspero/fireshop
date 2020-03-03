@@ -27,7 +27,7 @@ app.get('/redirect', (req, res) => {
 
   res.cookie('state', state, {
     maxAge: 3600000,
-    secure: req.get('host').indexOf('localhost:') !== 0,
+    secure: (req.get('host') as string).indexOf('localhost:') !== 0,
     httpOnly: true
   });
 
@@ -71,7 +71,7 @@ app.get('/callback', async (req, res) => {
     results.access_token
   );
 
-  res.send(signInFirebaseTemplate(firebaseToken));
+  return res.send(signInFirebaseTemplate(firebaseToken));
 });
 
 function createFirebaseAccount(

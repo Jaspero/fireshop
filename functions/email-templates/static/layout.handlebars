@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style type="text/css">
+        body {
+            margin: 0;
+            font-size: 14px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-font-smoothing: antialiased;
+            background: white;
+            color: #111;
+        }
+        h1 {
+            font-size: 1.5em;
+            margin: 1.75em 0 1em;
+        }
+        a {
+            cursor: pointer;
+            text-decoration: underline;
+            color: #0064fa;
+        }
+        p, ol, ul {
+            font-size: 1em;
+            margin: 1em 0;
+            line-height: 1.5;
+        }
+        img {
+            max-width: 100%;
+        }
+        .table-container {
+            margin: 1em 0;
+            overflow-y: hidden;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            margin: 0;
+        }
+        th, td {
+            text-align: left;
+        }
+        .button-container {
+            text-align: center;
+            margin: 2em 0;
+        }
+        /*TODO: button not used anywhere yet, but color and background should be customisable*/
+        .button {
+            display: inline-block;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            font-size: 1em;
+            margin: 0;
+            padding: 1em 2em;
+            background: #0064fa;
+            color: white;
+        }
+        .header {
+            text-align: center;
+            margin: 0 auto;
+            max-width: 600px;
+        }
+        .main {
+            margin: 0 auto;
+            padding: 1em;
+            max-width: 600px;
+        }
+        .footer {
+            padding: 2em 0;
+            margin: 4em auto 0;
+            max-width: 600px;
+            font-size: .8em;
+            text-align: center;
+            background: #f6f6f6;
+            color: #333;
+        }
+        .footer a {
+            color: inherit;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <img src="https://www.logoground.com/uploads/2018162952018-03-154254541SIMPLE%20HOUSING%20COMPANY.jpg" alt="">
+</div>
+
+<div class="main">
+    {{> body}}
+</div>
+
+<div class="footer">
+    <p>
+        <!--Each-->
+        <a href=""><img src="https://cdn3.iconfinder.com/data/icons/picons-social/57/06-facebook-512.png" alt="Facebook" width="24" height="24"></a>
+        <!--/Each-->
+    </p>
+    <p>© 2019 Company Inc. All Rights Reserved.</p>
+    <p>Company Inc. 123 Cool Street, Suite 900 San Francisco, CA 94103</p>
+    <p>
+        <!--Each-->
+            <a>Terms of Service</a>
+            <!--if (!last)-->
+                &nbsp;‧&nbsp;
+            <!--/if (!last)-->
+        <!--/Each-->
+    </p>
+</div>
+
+</body>
+</html>

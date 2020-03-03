@@ -6,7 +6,6 @@ import {
   ViewChild
 } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {MatSort} from '@angular/material';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {OrderStatus} from '@jf/enums/order-status.enum';
 import {Product} from '@jf/interfaces/product.interface';
@@ -40,13 +39,13 @@ export class OrdersSinglePageComponent extends SinglePageComponent
       .collection<Product>(`${FirestoreCollections.Products}-en`)
       .valueChanges('id');
 
-    this.filteredProducts$ = combineLatest(
+    this.filteredProducts$ = combineLatest([
       this.product$,
       this.search.valueChanges.pipe(
         startWith(this.search.value || ''),
         map(value => value.toLowerCase())
       )
-    ).pipe(
+    ]).pipe(
       map(([products, value]) =>
         products.filter(product =>
           (product.name || '').toLowerCase().includes(value)

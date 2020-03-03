@@ -1,5 +1,5 @@
-import {Observable, throwError} from 'rxjs';
-import {catchError, finalize, tap} from 'rxjs/operators';
+import {defer, Observable, throwError} from 'rxjs';
+import {catchError, finalize} from 'rxjs/operators';
 import {StateService} from '../services/state/state.service';
 
 const _queue = [];
@@ -10,33 +10,33 @@ export function queue(
   const state: StateService = window['rootInjector'].get(StateService);
 
   return <T>(source$: Observable<T>) => {
-    return source$.pipe(
-      tap(() => {
-        name = name || Date.now();
-        _queue.push(name);
+    return defer(() => {
+      name = name || Date.now();
+      _queue.push(name);
+      state.loadingQue$.next(_queue);
 
-        state.loadingQue$.next(_queue);
-      }),
-      finalize(() => {
-        const index = _queue.indexOf(name);
+      return source$.pipe(
+        finalize(() => {
+          const index = _queue.indexOf(name);
 
-        if (index !== -1) {
-          _queue.splice(index, 1);
-        }
+          if (index !== -1) {
+            _queue.splice(index, 1);
+          }
 
-        state.loadingQue$.next(_queue);
-      }),
-      catchError(err => {
-        const index = _queue.indexOf(name);
+          state.loadingQue$.next(_queue);
+        }),
+        catchError(err => {
+          const index = _queue.indexOf(name);
 
-        if (index !== -1) {
-          _queue.splice(index, 1);
-        }
+          if (index !== -1) {
+            _queue.splice(index, 1);
+          }
 
-        state.loadingQue$.next(_queue);
+          state.loadingQue$.next(_queue);
 
-        return throwError(err);
-      })
-    );
+          return throwError(err);
+        })
+      );
+    });
   };
 }

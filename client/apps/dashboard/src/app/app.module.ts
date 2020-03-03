@@ -1,9 +1,6 @@
 import {APP_INITIALIZER, Injector, NgModule} from '@angular/core';
 import {AngularFireModule} from '@angular/fire';
-import {
-  AngularFirestore,
-  AngularFirestoreModule
-} from '@angular/fire/firestore';
+import {AngularFirestore, AngularFirestoreModule} from '@angular/fire/firestore';
 import {AngularFirePerformanceModule} from '@angular/fire/performance';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';

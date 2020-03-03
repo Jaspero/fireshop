@@ -16,13 +16,15 @@ import {
   FormControl,
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
-import {MatDialog, MatSort} from '@angular/material';
+import {MatDialog} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {Breakpoint, currentBreakpoint$} from '@jf/consts/breakpoint.const';
 import {ENV_CONFIG} from '@jf/consts/env-config.const';
 import {readFile} from '@jf/utils/read-file';
 import {forkJoin, from, Observable, of} from 'rxjs';
 import {catchError, map, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {GeneratedImage} from '../../../interfaces/generated-image.interface';
+import {formatGeneratedImages} from '../../../utils/format-generated-images';
 
 @Component({
   selector: 'jfsc-gallery-upload',
@@ -159,9 +161,9 @@ export class GalleryUploadComponent extends RxDestroy
     this.fileEl.nativeElement.click();
   }
 
-  filesUploaded(fileList: FileList) {
+  filesUploaded(el: HTMLInputElement) {
     forkJoin(
-      Array.from(fileList).map(file =>
+      Array.from(el.files).map(file =>
         readFile(file).pipe(
           map(data => ({
             data,
@@ -174,13 +176,19 @@ export class GalleryUploadComponent extends RxDestroy
       this.values.push(...files);
       this.cdr.detectChanges();
     });
+
+    el.value = '';
   }
 
   /**
    * Executes all uploads/removes to persist
    * the changes on server
    */
-  save() {
+  save(
+    moduleId: string,
+    documentId: string,
+    generatedImages?: GeneratedImage[]
+  ) {
     /**
      * Break if there are no files to remove and there aren't any files to upload
      */
@@ -200,10 +208,17 @@ export class GalleryUploadComponent extends RxDestroy
       ),
       ...this.values.reduce((acc, cur) => {
         if (!cur.live) {
+          const name = [moduleId, documentId, cur.pushToLive.name].join('-');
+
           acc.push(
             from(
-              this.afs.upload(cur.pushToLive.name, cur.pushToLive, {
-                contentType: cur.pushToLive.type
+              this.afs.upload(name, cur.pushToLive, {
+                contentType: cur.pushToLive.type,
+                customMetadata: {
+                  moduleId,
+                  documentId,
+                  ...(generatedImages && formatGeneratedImages(generatedImages))
+                }
               })
             ).pipe(
               switchMap(task => task.ref.getDownloadURL()),

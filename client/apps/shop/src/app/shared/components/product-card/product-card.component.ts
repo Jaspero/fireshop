@@ -5,7 +5,7 @@ import {
   Input,
   OnInit
 } from '@angular/core';
-import {Product} from '@jf/interfaces/product.interface';
+import {Price, Product} from '@jf/interfaces/product.interface';
 import {UNIQUE_ID, UNIQUE_ID_PROVIDER} from '@jf/utils/id.provider';
 import {Observable} from 'rxjs';
 import {map, shareReplay} from 'rxjs/operators';
@@ -35,7 +35,7 @@ export class ProductCardComponent implements OnInit {
   })
   @Input()
   product: Product;
-  price: number;
+  price: Price;
   filters: any;
 
   wishList$: Observable<{

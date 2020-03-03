@@ -10,7 +10,8 @@ export let DYNAMIC_CONFIG: {
 } = {
   currency: {
     primary: 'USD',
-    shippingCost: 0
+    shippingCost: 0,
+    supportedCurrencies: ['USD']
   },
   generalSettings: {
     autoReduceQuantity: true,
@@ -20,6 +21,7 @@ export let DYNAMIC_CONFIG: {
     notifyOnShipped: true,
     notifyOnDelivered: true,
     showingQuantity: true,
-    allowOutOfQuantityPurchase: false
+    allowOutOfQuantityPurchase: false,
+    relatedProducts: 3
   }
 };

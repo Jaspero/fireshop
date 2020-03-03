@@ -14,7 +14,7 @@
       <div class="col-8 col-s-10 col-xs-12" [ngSwitch]="currentState">
         <ng-container *ngSwitchCase="viewState.Edit">
           <div class="flex ai-center jc-between">
-            <h5>{{form.get('name').value}}</h5>
+            <h5>{{form.get('fullName').value}}</h5>
             <div>
               <button mat-icon-button aria-label="Previous customer" matTooltip="Previous customer" (click)="move(false, form)">
                 <mat-icon>arrow_back</mat-icon>
@@ -31,7 +31,7 @@
         </ng-container>
         <h5 *ngSwitchCase="viewState.New">New Customer</h5>
 
-        <h5 *ngSwitchCase="viewState.Copy">Copy of {{form.get('name').value}}</h5>
+        <h5 *ngSwitchCase="viewState.Copy">Copy of {{form.get('fullName').value}}</h5>
 
       </div>
     </div>
@@ -46,7 +46,7 @@
               <h6 class="p-y-s">Personal information</h6>
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Name</mat-label>
-                <input matInput type="tel" formControlName="name">
+                <input matInput type="tel" formControlName="fullName">
               </mat-form-field>
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Gender</mat-label>

@@ -18,12 +18,12 @@ import {ShopComponent} from './shop.component';
         data: {
           meta: {
             title: 'Shop',
-            description: 'ListComponent of the products in our shop'
+            description: 'List of the products in our shop'
           },
           structuredData: {
             '@type': 'WebSite',
             name: 'Shop',
-            description: 'List component of the products in our shop'
+            description: 'List of the products in our shop'
           }
         },
         resolve: {

@@ -57,10 +57,11 @@ export class ChangePasswordComponent implements OnInit {
           error:
             'You must relogin to update you password because of the security reasons'
         }),
-
-        // TODO: If the error for invalid password shows up open a dialog here
         catchError(err => {
-          this.dialog.open(LoginSignupDialogComponent);
+          if (err.code === 'auth/requires-recent-login') {
+            this.dialog.open(LoginSignupDialogComponent);
+          }
+
           return throwError(err);
         })
       )

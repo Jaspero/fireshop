@@ -72,7 +72,7 @@ export class OrdersComponent extends RxDestroy implements OnInit {
       data: {
         customerInfo: {
           id: item.customerId,
-          name: item.name
+          name: item.fullName
         },
         orderId: item.orderId,
         productId: item.identifier

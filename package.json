@@ -6,8 +6,10 @@
     "target-setup": "firebase target:apply hosting shop jp-fireshop && firebase target:apply hosting admin jp-fireshop-admin",
     "build-indexes": "node build-indexes.js",
     "build": "npm --prefix client run build:all && npm --prefix functions run build",
-    "lint": "npm --prefix client run lint && npm --prefix functions run lint",
-    "deploy": "firebase deploy --only storage --only firestore --only functions:ssr,functions:userCreated,functions:userDeleted,functions:fileCreated,functions:fileDeleted,functions:orderCreated,functions:exportData,functions:importData,functions:similarProducts,functions:stripe,functions:instagram,hosting"
+    "lint:client": "npm --prefix client run lint",
+    "lint:functions": "npm --prefix functions run lint",
+    "lint": "npm run lint:client && npm run lint:functions",
+    "deploy": "firebase deploy --only storage --only firestore --only functions:documentDeleted,functions:ssr,functions:currencies,functions:countries,functions:userCreated,functions:userDeleted,functions:fileCreated,functions:fileDeleted,functions:orderCreated,functions:exportData,functions:importData,functions:similarProducts,functions:stripe,functions:instagram,functions:exampleEmail,hosting"
   },
   "author": {
     "name": "Jaspero Ltd",
@@ -38,11 +40,19 @@
     "*.{ts,json,md}": [
       "prettier --write",
       "git add"
+    ],
+    "client/**/*.{ts}": [
+      "npm run lint:client",
+      "git add"
+    ],
+    "functions/**/*.{ts}": [
+      "npm run lint:functions",
+      "git add"
     ]
   },
   "devDependencies": {
-    "husky": "2.3.0",
-    "lint-staged": "8.1.7",
-    "prettier": "1.17.1"
+    "husky": "3.0.8",
+    "lint-staged": "9.4.2",
+    "prettier": "1.18.2"
   }
 }
