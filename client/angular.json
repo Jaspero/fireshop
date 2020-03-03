@@ -10,7 +10,7 @@
       "prefix": "jfs",
       "schematics": {
         "@schematics/angular:component": {
-          "styleext": "scss",
+          "style": "scss",
           "changeDetection": "OnPush"
         },
         "@schematics/angular:directive": {
@@ -27,6 +27,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "../functions/dist/public/shop",
             "index": "apps/shop/src/index.html",
             "main": "apps/shop/src/main.ts",
@@ -63,6 +64,10 @@
                   "type": "initial",
                   "maximumWarning": "3mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ],
               "serviceWorker": true,
@@ -154,7 +159,8 @@
                   "with": "apps/shop/src/environments/environment.prod.ts"
                 }
               ]
-            }
+            ,              "optimization": true
+}
           }
         }
       }
@@ -166,7 +172,7 @@
       "prefix": "jfs",
       "schematics": {
         "@schematics/angular:component": {
-          "styleext": "scss",
+          "style": "scss",
           "changeDetection": "OnPush"
         },
         "@schematics/angular:directive": {
@@ -183,6 +189,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "../functions/dist/public/dashboard",
             "index": "apps/dashboard/src/index.html",
             "main": "apps/dashboard/src/main.ts",
@@ -238,6 +245,10 @@
                   "type": "initial",
                   "maximumWarning": "5mb",
                   "maximumError": "10mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ],
               "serviceWorker": true,
@@ -330,7 +341,8 @@
                   "with": "apps/dashboard/src/environments/environment.prod.ts"
                 }
               ]
-            }
+            ,              "optimization": true
+}
           }
         }
       }
