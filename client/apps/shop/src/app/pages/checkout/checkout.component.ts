@@ -25,8 +25,8 @@ import {Shipping} from '@jf/interfaces/shipping.interface';
 import * as nanoid from 'nanoid';
 import {combineLatest, from, Observable, Subscription, throwError} from 'rxjs';
 import {
-  catchError,
-  map,
+  catchError, distinctUntilChanged,
+  map, pluck,
   shareReplay,
   startWith,
   switchMap,
@@ -96,6 +96,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   termsControl = new FormControl(false);
   elementType = ElementType;
 
+  code = new FormControl('');
+
   private shippingSubscription: Subscription;
 
   ngOnInit() {
@@ -120,9 +122,27 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
 
     this.loggedOut$ = this.state.user$.pipe(map(user => !user));
 
-    this.items$ = this.cartService.items$.pipe(
-      map(items =>
-        items.map(val => ({
+    this.form$ = this.state.user$.pipe(
+      map(user =>
+        this.buildForm(user ? user.customerData : {})
+      ),
+      shareReplay(1)
+    );
+
+    this.formData$ = this.form$.pipe(
+      switchMap(form =>
+        form.valueChanges
+          .pipe(
+            startWith(form.getRawValue())
+          )
+      )
+    );
+
+    this.items$ = combineLatest([
+      this.cartService.items$
+    ]).pipe(
+      map(([items]) => {
+        return items.map(val => ({
           id: val.productId,
           quantity: val.quantity,
           price: val.price,
@@ -130,17 +150,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
           attributes: val.filters,
           identifier: val.identifier
         }))
-      )
+      })
     );
-
-    this.form$ = this.state.user$.pipe(
-      map(user => {
-        return this.buildForm(user ? user.customerData : {});
-      }),
-      shareReplay(1)
-    );
-
-    this.formData$ = this.form$.pipe(map(form => form.getRawValue()));
 
     this.clientSecret$ = combineLatest([
       this.state.user$.pipe(take(1)),
@@ -229,7 +240,6 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   buildForm(value: Partial<Customer>) {
     const group = this.fb.group({
       billing: this.addressForm(value.billing ? value.billing : {}),
-      code: '',
       shippingInfo: value.shippingInfo || true,
       saveInfo: true
     });
@@ -378,5 +388,9 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
         view: logIn ? LoginSignUpView.LogIn : LoginSignUpView.SignUp
       }
     });
+  }
+
+  applyCode() {
+    return () => {}
   }
 }
