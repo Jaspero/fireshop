@@ -131,12 +131,6 @@
                   <p class="bg-l-secondary p-y-s ta-center">You will have a chance to review your order before it's placed</p>
                 </div>
 
-                <div class="col-12 m-y-xs">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <input matInput placeholder="Discount code" formControlName="code">
-                  </mat-form-field>
-                </div>
-
                 <div class="col-12 ta-right">
                   <button
                       id="btn-nxt-step-0"
@@ -152,10 +146,32 @@
             </mat-card>
           </div>
           <div class="col-4 col-s-12">
+
+            <mat-card class="m-b-s">
+
+              <form>
+                <mat-form-field class="w-full" appearance="outline">
+                  <input matInput placeholder="Discount code" [formControl]="code">
+                </mat-form-field>
+
+                <div class="ta-right">
+                  <button
+                    id="discount-code"
+                    mat-flat-button
+                    color="primary"
+                    matStepperNext
+                    [disabled]="code.invalid"
+                    [jpLoadClick]="applyCode()">
+                    Apply Code
+                  </button>
+                </div>
+              </form>
+            </mat-card>
+
             <mat-card>
               <h6 class="m-b-xs">Order Details</h6>
               <table class="w-full">
-                <tr *ngFor="let product of cartService.items$ | async">
+                <tr *ngFor="let product of items$ | async">
                   <td class="w-half p-a-xs">{{product.name}}:</td>
                   <td class="w-half p-a-xs">{{product.price | sp }} x{{product.quantity}}</td>
                 </tr>
@@ -170,6 +186,11 @@
                   <tr>
                     <td class="w-half p-a-xs">Shipping:</td>
                     <td class="w-half p-a-xs">{{price.shipping ? (price.shipping | sp) : 'Free'}}</td>
+                  </tr>
+                  <tr *ngIf="validCode$ | async">
+                    <td class="w-half p-a-xs">Discount:</td>
+                    <td class="w-half p-a-xs">{{discount | sp}}</td>
+                    <td><a (click)="clearDiscount()"><mat-icon>close</mat-icon></a></td>
                   </tr>
                   <tr class="fw-bold">
                     <td class="w-half p-a-xs">Total:</td>

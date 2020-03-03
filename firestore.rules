@@ -40,7 +40,8 @@ service cloud.firestore {
     }
 
     match /discounts-en/{discount=**} {
-      allow read: if true;
+      allow get: if true;
+      allow list: if readOrWrite();
       allow write: if write();
     }
 

@@ -23,7 +23,15 @@ import {OrderItem} from '@jf/interfaces/order.interface';
 import {Price} from '@jf/interfaces/product.interface';
 import {Shipping} from '@jf/interfaces/shipping.interface';
 import * as nanoid from 'nanoid';
-import {combineLatest, from, Observable, Subscription, throwError} from 'rxjs';
+import {
+  combineLatest,
+  from,
+  Observable,
+  of,
+  Subject,
+  Subscription,
+  throwError
+} from 'rxjs';
 import {
   catchError,
   map,
@@ -44,6 +52,9 @@ import {ElementConfig} from '../../shared/modules/stripe-elements/interfaces/ele
 import {StripeElementsComponent} from '../../shared/modules/stripe-elements/stripe-elements.component';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {StateService} from '../../shared/services/state/state.service';
+import {Discount} from '@jf/interfaces/discount.interface';
+import {notify} from '@jf/utils/notify.operator';
+import {DiscountValueType} from '../../../../../dashboard/src/app/pages/discounts/pages/single-page/discounts-single-page.component';
 
 interface Item extends OrderItem {
   id: string;
@@ -96,6 +107,11 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   termsControl = new FormControl(false);
   elementType = ElementType;
 
+  code = new FormControl('');
+  discount = 0;
+
+  validCode$ = new Subject<Discount>();
+
   private shippingSubscription: Subscription;
 
   ngOnInit() {
@@ -120,27 +136,27 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
 
     this.loggedOut$ = this.state.user$.pipe(map(user => !user));
 
-    this.items$ = this.cartService.items$.pipe(
-      map(items =>
-        items.map(val => ({
+    this.form$ = this.state.user$.pipe(
+      map(user => this.buildForm(user ? user.customerData : {})),
+      shareReplay(1)
+    );
+
+    this.formData$ = this.form$.pipe(
+      switchMap(form => form.valueChanges.pipe(startWith(form.getRawValue())))
+    );
+
+    this.items$ = combineLatest([this.cartService.items$]).pipe(
+      map(([items]) => {
+        return items.map(val => ({
           id: val.productId,
           quantity: val.quantity,
           price: val.price,
           name: val.name,
           attributes: val.filters,
           identifier: val.identifier
-        }))
-      )
+        }));
+      })
     );
-
-    this.form$ = this.state.user$.pipe(
-      map(user => {
-        return this.buildForm(user ? user.customerData : {});
-      }),
-      shareReplay(1)
-    );
-
-    this.formData$ = this.form$.pipe(map(form => form.getRawValue()));
 
     this.clientSecret$ = combineLatest([
       this.state.user$.pipe(take(1)),
@@ -179,15 +195,30 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
           data.shippingInfo ? data.billing.country : data.shipping.country
         )
       ),
-      this.shipping$
+      this.shipping$,
+      this.validCode$
     ]).pipe(
-      map(([cartTotal, country, shippingData]) => {
+      map(([cartTotal, country, shippingData, discount]) => {
         const shippingItem = shippingData.find(it => it.code === country);
         const shipping =
           shippingItem && Number.isInteger(shippingItem.value)
             ? shippingItem.value
             : DYNAMIC_CONFIG.currency.shippingCost || 0;
-        const total = cartTotal[DYNAMIC_CONFIG.currency.primary] + shipping;
+        let total = cartTotal[DYNAMIC_CONFIG.currency.primary] + shipping;
+
+        if (discount) {
+          switch (discount.valueType) {
+            case DiscountValueType.Percentage:
+              const deduct = total * (discount.value / 100);
+              this.discount = -deduct;
+              total -= deduct;
+              break;
+            case DiscountValueType.FixedAmount:
+              total = Math.max(0, total - discount.value * 100);
+              this.discount = (-discount.value * 100);
+              break;
+          }
+        }
 
         return {
           total,
@@ -229,7 +260,6 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   buildForm(value: Partial<Customer>) {
     const group = this.fb.group({
       billing: this.addressForm(value.billing ? value.billing : {}),
-      code: '',
       shippingInfo: value.shippingInfo || true,
       saveInfo: true
     });
@@ -317,6 +347,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
               paymentIntentId: paymentIntent.id,
               billing: data.billing,
               createdOn: Date.now(),
+              code: this.code.value,
 
               ...(data.shippingInfo ? {} : {shipping: data.shipping}),
               ...(user &&
@@ -378,5 +409,47 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
         view: logIn ? LoginSignUpView.LogIn : LoginSignUpView.SignUp
       }
     });
+  }
+
+  clearDiscount() {
+    this.validCode$.next(null);
+  }
+
+  applyCode() {
+    return () => {
+      const code = this.code.value;
+
+      this.validCode$.next(null);
+
+      return this.afs
+        .collection<Discount>(`${FirestoreCollections.Discounts}-en`)
+        .doc(code)
+        .get()
+        .pipe(
+          switchMap(value => {
+            if (!value.exists) {
+              return throwError('Invalid discount');
+            }
+
+            const discount = value.data();
+
+            if (!discount.active || (discount.type === 'limited' && discount.limitedNumber <= 0) ||
+              !(discount.startingDate.seconds < Date.now() < discount.endingDate.seconds)) {
+              return throwError('Invalid discount');
+            }
+
+            this.validCode$.next({
+              ...value.data(),
+              id: value.id
+            } as any);
+
+            return of();
+          }),
+          notify({
+            success: 'Discount applied',
+            error: 'Discount is invalid'
+          })
+        );
+    };
   }
 }

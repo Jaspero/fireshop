@@ -26,20 +26,20 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
   limitType = LimitType;
 
   public buildForm(data: any) {
+
+    const startingDate = data.startingDate ? new Date(data.startingDate.seconds * 1000) : '';
+    const endingDate = data.endingDate ? new Date(data.endingDate.seconds * 1000) : '';
+
     this.form = this.fb.group({
-      id: [
-        {value: data.id, disabled: this.currentState === this.viewState.Edit},
-        [Validators.required, Validators.pattern(URL_REGEX)]
-      ],
+      id: [data.id || '', Validators.required],
       name: [data.name || '', Validators.required],
-      code: [data.code || '', Validators.required],
       description: [data.description || ''],
       valueType: [
         data.valueType || this.discountValueType.Percentage,
         Validators.required
       ],
-      startingDate: [data.startingDate || ''],
-      endingDate: [data.endingDate || ''],
+      startingDate: [startingDate],
+      endingDate: [endingDate],
       value: [data.value || ''],
       type: [data.type || ''],
       active: [true, Validators.required],
@@ -48,6 +48,6 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
   }
 
   generate() {
-    this.form.get('code').setValue(nanoid());
+    this.form.get('id').setValue(nanoid());
   }
 }
