@@ -4,9 +4,9 @@ import {
   Inject,
   OnInit
 } from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material';
 import {Color} from '../../../apps/shop/src/app/shared/enums/color.enum';
 import {ConfirmationOptions} from './confirmation-options.interface';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
   selector: 'jfs-confrimation',

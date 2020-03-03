@@ -16,7 +16,6 @@ import {
   FormControl,
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
-import {MatDialog} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {Breakpoint, currentBreakpoint$} from '@jf/consts/breakpoint.const';
 import {ENV_CONFIG} from '@jf/consts/env-config.const';
@@ -25,6 +24,7 @@ import {forkJoin, from, Observable, of} from 'rxjs';
 import {catchError, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {GeneratedImage} from '../../../interfaces/generated-image.interface';
 import {formatGeneratedImages} from '../../../utils/format-generated-images';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'jfsc-gallery-upload',

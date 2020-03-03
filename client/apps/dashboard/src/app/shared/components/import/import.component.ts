@@ -7,9 +7,9 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import {MatDialog, MatSort} from '@angular/material';
 import {notify} from '@jf/utils/notify.operator';
 import {environment} from '../../../../environments/environment';
+import {MatDialog} from '@angular/material/dialog';
 
 interface ImportResponse {
   errors?: any;

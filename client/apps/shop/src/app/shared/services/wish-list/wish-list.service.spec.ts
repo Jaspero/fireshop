@@ -6,7 +6,7 @@ describe('WishListService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: WishListService = TestBed.get(WishListService);
+    const service: WishListService = TestBed.inject(WishListService);
     expect(service).toBeTruthy();
   });
 });

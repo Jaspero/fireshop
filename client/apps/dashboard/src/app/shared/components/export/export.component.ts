@@ -1,11 +1,11 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, Inject} from '@angular/core';
-import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {notify} from '@jf/utils/notify.operator';
 import {saveAs} from 'file-saver';
 import {finalize, takeUntil} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
+import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from '@angular/material/bottom-sheet';
 
 enum ExportType {
   csv = 'csv',

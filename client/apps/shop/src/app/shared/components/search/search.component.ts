@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormControl} from '@angular/forms';
-import {MatDialogRef} from '@angular/material';
 import {Router} from '@angular/router';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
@@ -9,6 +8,7 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Product} from '@jf/interfaces/product.interface';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {debounceTime, map, switchMap, tap} from 'rxjs/operators';
+import {MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'jfs-search',
