@@ -22,6 +22,7 @@ import {Customer} from '@jf/interfaces/customer.interface';
 import {OrderItem} from '@jf/interfaces/order.interface';
 import {Price} from '@jf/interfaces/product.interface';
 import {Shipping} from '@jf/interfaces/shipping.interface';
+import {fromStripeFormat} from '@jf/utils/stripe-format';
 import * as nanoid from 'nanoid';
 import {
   combineLatest,
@@ -208,13 +209,13 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
         if (discount) {
           switch (discount.valueType) {
             case DiscountValueType.Percentage:
-              const deduct = total * (discount.value / 100);
+              const deduct = fromStripeFormat(total * (discount.value / 100));
               this.discount = -deduct;
               total -= deduct;
               break;
             case DiscountValueType.FixedAmount:
-              total = Math.max(0, total - discount.value * 100);
-              this.discount = -discount.value * 100;
+              total = Math.max(0, total - discount.value);
+              this.discount = -discount.value;
               break;
           }
         }
