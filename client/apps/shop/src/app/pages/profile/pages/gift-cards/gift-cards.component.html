@@ -32,8 +32,8 @@
     <form [formGroup]="form">
       <mat-form-field appearance="outline">
         <mat-label>Value</mat-label>
-        <mat-select formControlName="giftCardId">
-          <mat-option [value]="gc.id" *ngFor="let gc of giftCard">
+        <mat-select formControlName="giftCard">
+          <mat-option [value]="{id: gc.id, value: gc.value}" *ngFor="let gc of giftCard">
             {{gc.value}}
           </mat-option>
         </mat-select>
@@ -51,7 +51,7 @@
         <input matInput formControlName="creditCard">
       </mat-form-field>
 
-      <button mat-button (click)="buy()">
+      <button mat-button [jpLoadClick]="buy()">
         Buy
       </button>
 

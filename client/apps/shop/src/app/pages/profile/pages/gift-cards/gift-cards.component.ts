@@ -13,6 +13,7 @@ import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {GiftCard} from '@jf/interfaces/gift-card.interface';
 import {notify} from '@jf/utils/notify.operator';
+import {toStripeFormat} from '@jf/utils/stripe-format';
 import * as nanoid from 'nanoid';
 import {from, Observable} from 'rxjs';
 import {filter, map, switchMap} from 'rxjs/operators';
@@ -76,7 +77,7 @@ export class GiftCardsComponent implements OnInit {
 
   buildForm() {
     this.form = this.fb.group({
-      giftCardId: ['', Validators.required],
+      giftCard: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       creditCard: ['', Validators.required]
     });
@@ -95,26 +96,33 @@ export class GiftCardsComponent implements OnInit {
   }
 
   buy() {
-    const formData = this.form.getRawValue();
-    const customerId = this.afAuth.auth.currentUser.uid;
+    return () => {
+      const formData = this.form.getRawValue();
+      formData.giftCard.value = toStripeFormat(formData.giftCard.value);
+      const customerId = this.afAuth.auth.currentUser.uid;
+      console.log(this.code.value);
+      console.log(this.form.getRawValue());
 
-    from(
-      this.afs
-        .collection(FirestoreCollections.GiftCardsInstances)
-        .doc(nanoid())
-        .set({
-          ...formData,
-          customerId
+      return from(
+        this.afs
+          .collection(FirestoreCollections.GiftCardsInstances)
+          .doc(nanoid())
+          .set({
+            ...formData,
+            customerId
+          })
+      ).pipe(
+        notify({
+          success: 'Gift Card successfully bought',
+          error: 'Could not buy Gift Card'
         })
-    )
-      .pipe(notify())
-      .subscribe();
+      );
+    };
   }
 
   apply() {
     const code = this.code.value;
     const customerId = this.afAuth.auth.currentUser.uid;
-
     this.afs
       .collection(FirestoreCollections.GiftCardsInstances)
       .doc(code)
