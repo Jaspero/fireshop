@@ -33,10 +33,10 @@
 
   <!--Language-->
   <ng-container *ngIf="state.language$ | async as language">
-    <button mat-flat-button color="primary" [matMenuTriggerFor]="language">
+    <button mat-flat-button color="primary" [matMenuTriggerFor]="languageMenu">
       {{languageName$ | async}}
     </button>
-    <mat-menu #language="matMenu">
+    <mat-menu #languageMenu="matMenu">
       <button mat-menu-item *ngFor="let lang of languages" (click)="changeLanguage(lang.value)">
         <mat-icon *ngIf="language === lang.value">done</mat-icon>
         <span>{{lang.label}}</span>

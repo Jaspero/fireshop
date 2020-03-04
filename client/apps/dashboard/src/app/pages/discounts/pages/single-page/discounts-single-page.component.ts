@@ -3,6 +3,9 @@ import {Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import * as nanoid from 'nanoid';
+import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format';
+import {switchMap, take, tap} from 'rxjs/operators';
+import {notify} from '@jf/utils/notify.operator';
 
 export enum DiscountValueType {
   FixedAmount = 'fixedAmount',
@@ -43,7 +46,7 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
       ],
       startingDate: [startingDate],
       endingDate: [endingDate],
-      value: [data.value || ''],
+      value: [fromStripeFormat(data.value) || ''],
       type: [data.type || ''],
       active: [true, Validators.required],
       limitedNumber: [data.limitedNumber || '']
@@ -52,5 +55,22 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
 
   generate() {
     this.form.get('id').setValue(nanoid());
+  }
+
+  save() {
+    return () => {
+      const {id, ...item} = this.form.getRawValue();
+      item.value = toStripeFormat(item.value);
+      this.initialValue = this.form.getRawValue();
+      delete this.initialValue.id;
+      return this.state.language$.pipe(
+        take(1),
+        switchMap(lang => this.getSaveData(id, item, lang)),
+        notify(),
+        tap(() => {
+          this.back();
+        })
+      );
+    };
   }
 }
