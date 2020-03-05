@@ -5,7 +5,7 @@
       <ng-container *ngIf="giftCardsInstances$ | async as giftCardInstances">
         <div *ngFor="let gCrdInst of giftCardInstances">
           <mat-card>
-            <p>{{gCrdInst.giftCardId}}</p>
+            <p>{{gCrdInst.code}}</p>
           </mat-card>
         </div>
       </ng-container>
@@ -32,9 +32,9 @@
     <form [formGroup]="form">
       <mat-form-field appearance="outline">
         <mat-label>Value</mat-label>
-        <mat-select formControlName="giftCard">
-          <mat-option [value]="{id: gc.id, value: gc.value}" *ngFor="let gc of giftCard">
-            {{gc.value}}
+        <mat-select formControlName="parentGiftCard">
+          <mat-option [value]="gc.id" *ngFor="let gc of giftCard | orderByValue">
+            {{gc.value | sp}}
           </mat-option>
         </mat-select>
       </mat-form-field>
