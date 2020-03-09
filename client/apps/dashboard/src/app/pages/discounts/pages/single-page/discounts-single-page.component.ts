@@ -3,6 +3,7 @@ import {Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
 import * as nanoid from 'nanoid';
+import {fromStripeFormat} from '@jf/utils/stripe-format';
 
 export enum DiscountValueType {
   FixedAmount = 'fixedAmount',
@@ -43,7 +44,7 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
       ],
       startingDate: [startingDate],
       endingDate: [endingDate],
-      value: [data.value || ''],
+      value: [fromStripeFormat(data.value) || ''],
       type: [data.type || ''],
       active: [true, Validators.required],
       limitedNumber: [data.limitedNumber || '']

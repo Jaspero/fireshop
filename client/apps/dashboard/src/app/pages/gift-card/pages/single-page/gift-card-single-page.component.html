@@ -48,11 +48,22 @@
               <div class="p-y-xs">
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Value</mat-label>
-                  <mat-select formControlName="value">
-                    <mat-option *ngFor="let val of values" [value]="val">
-                      {{val}}
-                    </mat-option>
-                  </mat-select>
+                  <span matPrefix>{{objectCurrencies[form.getRawValue().currency]}}&nbsp;</span>
+<!--                                    <span matPrefix>$&nbsp;</span>-->
+                  <input placeholder="" type="number" matInput formControlName="value">
+<!--                  <mat-select formControlName="value">-->
+<!--                    <mat-option *ngFor="let val of values" [value]="val">-->
+<!--                      {{val}}-->
+<!--                    </mat-option>-->
+<!--                  </mat-select>-->
+                </mat-form-field>
+                <mat-form-field class="w-full" appearance="outline">
+                  <mat-label>Currency</mat-label>
+                                    <mat-select formControlName="currency" (valueChange)="updateValues()">
+                                      <mat-option *ngFor="let currency of currencies" [value]="currency.value">
+                                        {{currency.value}} ({{currency.symbol}})
+                                      </mat-option>
+                                    </mat-select>
                 </mat-form-field>
               </div>
             </mat-card>
