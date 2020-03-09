@@ -5,7 +5,7 @@ import {SinglePageComponent} from '../../../../shared/components/single-page/sin
 import * as nanoid from 'nanoid';
 import {notify} from '@jf/utils/notify.operator';
 import {tap} from 'rxjs/operators';
-import {toStripeFormat} from '@jf/utils/stripe-format';
+import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format';
 import {CURRENCIES} from '../../../../shared/const/currency.const';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 
@@ -19,14 +19,8 @@ export class GiftCardSinglePageComponent extends SinglePageComponent {
   collection = FirestoreCollections.GiftCards;
   currencies = CURRENCIES;
   objectCurrencies = this.convertCurrencies(this.currencies);
-  // values = [10, 25, 50, 100, 200];
 
   buildForm(data) {
-    console.log(this.objectCurrencies);
-    console.log({
-      value: DYNAMIC_CONFIG.currency.primary,
-      symbol: this.objectCurrencies[DYNAMIC_CONFIG.currency.primary]
-    });
     this.form = this.fb.group({
       id: [nanoid(), Validators.required],
       value: [data.value || '0', [Validators.required, Validators.min(0)]],
@@ -36,24 +30,22 @@ export class GiftCardSinglePageComponent extends SinglePageComponent {
       ],
       values: [data.values || '{}']
     });
+
+    this.form.get('currency').valueChanges.subscribe(currentCurrency => {
+      const values = JSON.parse(this.form.controls['values'].value);
+      this.form.controls['value'].setValue(
+        fromStripeFormat(values[currentCurrency] || 0)
+      );
+    });
   }
 
   updateValues() {
-    // console.log(this.form.get('currency').value);
     const lastInputValue = this.form.get('value').value;
     const lastCurrency = this.form.get('currency').value;
-    // console.log('last currency', lastCurrency);
     const values = JSON.parse(this.form.get('values').value);
 
-    values[lastCurrency] = lastInputValue;
+    values[lastCurrency] = toStripeFormat(lastInputValue);
     this.form.controls['values'].setValue(JSON.stringify(values));
-
-    console.log(values);
-
-    // this.form.controls['value'].setValue(values[])
-    // console.log(lastInputValue, lastCurrency);
-    // this.form.getRawValue()
-    // this.form.controls['value'].setValue(this.form.get(''));
   }
 
   convertCurrencies(arr: any[]) {
@@ -67,10 +59,14 @@ export class GiftCardSinglePageComponent extends SinglePageComponent {
 
   save() {
     return () => {
+      this.updateValues();
       const {id, ...item} = this.form.getRawValue();
+      item.values = JSON.parse(item.values);
+
       item.value = toStripeFormat(item.value);
       this.initialValue = this.form.getRawValue();
       delete this.initialValue.id;
+      delete item.currency;
       return this.getSaveData(id, item).pipe(
         notify(),
         tap(() => {
