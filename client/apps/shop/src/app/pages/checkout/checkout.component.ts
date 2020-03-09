@@ -192,7 +192,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
             giftCard: giftCard
               ? {
                   code: giftCard.code,
-                  useValue: toStripeFormat(this.giftCardValue.value)
+                  useValue: toStripeFormat(this.giftCardValue.value),
+                  currency: DYNAMIC_CONFIG.currency.primary
                 }
               : null
           }

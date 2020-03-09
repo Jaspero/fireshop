@@ -255,7 +255,9 @@ app.post('/checkout', (req, res) => {
           .get();
         const giftCardId = giftCardSnap.docs[0].id;
 
-        const newGiftCardValue = giftCard.value - req.body.giftCard.useValue;
+        const newGiftCardValue =
+          (giftCard.value || giftCard.values[giftCard.currency]) -
+          req.body.giftCard.useValue;
         await fs
           .collection('gift-cards-instances')
           .doc(giftCardId)

@@ -104,6 +104,7 @@ export class GiftCardsComponent implements OnInit {
       const formData = this.form.getRawValue();
       formData.code = this.randomGiftCardId();
       formData.values = {};
+      formData.currency = DYNAMIC_CONFIG.currency.primary;
       const customerId = this.afAuth.auth.currentUser.uid;
 
       return from(

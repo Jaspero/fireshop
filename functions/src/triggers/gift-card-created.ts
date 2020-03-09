@@ -13,9 +13,10 @@ export const giftCardCreated = functions.firestore
     const parentGiftCardRef = await firestore()
       .doc(`gift-cards/${parentGiftCardId}`)
       .get();
+    const currency = (parentGiftCardRef.data() || {}).currency;
     const values = (parentGiftCardRef.data() || {}).values;
 
-    await giftCard.ref.set({values}, {merge: true});
+    await giftCard.ref.set({value: values[currency]}, {merge: true});
 
     await parseEmail(
       giftCardData.email,
