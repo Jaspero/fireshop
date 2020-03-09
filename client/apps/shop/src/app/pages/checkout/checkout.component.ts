@@ -109,11 +109,11 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   termsControl = new FormControl(false);
   elementType = ElementType;
 
-  code = new FormControl('');
+  code = new FormControl('', Validators.required);
   discount = 0;
   validCode$ = new BehaviorSubject<Discount>(null);
 
-  giftCardCode = new FormControl('');
+  giftCardCode = new FormControl('', Validators.required);
   giftCardValue = new FormControl(0);
   validGiftCard$ = new BehaviorSubject(null);
 
@@ -505,8 +505,12 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
 
             const giftCard = snap[0].data();
 
-            this.giftCardSliderMax = fromStripeFormat(giftCard.value);
-            this.giftCardValue.setValue(fromStripeFormat(giftCard.value));
+            this.giftCardSliderMax = fromStripeFormat(
+              giftCard.values[DYNAMIC_CONFIG.currency.primary]
+            );
+            this.giftCardValue.setValue(
+              fromStripeFormat(giftCard.values[DYNAMIC_CONFIG.currency.primary])
+            );
             this.validGiftCard$.next({...giftCard});
 
             return of();

@@ -34,7 +34,7 @@
         <mat-label>Value</mat-label>
         <mat-select formControlName="parentGiftCard">
           <mat-option [value]="gc.id" *ngFor="let gc of giftCard | orderByValue">
-            {{gc.value | sp}}
+            {{gc.values[dynamicConfig.currency.primary] | sp}}
           </mat-option>
         </mat-select>
       </mat-form-field>

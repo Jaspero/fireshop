@@ -15,10 +15,10 @@
         <div class="flex ai-center jc-between">
           <h5>{{form.get('name').value}}</h5>
           <div>
-            <button mat-icon-button aria-label="Previous gift-card" matTooltip="Previous gift-card" (click)="move(false, form)">
+            <button mat-icon-button aria-label="Previous gift-card" matTooltip="Previous gift-card"> <!-- (click)="move(false, form)" -->
               <mat-icon>arrow_back</mat-icon>
             </button>
-            <button mat-icon-button aria-label="Next gift-card" matTooltip="Next gift-card" (click)="move(true, form)">
+            <button mat-icon-button aria-label="Next gift-card" matTooltip="Next gift-card"> <!-- (click)="move(true, form)" -->
               <mat-icon>arrow_forward</mat-icon>
             </button>
           </div>
@@ -49,13 +49,7 @@
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Value</mat-label>
                   <span matPrefix>{{objectCurrencies[form.getRawValue().currency]}}&nbsp;</span>
-<!--                                    <span matPrefix>$&nbsp;</span>-->
                   <input placeholder="" type="number" matInput formControlName="value">
-<!--                  <mat-select formControlName="value">-->
-<!--                    <mat-option *ngFor="let val of values" [value]="val">-->
-<!--                      {{val}}-->
-<!--                    </mat-option>-->
-<!--                  </mat-select>-->
                 </mat-form-field>
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Currency</mat-label>

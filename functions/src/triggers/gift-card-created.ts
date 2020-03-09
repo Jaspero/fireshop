@@ -13,16 +13,16 @@ export const giftCardCreated = functions.firestore
     const parentGiftCardRef = await firestore()
       .doc(`gift-cards/${parentGiftCardId}`)
       .get();
-    const value = (parentGiftCardRef.data() || {}).value;
+    const values = (parentGiftCardRef.data() || {}).values;
 
-    await giftCard.ref.set({value}, {merge: true});
+    await giftCard.ref.set({values}, {merge: true});
 
     await parseEmail(
       giftCardData.email,
       'Jaspero Fireshop - Gift Card',
       'gift-card-success',
       {
-        value: value / 100,
+        value: values['GBP'] / 100,
         code: giftCardData.code
       }
     );

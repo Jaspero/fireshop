@@ -9,6 +9,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
+import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {GiftCard} from '@jf/interfaces/gift-card.interface';
@@ -43,6 +44,8 @@ export class GiftCardsComponent implements OnInit {
   giftCardsInstances$: Observable<any>;
   form: FormGroup;
   code: FormControl;
+
+  dynamicConfig = DYNAMIC_CONFIG;
 
   ngOnInit() {
     this.giftCards$ = this.afs
@@ -100,7 +103,7 @@ export class GiftCardsComponent implements OnInit {
     return () => {
       const formData = this.form.getRawValue();
       formData.code = this.randomGiftCardId();
-      formData.value = 0;
+      formData.values = {};
       const customerId = this.afAuth.auth.currentUser.uid;
 
       return from(
