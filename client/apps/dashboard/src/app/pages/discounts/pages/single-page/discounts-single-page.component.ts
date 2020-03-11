@@ -35,10 +35,10 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
   public buildForm(data: any) {
     const startingDate = data.startingDate
       ? new Date(data.startingDate.seconds * 1000)
-      : new Date(Date.now());
+      : new Date();
     const endingDate = data.endingDate
       ? new Date(data.endingDate.seconds * 1000)
-      : new Date(Date.now());
+      : new Date();
 
     this.form = this.fb.group({
       id: [data.id || '', Validators.required],
