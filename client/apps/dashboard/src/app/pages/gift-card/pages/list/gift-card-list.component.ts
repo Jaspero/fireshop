@@ -10,6 +10,6 @@ import {ListComponent} from '../../../../shared/components/list/list.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GiftCardListComponent extends ListComponent<GiftCard> {
-  displayedColumns = ['checkBox', 'id', 'value', 'actions'];
+  displayedColumns = ['checkBox', 'id', 'actions'];
   collection = FirestoreCollections.GiftCards;
 }

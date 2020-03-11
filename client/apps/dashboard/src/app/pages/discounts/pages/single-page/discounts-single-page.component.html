@@ -15,10 +15,10 @@
         <div class="flex ai-center jc-between">
           <h5>{{form.get('name').value}}</h5>
           <div>
-            <button mat-icon-button aria-label="Previous discount" matTooltip="Previous discount" (click)="move(false, form)">
+            <button mat-icon-button aria-label="Previous discount" matTooltip="Previous discount"> <!-- (click)="move(false, form)" -->
               <mat-icon>arrow_back</mat-icon>
             </button>
-            <button mat-icon-button aria-label="Next discount" matTooltip="Next discount" (click)="move(true, form)">
+            <button mat-icon-button aria-label="Next discount" matTooltip="Next discount"> <!-- (click)="move(true, form)" -->
               <mat-icon>arrow_forward</mat-icon>
             </button>
           </div>
@@ -51,7 +51,7 @@
               </div>
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Code</mat-label>
-                  <input matInput formControlName="id">
+                  <input matInput formControlName="id" spellcheck="false">
                   <mat-icon class="cs-pointer" matSuffix (click)="generate()">refresh</mat-icon>
                 </mat-form-field>
               <mat-form-field class="w-full" appearance="outline">
@@ -60,19 +60,37 @@
               </mat-form-field>
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Description</mat-label>
-                <textarea matInput  formControlName="description"></textarea>
+                <textarea matInput formControlName="description"></textarea>
               </mat-form-field>
               <mat-form-field class="w-full" appearance="outline">
-                <mat-label>Discount value</mat-label>
+                <mat-label>Discount Type</mat-label>
                 <mat-select formControlName="valueType">
                   <mat-option *ngFor="let option of discountValueType | keyvalue" [value]="option.value">
                     {{option.key}}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-              <ng-container class="w-full" appearance="outline">
+
+              <ng-container *ngIf="form.get('valueType').value === discountValueType.FixedAmount">
                 <mat-form-field class="w-full" appearance="outline">
-                  <mat-label>{{form.get('valueType').value === discountValueType.Percentage ? 'Percentage value' : 'Fixed value'}}</mat-label>
+                  <mat-label>Currency</mat-label>
+                  <mat-select formControlName="currency" (valueChange)="updateValues()">
+                    <mat-option *ngFor="let currency of currencies" [value]="currency.value">
+                      {{currency.value}} ({{currency.symbol}})
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field class="w-full" appearance="outline">
+                  <mat-label>Value</mat-label>
+                  <span matPrefix>{{objectCurrencies[form.getRawValue().currency]}}&nbsp;</span>
+                  <input placeholder="" type="number" matInput formControlName="value">
+                </mat-form-field>
+              </ng-container>
+
+              <ng-container class="w-full" appearance="outline" *ngIf="form.get('valueType').value === discountValueType.Percentage">
+                <mat-form-field class="w-full" appearance="outline">
+                  <mat-label>Percentage Value</mat-label>
+                  <span matPrefix>%&nbsp;</span>
                   <input matInput type="number" formControlName="value">
                 </mat-form-field>
               </ng-container>

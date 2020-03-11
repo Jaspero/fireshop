@@ -56,7 +56,6 @@ import {StateService} from '../../shared/services/state/state.service';
 import {Discount} from '@jf/interfaces/discount.interface';
 import {notify} from '@jf/utils/notify.operator';
 import {DiscountValueType} from '../../../../../dashboard/src/app/pages/discounts/pages/single-page/discounts-single-page.component';
-import {fromStripeFormat} from '@jf/utils/stripe-format';
 import {StripePipe} from '@jf/pipes/stripe.pipe';
 
 interface Item extends OrderItem {
@@ -230,8 +229,11 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
               total -= deduct;
               break;
             case DiscountValueType.FixedAmount:
-              total = Math.max(0, total - discount.value);
-              this.discount = -discount.value;
+              total = Math.max(
+                0,
+                total - discount.values[DYNAMIC_CONFIG.currency.primary]
+              );
+              this.discount = -discount.values[DYNAMIC_CONFIG.currency.primary];
               break;
           }
         }
