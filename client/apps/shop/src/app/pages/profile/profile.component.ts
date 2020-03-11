@@ -12,6 +12,7 @@ import {Router} from '@angular/router';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {BehaviorSubject, from, Observable} from 'rxjs';
 import {map, switchMap, take} from 'rxjs/operators';
+import {customer} from '../../../../../../../functions/src/consts/schemas.const';
 import {StateService} from '../../shared/services/state/state.service';
 
 @Component({
@@ -72,9 +73,10 @@ export class ProfileComponent implements OnInit {
     }
 
     this.downloadURL$ = this.state.user$.pipe(
-      map(
-        ({customerData}) =>
-          customerData.profileImage || 'assets/images/profile-placeholder.svg'
+      map(({customerData}) =>
+        customerData
+          ? customerData.profileImage
+          : 'assets/images/profile-placeholder.svg'
       )
     );
 

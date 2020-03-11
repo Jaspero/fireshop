@@ -30,11 +30,15 @@ export class SearchComponent implements OnInit {
   ngOnInit() {
     this.search = new FormControl('');
 
+    this.search.valueChanges.subscribe(data =>
+      this.loading$.next(data.trim() !== '')
+    );
+
     this.products$ = this.search.valueChanges.pipe(
       debounceTime(300),
       switchMap(value => {
         if (value) {
-          this.loading$.next(true);
+          this.loading$.next(false);
 
           return this.afs
             .collection<Product>(
@@ -47,7 +51,7 @@ export class SearchComponent implements OnInit {
                 );
               }
             )
-            .valueChanges('id');
+            .valueChanges({idField: 'id'});
         } else {
           return of([]);
         }

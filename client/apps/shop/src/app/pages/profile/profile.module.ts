@@ -12,6 +12,7 @@ import {WishListComponent} from './pages/wish-list/wish-list.component';
 import {ProfileComponent} from './profile.component';
 import {AngularFireStorageModule} from '@angular/fire/storage';
 import {GiftCardsComponent} from './pages/gift-cards/gift-cards.component';
+import {AngularFireFunctionsModule} from '@angular/fire/functions';
 
 const ENTRY_COMPONENTS = [DeleteUserComponent];
 
@@ -28,6 +29,7 @@ const ENTRY_COMPONENTS = [DeleteUserComponent];
   ],
   imports: [
     AngularFireStorageModule,
+    AngularFireFunctionsModule,
     SharedModule,
     RouterModule.forChild([
       {

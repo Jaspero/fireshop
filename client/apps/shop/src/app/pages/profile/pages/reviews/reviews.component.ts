@@ -46,7 +46,7 @@ export class ReviewsComponent extends RxDestroy implements OnInit {
     this.afs
       .collection<Review>(FirestoreCollections.Reviews, ref => {
         return ref.where(
-          'customerId',
+          'customerInfo.id',
           FirebaseOperator.Equal,
           this.afAuth.auth.currentUser.uid
         );

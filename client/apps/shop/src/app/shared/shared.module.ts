@@ -53,6 +53,7 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatStepperModule} from '@angular/material/stepper';
+import {OrderByValuePipe} from './pipes/orderByValue.pipe';
 
 const MODULES = [
   CommonModule,
@@ -121,11 +122,11 @@ const COMPONENTS = [
   ...ENTRY_COMPONENTS
 ];
 const DIRECTIVES = [LibraryImageDirective];
-const PIPES = [StripePipe];
+const PIPES = [StripePipe, OrderByValuePipe];
 
 @NgModule({
   declarations: [...COMPONENTS, ...DIRECTIVES, ...PIPES],
   imports: [...MODULES],
-  exports: [...MODULES, ...COMPONENTS, ...DIRECTIVES, ...PIPES],
+  exports: [...MODULES, ...COMPONENTS, ...DIRECTIVES, ...PIPES]
 })
 export class SharedModule {}

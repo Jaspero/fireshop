@@ -8,6 +8,7 @@ import {
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {RxDestroy} from '@jaspero/ng-helpers';
+import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {LoadState} from '@jf/enums/load-state.enum';
@@ -36,6 +37,7 @@ export class OrdersComponent extends RxDestroy implements OnInit {
     super();
   }
 
+  primaryCurrency = DYNAMIC_CONFIG.currency.primary;
   dataState = LoadState;
   state$ = new BehaviorSubject<{
     state: LoadState;
@@ -54,7 +56,7 @@ export class OrdersComponent extends RxDestroy implements OnInit {
           this.afAuth.auth.currentUser.uid
         );
       })
-      .valueChanges()
+      .valueChanges({idField: 'id'})
       .pipe(takeUntil(this.destroyed$))
       .subscribe(value => {
         this.state$.next({
@@ -66,16 +68,16 @@ export class OrdersComponent extends RxDestroy implements OnInit {
       });
   }
 
-  submitReview(item) {
+  submitReview(order, index) {
     this.dialog.open(ReviewsDialogComponent, {
       width: '500px',
       data: {
         customerInfo: {
-          id: item.customerId,
-          name: item.fullName
+          id: order.customerId,
+          name: order.customerName
         },
-        orderId: item.orderId,
-        productId: item.identifier
+        orderId: order.id,
+        productId: order.orderItems[index]
       }
     });
   }

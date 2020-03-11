@@ -10,4 +10,5 @@ export interface Discount {
   active: boolean;
   limitedNumber: number;
   value: number;
+  values: object;
 }

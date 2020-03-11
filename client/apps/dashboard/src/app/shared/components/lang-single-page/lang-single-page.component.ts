@@ -75,6 +75,20 @@ export class LangSinglePageComponent extends SinglePageComponent
         this.cdr.detectChanges();
       });
   }
+  getSaveData(...args) {
+    const [id, item, lang] = args;
+
+    return from(
+      this.afs
+        .collection(`${this.collection}-${lang}`)
+        .doc(id || this.createId())
+        .set({
+          ...item,
+          createdOn: this.createdOn
+        })
+    );
+  }
+
   save() {
     return () => {
       const {id, ...item} = this.form.getRawValue();
@@ -89,20 +103,6 @@ export class LangSinglePageComponent extends SinglePageComponent
         })
       );
     };
-  }
-
-  getSaveData(...args) {
-    const [id, item, lang] = args;
-
-    return from(
-      this.afs
-        .collection(`${this.collection}-${lang}`)
-        .doc(id || this.createId())
-        .set({
-          ...item,
-          createdOn: this.createdOn
-        })
-    );
   }
 
   buildForm(data: any) {}

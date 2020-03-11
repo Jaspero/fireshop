@@ -14,6 +14,7 @@ export {fileCreated} from './triggers/file-created';
 export {fileDeleted} from './triggers/file-deleted';
 export {customerDeleted} from './triggers/customer-deleted';
 export {documentDeleted} from './triggers/document-deleted';
+export {giftCardCreated} from './triggers/gift-card-created';
 
 // Rest
 export {exportData} from './rest/export-data';

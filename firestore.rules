@@ -45,6 +45,21 @@ service cloud.firestore {
       allow write: if write();
     }
 
+    match /gift-cards/{document=**} {
+  	  allow read: if readOrWrite();
+  	  allow write: if write();
+    }
+
+    match /gift-cards-instances/{document=**} {
+  	  allow read: if readOrWrite();
+  	  allow write: if write();
+    }
+
+    match /reviews/{document=**} {
+  	  allow read: if readOrWrite();
+  	  allow write: if write();
+    }
+
     match /orders/{order} {
       allow read: if readOrWrite() || resource.data.customerId == request.auth.uid;
       allow write: if write() || resource.data.customerId == request.auth.uid;
@@ -56,9 +71,9 @@ service cloud.firestore {
       allow read, list, update, delete: if write() || resource.id == request.auth.uid;
     }
 
-    match /reviews/{review} {
-      allow read: if true;
-      allow write, delete: if resource.data.customerId == request.auth.uid;
-    }
+    // match /reviews/{review} {
+    //   allow read: if true;
+    //   allow write, delete: if resource.data.customerId == request.auth.uid;
+    // }
   }
 }
