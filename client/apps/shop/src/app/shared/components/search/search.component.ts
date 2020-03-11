@@ -55,9 +55,6 @@ export class SearchComponent implements OnInit {
         } else {
           return of([]);
         }
-      }),
-      tap(() => {
-        return true;
       })
     );
   }
