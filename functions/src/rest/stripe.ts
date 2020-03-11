@@ -403,7 +403,7 @@ app.post('/webhook', async (req, res) => {
 
   switch (event['type']) {
     case 'payment_intent.succeeded':
-      if (order.status === 'payed') {
+      if (order.status === 'paid') {
         res.sendStatus(HttpStatus.Ok);
         return;
       }
@@ -463,7 +463,7 @@ app.post('/webhook', async (req, res) => {
           .doc(order.id)
           .set(
             {
-              status: 'payed'
+              status: 'paid'
             },
             {merge: true}
           ),
