@@ -121,9 +121,11 @@ export class AppComponent implements OnInit {
      * If we're currently on a route marked private
      * navigate to the home screen
      */
-    if (data.private) {
-      this.router.navigate(['/']);
-    }
+    // if (data.private) {
+    //   this.router.navigate(['/']);
+    // }
+
+    this.router.navigate(['/']);
 
     this.afAuth.auth.signOut();
   }
