@@ -54,7 +54,7 @@ export class ProductsListComponent extends LangListComponent<Product>
       .collection<Category>(
         `${FirestoreCollections.Categories}-${STATIC_CONFIG.lang}`
       )
-      .valueChanges('id');
+      .valueChanges({idField: 'id'});
   }
 
   runFilters(ref) {

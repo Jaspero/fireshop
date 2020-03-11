@@ -29,7 +29,6 @@ export class ProductCardComponent implements OnInit {
     public wishList: WishListService
   ) {}
 
-  // TODO: @onChange is broken. Strangely it links all the product-cards together
   @OnChange(function() {
     this.connectProperties();
   })

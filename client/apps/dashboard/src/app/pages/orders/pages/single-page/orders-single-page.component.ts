@@ -37,7 +37,7 @@ export class OrdersSinglePageComponent extends SinglePageComponent
 
     this.product$ = this.afs
       .collection<Product>(`${FirestoreCollections.Products}-en`)
-      .valueChanges('id');
+      .valueChanges({idField: 'id'});
 
     this.filteredProducts$ = combineLatest([
       this.product$,

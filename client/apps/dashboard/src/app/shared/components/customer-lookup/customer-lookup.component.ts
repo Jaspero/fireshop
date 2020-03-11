@@ -41,7 +41,7 @@ export class CustomerLookupComponent implements OnInit, ControlValueAccessor {
   ngOnInit() {
     this.customers$ = this.afs
       .collection<Customer>(FirestoreCollections.Customers)
-      .valueChanges('id');
+      .valueChanges({idField: 'id'});
 
     this.filteredCustomers$ = combineLatest([
       this.customers$,

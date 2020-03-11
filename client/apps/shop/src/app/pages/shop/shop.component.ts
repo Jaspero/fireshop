@@ -1,14 +1,9 @@
 import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  TemplateRef,
-  ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
@@ -16,19 +11,9 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {Product} from '@jf/interfaces/product.interface';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {
-  debounceTime,
-  filter,
-  map,
-  scan,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap
-} from 'rxjs/operators';
+import {debounceTime, filter, map, scan, startWith, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {StateService} from '../../shared/services/state/state.service';
-import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'jfs-products',
@@ -96,7 +81,7 @@ export class ShopComponent extends RxDestroy implements OnInit {
   ];
   chipArray = [];
   priceLimit: number;
-  categories: any;
+  categories$: Observable<Category[]>;
 
   ngOnInit() {
     this.filters = this.fb.group({
@@ -114,12 +99,12 @@ export class ShopComponent extends RxDestroy implements OnInit {
         this.loadMore$.next(true);
       });
 
-    this.afs
+    this.categories$ = this.afs
       .collection<Category>(
         `${FirestoreCollections.Categories}-${STATIC_CONFIG.lang}`,
         ref => ref.orderBy('order', 'asc')
       )
-      .valueChanges('id');
+      .valueChanges({idField: 'id'});
 
     this.products$ = this.filters.valueChanges.pipe(
       startWith(this.filters.getRawValue()),
@@ -127,6 +112,9 @@ export class ShopComponent extends RxDestroy implements OnInit {
         this.hasMore$.next(true);
 
         this.cursor = null;
+        window.scroll(0, 0);
+        this.viewPort.setRenderedRange({start: 0, end: 0});
+        this.viewPort.checkViewportSize();
 
         return this.loadMore$.pipe(
           debounceTime(300),

@@ -74,7 +74,7 @@
       <mat-form-field class="w-full m-b-xs">
         <mat-select placeholder="Category" formControlName="category">
           <mat-option
-            *ngFor="let category of categories"
+            *ngFor="let category of categories$ | async"
             [value]="category">
             {{category.name}}
           </mat-option>
@@ -84,7 +84,7 @@
 
     <div mat-dialog-actions>
       <div class="ta-right w-full">
-        <button mat-button (click)="resetAll()">Reset all</button>&nbsp;
+        <button mat-button (click)="filters.reset()">Reset all</button>&nbsp;
         <button id="btn-cont-shop" mat-flat-button mat-dialog-close color="primary">
           Continue shopping
         </button>
