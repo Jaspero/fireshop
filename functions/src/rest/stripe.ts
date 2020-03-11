@@ -155,7 +155,8 @@ app.post('/checkout', (req, res) => {
       shipping,
       generalSettings,
       stripeCustomer,
-      discount
+      discount,
+      giftCard
     ]: any = await Promise.all([
       ...['currency', 'shipping', 'general-settings'].map(key =>
         fs
@@ -177,6 +178,13 @@ app.post('/checkout', (req, res) => {
             .collection(`discounts-${req.body.lang}`)
             .doc(req.body.code)
             .get()
+        : Promise.resolve(null),
+
+      req.body.giftCard
+        ? fs
+            .collection('gift-cards-instances')
+            .where('code', '==', req.body.giftCard.code)
+            .get()
         : Promise.resolve(null)
     ]);
 
@@ -185,6 +193,10 @@ app.post('/checkout', (req, res) => {
 
     if (discount && discount.exists) {
       discount = discount.data();
+    }
+
+    if (giftCard) {
+      giftCard = giftCard.docs[0].data();
     }
 
     const shippingData = shipping.exists ? shipping.data() : {};
@@ -232,6 +244,26 @@ app.post('/checkout', (req, res) => {
         case 'fixedAmount':
           amount = Math.max(0, amount - discount.value);
           break;
+      }
+    }
+
+    if (giftCard) {
+      if (req.body.giftCard.useValue <= giftCard.value) {
+        const giftCardSnap = await fs
+          .collection('gift-cards-instances')
+          .where('code', '==', giftCard.code)
+          .get();
+        const giftCardId = giftCardSnap.docs[0].id;
+
+        const newGiftCardValue =
+          (giftCard.value || giftCard.values[giftCard.currency]) -
+          req.body.giftCard.useValue;
+        await fs
+          .collection('gift-cards-instances')
+          .doc(giftCardId)
+          .set({value: newGiftCardValue}, {merge: true});
+
+        amount = Math.max(0, amount - req.body.giftCard.useValue);
       }
     }
 

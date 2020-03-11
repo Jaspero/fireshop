@@ -30,7 +30,7 @@ export class GiftCardOverviewComponent implements OnInit {
           .snapshotChanges()
           .pipe(
             map(actions =>
-              actions.map(action => ({
+              actions.map((action: any) => ({
                 id: action.payload.doc.id,
                 ...action.payload.doc.data()
               }))

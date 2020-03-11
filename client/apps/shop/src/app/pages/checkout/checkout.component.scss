@@ -19,6 +19,28 @@
   padding: 0;
 }
 
+:host::ng-deep .mat-slider-thumb-label {
+  transform: rotate(45deg) !important;
+  border-radius: 50% 50% 0 !important;
+}
+
+:host::ng-deep .mat-slider-thumb {
+  transform: scale(0) !important;
+}
+
+:host::ng-deep .mat-slider-thumb-label-text {
+  background-color: var(--accent);
+  opacity: 1 !important;
+  border-radius: 999px;
+  line-height: 28px;
+  padding: 0 8px;
+}
+
 :host .grid > [class*='col'] {
   padding-right: 10px;
+}
+
+.w-90 {
+  width: 90%;
+  margin-left: 5%;
 }

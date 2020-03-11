@@ -52,7 +52,10 @@ const routes: Routes = [
       },
       {
         path: 'gift-cards',
-        loadChildren: './pages/gift-card/gift-cards.module#GiftCardsModule'
+        loadChildren: () =>
+          import('./pages/gift-card/gift-cards.module').then(
+            mod => mod.GiftCardsModule
+          )
       },
       {
         path: 'reviews',

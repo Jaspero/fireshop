@@ -9,13 +9,15 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
+import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {GiftCard} from '@jf/interfaces/gift-card.interface';
 import {notify} from '@jf/utils/notify.operator';
-import * as nanoid from 'nanoid';
+import nanoid from 'nanoid';
 import {from, Observable} from 'rxjs';
 import {filter, map, switchMap} from 'rxjs/operators';
+import {AngularFireFunctions} from '@angular/fire/functions';
 
 @Component({
   selector: 'jfs-gift-cards',
@@ -26,6 +28,7 @@ import {filter, map, switchMap} from 'rxjs/operators';
 export class GiftCardsComponent implements OnInit {
   constructor(
     private afs: AngularFirestore,
+    public aff: AngularFireFunctions,
     private dialog: MatDialog,
     private fb: FormBuilder,
     private afAuth: AngularFireAuth
@@ -41,6 +44,8 @@ export class GiftCardsComponent implements OnInit {
   giftCardsInstances$: Observable<any>;
   form: FormGroup;
   code: FormControl;
+
+  dynamicConfig = DYNAMIC_CONFIG;
 
   ngOnInit() {
     this.giftCards$ = this.afs
@@ -58,7 +63,7 @@ export class GiftCardsComponent implements OnInit {
     this.giftCardsInstances$ = this.afs
       .collection<any>(FirestoreCollections.GiftCardsInstances, ref =>
         ref.where(
-          'usedBy',
+          'customerId',
           FirebaseOperator.Equal,
           this.afAuth.auth.currentUser.uid
         )
@@ -76,7 +81,7 @@ export class GiftCardsComponent implements OnInit {
 
   buildForm() {
     this.form = this.fb.group({
-      giftCardId: ['', Validators.required],
+      parentGiftCard: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       creditCard: ['', Validators.required]
     });
@@ -95,26 +100,43 @@ export class GiftCardsComponent implements OnInit {
   }
 
   buy() {
-    const formData = this.form.getRawValue();
-    const customerId = this.afAuth.auth.currentUser.uid;
+    return () => {
+      const formData = this.form.getRawValue();
+      formData.code = this.randomGiftCardId();
+      formData.values = {};
+      formData.currency = DYNAMIC_CONFIG.currency.primary;
+      const customerId = this.afAuth.auth.currentUser.uid;
 
-    from(
-      this.afs
-        .collection(FirestoreCollections.GiftCardsInstances)
-        .doc(nanoid())
-        .set({
-          ...formData,
-          customerId
+      return from(
+        this.afs
+          .collection(FirestoreCollections.GiftCardsInstances)
+          .doc(nanoid())
+          .set({
+            ...formData,
+            customerId
+          })
+      ).pipe(
+        notify({
+          success: 'Gift Card successfully bought',
+          error: 'Could not buy Gift Card'
         })
-    )
-      .pipe(notify())
-      .subscribe();
+      );
+    };
+  }
+
+  randomGiftCardId(characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', length = 20) {
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += characters[Math.floor(Math.random() * characters.length)];
+      result += (i + 1) % 4 === 0 && i + 1 !== length ? '-' : '';
+    }
+
+    return result;
   }
 
   apply() {
     const code = this.code.value;
     const customerId = this.afAuth.auth.currentUser.uid;
-
     this.afs
       .collection(FirestoreCollections.GiftCardsInstances)
       .doc(code)
