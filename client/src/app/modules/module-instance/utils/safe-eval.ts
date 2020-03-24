@@ -4,7 +4,9 @@ export function safeEval(method: string) {
   try {
     // tslint:disable-next-line:no-eval
     final = eval(method);
-  } catch (e) {}
+  } catch (e) {
+    console.error('Failed to eval', e)
+  }
 
   return final;
 }
