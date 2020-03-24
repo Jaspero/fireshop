@@ -142,7 +142,7 @@ export class InstanceSingleComponent implements OnInit {
 
                 ['formatOnSave', 'formatOnEdit', 'formatOnCreate'].forEach(it => {
                   if (module.layout.instance[it]) {
-                    const method = safeEval(it);
+                    const method = safeEval(module.layout.instance[it]);
 
                     if (method) {
                       formatOn[it] = method;
