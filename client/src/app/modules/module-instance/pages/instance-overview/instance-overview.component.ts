@@ -142,7 +142,7 @@ export class InstanceOverviewComponent extends RxDestroy
               search ?
                 [{
                   key: module.layout.searchModule.key,
-                  operator: FilterMethod.ArrayContains,
+                  operator: module.layout.searchModule.simple ? FilterMethod.Equal : FilterMethod.ArrayContains,
                   value: search.trim().toLowerCase()
                 }] :
                 filter
