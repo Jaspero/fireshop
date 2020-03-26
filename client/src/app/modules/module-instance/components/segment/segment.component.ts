@@ -84,8 +84,8 @@ export class SegmentComponent<T = any> implements OnInit {
 
     const arrayPointers = this.pointers[this.segment.array].arrayPointers;
 
-    this.arrayFields.push(
-      Object.entries(arrayPointers[arrayPointers.length - 1])
+    this.arrayFields.unshift(
+      Object.entries(arrayPointers[0])
         .map(
           ([key, pointer]) =>
             this.sData.parser.field(

@@ -394,11 +394,11 @@ export class Parser {
       if (loadHooks) {
         this.loadHooks(properties.pointers);
       }
-      target.arrayPointers.push(properties.pointers);
-      control.push(properties.form);
+      target.arrayPointers.unshift(properties.pointers);
+      control.controls.unshift(properties.form);
     } else {
       // TODO: Different SchemaType
-      control.push(new FormControl(''));
+      control.controls.unshift(new FormControl(''));
     }
   }
 
