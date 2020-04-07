@@ -94,7 +94,6 @@ export class ImageUploadComponent implements ControlValueAccessor {
         );
       } else {
         const name = [moduleId, documentId, this.value.name].join('-');
-
         return from(
           this.afs.upload(name, this.value, {
             contentType: this.value.type,

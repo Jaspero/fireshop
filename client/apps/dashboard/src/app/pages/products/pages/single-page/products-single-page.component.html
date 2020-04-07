@@ -23,10 +23,10 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-              <button mat-icon-button aria-label="Previous product" matTooltip="Previous product" (click)="move(false, form)">
+              <button mat-icon-button aria-label="Previous product" matTooltip="Previous product"> <!-- (click)="move(false, form)" -->
                 <mat-icon>arrow_back</mat-icon>
               </button>
-              <button mat-icon-button aria-label="Next product" matTooltip="Next product" (click)="move(true, form)">
+              <button mat-icon-button aria-label="Next product" matTooltip="Next product"> <!-- (click)="move(true, form)" -->
                 <mat-icon>arrow_forward</mat-icon>
               </button>
             </div>
@@ -292,7 +292,7 @@
 
     <button
       mat-flat-button
-      type="submit"
+      type="submit"E
       [disabled]="form.invalid"
       fDisable
       [jpLoadClick]="save()">

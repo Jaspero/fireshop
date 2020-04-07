@@ -24,7 +24,9 @@ import {forkJoin, from, Observable, of} from 'rxjs';
 import {catchError, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {GeneratedImage} from '../../../interfaces/generated-image.interface';
 import {formatGeneratedImages} from '../../../utils/format-generated-images';
-import {MatDialog} from '@angular/material/dialog';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {DomSanitizer} from '@angular/platform-browser';
+import * as nanoid from 'nanoid';
 
 @Component({
   selector: 'jfsc-gallery-upload',
@@ -44,29 +46,28 @@ export class GalleryUploadComponent extends RxDestroy
   static STORAGE_URL =
     'https://firebasestorage.googleapis.com/v0/b/' +
     ENV_CONFIG.firebase.storageBucket;
-
-  constructor(
-    public dialog: MatDialog,
-    private cdr: ChangeDetectorRef,
-    private afs: AngularFireStorage,
-    private http: HttpClient
-  ) {
-    super();
-  }
-
   @ViewChild('urlUploadDialog', {static: true})
   urlUploadDialog: TemplateRef<any>;
-
   @ViewChild('file', {static: true})
   fileEl: ElementRef<HTMLInputElement>;
-
   urlControl = new FormControl('');
   lastFrom: number;
   lastTo: number;
   values = [];
   toRemove = [];
-
   imageWidth$: Observable<number>;
+
+  urlDialog: MatDialogRef<any, any>;
+
+  constructor(
+    public dialog: MatDialog,
+    private cdr: ChangeDetectorRef,
+    private afs: AngularFireStorage,
+    private http: HttpClient,
+    private sanitizer: DomSanitizer
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.imageWidth$ = currentBreakpoint$.pipe(
@@ -108,21 +109,32 @@ export class GalleryUploadComponent extends RxDestroy
   }
 
   addImage() {
-    this.http
-      .get(this.urlControl.value, {
-        withCredentials: false,
-        responseType: 'blob'
-      })
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(res => {
-        const urlCreator = window.URL || window['webkitURL'];
-        this.values.push({
-          data: urlCreator.createObjectURL(res),
-          live: true
-        });
-        this.urlControl.setValue('');
-        this.cdr.detectChanges();
-      });
+    return () => {
+      return this.http
+        .get(this.urlControl.value, {
+          withCredentials: false,
+          responseType: 'blob'
+        })
+        .pipe(
+          takeUntil(this.destroyed$),
+          switchMap(res => {
+            return from(this.afs.upload(`/${nanoid()}`, res)).pipe();
+          }),
+          switchMap(a => {
+            return a.ref.getDownloadURL();
+          }),
+          map(url => {
+            this.values.push({
+              data: url,
+              live: true
+            });
+            this.urlControl.setValue('');
+            this.cdr.detectChanges();
+
+            this.urlDialog.close();
+          })
+        );
+    };
   }
 
   removeImage(index: number, item) {
@@ -161,9 +173,9 @@ export class GalleryUploadComponent extends RxDestroy
     this.fileEl.nativeElement.click();
   }
 
-  filesUploaded(el: HTMLInputElement) {
+  filesUploaded(el: any) {
     forkJoin(
-      Array.from(el.files).map(file =>
+      Array.from(el.files).map((file: any) =>
         readFile(file).pipe(
           map(data => ({
             data,
@@ -198,14 +210,14 @@ export class GalleryUploadComponent extends RxDestroy
     }
 
     return forkJoin([
-      ...this.toRemove.map(file =>
-        from(this.afs.storage.refFromURL(file).delete()).pipe(
+      ...this.toRemove.map(file => {
+        return from(this.afs.storage.refFromURL(file).delete()).pipe(
           /**
            * Dont' fail if files didn't delete
            */
           catchError(() => of([]))
-        )
-      ),
+        );
+      }),
       ...this.values.reduce((acc, cur) => {
         if (!cur.live) {
           const name = [moduleId, documentId, cur.pushToLive.name].join('-');
@@ -239,7 +251,7 @@ export class GalleryUploadComponent extends RxDestroy
   }
 
   openUrlUpload() {
-    this.dialog.open(this.urlUploadDialog, {
+    this.urlDialog = this.dialog.open(this.urlUploadDialog, {
       width: '400px'
     });
   }

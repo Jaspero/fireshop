@@ -78,6 +78,12 @@ export class LangSinglePageComponent extends SinglePageComponent
   getSaveData(...args) {
     const [id, item, lang] = args;
 
+    item.gallery = item.gallery.map(url => {
+      return typeof url === 'string'
+        ? url
+        : url.changingThisBreaksApplicationSecurity;
+    });
+
     return from(
       this.afs
         .collection(`${this.collection}-${lang}`)
