@@ -25,7 +25,6 @@ import {catchError, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {GeneratedImage} from '../../../interfaces/generated-image.interface';
 import {formatGeneratedImages} from '../../../utils/format-generated-images';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {DomSanitizer} from '@angular/platform-browser';
 import * as nanoid from 'nanoid';
 
 @Component({
@@ -57,14 +56,13 @@ export class GalleryUploadComponent extends RxDestroy
   toRemove = [];
   imageWidth$: Observable<number>;
 
-  urlDialog: MatDialogRef<any, any>;
+  urlDialog: MatDialogRef<any>;
 
   constructor(
     public dialog: MatDialog,
     private cdr: ChangeDetectorRef,
     private afs: AngularFireStorage,
-    private http: HttpClient,
-    private sanitizer: DomSanitizer
+    private http: HttpClient
   ) {
     super();
   }
@@ -137,7 +135,8 @@ export class GalleryUploadComponent extends RxDestroy
     };
   }
 
-  removeImage(index: number, item) {
+  removeImage(event, index: number, item) {
+    event.stopPropagation();
     if (item.live && item.data.includes(GalleryUploadComponent.STORAGE_URL)) {
       this.toRemove.push(item.data);
     }

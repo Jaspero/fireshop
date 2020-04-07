@@ -10,8 +10,13 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDialogModule} from '@angular/material/dialog';
 import {LoadClickModule} from '@jaspero/ng-helpers';
+import {DragAndDropDirective} from '../../directives/drag-and-drop/drag-and-drop.directive';
 
-const COMPONENTS = [GalleryUploadComponent, ImageUploadComponent];
+const COMPONENTS = [
+  GalleryUploadComponent,
+  ImageUploadComponent,
+  DragAndDropDirective
+];
 
 @NgModule({
   declarations: [...COMPONENTS],
