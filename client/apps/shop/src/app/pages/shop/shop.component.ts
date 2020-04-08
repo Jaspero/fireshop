@@ -1,5 +1,12 @@
-import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
-import {ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
@@ -10,10 +17,14 @@ import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {Product} from '@jf/interfaces/product.interface';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {debounceTime, filter, map, scan, startWith, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import {debounceTime, map, switchMap, tap} from 'rxjs/operators';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {StateService} from '../../shared/services/state/state.service';
+
+import * as firebase from 'firebase';
+import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
+import FieldPath = firebase.firestore.FieldPath;
 
 @Component({
   selector: 'jfs-products',
@@ -22,32 +33,29 @@ import {StateService} from '../../shared/services/state/state.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShopComponent extends RxDestroy implements OnInit {
-  constructor(
-    public cart: CartService,
-    public dialog: MatDialog,
-    private afAuth: AngularFireAuth,
-    private afs: AngularFirestore,
-    private fb: FormBuilder,
-    private state: StateService
-  ) {
-    super();
-  }
-
   filters: FormGroup;
 
-  @ViewChild(CdkVirtualScrollViewport, {static: true})
-  viewPort: CdkVirtualScrollViewport;
+  @ViewChild('filterDialog', {static: true})
+  filterDialog: TemplateRef<any>;
 
-  @ViewChild('filterDialog', {static: true}) filterDialog: TemplateRef<any>;
+  // .next() anything on this and more products will load
+  loadMore$ = new BehaviorSubject<boolean>(null);
 
-  products$: Observable<Product[]>;
-  loadMore$ = new BehaviorSubject(null);
-  hasMore$ = new BehaviorSubject(true);
+  // With BehaviorSubject no twitches during loading of new products
+  products$ = new BehaviorSubject([]);
 
+  // Last loaded product, so it is easier to tell firestore startAfter with specific field
+  lastProduct: Product = null;
+
+  // When scrolled this close from bottom, load more products
+  loadOffset = 250;
+
+  // Whether there are still products to load from firestore
+  productsLeft = true;
   pageSize = 6;
-  cursor: any = null;
-  orderName = 'Price High - Low';
-  orderList = [
+  limit = 6;
+  orderName = 'Name A - Z';
+  sortByList = [
     {
       name: 'Latest',
       type: 'createdOn',
@@ -82,23 +90,157 @@ export class ShopComponent extends RxDestroy implements OnInit {
   chipArray = [];
   priceLimit: number;
   categories$: Observable<Category[]>;
+  primaryCurrency = DYNAMIC_CONFIG.currency.primary;
+
+  @ViewChild('productList')
+  private productList: ElementRef;
+
+  constructor(
+    public cart: CartService,
+    public dialog: MatDialog,
+    private afAuth: AngularFireAuth,
+    private afs: AngularFirestore,
+    private fb: FormBuilder,
+    private state: StateService
+  ) {
+    super();
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll() {
+    if (
+      window.innerHeight + window.scrollY >=
+      document.body.scrollHeight - this.loadOffset
+    ) {
+      this.loadMore$.next(true);
+    }
+  }
+
+  initProducts() {
+    this.filters.valueChanges
+      .pipe(
+        debounceTime(300),
+        tap(filters => {
+          this.lastProduct = null;
+          this.productsLeft = true;
+          this.products$.next([]);
+          this.loadMore$.next(true);
+        })
+      )
+      .subscribe();
+
+    this.loadMore$
+      .pipe(
+        switchMap(loadMore => {
+          if (!this.productsLeft) {
+            return of([]);
+          }
+
+          const filters = this.filters.getRawValue();
+          return this.afs
+            .collection<Product>(
+              `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}`,
+              ref => {
+                let final = ref.where('active', FirebaseOperator.Equal, true);
+
+                this.chipArray = [];
+
+                if (filters.order && filters.order.name) {
+                  const type =
+                    filters.order.type !== 'price'
+                      ? filters.order.type
+                      : new FieldPath('price', this.primaryCurrency);
+
+                  final = final.orderBy(type, filters.order.direction);
+
+                  if (filters.order.type === 'price') {
+                    final = final.orderBy('name');
+                  }
+                }
+
+                if (filters.category) {
+                  this.chipArray.push({
+                    filter: 'category',
+                    value: filters.category.name
+                  });
+
+                  final = final.where(
+                    'category',
+                    FirebaseOperator.Equal,
+                    filters.category.id
+                  );
+                }
+
+                if (filters.price) {
+                  this.chipArray.push({
+                    filter: 'price',
+                    value: filters.price
+                  });
+
+                  final = final.where(
+                    'price',
+                    FirebaseOperator.LargerThenOrEqual,
+                    filters.price
+                  );
+                }
+
+                final = final.limit(this.limit);
+                if (this.lastProduct) {
+                  if (filters.order.type === 'price') {
+                    final = final.startAfter(
+                      this.lastProduct.price[this.primaryCurrency],
+                      this.lastProduct.name
+                    );
+                  } else {
+                    final = final.startAfter(
+                      this.lastProduct[filters.order.type]
+                    );
+                  }
+                }
+                return final;
+              }
+            )
+            .snapshotChanges()
+            .pipe();
+        }),
+        map(actions => {
+          if (actions.length === 0) return [];
+
+          const products = actions.reduce((acc, cur, ind) => {
+            acc.push({
+              id: cur.payload.doc.id,
+              ...cur.payload.doc.data()
+            });
+            return acc;
+          }, []);
+
+          this.lastProduct = products[products.length - 1];
+
+          return products;
+        }),
+        tap(data => {
+          if (data.length === 0) return;
+
+          if (data.length < this.pageSize) {
+            this.productsLeft = false;
+          }
+
+          const newIds = new Set([]);
+          data.map(product => {
+            newIds.add(product.id);
+          });
+
+          // Check for duplicates when Dashboard user changes data
+          const oldProducts = this.products$
+            .getValue()
+            .filter(product => !newIds.has(product.id));
+          this.products$.next([...oldProducts, ...data]);
+        })
+      )
+      .subscribe();
+  }
 
   ngOnInit() {
-    this.filters = this.fb.group({
-      category: '',
-      order: '',
-      price: null
-    });
-
-    this.viewPort.scrolledIndexChange
-      .pipe(
-        filter(() => this.hasMore$.value),
-        takeUntil(this.destroyed$)
-      )
-      .subscribe(() => {
-        this.loadMore$.next(true);
-      });
-
     this.categories$ = this.afs
       .collection<Category>(
         `${FirestoreCollections.Categories}-${STATIC_CONFIG.lang}`,
@@ -106,102 +248,16 @@ export class ShopComponent extends RxDestroy implements OnInit {
       )
       .valueChanges({idField: 'id'});
 
-    this.products$ = this.filters.valueChanges.pipe(
-      startWith(this.filters.getRawValue()),
-      switchMap(query => {
-        this.hasMore$.next(true);
-
-        this.cursor = null;
-        window.scroll(0, 0);
-        this.viewPort.setRenderedRange({start: 0, end: 0});
-        this.viewPort.checkViewportSize();
-
-        return this.loadMore$.pipe(
-          debounceTime(300),
-          tap(() => this.state.loading$.next(true)),
-          switchMap(() =>
-            this.afs
-              .collection<Product>(
-                `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}`,
-                ref => {
-                  let final = ref
-                    .limit(this.pageSize)
-                    .where('active', FirebaseOperator.Equal, true);
-
-                  this.chipArray = [];
-
-                  if (query.order && query.order.name) {
-                    final = final.orderBy(
-                      query.order.type,
-                      query.order.direction
-                    );
-                  }
-
-                  if (query.category) {
-                    this.chipArray.push({
-                      filter: 'category',
-                      value: query.category.name
-                    });
-
-                    final = final.where(
-                      'category',
-                      FirebaseOperator.Equal,
-                      query.category.id
-                    );
-                  }
-
-                  if (query.price) {
-                    this.chipArray.push({
-                      filter: 'price',
-                      value: query.price
-                    });
-
-                    final = final.where(
-                      'price',
-                      FirebaseOperator.LargerThenOrEqual,
-                      query.price
-                    );
-                  }
-
-                  if (this.cursor) {
-                    final = final.startAfter(this.cursor);
-                  }
-                  return final;
-                }
-              )
-              .snapshotChanges()
-          ),
-          map(actions => {
-            if (actions.length < this.pageSize) {
-              this.hasMore$.next(false);
-            } else {
-              this.cursor = actions[actions.length - 2].payload.doc;
-            }
-            return actions.reduce((acc, cur, ind) => {
-              if (ind < this.pageSize - 1) {
-                acc.push({
-                  id: cur.payload.doc.id,
-                  ...cur.payload.doc.data()
-                });
-              }
-              return acc;
-            }, []);
-          }),
-          scan((acc, curr) => acc.concat(curr), [])
-        );
-      }),
-      tap(() => {
-        this.state.loading$.next(false);
-        setTimeout(() => {
-          if (
-            !this.viewPort.measureScrollOffset('bottom') &&
-            this.hasMore$.value
-          ) {
-            this.loadMore$.next(true);
-          }
-        }, 10);
-      })
-    );
+    this.filters = this.fb.group({
+      category: '',
+      order: {
+        name: 'Name A - Z',
+        type: 'name',
+        direction: 'asc'
+      },
+      price: null
+    });
+    this.initProducts();
   }
 
   openFilter() {
@@ -217,14 +273,5 @@ export class ShopComponent extends RxDestroy implements OnInit {
   updateOrder(order) {
     this.filters.get('order').setValue(order);
     this.orderName = order.name;
-  }
-
-  formatRateLabel(value: number) {
-    this.priceLimit = value;
-    return value;
-  }
-
-  setCategory(id: string) {
-    this.filters.get('category').setValue(id);
   }
 }
