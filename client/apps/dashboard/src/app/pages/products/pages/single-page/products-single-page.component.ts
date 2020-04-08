@@ -57,6 +57,8 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   currencyControl: FormControl;
   metaForm: FormGroup;
 
+  moduleId = `${FirestoreCollections.Products}-en`;
+
   ngOnInit() {
     super.ngOnInit();
 
@@ -77,6 +79,10 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
     combineLatest([this.activatedRoute.params, this.state.language$])
       .pipe(
         switchMap(([params, lang]) => {
+          if (lang) {
+            this.moduleId = `${FirestoreCollections.Products}-${lang}`;
+          }
+
           if (params.id !== 'new' && !params.id.includes('copy')) {
             return this.metadataDoc(params.id, lang)
               .get()

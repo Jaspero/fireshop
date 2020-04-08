@@ -23,10 +23,10 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-              <button mat-icon-button aria-label="Previous product" matTooltip="Previous product" (click)="move(false, form)">
+              <button mat-icon-button aria-label="Previous product" matTooltip="Previous product"> <!-- (click)="move(false, form)" -->
                 <mat-icon>arrow_back</mat-icon>
               </button>
-              <button mat-icon-button aria-label="Next product" matTooltip="Next product" (click)="move(true, form)">
+              <button mat-icon-button aria-label="Next product" matTooltip="Next product"> <!-- (click)="move(true, form)" -->
                 <mat-icon>arrow_forward</mat-icon>
               </button>
             </div>
@@ -103,7 +103,7 @@
                 <mat-divider></mat-divider>
               </div>
               <div class="p-y-xs">
-                <jfsc-gallery-upload formControlName="gallery"></jfsc-gallery-upload>
+                <jfsc-gallery-upload formControlName="gallery" [moduleId]="moduleId" [productId]="form.get('id').value"></jfsc-gallery-upload>
               </div>
             </mat-card>
           </div>

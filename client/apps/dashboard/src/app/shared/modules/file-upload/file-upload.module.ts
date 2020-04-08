@@ -9,11 +9,20 @@ import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDialogModule} from '@angular/material/dialog';
+import {LoadClickModule} from '@jaspero/ng-helpers';
+import {DragAndDropDirective} from '../../directives/drag-and-drop/drag-and-drop.directive';
+import {SanitizeUrlPipe} from '../../pipes/sanitize-url/sanitize-url.pipe';
 
-const COMPONENTS = [GalleryUploadComponent, ImageUploadComponent];
+const COMPONENTS = [
+  GalleryUploadComponent,
+  ImageUploadComponent,
+  DragAndDropDirective
+];
+
+const PIPES = [SanitizeUrlPipe];
 
 @NgModule({
-  declarations: [...COMPONENTS],
+  declarations: [...COMPONENTS, ...PIPES],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -24,7 +33,8 @@ const COMPONENTS = [GalleryUploadComponent, ImageUploadComponent];
     MatButtonModule,
     MatDialogModule,
 
-    AngularFireStorageModule
+    AngularFireStorageModule,
+    LoadClickModule
   ],
   exports: [...COMPONENTS]
 })
