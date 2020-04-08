@@ -3,7 +3,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {CustomerWishList} from '@jf/interfaces/customer.interface';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {filter, map, startWith, take} from 'rxjs/operators';
 import {LoginSignupDialogComponent} from '../../components/login-signup-dialog/login-signup-dialog.component';
 import {StateService} from '../state/state.service';
@@ -33,6 +33,8 @@ export class WishListService {
     wishListSnippets: CustomerWishList[];
   }>;
 
+  update$ = new BehaviorSubject<boolean>(null);
+
   includes(productId): Observable<boolean> {
     return this.wishList$.pipe(
       startWith({wishList: [], wishListSnippets: []}),
@@ -61,12 +63,13 @@ export class WishListService {
         }
         this.afs
           .doc(
-            `${FirestoreCollections.Customers}/${
-              this.afAuth.auth.currentUser.uid
-            }`
+            `${FirestoreCollections.Customers}/${this.afAuth.auth.currentUser.uid}`
           )
           .update({
             ...wishList
+          })
+          .then(() => {
+            this.update$.next(true);
           });
       });
     } else {

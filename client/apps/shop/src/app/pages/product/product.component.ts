@@ -68,8 +68,11 @@ export class ProductComponent extends RxDestroy implements OnInit {
   @ViewChild('reviewsDialog', {static: true}) reviewsDialog: TemplateRef<any>;
 
   ngOnInit() {
-    this.data$ = this.activatedRoute.data.pipe(
-      switchMap(data => {
+    this.data$ = combineLatest([
+      this.activatedRoute.data,
+      this.wishList.update$
+    ]).pipe(
+      switchMap(([data]) => {
         this.similar$ = this.http.get(
           `${environment.restApi}/similarProducts`,
           {
