@@ -18,7 +18,7 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {Product} from '@jf/interfaces/product.interface';
 import {BehaviorSubject, Observable, of} from 'rxjs';
-import {map, switchMap, tap, throttleTime} from 'rxjs/operators';
+import {debounceTime, map, switchMap, tap} from 'rxjs/operators';
 import {CartService} from '../../shared/services/cart/cart.service';
 import {StateService} from '../../shared/services/state/state.service';
 
@@ -48,7 +48,7 @@ export class ShopComponent extends RxDestroy implements OnInit {
   lastProduct: Product = null;
 
   // When scrolled this close from bottom, load more products
-  loadOffset = 200;
+  loadOffset = 250;
 
   // Whether there are still products to load from firestore
   productsLeft = true;
@@ -119,7 +119,7 @@ export class ShopComponent extends RxDestroy implements OnInit {
   initProducts() {
     this.filters.valueChanges
       .pipe(
-        throttleTime(1000),
+        debounceTime(300),
         tap(filters => {
           this.lastProduct = null;
           this.productsLeft = true;
@@ -144,18 +144,18 @@ export class ShopComponent extends RxDestroy implements OnInit {
                 let final = ref.where('active', FirebaseOperator.Equal, true);
 
                 this.chipArray = [];
+
                 if (filters.order && filters.order.name) {
                   const type =
                     filters.order.type !== 'price'
                       ? filters.order.type
                       : new FieldPath('price', this.primaryCurrency);
+
                   final = final.orderBy(type, filters.order.direction);
 
                   if (filters.order.type === 'price') {
                     final = final.orderBy('name');
                   }
-                } else {
-                  final = final.orderBy('name');
                 }
 
                 if (filters.category) {
@@ -187,8 +187,10 @@ export class ShopComponent extends RxDestroy implements OnInit {
                 final = final.limit(this.limit);
                 if (this.lastProduct) {
                   if (filters.order.type === 'price') {
-                    final = final.startAfter(null);
-                    final = final.startAfter(this.lastProduct.name);
+                    final = final.startAfter(
+                      this.lastProduct.price[this.primaryCurrency],
+                      this.lastProduct.name
+                    );
                   } else {
                     final = final.startAfter(
                       this.lastProduct[filters.order.type]
