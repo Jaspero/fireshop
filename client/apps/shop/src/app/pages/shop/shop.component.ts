@@ -274,13 +274,4 @@ export class ShopComponent extends RxDestroy implements OnInit {
     this.filters.get('order').setValue(order);
     this.orderName = order.name;
   }
-
-  formatRateLabel(value: number) {
-    this.priceLimit = value;
-    return value;
-  }
-
-  setCategory(id: string) {
-    this.filters.get('category').setValue(id);
-  }
 }
