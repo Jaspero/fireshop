@@ -103,7 +103,7 @@
                 <mat-divider></mat-divider>
               </div>
               <div class="p-y-xs">
-                <jfsc-gallery-upload formControlName="gallery"></jfsc-gallery-upload>
+                <jfsc-gallery-upload formControlName="gallery" [moduleId]="moduleId" [productId]="form.get('id').value"></jfsc-gallery-upload>
               </div>
             </mat-card>
           </div>

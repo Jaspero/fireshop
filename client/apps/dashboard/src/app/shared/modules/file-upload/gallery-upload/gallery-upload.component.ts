@@ -6,6 +6,7 @@ import {
   Component,
   ElementRef,
   forwardRef,
+  Input,
   OnInit,
   TemplateRef,
   ViewChild
@@ -26,6 +27,7 @@ import {GeneratedImage} from '../../../interfaces/generated-image.interface';
 import {formatGeneratedImages} from '../../../utils/format-generated-images';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import * as nanoid from 'nanoid';
+import {PRODUCT_GENERATED_IMAGES} from '../../../../pages/products/consts/product-generated-images.const';
 
 @Component({
   selector: 'jfsc-gallery-upload',
@@ -57,6 +59,12 @@ export class GalleryUploadComponent extends RxDestroy
   imageWidth$: Observable<number>;
 
   urlDialog: MatDialogRef<any>;
+
+  @Input()
+  moduleId: string;
+
+  @Input()
+  productId: string;
 
   constructor(
     public dialog: MatDialog,
@@ -116,12 +124,23 @@ export class GalleryUploadComponent extends RxDestroy
         .pipe(
           takeUntil(this.destroyed$),
           switchMap(res => {
-            return from(this.afs.upload(`/${nanoid()}`, res)).pipe();
+            const name = [this.moduleId, this.productId, nanoid()].join('-');
+            return from(
+              this.afs.upload(name, res, {
+                contentType: res.type,
+                customMetadata: {
+                  moduleId: this.moduleId,
+                  documentId: this.productId,
+                  ...(PRODUCT_GENERATED_IMAGES &&
+                    formatGeneratedImages(PRODUCT_GENERATED_IMAGES))
+                }
+              })
+            ).pipe();
           }),
           switchMap(a => {
             return a.ref.getDownloadURL();
           }),
-          map(url => {
+          tap(url => {
             this.values.push({
               data: url,
               live: true
@@ -220,7 +239,6 @@ export class GalleryUploadComponent extends RxDestroy
       ...this.values.reduce((acc, cur) => {
         if (!cur.live) {
           const name = [moduleId, documentId, cur.pushToLive.name].join('-');
-
           acc.push(
             from(
               this.afs.upload(name, cur.pushToLive, {

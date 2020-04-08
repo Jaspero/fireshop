@@ -8,8 +8,7 @@ import {
 } from '@angular/core';
 
 @Directive({
-  // tslint:disable-next-line:directive-selector
-  selector: '[appDropZone]'
+  selector: '[jfscDropZone]'
 })
 export class DragAndDropDirective {
   @Output()
