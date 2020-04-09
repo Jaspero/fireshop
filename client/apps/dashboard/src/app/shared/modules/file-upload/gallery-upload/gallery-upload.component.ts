@@ -124,7 +124,10 @@ export class GalleryUploadComponent extends RxDestroy
         .pipe(
           takeUntil(this.destroyed$),
           switchMap(res => {
-            const name = [this.moduleId, this.productId, nanoid()].join('-');
+            const name =
+              [this.moduleId, this.productId, nanoid()].join('-') +
+              '.' +
+              res.type.split('/')[1];
             return from(
               this.afs.upload(name, res, {
                 contentType: res.type,
