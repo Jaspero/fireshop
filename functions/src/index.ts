@@ -23,4 +23,7 @@ export {similarProducts} from './rest/similar-products';
 export {stripe} from './rest/stripe';
 export {instagram} from './rest/instagram-authorization';
 
+// Schedules
+export {backup} from './schedules/backup';
+
 export {ssr} from './ssr';
