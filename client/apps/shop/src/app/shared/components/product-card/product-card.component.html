@@ -37,7 +37,7 @@
           color="primary"
           [matTooltip]="ws.label"
           [attr.aria-label]="ws.label"
-          (jpStopPropagation)="wishList.toggle(product)">
+          (jpStopPropagation)="toggleWish()">
           <mat-icon>{{ws.icon}}</mat-icon>
         </button>
       </ng-container>
