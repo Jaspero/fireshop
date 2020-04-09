@@ -8,7 +8,7 @@ export const backup = functions
   .runWith({
     timeoutSeconds: 540
   })
-  .pubsub.schedule('30 13 * * *')
+  .pubsub.schedule('40 13 * * *')
   .timeZone('Europe/Zagreb')
   .onRun(async () => {
     const storage = admin.storage().bucket();

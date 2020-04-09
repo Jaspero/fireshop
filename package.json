@@ -9,7 +9,7 @@
     "lint:client": "npm --prefix client run lint",
     "lint:functions": "npm --prefix functions run lint",
     "lint": "npm run lint:client && npm run lint:functions",
-    "deploy": "firebase deploy --only storage --only firestore --only functions:documentDeleted,functions:ssr,functions:currencies,functions:countries,functions:userCreated,functions:userDeleted,functions:fileCreated,functions:fileDeleted,functions:orderCreated,functions:exportData,functions:importData,functions:similarProducts,functions:stripe,functions:instagram,functions:exampleEmail,hosting"
+    "deploy": "firebase deploy --only storage --only firestore --only functions:documentDeleted,functions:ssr,functions:currencies,functions:countries,functions:userCreated,functions:userDeleted,functions:fileCreated,functions:fileDeleted,functions:orderCreated,functions:exportData,functions:importData,functions:similarProducts,functions:stripe,functions:backup,functions:instagram,functions:exampleEmail,hosting"
   },
   "author": {
     "name": "Jaspero Ltd",
