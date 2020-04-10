@@ -149,6 +149,10 @@
                     <mat-icon>delete_forever</mat-icon>
                     <span>{{'GENERAL.DELETE' | transloco}}</span>
                   </button>
+
+                  <ng-container *ngIf="data.actions">
+                    <div mat-menu-item *ngFor="let action of data.actions" [innerHTML]="action(element) | jpSanitize"></div>
+                  </ng-container>
                 </mat-menu>
               </td>
             </ng-container>

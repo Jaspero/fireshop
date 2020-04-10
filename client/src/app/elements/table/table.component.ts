@@ -25,7 +25,8 @@ import {safeEval} from '../../modules/module-instance/utils/safe-eval';
 import {FilterModule} from '../../shared/interfaces/filter-module.interface';
 import {InstanceSort} from '../../shared/interfaces/instance-sort.interface';
 import {ModuleAuthorization} from '../../shared/interfaces/module-authorization.interface';
-import {ModuleDefinitions, TableColumn} from '../../shared/interfaces/module.interface';
+import {ModuleLayoutTableAction, ModuleLayoutTableColumn} from '../../shared/interfaces/module-layout-table.interface';
+import {ModuleDefinitions} from '../../shared/interfaces/module.interface';
 import {SearchModule} from '../../shared/interfaces/search-module.interface';
 import {SortModule} from '../../shared/interfaces/sort-module.interface';
 import {DbService} from '../../shared/services/db/db.service';
@@ -38,7 +39,7 @@ interface TableData {
   name: string;
   displayColumns: string[];
   definitions: ModuleDefinitions;
-  tableColumns: TableColumn[];
+  tableColumns: ModuleLayoutTableColumn[];
   schema: JSONSchema7;
   sort?: InstanceSort;
   sortModule?: SortModule;
@@ -50,6 +51,7 @@ interface TableData {
   hideDelete?: boolean;
   hideExport?: boolean;
   hideImport?: boolean;
+  actions?: Array<(it: any) => string>;
 }
 
 @Component({
@@ -99,7 +101,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
     this.data$ = this.ioc.module$.pipe(
       map(data => {
         let displayColumns: string[];
-        let tableColumns: TableColumn[];
+        let tableColumns: ModuleLayoutTableColumn[];
         let sort: InstanceSort;
         let hide: any = {
           hideCheckbox: false,
@@ -179,6 +181,20 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
               acc[key] = data.layout.table[key] ? data.layout.table[key].includes(this.state.role) : false;
               return acc;
             }, {});
+
+            if (data.layout.table.actions) {
+              hide.actions = data.layout.table.actions.reduce((acc, cur) => {
+                if (!cur.authorization || cur.authorization.includes(this.state.role)) {
+                  const parsed = safeEval(cur.value);
+
+                  if (parsed) {
+                    acc.push(parsed);
+                  }
+                }
+
+                return acc;
+              }, [])
+            }
           }
 
           if (data.layout.hideAdd) {
@@ -282,7 +298,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
   }
 
   private getColumnValue(
-    column: TableColumn,
+    column: ModuleLayoutTableColumn,
     overview: TableData,
     rowData: any,
     nested = false
