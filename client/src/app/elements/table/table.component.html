@@ -141,6 +141,13 @@
                   <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
+
+                  <ng-container *ngIf="data.actions && data.actions.length">
+                    <div mat-menu-item *ngFor="let action of data.actions" [innerHTML]="action(element) | jpSanitize"></div>
+
+                    <hr>
+                  </ng-container>
+
                   <button *ngIf="!data.hideEdit" mat-menu-item [routerLink]="['/m', data.moduleId, 'single', element.id]">
                     <mat-icon>edit</mat-icon>
                     <span>{{'GENERAL.EDIT' | transloco}}</span>
@@ -149,10 +156,6 @@
                     <mat-icon>delete_forever</mat-icon>
                     <span>{{'GENERAL.DELETE' | transloco}}</span>
                   </button>
-
-                  <ng-container *ngIf="data.actions">
-                    <div mat-menu-item *ngFor="let action of data.actions" [innerHTML]="action(element) | jpSanitize"></div>
-                  </ng-container>
                 </mat-menu>
               </td>
             </ng-container>
