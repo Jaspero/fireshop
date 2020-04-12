@@ -9,9 +9,9 @@
 
       <div class="jms-file-field-actions">
         <ng-container *ngIf="!cData.preventClear && name">
-          <button mat-button (click)="clear()">Remove</button>|
+          <button mat-button (click)="clear()">{{'GENERAL.REMOVE' | transloco}}</button>|
         </ng-container>
-        <button mat-button (click)="file.click()">Add</button>
+        <button mat-button (click)="file.click()">{{'GENERAL.ADD' | transloco}}</button>
       </div>
     </div>
   </fieldset>

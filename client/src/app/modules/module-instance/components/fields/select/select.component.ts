@@ -3,6 +3,7 @@ import {BehaviorSubject, Observable, of} from 'rxjs';
 import {map, startWith, switchMap, tap} from 'rxjs/operators';
 import {WhereFilter} from '../../../../../shared/interfaces/where-filter.interface';
 import {DbService} from '../../../../../shared/services/db/db.service';
+import {parseTemplate} from '../../../../../shared/utils/parse-template';
 import {FieldData} from '../../../interfaces/field-data.interface';
 import {Option} from '../../../interfaces/option.inteface';
 import {COMPONENT_DATA} from '../../../utils/create-component-injector';
@@ -84,7 +85,10 @@ export class SelectComponent extends FieldComponent<SelectData>
               map(it => {
                 return (mapResults ? mapResults(it) : [it]).map(doc => ({
                   value: doc[this.cData.populate.valueKey || 'id'],
-                  name: doc[this.cData.populate.nameKey || 'name']
+                  name: parseTemplate(
+                    this.cData.populate.nameKey || 'name',
+                    doc
+                  )
                 }));
               }),
               tap(() => this.loading$.next(false))
@@ -105,7 +109,10 @@ export class SelectComponent extends FieldComponent<SelectData>
 
               return docs.map(doc => ({
                 value: doc[this.cData.populate.valueKey || 'id'],
-                name: doc[this.cData.populate.nameKey || 'name']
+                name: parseTemplate(
+                  this.cData.populate.nameKey || 'name',
+                  doc
+                )
               }));
             }),
             tap(() => this.loading$.next(false))

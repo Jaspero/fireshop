@@ -86,6 +86,7 @@ import {MathPipe} from './shared/pipes/math/math-pipe.';
 import {FilterDialogComponent} from './modules/module-instance/components/filter-dialog/filter-dialog.component';
 import {CompiledFormComponent} from './shared/components/compiled-form/compiled-form.component';
 import {FilterTagsComponent} from './shared/components/filter-tags/filter-tags.component';
+import {ParseTemplatePipe} from './shared/pipes/parse-template/parse-template.pipe';
 import {appInit} from './shared/utils/app-init';
 import {TranslocoRootModule} from './transloco-root.module';
 
@@ -156,7 +157,12 @@ const ENTRY_COMPONENTS = [
 
 const DIRECTIVES = [ForceDisableDirective, DropzoneDirective];
 
-const PIPES = [ColumnPipe, ShowFieldPipe, MathPipe];
+const PIPES = [
+  ColumnPipe,
+  ShowFieldPipe,
+  MathPipe,
+  ParseTemplatePipe
+];
 
 @NgModule({
   declarations: [
