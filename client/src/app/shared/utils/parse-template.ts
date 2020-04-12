@@ -4,7 +4,6 @@ export function parseTemplate(
 ) {
 
   if (!value.includes('{{')) {
-    console.log('here', value);
     return obj[value]
   } else {
 

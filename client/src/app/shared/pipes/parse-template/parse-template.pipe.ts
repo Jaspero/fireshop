@@ -8,8 +8,8 @@ export class ParseTemplatePipe implements PipeTransform {
 
   transform(value: any, entry: string): string {
     return parseTemplate(
+      entry,
       value,
-      entry
     )
   }
 
