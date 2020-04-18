@@ -220,7 +220,7 @@ export class InstanceOverviewComponent extends RxDestroy
                           this.ioc.searchControl.value ?
                             [{
                               key: module.layout.searchModule.key,
-                              operator: FilterMethod.ArrayContains,
+                              operator: module.layout.searchModule.simple ? FilterMethod.Equal : FilterMethod.ArrayContains,
                               value: this.ioc.searchControl.value.trim().toLowerCase()
                             }] :
                             this.ioc.routeData.filter
