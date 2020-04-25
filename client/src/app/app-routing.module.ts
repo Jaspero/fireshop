@@ -1,11 +1,6 @@
 import {NgModule} from '@angular/core';
-import {
-  AngularFireAuthGuard,
-  canActivate,
-  redirectLoggedInTo,
-  redirectUnauthorizedTo
-} from '@angular/fire/auth-guard';
-import {Routes, RouterModule} from '@angular/router';
+import {AngularFireAuthGuard, canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
+import {RouterModule, Routes} from '@angular/router';
 import {DashboardComponent} from './modules/dashboard/dashboard.component';
 import {LoginComponent} from './modules/login/login.component';
 import {ModuleDefinitionComponent} from './modules/module-definition/module-definition.component';
@@ -16,9 +11,11 @@ import {InstanceOverviewComponent} from './modules/module-instance/pages/instanc
 import {InstanceSingleComponent} from './modules/module-instance/pages/instance-single/instance-single.component';
 import {ResetPasswordComponent} from './modules/reset-password/reset-password.component';
 import {SettingsComponent} from './modules/settings/settings.component';
+import {TriggerPasswordResetComponent} from './modules/trigger-password-reset/trigger-password-reset.component';
 import {LayoutComponent} from './shared/components/layout/layout.component';
-import {HasClaimGuard} from './shared/guards/has-claim/has-claim.guard';
 import {CanReadModuleGuard} from './shared/guards/can-read-module/can-read-module.guard';
+import {HasClaimGuard} from './shared/guards/has-claim/has-claim.guard';
+import {HasCodeGuard} from './shared/guards/has-code/has-code.guard';
 
 const redirectUnauthorized = () => redirectUnauthorizedTo(['/login']);
 
@@ -86,9 +83,14 @@ const routes: Routes = [
     ...canActivate(redirectLoggedInTo(['/dashboard']))
   },
   {
+    path: 'trigger-password-reset',
+    component: TriggerPasswordResetComponent,
+    ...canActivate(redirectLoggedInTo(['/dashboard']))
+  },
+  {
     path: 'reset-password',
     component: ResetPasswordComponent,
-    ...canActivate(redirectLoggedInTo(['/dashboard']))
+    canActivate: [HasCodeGuard]
   },
   {
     path: '**',

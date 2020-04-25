@@ -35,12 +35,14 @@
     "ERROR_MESSAGE": "The email and password you entered did not match our records. Please double-check and try again."
   },
   "RESET_PASSWORD": {
+    "REPEAT_PASSWORD": "Repeat Password",
     "PASSWORD_RESET": "Password Reset",
     "EMAIL_DOESNT_EXIST": "Email doesn't exist",
     "GO_BACK": "Go back",
     "RESET_MY_PASSWORD": "Reset my password",
     "SUCCESS_MESSAGE": "Password reset email has been sent to your email",
-    "ERROR_MESSAGE": "Email is invalid"
+    "ERROR_MESSAGE": "Email is invalid",
+    "RESET_SUCCESSFUL": "Your password has been reset successfully. You can now log in."
   },
   "LAYOUT": {
     "MENU": "Menu",

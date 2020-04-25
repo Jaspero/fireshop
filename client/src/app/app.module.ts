@@ -72,6 +72,7 @@ import {InstanceSingleComponent} from './modules/module-instance/pages/instance-
 import {ColumnPipe} from './modules/module-instance/pipes/column.pipe';
 import {ShowFieldPipe} from './modules/module-instance/pipes/show-field.pipe';
 import {ResetPasswordComponent} from './modules/reset-password/reset-password.component';
+import {TriggerPasswordResetComponent} from './modules/trigger-password-reset/trigger-password-reset.component';
 import {SettingsComponent} from './modules/settings/settings.component';
 import {ConfirmationComponent} from './shared/components/confirmation/confirmation.component';
 import {ExportComponent} from './shared/components/export/export.component';
@@ -107,6 +108,7 @@ const PAGES = [
   DashboardComponent,
 
   LoginComponent,
+  TriggerPasswordResetComponent,
   ResetPasswordComponent
 ];
 

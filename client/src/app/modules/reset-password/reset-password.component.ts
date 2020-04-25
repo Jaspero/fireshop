@@ -1,10 +1,12 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {FormBuilder, FormControl, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {TranslocoService} from '@ngneat/transloco';
 import {from} from 'rxjs';
 import {STATIC_CONFIG} from '../../../environments/static-config';
 import {notify} from '../../shared/utils/notify.operator';
+import {RepeatPasswordValidator} from '../../shared/validators/repeat-password.validator';
 
 @Component({
   selector: 'jms-reset-password',
@@ -14,29 +16,44 @@ import {notify} from '../../shared/utils/notify.operator';
 })
 export class ResetPasswordComponent implements OnInit {
   constructor(
-    public afAuth: AngularFireAuth,
-    public router: Router,
     private fb: FormBuilder,
-  ) {}
+    private router: Router,
+    private afAuth: AngularFireAuth,
+    private activatedRoute: ActivatedRoute,
+    private transloco: TranslocoService
+  ) { }
 
-  resetControl: FormControl;
+  form: FormGroup;
   staticConfig = STATIC_CONFIG;
+  code: string;
 
   ngOnInit() {
-    this.resetControl = this.fb.control('', [
-      Validators.required,
-      Validators.email
-    ]);
+
+    this.code = this.activatedRoute.snapshot.queryParams.oobCode;
+
+    this.form = this.fb.group(
+      {
+        password: ['', Validators.required],
+        repeatPassword: ['', Validators.required]
+      },
+      {
+        validator: RepeatPasswordValidator('Passwords not matching')
+      }
+    );
   }
 
   reset() {
-    from(this.afAuth.auth.sendPasswordResetEmail(this.resetControl.value))
-      .pipe(
-        notify({
-          success: 'RESET_PASSWORD.SUCCESS_MESSAGE',
-          error: 'RESET_PASSWORD.ERROR_MESSAGE'
-        })
+    return () =>
+      from(
+        this.afAuth.auth.confirmPasswordReset(
+          this.code,
+          this.form.get('password').value
+        )
       )
-      .subscribe();
+        .pipe(
+          notify({
+            success: this.transloco.translate('RESET_PASSWORD.RESET_SUCCESSFUL')
+          })
+        )
   }
 }
