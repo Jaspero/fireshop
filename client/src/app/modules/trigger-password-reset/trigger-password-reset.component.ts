@@ -3,6 +3,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {from} from 'rxjs';
+import {tap} from 'rxjs/operators';
 import {STATIC_CONFIG} from '../../../environments/static-config';
 import {notify} from '../../shared/utils/notify.operator';
 
@@ -32,6 +33,10 @@ export class TriggerPasswordResetComponent implements OnInit {
   reset() {
     from(this.afAuth.auth.sendPasswordResetEmail(this.resetControl.value))
       .pipe(
+        tap(() => {
+          this.resetControl.reset();
+          this.resetControl.markAsPristine();
+        }),
         notify({
           success: 'RESET_PASSWORD.SUCCESS_MESSAGE',
           error: 'RESET_PASSWORD.ERROR_MESSAGE'

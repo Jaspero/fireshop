@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslocoService} from '@ngneat/transloco';
 import {from} from 'rxjs';
+import {tap} from 'rxjs/operators';
 import {STATIC_CONFIG} from '../../../environments/static-config';
 import {notify} from '../../shared/utils/notify.operator';
 import {RepeatPasswordValidator} from '../../shared/validators/repeat-password.validator';
@@ -53,7 +54,10 @@ export class ResetPasswordComponent implements OnInit {
         .pipe(
           notify({
             success: this.transloco.translate('RESET_PASSWORD.RESET_SUCCESSFUL')
-          })
+          }),
+          tap(() =>
+            this.router.navigate(['/login'])
+          )
         )
   }
 }
