@@ -23,9 +23,10 @@ import {InstanceOverviewContextService} from '../../modules/module-instance/serv
 import {Parser} from '../../modules/module-instance/utils/parser';
 import {safeEval} from '../../modules/module-instance/utils/safe-eval';
 import {FilterModule} from '../../shared/interfaces/filter-module.interface';
+import {ImportModule} from '../../shared/interfaces/import-module.interface';
 import {InstanceSort} from '../../shared/interfaces/instance-sort.interface';
 import {ModuleAuthorization} from '../../shared/interfaces/module-authorization.interface';
-import {ModuleLayoutTableAction, ModuleLayoutTableColumn} from '../../shared/interfaces/module-layout-table.interface';
+import {ModuleLayoutTableColumn} from '../../shared/interfaces/module-layout-table.interface';
 import {ModuleDefinitions} from '../../shared/interfaces/module.interface';
 import {SearchModule} from '../../shared/interfaces/search-module.interface';
 import {SortModule} from '../../shared/interfaces/sort-module.interface';
@@ -45,6 +46,7 @@ interface TableData {
   sortModule?: SortModule;
   filterModule?: FilterModule;
   searchModule?: SearchModule;
+  importModule?: ImportModule;
   hideCheckbox?: boolean;
   hideEdit?: boolean;
   hideAdd?: boolean;
@@ -224,6 +226,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
               sortModule: data.layout.sortModule,
               filterModule: data.layout.filterModule,
               searchModule: data.layout.searchModule,
+              importModule: data.layout.importModule,
               ...hide
             } : {}
           )

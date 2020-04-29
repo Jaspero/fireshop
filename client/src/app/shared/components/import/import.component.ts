@@ -13,6 +13,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {from} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
+import {ImportModule} from '../../interfaces/import-module.interface';
 import {notify} from '../../utils/notify.operator';
 
 interface ImportResponse {
@@ -54,6 +55,9 @@ export class ImportComponent {
   @Input()
   schema: any;
 
+  @Input()
+  importModule: ImportModule;
+
   importType = ImportType;
   data: ImportResponse;
   form: FormGroup;
@@ -70,6 +74,14 @@ export class ImportComponent {
     formData.append('data', file, file.name);
     formData.append('collection', this.collection);
     formData.append('schema', JSON.stringify(this.schema));
+
+    if (this.importModule) {
+      for (const key in this.importModule) {
+        if (this.importModule.hasOwnProperty(key)) {
+          formData.append('importModule-' + key, this.importModule[key])
+        }
+      }
+    }
 
     event.target.value = '';
 

@@ -7,6 +7,7 @@ import * as admin from 'firebase-admin';
 import nanoid = require('nanoid');
 import {constants} from 'http2';
 import {CORS} from '../consts/cors-whitelist.const';
+import {safeEval} from '../utils/safe-eval';
 import {authenticated} from './middlewares/authenticated';
 
 const app = express();
@@ -50,6 +51,12 @@ app.post('/', authenticated, (req, res) => {
           break;
       }
 
+      let rowFunction: any;
+
+      if (parsedData['importModule-rowFunction']) {
+        rowFunction = safeEval(parsedData['importModule-rowFunction']);
+      }
+
       const {errors, created} = jsonObj.reduce(
         (acc: any, cur: any, index: number) => {
           validator(cur);
@@ -57,12 +64,22 @@ app.post('/', authenticated, (req, res) => {
           if (validator.errors) {
             acc.errors.push({index, errors: validator.errors});
           } else {
-            const {id, ...saveData} = cur;
+
+            let {id, ...saveData} = cur;
+
+            if (!id) {
+              id = nanoid();
+            }
+
+            if (rowFunction) {
+              saveData = rowFunction(saveData);
+            }
+
             acc.created.push(
               admin
                 .firestore()
                 .collection(parsedData.collection)
-                .doc(id || nanoid())
+                .doc(id)
                 .set(saveData)
             );
           }

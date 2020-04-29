@@ -2,6 +2,7 @@ import {JSONSchema7} from 'json-schema';
 import {InstanceSingleState} from '../../modules/module-instance/enums/instance-single-state.enum';
 import {ComponentType} from './component-type.enum';
 import {FilterModule} from './filter-module.interface';
+import {ImportModule} from './import-module.interface';
 import {InstanceSort} from './instance-sort.interface';
 import {ModuleAuthorization} from './module-authorization.interface';
 import {ModuleInstance} from './module-instance.interface';
@@ -27,6 +28,7 @@ export interface ModuleLayout {
   table?: ModuleLayoutTable;
   sortModule?: SortModule;
   filterModule?: FilterModule;
+  importModule?: ImportModule;
   searchModule?: SearchModule;
   instance?: ModuleInstance;
   overview?: ModuleOverview;
