@@ -15,6 +15,7 @@ import {switchMap} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
 import {ImportModule} from '../../interfaces/import-module.interface';
 import {notify} from '../../utils/notify.operator';
+import {queue} from '../../utils/queue.operator';
 
 interface ImportResponse {
   errors?: any;
@@ -112,7 +113,8 @@ export class ImportComponent {
         notify({
           success: null,
           error: 'IMPORT.ERROR'
-        })
+        }),
+        queue()
       )
       .subscribe((res: ImportResponse) => {
         this.data = res;

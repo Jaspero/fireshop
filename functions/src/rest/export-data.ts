@@ -25,15 +25,15 @@ app.post('/', CORS, authenticated, (req, res) => {
       .firestore()
       .collection(collection)
       .get()).docs.reduce((acc: any[], doc: any) => {
-      if (!ids || !ids.includes(doc.id)) {
-        acc.push({
-          ...doc.data(),
-          id: doc.id
-        });
-      }
+        if (!ids || ids.includes(doc.id)) {
+          acc.push({
+            ...doc.data(),
+            id: doc.id
+          });
+        }
 
-      return acc;
-    }, []);
+        return acc;
+      }, []);
 
     if (!docs.length) {
       throw new Error('No data to export');

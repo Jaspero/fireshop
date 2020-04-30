@@ -11,6 +11,7 @@ import {from} from 'rxjs';
 import {finalize, switchMap, takeUntil} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
 import {notify} from '../../utils/notify.operator';
+import {queue} from '../../utils/queue.operator';
 
 enum ExportType {
   csv = 'csv',
@@ -73,6 +74,7 @@ export class ExportComponent extends RxDestroy {
               }
             )
         ),
+        queue(),
         notify({
           success: null,
           error: 'EXPORT.ERROR'
