@@ -2,6 +2,7 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {PortalModule} from '@angular/cdk/portal';
 import {HttpClientModule} from '@angular/common/http';
 import {APP_INITIALIZER, Injector, NgModule} from '@angular/core';
+import {AngularFireStorage} from '@angular/fire/storage';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
@@ -32,8 +33,10 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {DbService as FDbService, FormBuilderModule, ROLE, STORAGE_URL, StorageService} from '@jaspero/form-builder';
 import {LoadClickModule, SanitizeModule} from '@jaspero/ng-helpers';
 import {FirebaseModule} from '../../integrations/firebase/fb.module';
+import {ENV_CONFIG} from '../env-config';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {ELEMENTS} from './elements/elements.const';
@@ -43,51 +46,28 @@ import {SnippetDialogComponent} from './modules/module-definition/components/sni
 import {ModuleDefinitionComponent} from './modules/module-definition/module-definition.component';
 import {DefinitionInstanceComponent} from './modules/module-definition/pages/definition-instance/definition-instance.component';
 import {DefinitionOverviewComponent} from './modules/module-definition/pages/definition-overview/definition-overview.component';
-import {FieldComponent} from './modules/module-instance/components/field/field.component';
-import {AutocompleteComponent} from './modules/module-instance/components/fields/autocomplete/autocomplete.component';
-import {CheckboxComponent} from './modules/module-instance/components/fields/checkbox/checkbox.component';
-import {ChipsComponent} from './modules/module-instance/components/fields/chips/chips.component';
-import {DateFieldComponent} from './modules/module-instance/components/fields/date-field/date-field.component';
-import {DraggableListComponent} from './modules/module-instance/components/fields/draggable-list/draggable-list.component';
-import {FileComponent} from './modules/module-instance/components/fields/file/file.component';
-import {GalleryComponent} from './modules/module-instance/components/fields/gallery/gallery.component';
-import {ImageComponent} from './modules/module-instance/components/fields/image/image.component';
-import {InputComponent} from './modules/module-instance/components/fields/input/input.component';
-import {RadioComponent} from './modules/module-instance/components/fields/radio/radio.component';
-import {SelectComponent} from './modules/module-instance/components/fields/select/select.component';
-import {SliderComponent} from './modules/module-instance/components/fields/slider/slider.component';
-import {TextareaComponent} from './modules/module-instance/components/fields/textarea/textarea.component';
-import {ToggleComponent} from './modules/module-instance/components/fields/toggle/toggle.component';
-import {WysiwygComponent} from './modules/module-instance/components/fields/wysiwyg/wysiwyg.component';
-import {SegmentComponent} from './modules/module-instance/components/segment/segment.component';
-import {AccordionComponent} from './modules/module-instance/components/segments/accordion/accordion.component';
-import {CardComponent} from './modules/module-instance/components/segments/card/card.component';
-import {EmptyComponent} from './modules/module-instance/components/segments/empty/empty.component';
-import {StepperComponent} from './modules/module-instance/components/segments/stepper/stepper.component';
-import {TabsComponent} from './modules/module-instance/components/segments/tabs/tabs.component';
+import {FilterDialogComponent} from './modules/module-instance/components/filter-dialog/filter-dialog.component';
 import {SortDialogComponent} from './modules/module-instance/components/sort-dialog/sort-dialog.component';
 import {ModuleInstanceComponent} from './modules/module-instance/module-instance.component';
 import {InstanceOverviewComponent} from './modules/module-instance/pages/instance-overview/instance-overview.component';
 import {InstanceSingleComponent} from './modules/module-instance/pages/instance-single/instance-single.component';
 import {ColumnPipe} from './modules/module-instance/pipes/column.pipe';
-import {ShowFieldPipe} from './modules/module-instance/pipes/show-field.pipe';
 import {ResetPasswordComponent} from './modules/reset-password/reset-password.component';
-import {TriggerPasswordResetComponent} from './modules/trigger-password-reset/trigger-password-reset.component';
 import {SettingsComponent} from './modules/settings/settings.component';
+import {TriggerPasswordResetComponent} from './modules/trigger-password-reset/trigger-password-reset.component';
 import {ConfirmationComponent} from './shared/components/confirmation/confirmation.component';
 import {ExportComponent} from './shared/components/export/export.component';
+import {FilterTagsComponent} from './shared/components/filter-tags/filter-tags.component';
 import {ImportComponent} from './shared/components/import/import.component';
 import {JsonEditorComponent} from './shared/components/json-editor/json-editor.component';
 import {LayoutSettingsComponent} from './shared/components/layout-settings/layout-settings.component';
 import {LayoutComponent} from './shared/components/layout/layout.component';
 import {SearchInputComponent} from './shared/components/search-input/search-input.component';
-import {DropzoneDirective} from './shared/directives/dropzone/dropzone.directive';
 import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
 import {MathPipe} from './shared/pipes/math/math-pipe.';
-import {FilterDialogComponent} from './modules/module-instance/components/filter-dialog/filter-dialog.component';
-import {CompiledFormComponent} from './shared/components/compiled-form/compiled-form.component';
-import {FilterTagsComponent} from './shared/components/filter-tags/filter-tags.component';
 import {ParseTemplatePipe} from './shared/pipes/parse-template/parse-template.pipe';
+import {DbService} from './shared/services/db/db.service';
+import {StateService} from './shared/services/state/state.service';
 import {appInit} from './shared/utils/app-init';
 import {TranslocoRootModule} from './transloco-root.module';
 
@@ -95,6 +75,10 @@ export function init(injector: Injector) {
   return () => {
     return appInit(injector);
   };
+}
+
+export function roleFactory(state: StateService) {
+  return state.role;
 }
 
 const PAGES = [
@@ -116,52 +100,23 @@ const COMPONENTS = [
   SearchInputComponent,
   JsonEditorComponent,
   LayoutComponent,
-  ImportComponent,
-  CompiledFormComponent
+  ImportComponent
 ];
 
 const ENTRY_COMPONENTS = [
-  // Fields
-  FieldComponent,
-  ConfirmationComponent,
-  InputComponent,
-  SelectComponent,
-  ImageComponent,
-  GalleryComponent,
-  ToggleComponent,
-  CheckboxComponent,
-  DateFieldComponent,
-  SliderComponent,
-  WysiwygComponent,
-  DraggableListComponent,
-  RadioComponent,
-  ChipsComponent,
-  TextareaComponent,
-  AutocompleteComponent,
-  FileComponent,
-
-  // Segments
-  SegmentComponent,
-  CardComponent,
-  EmptyComponent,
-  AccordionComponent,
-  TabsComponent,
-  StepperComponent,
-
-  // Additional
   ExportComponent,
   SortDialogComponent,
   FilterDialogComponent,
   FilterTagsComponent,
   LayoutSettingsComponent,
-  SnippetDialogComponent
+  SnippetDialogComponent,
+  ConfirmationComponent
 ];
 
-const DIRECTIVES = [ForceDisableDirective, DropzoneDirective];
+const DIRECTIVES = [ForceDisableDirective];
 
 const PIPES = [
   ColumnPipe,
-  ShowFieldPipe,
   MathPipe,
   ParseTemplatePipe
 ];
@@ -186,6 +141,7 @@ const PIPES = [
      * if necessary
      */
     FirebaseModule.forRoot(),
+    FormBuilderModule,
 
     BrowserModule,
     AppRoutingModule,
@@ -240,6 +196,27 @@ const PIPES = [
       useFactory: init,
       deps: [Injector],
       multi: true
+    },
+
+    /**
+     * FormBuilderModule Requirements
+     */
+    {
+      provide: StorageService,
+      useExisting: AngularFireStorage
+    },
+    {
+      provide: FDbService,
+      useExisting: DbService
+    },
+    {
+      provide: ROLE,
+      useFactory: roleFactory,
+      deps: [StateService]
+    },
+    {
+      provide: STORAGE_URL,
+      useValue: 'https://firebasestorage.googleapis.com/v0/b/' + ENV_CONFIG.firebase.storageBucket
     }
   ],
   bootstrap: [AppComponent]

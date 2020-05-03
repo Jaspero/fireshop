@@ -1,5 +1,5 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import {parseTemplate} from '../../utils/parse-template';
+import {Pipe, PipeTransform} from '@angular/core';
+import {parseTemplate} from '@jaspero/form-builder';
 
 @Pipe({
   name: 'parseTemplate'

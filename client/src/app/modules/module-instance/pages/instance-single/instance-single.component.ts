@@ -1,28 +1,23 @@
-import {ChangeDetectionStrategy, Component, Injector, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Definitions, FormBuilderComponent, safeEval, Segment} from '@jaspero/form-builder';
+import {JSONSchema7} from 'json-schema';
 // @ts-ignore
 import * as nanoid from 'nanoid';
-import {forkJoin, Observable, of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
-import {CompiledSegment} from '../../../../shared/interfaces/compiled-segment.interface';
 import {ModuleAuthorization} from '../../../../shared/interfaces/module-authorization.interface';
-import {ModuleInstanceSegment} from '../../../../shared/interfaces/module-instance-segment.interface';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {queue} from '../../../../shared/utils/queue.operator';
-import {InstanceSingleState} from '../../enums/instance-single-state.enum';
 import {ModuleInstanceComponent} from '../../module-instance.component';
-import {filterAndCompileSegments} from '../../utils/filter-and-compile-segments';
-import {Parser} from '../../utils/parser';
-import {safeEval} from '../../utils/safe-eval';
 
 
 interface Instance {
-  form: FormGroup;
   hideDuplicate: boolean;
   hideNavigation: boolean;
   module: {
@@ -30,13 +25,17 @@ interface Instance {
     name: string;
     editTitleKey: string;
   };
-  parser: Parser;
-  segments: CompiledSegment[];
   directLink: boolean;
   formatOnSave: (data: any) => any;
   formatOnEdit: (data: any) => any;
   formatOnCreate: (data: any) => any;
   authorization?: ModuleAuthorization;
+  formBuilder: {
+    schema: JSONSchema7;
+    definitions: Definitions;
+    value: any;
+    segments?: Segment[];
+  }
 }
 
 @Component({
@@ -52,9 +51,11 @@ export class InstanceSingleComponent implements OnInit {
     private state: StateService,
     private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
-    private moduleInstance: ModuleInstanceComponent,
-    private injector: Injector
+    private moduleInstance: ModuleInstanceComponent
   ) {}
+
+  @ViewChild(FormBuilderComponent, {static: false})
+  formBuilderComponent: FormBuilderComponent;
 
   initialValue: string;
   currentValue: string;
@@ -64,8 +65,6 @@ export class InstanceSingleComponent implements OnInit {
   data$: Observable<Instance>;
 
   ngOnInit() {
-    this.state.saveComponents = [];
-
     this.data$ = this.moduleInstance.module$.pipe(
       switchMap(module =>
         this.activatedRoute.params.pipe(
@@ -86,31 +85,12 @@ export class InstanceSingleComponent implements OnInit {
             }
           }),
           map((value: Partial<Module>) => {
-            const parser = new Parser(
-              module.schema,
-              this.injector,
-              this.currentState === ViewState.Edit
-                ? InstanceSingleState.Edit
-                : InstanceSingleState.Create,
-              module.definitions
-            );
-            const form = parser.buildForm(value);
-
-            parser.loadHooks();
-
-            this.initialValue = JSON.stringify(form.getRawValue());
+            this.initialValue = JSON.stringify(value);
             this.currentValue = JSON.stringify(this.initialValue);
 
             let editTitleKey = 'id';
             let hideDuplicate = false;
             let hideNavigation = false;
-            let segments: ModuleInstanceSegment[] = [
-              {
-                title: '',
-                fields: Object.keys(parser.pointers),
-                columnsDesktop: 12
-              }
-            ];
 
             const formatOn: any = {};
 
@@ -120,10 +100,6 @@ export class InstanceSingleComponent implements OnInit {
               }
 
               if (module.layout.instance) {
-                if (module.layout.instance.segments) {
-                  segments = module.layout.instance.segments;
-                }
-
                 if (module.layout.instance.hideDuplicate) {
                   hideDuplicate = module.layout.instance.hideDuplicate.includes(this.state.role);
                 }
@@ -136,7 +112,7 @@ export class InstanceSingleComponent implements OnInit {
                   const method = safeEval(module.layout.instance.formatOnLoad);
 
                   if (method) {
-                    method(form);
+                    value = method(value);
                   }
                 }
 
@@ -153,18 +129,8 @@ export class InstanceSingleComponent implements OnInit {
             }
 
             return {
-              form,
-              parser,
               hideDuplicate,
               hideNavigation,
-              segments: filterAndCompileSegments(
-                this.state.role,
-                segments,
-                parser,
-                module.definitions,
-                this.injector,
-                value
-              ),
               module: {
                 id: module.id,
                 name: module.name,
@@ -172,7 +138,15 @@ export class InstanceSingleComponent implements OnInit {
               },
               directLink: !!(module.layout && module.layout.directLink),
               authorization: module.authorization,
-              ...formatOn
+              ...formatOn,
+              formBuilder: {
+                schema: module.schema,
+                definitions: module.definitions,
+                value,
+                ...module.layout && module.layout.instance && module.layout.instance.segments && {
+                  segments: module.layout.instance.segments
+                }
+              }
             };
           })
         )
@@ -183,23 +157,14 @@ export class InstanceSingleComponent implements OnInit {
 
   save(instance: Instance) {
     return () => {
+      const id = instance.formBuilder.value ? instance.formBuilder.value.id : nanoid();
 
-      instance.parser.preSaveHooks(this.currentState);
-
-      let data = instance.form.getRawValue();
-
-      const id = data.id || nanoid();
-      const toExecute = [];
-
-      if (this.state.saveComponents) {
-        toExecute.push(...this.state.saveComponents.map(comp =>
-          comp.save(instance.module.id, id)
-        ));
-      }
-
-      return (toExecute.length ? forkJoin(toExecute) : of([])).pipe(
+      return this.formBuilderComponent.saveAndProcess(
+        instance.module.id,
+        id
+      ).pipe(
         switchMap(() => {
-          data = instance.form.getRawValue();
+          let data = this.formBuilderComponent.form.getRawValue();
 
           if (this.currentState === ViewState.Edit && instance.formatOnEdit) {
             data = instance.formatOnEdit(data);
@@ -236,7 +201,7 @@ export class InstanceSingleComponent implements OnInit {
       '/m',
       instance.module.id,
       'single',
-      `${instance.form.get('id').value}--copy`
+      `${instance.formBuilder.value.id}--copy`
     ]);
   }
 

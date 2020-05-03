@@ -1,6 +1,7 @@
 import {SelectionModel} from '@angular/cdk/collections';
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
+import {Parser} from '@jaspero/form-builder';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {BehaviorSubject, combineLatest, merge, Subject} from 'rxjs';
 import {map, shareReplay, skip, startWith, switchMap, takeUntil, tap} from 'rxjs/operators';
@@ -13,7 +14,6 @@ import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {queue} from '../../../../shared/utils/queue.operator';
 import {InstanceOverviewContextService} from '../../services/instance-overview-context.service';
-import {Parser} from '../../utils/parser';
 
 @Component({
   selector: 'jms-instance-overview',

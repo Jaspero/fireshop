@@ -1,6 +1,5 @@
+import {ComponentType, State} from '@jaspero/form-builder';
 import {JSONSchema7} from 'json-schema';
-import {InstanceSingleState} from '../../modules/module-instance/enums/instance-single-state.enum';
-import {ComponentType} from './component-type.enum';
 import {FilterModule} from './filter-module.interface';
 import {ImportModule} from './import-module.interface';
 import {InstanceSort} from './instance-sort.interface';
@@ -49,8 +48,8 @@ export interface ModuleDefinition {
   hint?: string;
   defaultValue?: any;
   placeholder?: string;
-  onlyOn?: InstanceSingleState;
-  disableOn?: InstanceSingleState;
+  onlyOn?: State;
+  disableOn?: State;
 }
 
 export interface ModuleDefinitions {

@@ -1,4 +1,4 @@
-import {ComponentType} from '../../../shared/interfaces/component-type.enum';
+import {ComponentType} from '@jaspero/form-builder';
 
 export const SNIPPET_FORM_MAP = {
   [ComponentType.Select]: {

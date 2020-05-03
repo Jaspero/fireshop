@@ -1,4 +1,5 @@
-import {ComponentType} from '../../../../../shared/interfaces/component-type.enum';
+import {ComponentType} from '@jaspero/form-builder';
+
 
 export const DEFINITION_AUTOCOMPLETE = {
   filter: 'contain',

@@ -10,10 +10,10 @@ import {
 } from '@angular/common';
 import {Pipe, PipeTransform} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
+import {safeEval} from '@jaspero/form-builder';
 import {SanitizePipe} from '@jaspero/ng-helpers';
 import {PipeType} from '../../../shared/enums/pipe-type.enum';
 import {MathPipe} from '../../../shared/pipes/math/math-pipe.';
-import {safeEval} from '../utils/safe-eval';
 
 @Pipe({
   name: 'column'

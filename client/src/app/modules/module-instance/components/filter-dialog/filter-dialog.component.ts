@@ -1,12 +1,10 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {State, Parser, safeEval} from '@jaspero/form-builder';
 import {FilterMethod} from '../../../../shared/enums/filter-method.enum';
-import {ViewState} from '../../../../shared/enums/view-state.enum';
 import {FilterModule, FilterModuleDefinition} from '../../../../shared/interfaces/filter-module.interface';
 import {WhereFilter} from '../../../../shared/interfaces/where-filter.interface';
-import {Parser} from '../../utils/parser';
-import {safeEval} from '../../utils/safe-eval';
 
 @Component({
   selector: 'jms-filter-dialog',
@@ -24,7 +22,7 @@ export class FilterDialogComponent {
   apply(form: FormGroup, parser: Parser, override?: any) {
 
     parser.preSaveHooks(
-      ViewState.New,
+      State.Create,
       []
     );
 

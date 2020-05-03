@@ -1,12 +1,11 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialogRef} from '@angular/material/dialog';
+import {ComponentType, FormBuilderComponent} from '@jaspero/form-builder';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {Observable} from 'rxjs';
 import {map, shareReplay, take} from 'rxjs/operators';
-import {CompiledFormComponent} from '../../../../shared/components/compiled-form/compiled-form.component';
 import {ExampleType} from '../../../../shared/enums/example-type.enum';
-import {ComponentType} from '../../../../shared/interfaces/component-type.enum';
 import {Example} from '../../../../shared/interfaces/example.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
 import {queue} from '../../../../shared/utils/queue.operator';
@@ -28,8 +27,8 @@ export class SnippetDialogComponent extends RxDestroy implements OnInit {
     super();
   }
 
-  @ViewChild(CompiledFormComponent, {static: false})
-  compiledFormComponent: CompiledFormComponent;
+  @ViewChild(FormBuilderComponent, {static: false})
+  compiledFormComponent: FormBuilderComponent;
 
   snippetForm: FormGroup;
   snippetExamples$ = new Observable<Example[]>();

@@ -1,13 +1,14 @@
-<form *ngIf="data$ | async as data" [formGroup]="data.form" [ngSwitch]="currentState">
+<form *ngIf="data$ | async as data" [ngSwitch]="currentState">
   <mat-toolbar role="heading" color="primary" class="sticky-header">
-    <span class="of-x-auto of-y-hidden" *ngSwitchCase="viewState.Edit">{{'INSTANCE_SINGLE.EDITING' | transloco}} {{data.form.get(data.module.editTitleKey).value}}</span>
+    <span class="of-x-auto of-y-hidden" *ngSwitchCase="viewState.Edit">{{'INSTANCE_SINGLE.EDITING' | transloco}} {{formBuilderComponent?.form.get(data.module.editTitleKey).value}}</span>
     <span class="of-x-auto of-y-hidden" *ngSwitchCase="viewState.New">{{'GENERAL.NEW' | transloco}} {{data.module.name}}</span>
-    <span class="of-x-auto of-y-hidden" *ngSwitchCase="viewState.Copy">{{'INSTANCE_SINGLE.COPY_OF' | transloco}} {{data.form.get('id').value}}</span>
+    <span class="of-x-auto of-y-hidden" *ngSwitchCase="viewState.Copy">{{'INSTANCE_SINGLE.COPY_OF' | transloco}} {{formBuilderComponent?.form.get('id').value}}</span>
     <div class="flex-1"></div>
     <a mat-button *ngIf="!data.directLink" (click)="back(data)">{{'GENERAL.CANCEL' | transloco}}</a>&nbsp;
     <button
+      type="submit"
       mat-flat-button
-      [disabled]="data.form.invalid"
+      [disabled]="formBuilderComponent?.form.invalid"
       [fDisable]="data.authorization"
       [jpLoadClick]="save(data)">
       {{'GENERAL.SAVE' | transloco}}
@@ -29,10 +30,10 @@
               <div class="flex-1"></div>
             </ng-container>
             <ng-container *ngIf="!data.hideNavigation">
-              <button mat-icon-button [attr.aria-label]="'GENERAL.PREVIOUS' | transloco" [matTooltip]="'GENERAL.PREVIOUS' | transloco" (click)="move(false, data.form)">
+              <button mat-icon-button [attr.aria-label]="'GENERAL.PREVIOUS' | transloco" [matTooltip]="'GENERAL.PREVIOUS' | transloco" (click)="move(false, formBuilderComponent?.form)">
                 <mat-icon>arrow_back</mat-icon>
               </button>
-              <button mat-icon-button [attr.aria-label]="'GENERAL.NEXT' | transloco" [matTooltip]="'GENERAL.NEXT' | transloco" (click)="move(true, data.form)">
+              <button mat-icon-button [attr.aria-label]="'GENERAL.NEXT' | transloco" [matTooltip]="'GENERAL.NEXT' | transloco" (click)="move(true, formBuilderComponent?.form)">
                 <mat-icon>arrow_forward</mat-icon>
               </button>
             </ng-container>
@@ -42,9 +43,5 @@
     </section>
   </ng-container>
 
-  <section class="grid">
-    <ng-container *ngFor="let segment of data.segments">
-      <ng-template [cdkPortalOutlet]="segment.component"></ng-template>
-    </ng-container>
-  </section>
+  <fb-form-builder [data]="data.formBuilder"></fb-form-builder>
 </form>

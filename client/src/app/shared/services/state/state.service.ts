@@ -34,12 +34,6 @@ export class StateService {
   layout$: Observable<Layout>;
 
   /**
-   * Array of components that need to
-   * run save() methods on single instance
-   */
-  saveComponents: any[] = [];
-
-  /**
    * Holds state information for all
    * previously loaded routes
    */

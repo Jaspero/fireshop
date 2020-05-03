@@ -2,7 +2,9 @@ import {TemplatePortal} from '@angular/cdk/portal';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
-  Component, Injector, OnDestroy,
+  Component,
+  Injector,
+  OnDestroy,
   OnInit,
   QueryList,
   TemplateRef,
@@ -11,6 +13,7 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import {MatSort} from '@angular/material/sort';
+import {Parser, safeEval, State} from '@jaspero/form-builder';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {get, has} from 'json-pointer';
 import {JSONSchema7} from 'json-schema';
@@ -18,10 +21,7 @@ import {JSONSchema7} from 'json-schema';
 import * as nanoid from 'nanoid';
 import {Observable} from 'rxjs';
 import {filter, map, shareReplay, startWith, switchMap, takeUntil} from 'rxjs/operators';
-import {InstanceSingleState} from '../../modules/module-instance/enums/instance-single-state.enum';
 import {InstanceOverviewContextService} from '../../modules/module-instance/services/instance-overview-context.service';
-import {Parser} from '../../modules/module-instance/utils/parser';
-import {safeEval} from '../../modules/module-instance/utils/safe-eval';
 import {FilterModule} from '../../shared/interfaces/filter-module.interface';
 import {ImportModule} from '../../shared/interfaces/import-module.interface';
 import {InstanceSort} from '../../shared/interfaces/instance-sort.interface';
@@ -313,7 +313,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
         this.parserCache[rowData.id] = new Parser(
           overview.schema,
           this.injector,
-          InstanceSingleState.Edit
+          State.Edit
         );
         this.parserCache[rowData.id].buildForm(rowData);
       }

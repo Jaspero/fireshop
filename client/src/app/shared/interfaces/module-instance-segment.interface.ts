@@ -1,4 +1,4 @@
-import {SegmentType} from '../../modules/module-instance/enums/segment-type.enum';
+import {SegmentType} from '@jaspero/form-builder';
 import {CompiledCondition, Condition} from './condition.interface';
 
 export interface ModuleInstanceSegment<C = any> {
