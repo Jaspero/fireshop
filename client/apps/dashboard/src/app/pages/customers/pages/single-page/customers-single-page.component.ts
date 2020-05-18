@@ -17,7 +17,7 @@ export class CustomersSinglePageComponent extends SinglePageComponent {
   buildForm(data) {
     this.form = this.fb.group({
       id: data.id || '',
-      name: data.name || '',
+      fullName: data.fullName || '',
       gender: data.gender || '',
       bio: data.bio || '',
       billing: this.addressForm(data.billing ? data.billing : {}),

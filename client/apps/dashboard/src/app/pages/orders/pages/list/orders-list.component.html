@@ -143,15 +143,15 @@
             <td mat-cell *matCellDef="let element">
               <div class="iflex fd-col ai-start m-r-s">
                 <span class="fs-small c-d-secondary">Shipping</span>
-                <span>{{element.price.shipping | sp}}</span>
+                <span>{{element.price.shipping | sp:element.currency}}</span>
               </div>
               <div class="iflex fd-col ai-start m-r-s">
                 <span class="fs-small c-d-secondary">Subtotal</span>
-                <span>{{element.price.subTotal | sp}}</span>
+                <span>{{element.price.subTotal | sp:element.currency}}</span>
               </div>
               <div class="iflex fd-col ai-start m-r-s">
                 <span class="fs-small c-d-secondary">Total</span>
-                <span>{{element.price.total | sp}}</span>
+                <span>{{element.price.total | sp:element.currency}}</span>
               </div>
             </td>
           </ng-container>

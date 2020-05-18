@@ -8,7 +8,7 @@ export interface CustomerWishList {
 export interface Customer {
   id: string;
   createdOn: number;
-  name?: string;
+  fullName?: string;
   profileImage?: string;
   billing?: Address;
   shippingInfo?: boolean;

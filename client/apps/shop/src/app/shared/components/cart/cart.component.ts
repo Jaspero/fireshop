@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {MatDialogRef} from '@angular/material';
 import {Router} from '@angular/router';
 import {CartService} from '../../services/cart/cart.service';
+import {MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'jfs-cart',

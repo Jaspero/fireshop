@@ -13,7 +13,7 @@ export class CustomersListComponent extends ListComponent<Customer> {
   displayedColumns = [
     'checkBox',
     'createdOn',
-    'name',
+    'fullName',
     'email',
     'gender',
     'actions'

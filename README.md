@@ -5,6 +5,8 @@
 Fireshop is a webshop built on [firebase](https://firebase.google.com/) and
 the [Angular](https://angular.io/) framework.
 
+**Note**: Fireshop is in active development and shouldn't be used in a production environment.
+
 ## Supports
 
 - [x] Multilingual
@@ -26,6 +28,20 @@ the [Angular](https://angular.io/) framework.
 - Fork this repository
 - Create a firebase project
 - Replace environment variables in [firebase](https://firebase.google.com/docs/functions/config-env)
+- Add cors configuration for your storage bucket.
+  The below is an example of how this looks for [https://fireshop.jaspero.co](https://fireshop.jaspero.co).
+  ```
+  [
+    {
+      "origin": ["https://fireshop.jaspero.co", "https://fireshop.admin.jaspero.co"],
+      "method": ["GET"],
+      "maxAgeSeconds": 3600
+    }
+  ]
+  ```
+  Create a `cors.json` file with the above configuration and run
+  `gsutil cors set cors.json gs://jaspero-site.appspot.com`, replacing `jaspero-site`
+  with the name of the bucket you'll be using.
 
 ## CMS
 
@@ -51,7 +67,23 @@ respectively and the shared folder holds any code shared between the two.
 ### Authorization
 
 A lot of CRUD operations are limited to admin access. You can read the full set of rules under `firestore.rules`.
-To add an admin claim to an account add it to the `email` property of the `settings/allowed-admins` document.
+To add an admin claim to an account add the account email to the `roles` array in the `settings/user` document.
+
+**role**
+
+```
+{
+    "email": {
+        "type": "string"
+    },
+    "role": {
+        "type": "string"
+    }
+}
+```
+
+**note:**
+This document needs to exist before the user is created.
 
 ### Products
 

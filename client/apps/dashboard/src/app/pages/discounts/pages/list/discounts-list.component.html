@@ -112,7 +112,7 @@
           </ng-container>
 
           <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef>URL</th>
+            <th mat-header-cell *matHeaderCellDef>Code</th>
             <td mat-cell *matCellDef="let element">{{element.id}}</td>
           </ng-container>
 
@@ -121,9 +121,9 @@
             <td mat-cell *matCellDef="let element">{{element.createdOn | date}}</td>
           </ng-container>
 
-          <ng-container matColumnDef="code">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
-            <td mat-cell *matCellDef="let element">{{element.code}}</td>
+          <ng-container matColumnDef="value">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Value</th>
+            <td mat-cell *matCellDef="let element">{{element.valueType === discountValueType.FixedAmount ? (element.values[primaryCurrency] | sp) : ((element.value / 100) + '%')}}</td>
           </ng-container>
 
           <ng-container matColumnDef="name">

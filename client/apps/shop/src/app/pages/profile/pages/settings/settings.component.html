@@ -1,6 +1,6 @@
-<form class="grid fd-col ai-center" *ngIf="form$ | async as settingsForm" [formGroup]="settingsForm">
+<div class="grid fd-col ai-center" *ngIf="form$ | async as settingsForm">
 
-  <div class="col-6 col-m-8 col-s-10 col-xs-12">
+  <form class="col-6 col-m-8 col-s-10 col-xs-12" [formGroup]="settingsForm">
     <mat-card>
       <h6 class="p-y-s">Personal information</h6>
       <mat-form-field class="w-full" appearance="outline">
@@ -22,9 +22,9 @@
         <button id="btn-info-sub" mat-flat-button color="primary" (click)="submitForm(settingsForm.getRawValue())">Submit</button>
       </div>
     </mat-card>
-  </div>
+  </form>
 
-  <div class="col-6 col-m-8 col-s-10 col-xs-12">
+  <form class="col-6 col-m-8 col-s-10 col-xs-12" [formGroup]="settingsForm">
     <mat-card>
       <h6 class="p-y-s">Billing information</h6>
       <p class="fs-small bg-l-secondary p-a-xs m-b-s flex ai-center">
@@ -115,7 +115,7 @@
         <button id="btn-address-sub" mat-flat-button color="primary" (click)="submitForm(settingsForm.getRawValue())">Submit</button>
       </div>
     </mat-card>
-  </div>
+  </form>
 
 
   <div class="col-6 col-m-8 col-s-10 col-xs-12">
@@ -126,5 +126,5 @@
     </mat-card>
   </div>
 
-</form>
+</div>
 

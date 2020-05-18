@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatSnackBar} from '@angular/material';
 import {Router} from '@angular/router';
 import {notify} from '@jf/utils/notify.operator';
 import {auth} from 'firebase/app';
@@ -15,6 +14,7 @@ import {from, throwError} from 'rxjs';
 import {catchError, filter, switchMap} from 'rxjs/operators';
 import {environment} from '../../../../../shop/src/environments/environment';
 import {StateService} from '../../shared/services/state/state.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'jfsc-login',

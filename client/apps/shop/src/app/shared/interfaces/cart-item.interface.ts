@@ -1,7 +1,9 @@
+import {Price} from '@jf/interfaces/product.interface';
+
 export interface CartItem {
   identifier: string;
   name: string;
-  price: number;
+  price: Price;
   productId: string;
   image: string;
   quantity: number;

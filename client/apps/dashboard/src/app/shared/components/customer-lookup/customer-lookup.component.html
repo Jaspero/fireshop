@@ -11,8 +11,8 @@
     <mat-option
       *ngFor="let customer of filteredCustomers$ | async"
       [id]="customer.id"
-      [value]="customer.name">
-      {{customer.name}}
+      [value]="customer.fullName">
+      {{customer.fullName}}
     </mat-option>
   </mat-autocomplete>
 

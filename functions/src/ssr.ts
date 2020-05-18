@@ -1,73 +1,88 @@
-import 'zone.js/dist/zone-node';
-import {enableProdMode} from '@angular/core';
-import {ngExpressEngine} from '@nguniversal/express-engine';
-import {provideModuleMap} from '@nguniversal/module-map-ngfactory-loader';
-import {REQUEST, RESPONSE} from '@nguniversal/express-engine/tokens';
-import {json, urlencoded} from 'body-parser';
 import * as compression from 'compression';
+import * as cors from 'cors';
 import * as domino from 'domino';
 import * as express from 'express';
-import * as cors from 'cors';
 import * as functions from 'firebase-functions';
-import {RenderOptions} from '@nguniversal/express-engine/src/main';
+import {readFileSync} from 'fs';
+import {constants} from 'http2';
+import {join} from 'path';
+import {
+  DEFAULT_META,
+  DEFAULT_META_PROPERTIES,
+  PAGE_PREFIX,
+  PAGE_SUFFIX,
+  PAGES
+} from './consts/pages.const';
 
-const win = domino.createWindow('');
-
-// Polyfills required for Firebase
-global['WebSocket'] = require('ws');
-global['XMLHttpRequest'] = require('xhr2');
-global['window'] = win;
-global['document'] = win.document;
-global['DOMTokenList'] = win['DOMTokenList'];
+let index = '';
 
 /**
- * hack for protobufjs
- * https://github.com/protobufjs/protobuf.js/blob/master/src/util/minimal.js
+ * Allows running functions n development
+ * without a built client
  */
-global['window']['process'] = {
-  versions: {
-    node: true
-  }
-};
-
-enableProdMode();
+try {
+  index = readFileSync(
+    join(__dirname, '../dist/public/shop/index.html')
+  ).toString();
+} catch (e) {}
 
 const app = express();
 app.use(compression());
-app.use(cors());
-app.use(json());
-app.use(urlencoded({extended: true}));
-
-const DIST_FOLDER = './dist/public/shop';
-const {
-  AppServerModuleNgFactory,
-  LAZY_MODULE_MAP
-} = require('./../dist/server/main');
-
-app.engine('html', (_, options: RenderOptions, callback) =>
-  ngExpressEngine({
-    bootstrap: AppServerModuleNgFactory,
-    providers: [
-      provideModuleMap(LAZY_MODULE_MAP),
-      {
-        provide: REQUEST,
-        useValue: options.req
-      },
-      {
-        provide: RESPONSE,
-        useValue: options.req.res
-      }
-    ]
-  })(_, options, callback)
-);
-
 app.use(cors({origin: true}));
-app.set('view engine', 'html');
-app.set('views', DIST_FOLDER);
 
-app.get('*.*', express.static(DIST_FOLDER, {maxAge: '1y'}));
-app.get('*', (req, res) => {
-  res.render('index', {req});
+app.get('*', async (req, res) => {
+  const document = domino.createDocument(index, true);
+
+  res.setHeader('Content-Type', 'text/html');
+
+  let status = constants.HTTP_STATUS_OK;
+  let foundPage;
+  let capture;
+
+  for (const page of PAGES) {
+    const matcher = new RegExp(page.match);
+    const match = req.url.match(matcher);
+
+    if (match) {
+      foundPage = page;
+      capture = match;
+      break;
+    }
+  }
+
+  if (foundPage) {
+    if (foundPage.operation) {
+      try {
+        await foundPage.operation(capture, document);
+      } catch (e) {
+        console.log('e', e);
+        status = constants.HTTP_STATUS_NOT_FOUND;
+      }
+    } else {
+      document.title = PAGE_PREFIX + foundPage.name + PAGE_SUFFIX;
+      Object.entries({
+        ...DEFAULT_META,
+        ...(foundPage.meta || {})
+      }).forEach(([key, value]) => {
+        // @ts-ignore
+        document.querySelector(`meta[name=${key}]`)['content'] = value;
+      });
+
+      Object.entries({
+        ...DEFAULT_META_PROPERTIES,
+        ...(foundPage.metaProperties || {})
+      }).forEach(([key, value]) => {
+        // @ts-ignore
+        document.querySelector(`meta[property=${key}]`)['content'] = value;
+      });
+    }
+  } else {
+    status = constants.HTTP_STATUS_NOT_FOUND;
+  }
+
+  return res
+    .status(status)
+    .send('<!DOCTYPE html>' + document.documentElement.outerHTML);
 });
 
 export const ssr = functions.https.onRequest(app);

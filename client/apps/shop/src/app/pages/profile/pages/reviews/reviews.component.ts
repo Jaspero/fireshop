@@ -6,7 +6,6 @@ import {
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {MatDialog} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
@@ -16,6 +15,7 @@ import {confirmation} from '@jf/utils/confirmation';
 import {notify} from '@jf/utils/notify.operator';
 import {BehaviorSubject, from} from 'rxjs';
 import {switchMap, takeUntil} from 'rxjs/operators';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'jfs-reviews',
@@ -46,7 +46,7 @@ export class ReviewsComponent extends RxDestroy implements OnInit {
     this.afs
       .collection<Review>(FirestoreCollections.Reviews, ref => {
         return ref.where(
-          'customerId',
+          'customerInfo.id',
           FirebaseOperator.Equal,
           this.afAuth.auth.currentUser.uid
         );

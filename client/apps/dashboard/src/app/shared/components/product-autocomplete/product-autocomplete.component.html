@@ -1,0 +1,15 @@
+<jfsc-af-autocomplete
+  placeholder="Search Products"
+  [query]="query.bind(this)"
+  (optionSelected)="select($event)">
+
+  <ng-template #afOption let-value="value">
+    <div>
+      <div class="flex p-y-xs">
+        <img size="s" [jfsLibraryImage]="value.gallery[0]" />
+        <p class="p-l-xs">{{value.name}}</p>
+      </div>
+    </div>
+  </ng-template>
+
+</jfsc-af-autocomplete>

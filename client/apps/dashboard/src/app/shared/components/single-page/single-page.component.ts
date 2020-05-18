@@ -1,17 +1,17 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {MatDialog} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {notify} from '@jf/utils/notify.operator';
-import * as nanoid from 'nanoid';
 import {from, Observable, of} from 'rxjs';
 import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {Role} from '../../enums/role.enum';
 import {StateService} from '../../services/state/state.service';
 import {queue} from '../../utils/queue.operator';
+import * as nanoid from 'nanoid';
+import {MatDialog} from '@angular/material/dialog';
 
 export enum ViewState {
   New,
@@ -59,7 +59,7 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
               .valueChanges()
               .pipe(
                 take(1),
-                map(value => ({
+                map((value: object) => ({
                   ...value,
                   id: params.id
                 })),
@@ -73,7 +73,7 @@ export class SinglePageComponent extends RxDestroy implements OnInit {
               .valueChanges()
               .pipe(
                 take(1),
-                map(value => ({
+                map((value: object) => ({
                   ...value,
                   id: params.id
                 })),
