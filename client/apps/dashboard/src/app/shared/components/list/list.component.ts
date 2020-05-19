@@ -338,6 +338,9 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
       switchMap(() =>
         forkJoin(this.selection.selected.map(id => this.delete(id)))
       ),
+      tap(() => {
+        this.selection.clear();
+      }),
       notify()
     ]);
   }
