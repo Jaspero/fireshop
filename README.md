@@ -103,6 +103,11 @@ This document needs to exist before the user is created.
    events for the webhook.
 3. Added the stripe webhook secret to your integrations environment variables.
 
+## PayPal Integration
+
+1.  Retrieve `client-id` from PayPal Developer Dashboard ([Step by step](https://developer.paypal.com/docs/checkout/integrate/#1-set-up-your-development-environment))
+2.  Update PayPal import script from `index.html` with corresponding `client-id`
+
 ## Feature Branches
 
 ### feature/mail-chimp
