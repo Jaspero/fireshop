@@ -106,7 +106,7 @@ This document needs to exist before the user is created.
 ## PayPal Integration
 
 1.  Retrieve `client-id` from PayPal Developer Dashboard ([Step by step](https://developer.paypal.com/docs/checkout/integrate/#1-set-up-your-development-environment))
-2.  Update PayPal import script from `index.html` with corresponding `client-id`
+2.  Update PayPal script tag in `index.html` with corresponding `client-id`
 
 ## Feature Branches
 
