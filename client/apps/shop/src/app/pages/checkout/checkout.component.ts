@@ -1,7 +1,9 @@
 import {HttpClient} from '@angular/common/http';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   OnInit,
   ViewChild
 } from '@angular/core';
@@ -57,6 +59,11 @@ import {Discount} from '@jf/interfaces/discount.interface';
 import {notify} from '@jf/utils/notify.operator';
 import {DiscountValueType} from '../../../../../dashboard/src/app/pages/discounts/pages/single-page/discounts-single-page.component';
 import {StripePipe} from '@jf/pipes/stripe.pipe';
+import {PaymentMethod} from '@jf/enums/payment-method.enum';
+import {MatHorizontalStepper} from '@angular/material/stepper';
+import {MatSnackBar} from '@angular/material/snack-bar';
+
+declare var paypal;
 
 interface Item extends OrderItem {
   id: string;
@@ -73,24 +80,10 @@ interface Item extends OrderItem {
   styleUrls: ['./checkout.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CheckoutComponent extends RxDestroy implements OnInit {
-  constructor(
-    public cartService: CartService,
-    public afAuth: AngularFireAuth,
-    public aff: AngularFireFunctions,
-    private http: HttpClient,
-    private afs: AngularFirestore,
-    private fb: FormBuilder,
-    private router: Router,
-    private state: StateService,
-    private dialog: MatDialog
-  ) {
-    super();
-  }
-
+export class CheckoutComponent extends RxDestroy
+  implements OnInit, AfterViewInit {
   @ViewChild(StripeElementsComponent, {static: false})
   stripeElementsComponent: StripeElementsComponent;
-
   clientSecret$: Observable<{clientSecret: string}>;
   countries$: Observable<Country[]>;
   form$: Observable<FormGroup>;
@@ -105,21 +98,49 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     subTotal: number;
   }>;
   elementConfig$: Observable<[ElementConfig, ElementConfig]>;
-
   termsControl = new FormControl(false);
   elementType = ElementType;
-
-  code = new FormControl('', Validators.required);
+  code = new FormControl('');
   discount = 0;
   validCode$ = new BehaviorSubject<Discount>(null);
-
-  giftCardCode = new FormControl('', Validators.required);
+  giftCardCode = new FormControl('');
   giftCardValue = new FormControl(0);
   validGiftCard$ = new BehaviorSubject(null);
-
   giftCardSliderMax = 0;
 
+  paypalLoading$ = new BehaviorSubject<boolean>(false);
+
+  // For use in HTML
+  PaymentMethod = PaymentMethod;
+  @ViewChild('paypal', {static: false})
+  paypal: ElementRef;
+  @ViewChild('stepper', {static: false})
+  stepper: MatHorizontalStepper;
+  paymentMethodControl = new FormControl(
+    PaymentMethod.Card,
+    Validators.required
+  );
+  product = {
+    price: 777.77,
+    description: 'used couch, decent condition',
+    img: 'assets/couch.jpg'
+  };
   private shippingSubscription: Subscription;
+
+  constructor(
+    public cartService: CartService,
+    public afAuth: AngularFireAuth,
+    public aff: AngularFireFunctions,
+    private http: HttpClient,
+    private afs: AngularFirestore,
+    private fb: FormBuilder,
+    private router: Router,
+    private state: StateService,
+    private dialog: MatDialog,
+    private snack: MatSnackBar
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.countries$ = from(
@@ -282,6 +303,69 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     );
   }
 
+  ngAfterViewInit() {
+    this.stepper.animationDone
+      .pipe(
+        tap(() => {
+          if (
+            this.stepper.selectedIndex !== 2 ||
+            this.paymentMethodControl.value !== PaymentMethod.PayPal
+          ) {
+            return;
+          }
+
+          this.paypalLoading$.next(true);
+          this.loadPaypal();
+        })
+      )
+      .subscribe();
+  }
+
+  loadPaypal() {
+    this.price$
+      .pipe(
+        tap(price => {
+          paypal
+            .Buttons({
+              createOrder: (data, actions) => {
+                return actions.order.create({
+                  purchase_units: [
+                    {
+                      description: 'Fireshop Purchase',
+                      amount: {
+                        currency_code: 'EUR',
+                        value: fromStripeFormat(price.total)
+                      }
+                    }
+                  ]
+                });
+              },
+              onApprove: async (data, actions) => {
+                const order = await actions.order.capture();
+                this.triggerPayment({id: null}, order).subscribe();
+              },
+              onError: error => {
+                this.snack.open('Operation failed');
+                return;
+              },
+              onCancel: (data, actions) => {
+                return;
+              },
+              style: {
+                color: 'blue',
+                label: 'checkout',
+                size: 'responsive'
+              }
+            })
+            .render(this.paypal.nativeElement)
+            .then(data => {
+              this.paypalLoading$.next(false);
+            });
+        })
+      )
+      .subscribe();
+  }
+
   buildForm(value: Partial<Customer>) {
     const group = this.fb.group({
       billing: this.addressForm(value.billing ? value.billing : {}),
@@ -343,7 +427,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
     }
   }
 
-  triggerPayment(paymentIntent) {
+  triggerPayment(paymentIntent, paypalOrder: any = {}) {
     return combineLatest([
       this.formData$,
       this.state.user$,
@@ -369,6 +453,8 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
               // TODO: This could be dynamic in other implementations
               currency: DYNAMIC_CONFIG.currency.primary,
               status: OrderStatus.Ordered,
+              paymentMethod: this.paymentMethodControl.value,
+              paypalOrder,
               paymentIntentId: paymentIntent.id,
               billing: data.billing,
               createdOn: Date.now(),

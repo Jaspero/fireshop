@@ -44,3 +44,21 @@
   width: 90%;
   margin-left: 5%;
 }
+
+.checkout-paypal {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.checkout-paypal-spinner {
+  margin-right: 20px;
+}
+
+.paypal {
+  width: 400px;
+}
+
+.invalid {
+  pointer-events: none;
+  opacity: .5;
+}
