@@ -120,11 +120,7 @@ export class CheckoutComponent extends RxDestroy
     PaymentMethod.Card,
     Validators.required
   );
-  product = {
-    price: 777.77,
-    description: 'used couch, decent condition',
-    img: 'assets/couch.jpg'
-  };
+
   private shippingSubscription: Subscription;
 
   constructor(
