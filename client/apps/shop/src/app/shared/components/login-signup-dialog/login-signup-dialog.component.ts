@@ -4,6 +4,7 @@ import {
   ElementRef,
   Inject,
   OnInit,
+  TemplateRef,
   ViewChild
 } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
@@ -32,7 +33,11 @@ import {environment} from '../../../../environments/environment';
 import {RepeatPasswordValidator} from '../../helpers/compare-passwords';
 import {StateService} from '../../services/state/state.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef
+} from '@angular/material/dialog';
 
 export enum LoginSignUpView {
   LogIn,
@@ -47,27 +52,12 @@ export enum LoginSignUpView {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
-  constructor(
-    public afAuth: AngularFireAuth,
-    public snackBar: MatSnackBar,
-    public dialogRef: MatDialogRef<LoginSignupDialogComponent>,
-    private afs: AngularFirestore,
-    private fb: FormBuilder,
-    private state: StateService,
-    @Inject(MAT_DIALOG_DATA)
-    private options: {view: LoginSignUpView}
-  ) {
-    super();
-  }
-
-  @ViewChild('password', {static: true}) passwordField: ElementRef;
-
+  @ViewChild('password') passwordField: ElementRef;
   logInForm: FormGroup;
   resetPasswordControl: FormControl;
   signUpForm: FormGroup;
   view = LoginSignUpView;
   currentView: LoginSignUpView = LoginSignUpView.LogIn;
-
   validation = {
     [LoginSignUpView.LogIn]: (
       docRef: AngularFirestoreDocument<Customer>,
@@ -82,7 +72,7 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
       } else {
         this.afAuth.auth.signOut();
         this.snackBar.open(
-          'You do not have an account.Please sign up first!',
+          'You do not have an account. Please sign up first!',
           'Dismiss',
           {
             duration: 2500
@@ -119,7 +109,7 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
         from(docRef.set(signUpData))
           .pipe(
             notify({
-              success: 'You are now logged in',
+              success: 'You can now Log in',
               error: 'Invalid'
             })
           )
@@ -129,6 +119,21 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
       this.dialogRef.close();
     }
   };
+  @ViewChild(TemplateRef) ref;
+
+  constructor(
+    public afAuth: AngularFireAuth,
+    public snackBar: MatSnackBar,
+    public dialogRef: MatDialogRef<LoginSignupDialogComponent>,
+    private afs: AngularFirestore,
+    private fb: FormBuilder,
+    private state: StateService,
+    @Inject(MAT_DIALOG_DATA)
+    private options: {view: LoginSignUpView},
+    private dialog: MatDialog
+  ) {
+    super();
+  }
 
   ngOnInit() {
     /**
@@ -177,11 +182,10 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
           data.pg.password
         )
       ).pipe(
-        switchMap(() => {
-          return this.afAuth.auth.signInWithEmailAndPassword(
-            data.email,
-            data.pg.password
-          );
+        tap(() => {
+          this.dialog.open(this.ref, {
+            width: '400px'
+          });
         }),
         notify({
           success: 'Your account is successfully created',
@@ -201,6 +205,7 @@ export class LoginSignupDialogComponent extends RxDestroy implements OnInit {
           dataLogin.password
         )
       ).pipe(
+        tap(() => this.dialogRef.close()),
         notify({
           success: 'You are now logged in',
           error: 'The email and password you entered did not match our records.'
