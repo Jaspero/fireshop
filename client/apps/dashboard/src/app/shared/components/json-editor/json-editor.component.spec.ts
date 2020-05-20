@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { JsonEditorComponent } from './json-editor.component';
+import {JsonEditorComponent} from './json-editor.component';
 
 describe('JsonEditorComponent', () => {
   let component: JsonEditorComponent;
@@ -8,9 +8,8 @@ describe('JsonEditorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ JsonEditorComponent ]
-    })
-    .compileComponents();
+      declarations: [JsonEditorComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

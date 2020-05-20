@@ -23,8 +23,9 @@ function deleteQueryBatch(
   resolve,
   reject
 ) {
-  query.get()
-    .then((snapshot) => {
+  query
+    .get()
+    .then(snapshot => {
       // When there are no documents left, we are done
       if (snapshot.size === 0) {
         return 0;
@@ -32,7 +33,7 @@ function deleteQueryBatch(
 
       // Delete documents in a batch
       const batch = db.batch();
-      snapshot.docs.forEach((doc) => {
+      snapshot.docs.forEach(doc => {
         batch.delete(doc.ref);
       });
 
@@ -40,7 +41,7 @@ function deleteQueryBatch(
         return snapshot.size;
       });
     })
-    .then((numDeleted) => {
+    .then(numDeleted => {
       if (numDeleted === 0) {
         resolve();
         return;

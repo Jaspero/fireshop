@@ -156,6 +156,11 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="paymentMethod">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Payment Method</th>
+            <td mat-cell *matCellDef="let element">{{element.paymentMethod}}</td>
+          </ng-container>
+
           <ng-container matColumnDef="stripe">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Stripe</th>
             <td mat-cell *matCellDef="let element">{{element.paymentIntentId ? element.paymentIntentId : '-'}}</td>

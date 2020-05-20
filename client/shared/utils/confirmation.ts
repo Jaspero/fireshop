@@ -15,14 +15,12 @@ export function confirmation(
     pipes.unshift(filter(val => !!val));
   }
 
-  const dialogInstance =
-    (dialog
-      .open(ConfirmationComponent, {
-        width: '400px',
-        data: options
-      })
-      .afterClosed() as any)
-      .pipe(...pipes);
+  const dialogInstance = (dialog
+    .open(ConfirmationComponent, {
+      width: '400px',
+      data: options
+    })
+    .afterClosed() as any).pipe(...pipes);
 
   if (!options.skipSubscribe) {
     dialogInstance.subscribe();

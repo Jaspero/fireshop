@@ -6,9 +6,7 @@ import {
   AngularFirestoreModule
 } from '@angular/fire/firestore';
 import {AngularFirePerformanceModule} from '@angular/fire/performance';
-import {
-  BrowserModule,
-} from '@angular/platform-browser';
+import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {
@@ -69,6 +67,6 @@ const ENTRY_COMPONENTS = [UpdateAvailableComponent];
       multi: true
     }
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

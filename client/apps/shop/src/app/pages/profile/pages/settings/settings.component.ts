@@ -93,9 +93,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
     from(
       this.afs
         .doc(
-          `${FirestoreCollections.Customers}/${
-            this.afAuth.auth.currentUser.uid
-          }`
+          `${FirestoreCollections.Customers}/${this.afAuth.auth.currentUser.uid}`
         )
         .update(data)
     )

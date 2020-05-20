@@ -81,7 +81,10 @@
                 <ng-container *ngIf="loggedOut$ | async">
                   <div class="col-12">
                     <p class="bg-l-secondary p-y-s ta-center">
-                      You're doing checkout as a guest. You can <a class="link c-primary" (click)="logInSignUp()">login</a> or <a class="link c-primary" (click)="logInSignUp(false)">sign-up</a> now.<br>Your data or cart won't be lost.
+                      You're doing checkout as a guest. You can <a class="link c-primary"
+                                                                   (click)="logInSignUp()">login</a> or <a
+                      class="link c-primary" (click)="logInSignUp(false)">sign-up</a> now.<br>Your data or cart won't be
+                      lost.
                     </p>
                   </div>
 
@@ -107,7 +110,9 @@
                 <div class="col-12">
                   <h6 class="p-y-xs">Shipping info</h6>
                   <div class="p-y-xs">
-                    <mat-checkbox color="primary" formControlName="shippingInfo">My shipping address is same as my billing address</mat-checkbox>
+                    <mat-checkbox color="primary" formControlName="shippingInfo">My shipping address is same as my
+                      billing address
+                    </mat-checkbox>
                   </div>
                 </div>
 
@@ -123,21 +128,24 @@
 
                 <div class="col-12">
                   <div class="p-y-xs" *ngIf="loggedIn$ | async">
-                    <mat-checkbox color="primary" formControlName="saveInfo">Save my payment so checkout is easy next time</mat-checkbox>
+                    <mat-checkbox color="primary" formControlName="saveInfo">Save my payment so checkout is easy next
+                      time
+                    </mat-checkbox>
                   </div>
                 </div>
 
                 <div class="col-12 m-y-xs">
-                  <p class="bg-l-secondary p-y-s ta-center">You will have a chance to review your order before it's placed</p>
+                  <p class="bg-l-secondary p-y-s ta-center">You will have a chance to review your order before it's
+                    placed</p>
                 </div>
 
                 <div class="col-12 ta-right">
                   <button
-                      id="btn-nxt-step-0"
-                      mat-flat-button
-                      color="primary"
-                      matStepperNext
-                      [disabled]="form.invalid">
+                    id="btn-nxt-step-0"
+                    mat-flat-button
+                    color="primary"
+                    matStepperNext
+                    [disabled]="form.invalid">
                     Continue
                   </button>
                 </div>
@@ -174,7 +182,9 @@
                   <input matInput placeholder="Gift Card" [formControl]="giftCardCode">
                 </mat-form-field>
                 <div *ngIf="validGiftCard$ | async">
-                  <mat-slider (ngModelChange)="giftCardValueChange()" class="w-90" thumbLabel [displayWith]="formatLabel" min="0" [max]="giftCardSliderMax" step="0.1" [formControl]="giftCardValue"></mat-slider>
+                  <mat-slider (ngModelChange)="giftCardValueChange()" class="w-90" thumbLabel
+                              [displayWith]="formatLabel" min="0" [max]="giftCardSliderMax" step="0.1"
+                              [formControl]="giftCardValue"></mat-slider>
                 </div>
 
                 <div class="ta-right">
@@ -198,7 +208,9 @@
                   <td class="w-half p-a-xs">{{product.price | sp }} x{{product.quantity}}</td>
                 </tr>
                 <tr>
-                  <td colspan="3"><hr></td>
+                  <td colspan="3">
+                    <hr>
+                  </td>
                 </tr>
                 <ng-container *ngIf="price$ | async as price">
                   <tr>
@@ -212,12 +224,16 @@
                   <tr *ngIf="validCode$ | async">
                     <td class="w-half p-a-xs">Discount:</td>
                     <td class="w-half p-a-xs">{{discount | sp}}</td>
-                    <td><a (click)="clearDiscount()"><mat-icon>close</mat-icon></a></td>
+                    <td><a (click)="clearDiscount()">
+                      <mat-icon>close</mat-icon>
+                    </a></td>
                   </tr>
                   <tr *ngIf="validGiftCard$ | async">
                     <td class="w-half p-a-xs">Gift Card:</td>
                     <td class="w-half p-a-xs">{{(-giftCardValue.value * 100) | sp}}</td>
-                    <td><a (click)="clearGiftCard()"><mat-icon>close</mat-icon></a></td>
+                    <td><a (click)="clearGiftCard()">
+                      <mat-icon>close</mat-icon>
+                    </a></td>
                   </tr>
                   <tr class="fw-bold">
                     <td class="w-half p-a-xs">Total:</td>
@@ -230,33 +246,63 @@
         </div>
       </mat-step>
 
-      <mat-step label="Payment" #payment>
+      <mat-step label="Payment" #payment >
         <div class="grid fw-rev" *ngIf="stepper.selected == payment || stepper.selected == review">
           <div class="col-8 col-s-12">
+
             <mat-card>
               <form *ngIf="elementConfig$ | async as elementConfigs">
 
                 <div class="grid grid-no-gutter jc-start">
 
                   <div class="col-12">
-                    <h6 class="p-y-xs">Payment info</h6>
+                    <h5 class="p-y-xs">Payment Method</h5>
+                    <br>
                   </div>
 
-                  <div class="col-12">
-                    <jfs-stripe-elements
-                      #stripeEl
-                      [clientSecret$]="clientSecret$"
-                      [elementConfig]="elementConfigs"
-                      (paymentTriggered)="paymentTriggered($event)">
-                    </jfs-stripe-elements>
-                    <div class="payment-error" *ngIf="stripeEl.error$ | async as error">
-                      {{error}}
+                  <mat-form-field>
+                    <mat-label>Method</mat-label>
+                    <mat-select [formControl]="paymentMethodControl">
+                      <mat-option value="stripe">Card</mat-option>
+                      <mat-option value="paypal">PayPal</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="paymentMethodControl.hasError('required')">Please choose a payment method
+                    </mat-error>
+                  </mat-form-field>
+
+
+                  <ng-container *ngIf="paymentMethodControl.value === PaymentMethod.Stripe; else continuePaypal">
+                    <div class="col-12">
+                      <h6 class="p-y-xs">Payment info</h6>
                     </div>
-                  </div>
 
-                  <div class="col-12 ta-right m-t-s" *ngIf="stripeEl.activeElement && stripeEl.activeElement.type !== elementType.PaymentRequestButton">
-                    <button id="btn-nxt-step-1" mat-flat-button color="primary" matStepperNext [disabled]="(stripeEl.activeElement.isValid$ | async) === false">Continue</button>
-                  </div>
+                    <div class="col-12">
+                      <jfs-stripe-elements
+                        #stripeEl
+                        [clientSecret$]="clientSecret$"
+                        [elementConfig]="elementConfigs"
+                        (paymentTriggered)="paymentTriggered($event)">
+                      </jfs-stripe-elements>
+                      <div class="payment-error" *ngIf="stripeEl.error$ | async as error">
+                        {{error}}
+                      </div>
+                    </div>
+
+                    <div class="col-12 ta-right m-t-s"
+                         *ngIf="stripeEl.activeElement && stripeEl.activeElement.type !== elementType.PaymentRequestButton">
+                      <button id="btn-nxt-step-1" mat-flat-button color="primary" matStepperNext
+                              [disabled]="(stripeEl.activeElement.isValid$ | async) === false">Continue
+                      </button>
+                    </div>
+                  </ng-container>
+
+                  <ng-template #continuePaypal>
+                    <div class="col-12 ta-center m-t-s">
+                      <button mat-flat-button color="primary" matStepperNext>
+                        Proceed
+                      </button>
+                    </div>
+                  </ng-template>
                 </div>
 
               </form>
@@ -267,7 +313,8 @@
               <h6 class="m-b-xs">Security</h6>
               <p>We accept the following secure payment methods:</p>
               <p class="m-y-xs">...</p>
-              <p>When you submit your payment information your data is protected by Secure Socket Layer (SSL) technology certified by a digital certificate.</p>
+              <p>When you submit your payment information your data is protected by Secure Socket Layer (SSL) technology
+                certified by a digital certificate.</p>
             </mat-card>
           </div>
         </div>
@@ -291,28 +338,36 @@
                       <td class="w-half p-a-xs">{{price.subTotal | sp}}</td>
                     </tr>
                     <tr>
-                      <td colspan="2"><hr></td>
+                      <td colspan="2">
+                        <hr>
+                      </td>
                     </tr>
                     <tr>
                       <td class="w-half p-a-xs">Shipping:</td>
                       <td class="w-half p-a-xs">{{price.shipping ? (price.shipping | sp) : 'Free'}}</td>
                     </tr>
                     <tr *ngIf="validCode$ | async">
-                      <td colspan="2"><hr></td>
+                      <td colspan="2">
+                        <hr>
+                      </td>
                     </tr>
                     <tr *ngIf="validCode$ | async">
                       <td class="w-half p-a-xs">Discount:</td>
                       <td class="w-half p-a-xs">{{discount | sp}}</td>
                     </tr>
                     <tr *ngIf="validGiftCard$ | async">
-                      <td colspan="2"><hr></td>
+                      <td colspan="2">
+                        <hr>
+                      </td>
                     </tr>
                     <tr *ngIf="validGiftCard$ | async">
                       <td class="w-half p-a-xs">Gift Card:</td>
                       <td class="w-half p-a-xs">{{(-giftCardValue.value * 100) | sp}}</td>
                     </tr>
                     <tr>
-                      <td colspan="2"><hr></td>
+                      <td colspan="2">
+                        <hr>
+                      </td>
                     </tr>
                     <tr class="fw-bold">
                       <td class="w-half p-a-xs">Total:</td>
@@ -342,28 +397,41 @@
                 <mat-divider></mat-divider>
               </div>
               <div class="m-t-xs m-b-s">
-                <mat-checkbox color="primary" [formControl]="termsControl">I agree to the</mat-checkbox>
-                &nbsp;
-                <a class="c-primary" href="" target="_blank"><u>terms of service</u>.</a>
+                <mat-checkbox color="primary" [formControl]="termsControl">I agree to the&nbsp;</mat-checkbox>
+                <a class="c-primary" href="" target="_blank"><u>Terms of service</u>.</a>
               </div>
-              <div class="ta-right p-y-xs">
-                <button
-                  mat-flat-button
-                  color="primary"
-                  id="btn-purchase"
-                  [disabled]="!termsControl.value"
-                  [jpLoadClick]="checkOut()">
-                  Purchase
-                </button>
-              </div>
+
+
+              <ng-container *ngIf="paymentMethodControl.value === PaymentMethod.Stripe; else checkoutPaypal">
+                <div class="ta-right p-y-xs">
+                  <button
+                    mat-flat-button
+                    color="primary"
+                    id="btn-purchase"
+                    [disabled]="!termsControl.value"
+                    [jpLoadClick]="checkOut()">
+                    Purchase
+                  </button>
+                </div>
+              </ng-container>
+
+              <ng-template #checkoutPaypal>
+                <div class="ta-right p-y-xs checkout-paypal">
+                  <mat-spinner *ngIf="paypalLoading$ | async" diameter="35" class="checkout-paypal-spinner"></mat-spinner>
+
+                  <div #paypal [hidden]="paypalLoading$ | async" class="paypal" [class.invalid]="!termsControl.value || (price$ | async).total < 100"></div>
+                </div>
+              </ng-template>
             </mat-card>
             <p class="p-y-xs">Confirmation will be emailed to your address at {{(formData$ | async).billing.email}}</p>
           </div>
           <div class="col-4 col-s-12">
             <mat-card>
               <h6 class="m-b-xs">Secure purchase</h6>
-              <p class="m-b-xs">When you submit your payment information your data is protected by Secure Socket Layer (SSL) technology certified by a digital certificate.</p>
-              <p>Once you've completed this transaction, you'll receive an email message confirming receipt of your purchase.</p>
+              <p class="m-b-xs">When you submit your payment information your data is protected by Secure Socket Layer
+                (SSL) technology certified by a digital certificate.</p>
+              <p>Once you've completed this transaction, you'll receive an email message confirming receipt of your
+                purchase.</p>
             </mat-card>
           </div>
         </div>

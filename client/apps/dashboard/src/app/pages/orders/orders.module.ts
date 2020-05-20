@@ -4,6 +4,7 @@ import {SharedModule} from '../../shared/shared.module';
 import {OrdersComponent} from './orders.component';
 import {OrdersListComponent} from './pages/list/orders-list.component';
 import {OrdersSinglePageComponent} from './pages/single-page/orders-single-page.component';
+import {MatTableModule} from '@angular/material/table';
 
 const routes: Routes = [
   {
@@ -22,6 +23,6 @@ const routes: Routes = [
     OrdersListComponent,
     OrdersSinglePageComponent
   ],
-  imports: [SharedModule, RouterModule.forChild(routes)]
+  imports: [SharedModule, RouterModule.forChild(routes), MatTableModule]
 })
 export class OrdersModule {}

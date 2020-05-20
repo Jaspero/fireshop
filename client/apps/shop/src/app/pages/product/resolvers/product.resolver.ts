@@ -22,20 +22,20 @@ export class ProductResolver implements Resolve<Observable<Product>> {
   ) {}
 
   resolve(route: ActivatedRouteSnapshot) {
-
     // tslint:disable-next-line:no-console
     console.log('this.state.serverState', this.state.serverState);
 
-    if (this.state.serverState.product && this.state.serverState.product.id === route.params.id) {
-      return of(this.state.serverState.product)
+    if (
+      this.state.serverState.product &&
+      this.state.serverState.product.id === route.params.id
+    ) {
+      return of(this.state.serverState.product);
     }
 
     this.state.loading$.next(true);
     return this.afs
       .doc<Product>(
-        `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}/${
-          route.params.id
-        }`
+        `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}/${route.params.id}`
       )
       .get()
       .pipe(
