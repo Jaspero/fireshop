@@ -1,4 +1,4 @@
 export enum PaymentMethod {
-  Card = 'card',
+  Stripe = 'stripe',
   PayPal = 'paypal'
 }

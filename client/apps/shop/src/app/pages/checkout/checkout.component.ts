@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  HostListener,
   OnInit,
   ViewChild
 } from '@angular/core';
@@ -117,7 +118,7 @@ export class CheckoutComponent extends RxDestroy
   @ViewChild('stepper', {static: false})
   stepper: MatHorizontalStepper;
   paymentMethodControl = new FormControl(
-    PaymentMethod.Card,
+    PaymentMethod.Stripe,
     Validators.required
   );
 
@@ -136,6 +137,14 @@ export class CheckoutComponent extends RxDestroy
     private snack: MatSnackBar
   ) {
     super();
+  }
+
+  // TODO: Find alternative, this is currently best solution
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.keyCode === 9 && this.stepper.selectedIndex === 2) {
+      event.preventDefault();
+    }
   }
 
   ngOnInit() {

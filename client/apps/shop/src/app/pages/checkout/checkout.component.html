@@ -263,7 +263,7 @@
                   <mat-form-field>
                     <mat-label>Method</mat-label>
                     <mat-select [formControl]="paymentMethodControl">
-                      <mat-option value="card">Card</mat-option>
+                      <mat-option value="stripe">Card</mat-option>
                       <mat-option value="paypal">PayPal</mat-option>
                     </mat-select>
                     <mat-error *ngIf="paymentMethodControl.hasError('required')">Please choose a payment method
@@ -271,7 +271,7 @@
                   </mat-form-field>
 
 
-                  <ng-container *ngIf="paymentMethodControl.value === PaymentMethod.Card; else continuePaypal">
+                  <ng-container *ngIf="paymentMethodControl.value === PaymentMethod.Stripe; else continuePaypal">
                     <div class="col-12">
                       <h6 class="p-y-xs">Payment info</h6>
                     </div>
@@ -402,7 +402,7 @@
               </div>
 
 
-              <ng-container *ngIf="paymentMethodControl.value === PaymentMethod.Card; else checkoutPaypal">
+              <ng-container *ngIf="paymentMethodControl.value === PaymentMethod.Stripe; else checkoutPaypal">
                 <div class="ta-right p-y-xs">
                   <button
                     mat-flat-button
