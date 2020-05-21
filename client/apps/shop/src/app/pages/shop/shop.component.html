@@ -37,10 +37,10 @@
     <div class="grid jc-start" #productList>
       <!--Products-->
       <ng-container *ngIf="(products$ | async) as products">
-        <ng-container *ngIf="products.length !== 0; else emptyList">
+        <ng-container *ngIf="!!products.length; else emptyList">
           <div
             class="col-4 col-s-6 col-xs-12"
-            *ngFor="let product of products">
+            *ngFor="let product of products" @fadeIn>
             <jfs-product-card [product]="product"></jfs-product-card>
           </div>
         </ng-container>
@@ -93,3 +93,7 @@
     </div>
   </ng-template>
 </form>
+
+<div *ngIf="loading$ | async" class="shop-loading">
+  <mat-spinner diameter="40" color="accent"></mat-spinner>
+</div>

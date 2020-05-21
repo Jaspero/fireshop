@@ -18,19 +18,27 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {Product} from '@jf/interfaces/product.interface';
 import {BehaviorSubject, Observable, of} from 'rxjs';
-import {debounceTime, map, switchMap, tap} from 'rxjs/operators';
+import {debounceTime, delay, map, switchMap, tap} from 'rxjs/operators';
 import {CartService} from '../../shared/services/cart/cart.service';
-import {StateService} from '../../shared/services/state/state.service';
 
 import * as firebase from 'firebase';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
+import {animate, style, transition, trigger} from '@angular/animations';
 import FieldPath = firebase.firestore.FieldPath;
 
 @Component({
   selector: 'jfs-products',
   templateUrl: './shop.component.html',
   styleUrls: ['./shop.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({opacity: '0'}),
+        animate('1s ease-out', style({opacity: '1'}))
+      ])
+    ])
+  ]
 })
 export class ShopComponent extends RxDestroy implements OnInit {
   filters: FormGroup;
@@ -44,11 +52,13 @@ export class ShopComponent extends RxDestroy implements OnInit {
   // With BehaviorSubject no twitches during loading of new products
   products$ = new BehaviorSubject([]);
 
+  loading$ = new BehaviorSubject<boolean>(true);
+
   // Last loaded product, so it is easier to tell firestore startAfter with specific field
   lastProduct: Product = null;
 
   // When scrolled this close from bottom, load more products
-  loadOffset = 250;
+  loadOffset = 400;
 
   // Whether there are still products to load from firestore
   productsLeft = true;
@@ -92,7 +102,7 @@ export class ShopComponent extends RxDestroy implements OnInit {
   categories$: Observable<Category[]>;
   primaryCurrency = DYNAMIC_CONFIG.currency.primary;
 
-  @ViewChild('productList')
+  @ViewChild('productList', {static: false})
   private productList: ElementRef;
 
   constructor(
@@ -100,13 +110,12 @@ export class ShopComponent extends RxDestroy implements OnInit {
     public dialog: MatDialog,
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
-    private fb: FormBuilder,
-    private state: StateService
+    private fb: FormBuilder
   ) {
     super();
   }
 
-  @HostListener('window:scroll', ['$event'])
+  @HostListener('window:scroll', [])
   onScroll() {
     if (
       window.innerHeight + window.scrollY >=
@@ -120,7 +129,7 @@ export class ShopComponent extends RxDestroy implements OnInit {
     this.filters.valueChanges
       .pipe(
         debounceTime(300),
-        tap(filters => {
+        tap(() => {
           this.lastProduct = null;
           this.productsLeft = true;
           this.products$.next([]);
@@ -132,9 +141,11 @@ export class ShopComponent extends RxDestroy implements OnInit {
     this.loadMore$
       .pipe(
         switchMap(loadMore => {
-          if (!this.productsLeft) {
+          if (!this.productsLeft || !loadMore) {
             return of([]);
           }
+
+          this.loading$.next(true);
 
           const filters = this.filters.getRawValue();
           return this.afs
@@ -204,9 +215,9 @@ export class ShopComponent extends RxDestroy implements OnInit {
             .pipe();
         }),
         map(actions => {
-          if (actions.length === 0) return [];
+          if (!actions.length) return [];
 
-          const products = actions.reduce((acc, cur, ind) => {
+          const products = actions.reduce((acc, cur) => {
             acc.push({
               id: cur.payload.doc.id,
               ...cur.payload.doc.data()
@@ -219,7 +230,7 @@ export class ShopComponent extends RxDestroy implements OnInit {
           return products;
         }),
         tap(data => {
-          if (data.length === 0) return;
+          if (!data.length) return;
 
           if (data.length < this.pageSize) {
             this.productsLeft = false;
@@ -235,6 +246,16 @@ export class ShopComponent extends RxDestroy implements OnInit {
             .getValue()
             .filter(product => !newIds.has(product.id));
           this.products$.next([...oldProducts, ...data]);
+        }),
+        delay(1000),
+        tap(() => {
+          this.loading$.next(false);
+          if (
+            this.productList.nativeElement.offsetHeight < window.innerHeight &&
+            this.productsLeft
+          ) {
+            this.loadMore$.next(true);
+          }
         })
       )
       .subscribe();

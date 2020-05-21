@@ -503,7 +503,7 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
           switchMap(data => {
             const snap = data.docs;
 
-            if (snap.length === 0) {
+            if (!snap.length) {
               return throwError('Gift Card is invalid');
             }
 
