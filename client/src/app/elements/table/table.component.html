@@ -84,7 +84,7 @@
           </div>
         </mat-toolbar>
 
-        <div class="of-x-auto">
+        <div class="table-wrapper">
           <table
             class="jms-instance-overview-table"
             mat-table
@@ -161,7 +161,7 @@
               </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="data.displayColumns"></tr>
+            <tr mat-header-row *matHeaderRowDef="data.displayColumns; sticky: data.stickyHeader"></tr>
             <tr mat-row *matRowDef="let row; columns: data.displayColumns"></tr>
           </table>
         </div>

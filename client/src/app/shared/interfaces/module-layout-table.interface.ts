@@ -40,5 +40,10 @@ export interface ModuleLayoutTable {
   hideDelete?: string[];
   hideExport?: string[];
   hideImport?: string[];
-  actions?: ModuleLayoutTableAction[]
+  actions?: ModuleLayoutTableAction[];
+
+  /**
+   * True by default
+   */
+  stickyHeader?: boolean;
 }

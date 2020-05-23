@@ -42,6 +42,7 @@ interface TableData {
   definitions: ModuleDefinitions;
   tableColumns: ModuleLayoutTableColumn[];
   schema: JSONSchema7;
+  stickyHeader: boolean;
   sort?: InstanceSort;
   sortModule?: SortModule;
   filterModule?: FilterModule;
@@ -223,12 +224,15 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
           definitions: data.definitions,
           ...(
             data.layout ? {
+              stickyHeader: data.layout.table && data.layout.table.hasOwnProperty('stickyHeader') ? data.layout.table.stickyHeader : true,
               sortModule: data.layout.sortModule,
               filterModule: data.layout.filterModule,
               searchModule: data.layout.searchModule,
               importModule: data.layout.importModule,
               ...hide
-            } : {}
+            } : {
+              stickyHeader: true
+            }
           )
         };
       }),
