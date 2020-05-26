@@ -35,13 +35,15 @@ export const fileDeleted = functions.storage
           if (filePrefix || width || height) {
             try {
               await storage.file(lookUpName(filePrefix)).delete();
-            } catch (e) {}
+            } catch (e) {
+            }
           }
 
           if (webpVersion) {
             try {
               await storage.file(webpLookUp(filePrefix)).delete();
-            } catch (e) {}
+            } catch (e) {
+            }
           }
         }
       }
