@@ -36,7 +36,7 @@
     "lodash-es": "4.17.15",
     "nanoid": "2.1.11",
     "rxjs": "7.0.0-alpha.1",
-    "tinymce": "5.1.6",
+    "tinymce": "5.2.2",
     "tslib": "1.11.1",
     "zone.js": "0.10.3"
   },
