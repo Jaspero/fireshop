@@ -15,10 +15,18 @@
           <div class="flex ai-center jc-between">
             <h5>{{form.get('name').value}}</h5>
             <div>
-              <button mat-icon-button aria-label="Previous product" matTooltip="Previous product" (click)="move(false, form)">
+              <mat-form-field appearance="outline">
+                <mat-label>Currency</mat-label>
+                <mat-select [formControl]="currencyControl">
+                  <mat-option *ngFor="let currency of currencies" [value]="currency.code">
+                    {{currency.code}} ({{currency.symbol}})
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <button mat-icon-button aria-label="Previous product" matTooltip="Previous product"> <!-- (click)="move(false, form)" -->
                 <mat-icon>arrow_back</mat-icon>
               </button>
-              <button mat-icon-button aria-label="Next product" matTooltip="Next product" (click)="move(true, form)">
+              <button mat-icon-button aria-label="Next product" matTooltip="Next product"> <!-- (click)="move(true, form)" -->
                 <mat-icon>arrow_forward</mat-icon>
               </button>
             </div>
@@ -27,15 +35,35 @@
             <mat-icon>filter_none</mat-icon>
             <span>&nbsp;Duplicate</span>
           </button>
-          <button mat-button (click)="view(form)">
+          <button mat-button [disabled]="!initialValue || !initialValue.active" (click)="view(form)">
             <mat-icon>visibility</mat-icon>
             <span>&nbsp;View</span>
           </button>
         </ng-container>
 
-        <h5 *ngSwitchCase="viewState.New">New Product</h5>
+        <div *ngSwitchCase="viewState.New" class="flex ai-center jc-between">
+          <h5>New Product</h5>
+          <mat-form-field appearance="outline">
+            <mat-label>Currency</mat-label>
+            <mat-select [formControl]="currencyControl">
+              <mat-option *ngFor="let currency of currencies" [value]="currency.code">
+                {{currency.code}} ({{currency.symbol}})
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
 
-        <h5 *ngSwitchCase="viewState.Copy">Copy of {{form.get('name').value}}</h5>
+        <div *ngSwitchCase="viewState.Copy" class="flex ai-center jc-between">
+          <h5>Copy of {{form.get('name').value}}</h5>
+          <mat-form-field appearance="outline">
+            <mat-label>Currency</mat-label>
+            <mat-select [formControl]="currencyControl">
+              <mat-option *ngFor="let currency of currencies" [value]="currency.code">
+                {{currency.code}} ({{currency.symbol}})
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
 
       </div>
     </div>
@@ -75,7 +103,7 @@
                 <mat-divider></mat-divider>
               </div>
               <div class="p-y-xs">
-                <jfsc-gallery-upload formControlName="gallery"></jfsc-gallery-upload>
+                <jfsc-gallery-upload formControlName="gallery" [moduleId]="moduleId" [productId]="form.get('id').value"></jfsc-gallery-upload>
               </div>
             </mat-card>
           </div>
@@ -83,7 +111,7 @@
           <div class="col-12">
             <mat-card>
               <div class="p-y-xs flex jc-between ai-center">
-                <h6>Description Variants</h6>
+                <h6>Variants</h6>
                 <button mat-button color="primary" (click)="addAttribute()">New attribute</button>
               </div>
 
@@ -144,11 +172,13 @@
                       <input type="number" matInput formControlName="quantity">
                     </mat-form-field>
 
-                    <mat-form-field class="m-r-xs" appearance="outline">
-                      <mat-label>Price</mat-label>
-                      <span matPrefix>{{currency}}&nbsp;</span>
-                      <input formControlName="price" matInput type="number">
-                    </mat-form-field>
+                    <ng-container formGroupName="price">
+                      <mat-form-field class="m-r-xs" appearance="outline">
+                        <mat-label>Price</mat-label>
+                        <span matPrefix>{{selectedCurrency.symbol}}&nbsp;</span>
+                        <input [formControl]="form.get('inventory.' + item + '.price.' + selectedCurrency.code)" matInput type="number">
+                      </mat-form-field>
+                    </ng-container>
 
                     <mat-radio-button [value]="item"><span class="c-d-secondary">Default</span></mat-radio-button>
                   </div>
@@ -168,11 +198,14 @@
                 <mat-divider></mat-divider>
               </div>
               <div class="p-y-xs">
-                <mat-form-field appearance="outline" class="w-full">
+                <mat-form-field class="m-r-xs w-full" appearance="outline">
                   <mat-label>Price</mat-label>
-                  <span matPrefix>{{currency}}&nbsp;</span>
-                  <input formControlName="price" matInput type="number">
+                  <span matPrefix>{{selectedCurrency.symbol}}&nbsp;</span>
+                  <input [formControl]="selectedCurrency.control" matInput type="number">
                 </mat-form-field>
+              </div>
+              <div class="p-y-xs" *ngIf="metaForm">
+                <mat-checkbox color="primary" [formControl]="metaForm.get('samePriceForVariants')">Same Price For Variants</mat-checkbox>
               </div>
             </mat-card>
           </div>
@@ -209,6 +242,7 @@
                 <mat-form-field appearance="outline" class="w-full mat-hint">
                   <mat-label>URL</mat-label>
                   <input matInput formControlName="id" />
+                  <mat-hint>URL will auto populate from product name if left empty.</mat-hint>
                   <mat-error *ngIf="form.get('id').invalid">Only lowercase letters dashes and underscores are allowed</mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="w-full">
@@ -231,6 +265,23 @@
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
+              </div>
+              <div class="p-y-xs">
+                <mat-divider></mat-divider>
+              </div>
+              <div class="p-y-xs">
+
+                <p>
+                  Related products are populated automatically by selecting at
+                  random from the same category. If however a specific list is provided
+                  it will be used instead.
+                </p>
+
+                <div class="p-t-s">
+                  <button mat-raised-button color="primary" (click)="relatedProducts()">
+                    Related Products <ng-container *ngIf="form.get('relatedProducts').value.length as rp">({{rp}})</ng-container>
+                  </button>
+                </div>
               </div>
             </mat-card>
           </div>

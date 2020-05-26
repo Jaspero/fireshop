@@ -6,5 +6,7 @@ export enum FirestoreCollections {
   Settings = 'settings',
   Discounts = 'discounts',
   Reviews = 'reviews',
+  GiftCards = 'gift-cards',
+  GiftCardsInstances = 'gift-cards-instances',
   Sales = 'sales'
 }

@@ -6,6 +6,7 @@ import {
   Component,
   ElementRef,
   forwardRef,
+  Input,
   OnInit,
   TemplateRef,
   ViewChild
@@ -16,13 +17,17 @@ import {
   FormControl,
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
-import {MatDialog, MatSort} from '@angular/material';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {Breakpoint, currentBreakpoint$} from '@jf/consts/breakpoint.const';
 import {ENV_CONFIG} from '@jf/consts/env-config.const';
 import {readFile} from '@jf/utils/read-file';
 import {forkJoin, from, Observable, of} from 'rxjs';
 import {catchError, map, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {GeneratedImage} from '../../../interfaces/generated-image.interface';
+import {formatGeneratedImages} from '../../../utils/format-generated-images';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import * as nanoid from 'nanoid';
+import {PRODUCT_GENERATED_IMAGES} from '../../../../pages/products/consts/product-generated-images.const';
 
 @Component({
   selector: 'jfsc-gallery-upload',
@@ -42,6 +47,24 @@ export class GalleryUploadComponent extends RxDestroy
   static STORAGE_URL =
     'https://firebasestorage.googleapis.com/v0/b/' +
     ENV_CONFIG.firebase.storageBucket;
+  @ViewChild('urlUploadDialog', {static: true})
+  urlUploadDialog: TemplateRef<any>;
+  @ViewChild('file', {static: true})
+  fileEl: ElementRef<HTMLInputElement>;
+  urlControl = new FormControl('');
+  lastFrom: number;
+  lastTo: number;
+  values = [];
+  toRemove = [];
+  imageWidth$: Observable<number>;
+
+  urlDialog: MatDialogRef<any>;
+
+  @Input()
+  moduleId: string;
+
+  @Input()
+  productId: string;
 
   constructor(
     public dialog: MatDialog,
@@ -51,20 +74,6 @@ export class GalleryUploadComponent extends RxDestroy
   ) {
     super();
   }
-
-  @ViewChild('urlUploadDialog', {static: true})
-  urlUploadDialog: TemplateRef<any>;
-
-  @ViewChild('file', {static: true})
-  fileEl: ElementRef<HTMLInputElement>;
-
-  urlControl = new FormControl('');
-  lastFrom: number;
-  lastTo: number;
-  values = [];
-  toRemove = [];
-
-  imageWidth$: Observable<number>;
 
   ngOnInit() {
     this.imageWidth$ = currentBreakpoint$.pipe(
@@ -106,24 +115,50 @@ export class GalleryUploadComponent extends RxDestroy
   }
 
   addImage() {
-    this.http
-      .get(this.urlControl.value, {
-        withCredentials: false,
-        responseType: 'blob'
-      })
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(res => {
-        const urlCreator = window.URL || window['webkitURL'];
-        this.values.push({
-          data: urlCreator.createObjectURL(res),
-          live: true
-        });
-        this.urlControl.setValue('');
-        this.cdr.detectChanges();
-      });
+    return () => {
+      return this.http
+        .get(this.urlControl.value, {
+          withCredentials: false,
+          responseType: 'blob'
+        })
+        .pipe(
+          takeUntil(this.destroyed$),
+          switchMap(res => {
+            const name =
+              [this.moduleId, this.productId, nanoid()].join('-') +
+              '.' +
+              res.type.split('/')[1];
+            return from(
+              this.afs.upload(name, res, {
+                contentType: res.type,
+                customMetadata: {
+                  moduleId: this.moduleId,
+                  documentId: this.productId,
+                  ...(PRODUCT_GENERATED_IMAGES &&
+                    formatGeneratedImages(PRODUCT_GENERATED_IMAGES))
+                }
+              })
+            ).pipe();
+          }),
+          switchMap(a => {
+            return a.ref.getDownloadURL();
+          }),
+          tap(url => {
+            this.values.push({
+              data: url,
+              live: true
+            });
+            this.urlControl.setValue('');
+            this.cdr.detectChanges();
+
+            this.urlDialog.close();
+          })
+        );
+    };
   }
 
-  removeImage(index: number, item) {
+  removeImage(event, index: number, item) {
+    event.stopPropagation();
     if (item.live && item.data.includes(GalleryUploadComponent.STORAGE_URL)) {
       this.toRemove.push(item.data);
     }
@@ -159,9 +194,9 @@ export class GalleryUploadComponent extends RxDestroy
     this.fileEl.nativeElement.click();
   }
 
-  filesUploaded(fileList: FileList) {
+  filesUploaded(el: any) {
     forkJoin(
-      Array.from(fileList).map(file =>
+      Array.from(el.files).map((file: any) =>
         readFile(file).pipe(
           map(data => ({
             data,
@@ -174,13 +209,19 @@ export class GalleryUploadComponent extends RxDestroy
       this.values.push(...files);
       this.cdr.detectChanges();
     });
+
+    el.value = '';
   }
 
   /**
    * Executes all uploads/removes to persist
    * the changes on server
    */
-  save() {
+  save(
+    moduleId: string,
+    documentId: string,
+    generatedImages?: GeneratedImage[]
+  ) {
     /**
      * Break if there are no files to remove and there aren't any files to upload
      */
@@ -190,20 +231,26 @@ export class GalleryUploadComponent extends RxDestroy
     }
 
     return forkJoin([
-      ...this.toRemove.map(file =>
-        from(this.afs.storage.refFromURL(file).delete()).pipe(
+      ...this.toRemove.map(file => {
+        return from(this.afs.storage.refFromURL(file).delete()).pipe(
           /**
            * Dont' fail if files didn't delete
            */
           catchError(() => of([]))
-        )
-      ),
+        );
+      }),
       ...this.values.reduce((acc, cur) => {
         if (!cur.live) {
+          const name = [moduleId, documentId, cur.pushToLive.name].join('-');
           acc.push(
             from(
-              this.afs.upload(cur.pushToLive.name, cur.pushToLive, {
-                contentType: cur.pushToLive.type
+              this.afs.upload(name, cur.pushToLive, {
+                contentType: cur.pushToLive.type,
+                customMetadata: {
+                  moduleId,
+                  documentId,
+                  ...(generatedImages && formatGeneratedImages(generatedImages))
+                }
               })
             ).pipe(
               switchMap(task => task.ref.getDownloadURL()),
@@ -224,7 +271,7 @@ export class GalleryUploadComponent extends RxDestroy
   }
 
   openUrlUpload() {
-    this.dialog.open(this.urlUploadDialog, {
+    this.urlDialog = this.dialog.open(this.urlUploadDialog, {
       width: '400px'
     });
   }

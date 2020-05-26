@@ -10,7 +10,7 @@
   <section class="p-y-m">
     <div class="grid">
       <div class="col-8 col-s-10 col-xs-12 flex ai-center jc-between">
-        <h5>{{data.customer.name}} stats</h5>
+        <h5>{{data.customer.fullName}} stats</h5>
         <button mat-button [routerLink]="['/customers/', data.customer.id]">Customer info</button>
       </div>
     </div>
@@ -62,6 +62,18 @@
                 <ng-template #noReviews>
                   <mat-list-item>
                     <h4 mat-line>No reviews yet.</h4>
+                  </mat-list-item>
+                </ng-template>
+                <ng-container *ngIf="data.giftCard.length; else noGiftCard">
+                  <h3 mat-subheader>Gift cards</h3>
+                  <mat-list-item *ngFor="let gc of data.giftCard">
+                    <mat-icon mat-list-icon>card_giftcard</mat-icon>
+                    <p mat-line [routerLink]="['/gift-cards/overview/', gc.giftCardId]">{{gc.giftCardId}}</p>
+                  </mat-list-item>
+                </ng-container>
+                <ng-template #noGiftCard>
+                  <mat-list-item>
+                    <h4 mat-line>No gift cards yet.</h4>
                   </mat-list-item>
                 </ng-template>
               </mat-nav-list>

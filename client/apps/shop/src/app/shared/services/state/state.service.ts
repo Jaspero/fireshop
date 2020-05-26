@@ -32,10 +32,12 @@ export class StateService {
         if (loginValid && user) {
           return this.afs
             .doc(`${FirestoreCollections.Customers}/${user.uid}`)
-            .valueChanges()
+            .get({
+              source: 'server'
+            })
             .pipe(
               map(doc => {
-                return {authData: user, customerData: doc};
+                return {authData: user, customerData: doc.data()};
               })
             );
         } else {
@@ -89,4 +91,5 @@ export class StateService {
   });
 
   structuredData: any = {};
+  serverState: any;
 }

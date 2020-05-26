@@ -3,32 +3,6 @@ import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {
-  MatBadgeModule,
-  MatButtonModule,
-  MatButtonToggleModule,
-  MatCardModule,
-  MatCheckboxModule,
-  MatChipsModule,
-  MatDatepickerModule,
-  MatDialogModule,
-  MatDividerModule,
-  MatExpansionModule,
-  MatFormFieldModule,
-  MatIconModule,
-  MatInputModule,
-  MatListModule,
-  MatMenuModule,
-  MatNativeDateModule,
-  MatProgressSpinnerModule,
-  MatRippleModule,
-  MatSelectModule,
-  MatSliderModule,
-  MatSnackBarModule,
-  MatStepperModule,
-  MatTabsModule,
-  MatTooltipModule
-} from '@angular/material';
 import {RouterModule} from '@angular/router';
 import {
   ClickOutsideModule,
@@ -40,6 +14,7 @@ import {
   StopPropagationModule
 } from '@jaspero/ng-helpers';
 import {JpImagePreloadModule} from '@jaspero/ng-image-preload';
+import {JpSliderModule} from '@jaspero/ng-slider';
 import {ColorPickerComponent} from '@jf/components/color-picker/color-picker.component';
 import {ConfirmationComponent} from '@jf/components/confirmation/confirmation.component';
 import {RatingScaleComponent} from '@jf/components/rating-scale/rating-scale.component';
@@ -54,6 +29,31 @@ import {ReviewsDialogComponent} from './components/reviews/reviews-dialog.compon
 import {SearchComponent} from './components/search/search.component';
 import {LibraryImageDirective} from '@jf/directives/library-image.directive';
 import {StripePipe} from '@jf/pipes/stripe.pipe';
+import {LightboxComponent} from './components/lightbox/lightbox.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatBadgeModule} from '@angular/material/badge';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatSelectModule} from '@angular/material/select';
+import {MatSliderModule} from '@angular/material/slider';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule, MatRippleModule} from '@angular/material/core';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatListModule} from '@angular/material/list';
+import {MatCardModule} from '@angular/material/card';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatStepperModule} from '@angular/material/stepper';
+import {OrderByValuePipe} from './pipes/orderByValue.pipe';
 
 const MODULES = [
   CommonModule,
@@ -101,6 +101,7 @@ const MODULES = [
   SanitizeModule,
   LoadClickModule,
 
+  JpSliderModule,
   JpImagePreloadModule,
   NgxJsonLdModule
 ];
@@ -111,7 +112,8 @@ const ENTRY_COMPONENTS = [
   CartComponent,
   SearchComponent,
   ReviewsDialogComponent,
-  RatingScaleComponent
+  RatingScaleComponent,
+  LightboxComponent
 ];
 const COMPONENTS = [
   NetworkWidgetComponent,
@@ -120,12 +122,11 @@ const COMPONENTS = [
   ...ENTRY_COMPONENTS
 ];
 const DIRECTIVES = [LibraryImageDirective];
-const PIPES = [StripePipe];
+const PIPES = [StripePipe, OrderByValuePipe];
 
 @NgModule({
   declarations: [...COMPONENTS, ...DIRECTIVES, ...PIPES],
   imports: [...MODULES],
-  exports: [...MODULES, ...COMPONENTS, ...DIRECTIVES, ...PIPES],
-  entryComponents: ENTRY_COMPONENTS
+  exports: [...MODULES, ...COMPONENTS, ...DIRECTIVES, ...PIPES]
 })
 export class SharedModule {}

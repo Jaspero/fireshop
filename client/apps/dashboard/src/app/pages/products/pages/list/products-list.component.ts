@@ -1,13 +1,20 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {MatCheckboxChange} from '@angular/material';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
 import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {Product} from '@jf/interfaces/product.interface';
 import {from, Observable} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
 import {LangListComponent} from '../../../../shared/components/lang-list/lang-list.component';
+import {SortDialogComponent} from '../../../../shared/components/sort-dialog/sort-dialog.component';
+import {MatCheckboxChange} from '@angular/material/checkbox';
 
 @Component({
   selector: 'jfsc-list',
@@ -37,6 +44,9 @@ export class ProductsListComponent extends LangListComponent<Product>
   };
   categories$: Observable<Category[]>;
 
+  @ViewChild('sortItem', {static: true})
+  sortItemTemplate: TemplateRef<any>;
+
   ngOnInit() {
     super.ngOnInit();
 
@@ -44,7 +54,7 @@ export class ProductsListComponent extends LangListComponent<Product>
       .collection<Category>(
         `${FirestoreCollections.Categories}-${STATIC_CONFIG.lang}`
       )
-      .valueChanges('id');
+      .valueChanges({idField: 'id'});
   }
 
   runFilters(ref) {
@@ -88,5 +98,16 @@ export class ProductsListComponent extends LangListComponent<Product>
         )
       )
       .subscribe();
+  }
+
+  openSort() {
+    this.dialog.open(SortDialogComponent, {
+      width: '800px',
+      data: {
+        title: 'Most Relevant Sort',
+        collection: `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}`,
+        templateRef: this.sortItemTemplate
+      }
+    });
   }
 }

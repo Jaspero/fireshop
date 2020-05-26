@@ -10,11 +10,11 @@ import {
   FormControl,
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
-import {MatAutocompleteSelectedEvent} from '@angular/material';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Customer} from '@jf/interfaces/customer.interface';
 import {combineLatest, Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
+import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 
 @Component({
   selector: 'jfsc-customer-lookup',
@@ -41,7 +41,7 @@ export class CustomerLookupComponent implements OnInit, ControlValueAccessor {
   ngOnInit() {
     this.customers$ = this.afs
       .collection<Customer>(FirestoreCollections.Customers)
-      .valueChanges('id');
+      .valueChanges({idField: 'id'});
 
     this.filteredCustomers$ = combineLatest([
       this.customers$,
@@ -52,7 +52,7 @@ export class CustomerLookupComponent implements OnInit, ControlValueAccessor {
     ]).pipe(
       map(([customers, value]) =>
         customers.filter(customer =>
-          (customer.name || '').toLowerCase().includes(value)
+          (customer.fullName || '').toLowerCase().includes(value)
         )
       )
     );
@@ -81,7 +81,7 @@ export class CustomerLookupComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-  writeValue(value: string | {id: string; name: string}) {
-    this.search.setValue(typeof value === 'string' ? value : value.name);
+  writeValue(value: string | {id: string; fullName: string}) {
+    this.search.setValue(typeof value === 'string' ? value : value.fullName);
   }
 }

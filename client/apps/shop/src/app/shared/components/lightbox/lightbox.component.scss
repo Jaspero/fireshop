@@ -1,0 +1,45 @@
+:host {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: block;
+  height: 100vh;
+  width: 100vw;
+  background: black;
+}
+
+.jfs-lightbox-nav-prev {
+  position: fixed;
+  z-index: 2;
+  top: calc(50% - 20px);
+  left: 20px;
+  background: white;
+  color: black;
+  box-shadow: 0 2px 5px 0 black;
+}
+
+.jfs-lightbox-nav-next {
+  position: fixed;
+  z-index: 2;
+  top: calc(50% - 20px);
+  right: 20px;
+  background: white;
+  color: black;
+  box-shadow: 0 2px 5px 0 black;
+}
+
+.jfs-lightbox-close {
+  position: fixed;
+  z-index: 2;
+  top: 20px;
+  right: 20px;
+  background: white;
+  color: black;
+  box-shadow: 0 2px 5px 0 black;
+}
+
+.jfs-lightbox-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

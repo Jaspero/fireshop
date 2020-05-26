@@ -9,7 +9,6 @@ import {
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {MatDialog} from '@angular/material';
 import {ActivatedRoute} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
@@ -26,6 +25,8 @@ import {CartService} from '../../shared/services/cart/cart.service';
 import {StateService} from '../../shared/services/state/state.service';
 import {WishListService} from '../../shared/services/wish-list/wish-list.service';
 import {getProductFilters} from '../../shared/utils/get-product-filters';
+import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'jfs-product',
@@ -70,16 +71,25 @@ export class ProductComponent extends RxDestroy implements OnInit {
   @ViewChild('reviewsDialog', {static: true}) reviewsDialog: TemplateRef<any>;
 
   ngOnInit() {
-    this.data$ = this.activatedRoute.data.pipe(
-      switchMap(data => {
+    this.data$ = combineLatest([
+      this.activatedRoute.data,
+      this.wishList.update$
+    ]).pipe(
+      switchMap(([data]) => {
         this.similar$ = this.http.get(
           `${environment.restApi}/similarProducts`,
           {
             params: {
               category: data.product.category,
               id: data.product.id,
-              num: '3',
-              lang: STATIC_CONFIG.lang
+              num: (
+                DYNAMIC_CONFIG.generalSettings.relatedProducts || 3
+              ).toString(),
+              lang: STATIC_CONFIG.lang,
+              ...(data.product.relatedProducts &&
+                data.product.relatedProducts.length && {
+                  relatedProducts: data.product.relatedProducts.join(',')
+                })
             }
           }
         );
@@ -218,9 +228,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
 
   facebookShare(data) {
     window.open(
-      `https://www.facebook.com/sharer/sharer.php?u=${
-        environment.websiteUrl
-      }/product/${data.product.id}`,
+      `https://www.facebook.com/sharer/sharer.php?u=${environment.websiteUrl}/product/${data.product.id}`,
       'facebook-popup',
       'height=350,width=600'
     );
@@ -228,17 +236,13 @@ export class ProductComponent extends RxDestroy implements OnInit {
 
   twitterShare(data) {
     window.open(
-      `http://twitter.com/share?text=${data.product.name}&url=${
-        environment.websiteUrl
-      }/product/${data.product.id}`,
+      `http://twitter.com/share?text=${data.product.name}&url=${environment.websiteUrl}/product/${data.product.id}`,
       '',
       'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0'
     );
   }
 
   emailShare(data) {
-    window.location.href = `mailto:test@example.com?subject=${
-      data.product.name
-    }&body=${environment.websiteUrl}/product/${data.product.id}`;
+    window.location.href = `mailto:test@example.com?subject=${data.product.name}&body=${environment.websiteUrl}/product/${data.product.id}`;
   }
 }

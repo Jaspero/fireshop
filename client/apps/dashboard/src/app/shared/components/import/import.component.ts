@@ -7,9 +7,9 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import {MatDialog, MatSort} from '@angular/material';
 import {notify} from '@jf/utils/notify.operator';
 import {environment} from '../../../../environments/environment';
+import {MatDialog} from '@angular/material/dialog';
 
 interface ImportResponse {
   errors?: any;
@@ -33,10 +33,13 @@ export class ImportComponent {
 
   data: ImportResponse;
 
-  selectFile(event) {
-    const file = event.target.files[0];
+  selectFile(el: HTMLInputElement) {
+    const file = el.files[0];
     const formData = new FormData();
     formData.append('file', file, file.name);
+
+    el.value = '';
+
     this.http
       .post(`${environment.restApi}/importData`, formData, {
         params: {

@@ -10,7 +10,7 @@ export class MetaResolver implements Resolve<boolean> {
   constructor(private title: Title, private meta: Meta) {}
 
   resolve(route: ActivatedRouteSnapshot | {data: {meta: any}}) {
-    const valuesToSet = route.data.meta || {};
+    const valuesToSet = {...(route.data.meta || {})};
 
     this.title.setTitle(
       valuesToSet.title ? `${valuesToSet.title} - ${BASE_TITLE}` : BASE_TITLE

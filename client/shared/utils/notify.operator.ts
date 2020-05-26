@@ -1,6 +1,6 @@
-import {MatSnackBar} from '@angular/material';
 import {Observable, throwError} from 'rxjs';
 import {tap, catchError} from 'rxjs/operators';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 const DEFAULT_OPTIONS = {
   success: 'Operation completed',

@@ -5,9 +5,9 @@ import {
   Input,
   OnInit
 } from '@angular/core';
-import {Product} from '@jf/interfaces/product.interface';
+import {Price, Product} from '@jf/interfaces/product.interface';
 import {UNIQUE_ID, UNIQUE_ID_PROVIDER} from '@jf/utils/id.provider';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {map, shareReplay} from 'rxjs/operators';
 import {CartService} from '../../services/cart/cart.service';
 import {WishListService} from '../../services/wish-list/wish-list.service';
@@ -22,22 +22,13 @@ import {OnChange} from '@jaspero/ng-helpers';
   providers: [UNIQUE_ID_PROVIDER]
 })
 export class ProductCardComponent implements OnInit {
-  constructor(
-    @Inject(UNIQUE_ID)
-    public uniqueId: string,
-    public cart: CartService,
-    public wishList: WishListService
-  ) {}
-
-  // TODO: @onChange is broken. Strangely it links all the product-cards together
   @OnChange(function() {
     this.connectProperties();
   })
   @Input()
   product: Product;
-  price: number;
+  price: Price;
   filters: any;
-
   wishList$: Observable<{
     icon: string;
     label: string;
@@ -45,22 +36,42 @@ export class ProductCardComponent implements OnInit {
   cartQuantity$: Observable<number>;
   canAddToCart$: Observable<boolean>;
 
+  selectedWish: boolean;
+
+  iconObject = {
+    true: {
+      label: 'Remove from wishlist',
+      icon: 'favorite'
+    },
+    false: {
+      label: 'Add to wishlist',
+      icon: 'favorite_bordered'
+    }
+  };
+
+  constructor(
+    @Inject(UNIQUE_ID)
+    public uniqueId: string,
+    public cart: CartService,
+    public wishList: WishListService
+  ) {}
+
   ngOnInit() {
     this.wishList$ = this.wishList.includes(this.product.id).pipe(
-      map(value =>
-        value
-          ? {
-              label: 'Remove from wishlist',
-              icon: 'favorite'
-            }
-          : {
-              label: 'Add to wishlist',
-              icon: 'favorite_bordered'
-            }
-      )
+      map(value => {
+        this.selectedWish = value;
+        return this.iconObject[value ? 'true' : 'false'];
+      })
     );
-
     this.connectProperties();
+  }
+
+  toggleWish() {
+    this.selectedWish = !this.selectedWish;
+    this.wishList$ = of<any>(
+      this.iconObject[this.selectedWish ? 'true' : 'false']
+    );
+    this.wishList.toggle(this.product);
   }
 
   connectProperties() {

@@ -9,4 +9,4 @@
 <button mat-icon-button *ngIf="!imageUrl.value"><i class="material-icons" (click)="openFileUpload()">perm_media</i></button>
 <button mat-icon-button *ngIf="imageUrl.value"><i class="material-icons" (click)="remove()">highlight_off</i></button>
 
-<input #file type="file" hidden (change)="filesImage($event.target.files)">
+<input #file type="file" hidden (change)="filesImage($event.target)">

@@ -4,20 +4,23 @@
       mat-card-avatar
       src="assets/images/loading.svg"
       size="s"
+      alt="Product Icon"
       [jfsLibraryImage]="product.gallery[0]"
       [webp]="false"
     />
     <mat-card-title>{{product.name}}</mat-card-title>
-    <mat-card-subtitle>{{product.shortDescription}}</mat-card-subtitle>
+    <mat-card-subtitle>{{product.shortDescription || '&nbsp;'}}</mat-card-subtitle>
   </mat-card-header>
-  <img
-    mat-card-image
-    src="assets/images/loading.svg"
-    size="m"
-    [jfsLibraryImage]="product.gallery[0]"
-    [webp]="false"
-    [attr.alt]="product.name"
-  />
+  <div class="mat-card-image-container">
+    <img
+      mat-card-image
+      src="assets/images/loading.svg"
+      size="m"
+      [jfsLibraryImage]="product.gallery[0]"
+      [webp]="false"
+      [attr.alt]="product.name"
+    />
+  </div>
   <mat-card-content>
     <p>{{price | sp}}</p>
   </mat-card-content>
@@ -37,7 +40,7 @@
           color="primary"
           [matTooltip]="ws.label"
           [attr.aria-label]="ws.label"
-          (jpStopPropagation)="wishList.toggle(product)">
+          (jpStopPropagation)="toggleWish()">
           <mat-icon>{{ws.icon}}</mat-icon>
         </button>
       </ng-container>

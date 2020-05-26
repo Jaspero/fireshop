@@ -6,7 +6,6 @@ import {
   QueryDocumentSnapshot
 } from '@angular/fire/firestore';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
-import {MatBottomSheet, MatDialog, MatSort} from '@angular/material';
 import {Router} from '@angular/router';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {confirmation} from '@jf/utils/confirmation';
@@ -37,6 +36,9 @@ import {Role} from '../../enums/role.enum';
 import {RouteData} from '../../interfaces/route-data.interface';
 import {StateService} from '../../services/state/state.service';
 import {ExportComponent} from '../export/export.component';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {MatDialog} from '@angular/material/dialog';
+import {MatSort} from '@angular/material/sort';
 
 @Component({
   selector: 'jfsc-list',
@@ -336,6 +338,9 @@ export class ListComponent<T extends {id: any}, R extends RouteData = RouteData>
       switchMap(() =>
         forkJoin(this.selection.selected.map(id => this.delete(id)))
       ),
+      tap(() => {
+        this.selection.clear();
+      }),
       notify()
     ]);
   }

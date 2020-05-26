@@ -12,6 +12,7 @@ import {Router} from '@angular/router';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {BehaviorSubject, from, Observable} from 'rxjs';
 import {map, switchMap, take} from 'rxjs/operators';
+import {customer} from '../../../../../../../functions/src/consts/schemas.const';
 import {StateService} from '../../shared/services/state/state.service';
 
 @Component({
@@ -52,6 +53,10 @@ export class ProfileComponent implements OnInit {
     {
       label: 'Change password',
       route: 'change-password'
+    },
+    {
+      label: 'Gift cards',
+      route: 'gift-cards'
     }
   ];
 
@@ -68,9 +73,10 @@ export class ProfileComponent implements OnInit {
     }
 
     this.downloadURL$ = this.state.user$.pipe(
-      map(
-        ({customerData}) =>
-          customerData.profileImage || 'assets/images/profile-placeholder.svg'
+      map(({customerData}) =>
+        customerData
+          ? customerData.profileImage
+          : 'assets/images/profile-placeholder.svg'
       )
     );
 
@@ -82,11 +88,13 @@ export class ProfileComponent implements OnInit {
     this.fileEl.nativeElement.click();
   }
 
-  filesImage(file) {
+  filesImage(el: HTMLInputElement) {
     this.loading$.next(true);
 
-    const fileToUpload = Array.from(file)[0];
+    const fileToUpload = Array.from(el.files)[0];
     const userID = this.afAuth.auth.currentUser.uid;
+
+    el.value = '';
 
     if (fileToUpload) {
       from(

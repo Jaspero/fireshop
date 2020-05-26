@@ -19,9 +19,9 @@
                 <mat-panel-title>Order number {{index + 1}}</mat-panel-title>
                 <mat-panel-description>Status: {{order.status}}</mat-panel-description>
               </mat-expansion-panel-header>
-              <div class="flex ai-center p-y-xs" *ngFor="let item of order.orderItems">
-                <p class="m-l-xs">{{ item.name }}, {{ item.quantity }}x (${{item.price}})</p>
-                <button [id]="'btn-sub-rev-' + uniqueId" mat-button (click)="submitReview(item)">
+              <div class="flex ai-center p-y-xs" *ngFor="let item of order.orderItemsData; let i = index">
+                <p class="m-l-xs">{{ item.name }}, {{ item.quantity }}x ({{item.price[primaryCurrency] | sp}})</p>
+                <button [id]="'btn-sub-rev-' + uniqueId" mat-button (click)="submitReview(order, i)">
                   Submit review
                 </button>
               </div>

@@ -8,3 +8,16 @@
   padding-bottom: 160px;
   margin-bottom: -140px;
 }
+
+.fixed {
+  top: 200px;
+  left: 200px;
+  position: fixed;
+  z-index: 100;
+}
+
+.shop-loading {
+  position: fixed;
+  left: 30px;
+  bottom: 25px;
+}

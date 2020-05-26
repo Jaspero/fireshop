@@ -12,7 +12,7 @@ import {map, switchMap} from 'rxjs/operators';
 @Component({
   selector: 'jfsc-products-overview',
   templateUrl: './products-overview.component.html',
-  styleUrls: ['./products-overview.component.css']
+  styleUrls: ['./products-overview.component.scss']
 })
 export class ProductsOverviewComponent implements OnInit {
   constructor(

@@ -8,9 +8,15 @@ import {
   ViewChild
 } from '@angular/core';
 import {AngularFireStorage} from '@angular/fire/storage';
-import {FormControl, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormControl,
+  NG_VALUE_ACCESSOR
+} from '@angular/forms';
 import {from, of} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
+import {GeneratedImage} from '../../../interfaces/generated-image.interface';
+import {formatGeneratedImages} from '../../../utils/format-generated-images';
 
 @Component({
   selector: 'jfsc-image-upload',
@@ -25,7 +31,7 @@ import {switchMap, tap} from 'rxjs/operators';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImageUploadComponent {
+export class ImageUploadComponent implements ControlValueAccessor {
   constructor(
     private afs: AngularFireStorage,
     private cdr: ChangeDetectorRef
@@ -62,8 +68,9 @@ export class ImageUploadComponent {
     this.fileEl.nativeElement.click();
   }
 
-  filesImage(file) {
-    this.value = Array.from(file)[0] as File;
+  filesImage(el: HTMLInputElement) {
+    this.value = Array.from(el.files)[0] as File;
+    el.value = '';
     this.disInput = true;
     this.imageUrl.setValue(this.value['name']);
   }
@@ -75,20 +82,34 @@ export class ImageUploadComponent {
     this.cdr.detectChanges();
   }
 
-  save() {
-    if (this.imageUrl.value && this.imageUrl.value !== this.value.name) {
-      return of(this.imageUrl.value).pipe(
-        tap(() => this.onChange(this.imageUrl.value))
-      );
+  save(
+    moduleId: string,
+    documentId: string,
+    generatedImages?: GeneratedImage[]
+  ) {
+    if (this.value) {
+      if (this.imageUrl.value && this.imageUrl.value !== this.value.name) {
+        return of(this.imageUrl.value).pipe(
+          tap(() => this.onChange(this.imageUrl.value))
+        );
+      } else {
+        const name = [moduleId, documentId, this.value.name].join('-');
+        return from(
+          this.afs.upload(name, this.value, {
+            contentType: this.value.type,
+            customMetadata: {
+              moduleId,
+              documentId,
+              ...(generatedImages && formatGeneratedImages(generatedImages))
+            }
+          })
+        ).pipe(
+          switchMap(res => res.ref.getDownloadURL()),
+          tap(url => this.onChange(url))
+        );
+      }
     } else {
-      return from(
-        this.afs.upload(this.value.name, this.value, {
-          contentType: this.value.type
-        })
-      ).pipe(
-        switchMap(res => res.ref.getDownloadURL()),
-        tap(url => this.onChange(url))
-      );
+      return of({});
     }
   }
 }
