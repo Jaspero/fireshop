@@ -26,6 +26,20 @@ export interface LoggedInUser {
   providedIn: 'root'
 })
 export class StateService {
+  sales$: Observable<Sale[]>;
+  logInValid$ = new BehaviorSubject<boolean>(true);
+  user$: Observable<LoggedInUser>;
+  loading$ = new BehaviorSubject<boolean>(false);
+  checkoutResult: Array<Errors> | Partial<Order>;
+  language$ = new BehaviorSubject<Language>(STATIC_CONFIG.lang);
+  currentDate = Date.now();
+  currentRoute$ = new BehaviorSubject<{data: any; url: string}>({
+    data: {},
+    url: '/'
+  });
+  structuredData: any = {};
+  serverState: any;
+
   constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore) {
     this.user$ = combineLatest([this.afAuth.user, this.logInValid$]).pipe(
       switchMap(([user, loginValid]) => {
@@ -49,8 +63,8 @@ export class StateService {
     );
 
     this.sales$ = this.language$.pipe(
-      switchMap(lang =>
-        this.afs
+      switchMap(lang => {
+        return this.afs
           .collection<Sale>(`${FirestoreCollections.Sales}-${lang}`, ref => {
             ref.where('active', FirebaseOperator.Equal, true);
             ref.where(
@@ -65,8 +79,8 @@ export class StateService {
             );
             return ref;
           })
-          .snapshotChanges()
-      ),
+          .snapshotChanges();
+      }),
       map(actions => {
         return actions.map(action => ({
           id: action.payload.doc.id,
@@ -76,20 +90,4 @@ export class StateService {
       shareReplay(1)
     );
   }
-
-  logInValid$ = new BehaviorSubject<boolean>(true);
-  user$: Observable<LoggedInUser>;
-  loading$ = new BehaviorSubject<boolean>(false);
-  checkoutResult: Array<Errors> | Partial<Order>;
-  language$ = new BehaviorSubject<Language>(STATIC_CONFIG.lang);
-  sales$: Observable<Sale[]>;
-  currentDate = Date.now();
-
-  currentRoute$ = new BehaviorSubject<{data: any; url: string}>({
-    data: {},
-    url: '/'
-  });
-
-  structuredData: any = {};
-  serverState: any;
 }

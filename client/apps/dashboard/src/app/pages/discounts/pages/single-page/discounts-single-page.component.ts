@@ -57,7 +57,7 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
       ],
       values: [data.values || '{}'],
       type: [data.type || '', Validators.required],
-      active: [true, Validators.required],
+      active: [data.active, Validators.required],
       limitedNumber: [data.limitedNumber || '5']
     });
 

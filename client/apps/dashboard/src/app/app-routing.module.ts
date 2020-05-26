@@ -45,7 +45,8 @@ const routes: Routes = [
       },
       {
         path: 'sales',
-        loadChildren: './pages/sale/sale.module#SaleModule'
+        loadChildren: () =>
+          import('./pages/sale/sale.module').then(mod => mod.SaleModule)
       },
       {
         path: 'discounts',

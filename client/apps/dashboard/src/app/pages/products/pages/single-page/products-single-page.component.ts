@@ -68,7 +68,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       switchMap(lang =>
         this.afs
           .collection<Sale>(`${FirestoreCollections.Sales}-${lang}`)
-          .valueChanges('id')
+          .valueChanges({idField: 'id'})
       ),
       shareReplay(1)
     );
@@ -248,7 +248,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       quantity: [data.quantity || 0, Validators.min(0)],
       category: [data.category || ''],
       order: data.order || 0,
-      sale: [data.sale || []],
+      sale: [data.sale || ''],
       showingQuantity: data.hasOwnProperty('showingQuantity')
         ? data.showingQuantity
         : DYNAMIC_CONFIG.generalSettings.showingQuantity,

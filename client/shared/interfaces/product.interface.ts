@@ -14,6 +14,7 @@ export interface Product {
   name: string;
   shortDescription: string;
   order: number;
+  sale: string;
   description: string;
   gallery: string[];
   search: string[];
@@ -29,5 +30,4 @@ export interface Product {
       quantity: number;
     };
   };
-  sale: any[];
 }

@@ -1,9 +1,9 @@
 export interface Sale {
-  id: number;
+  id: string;
   name: string;
   createdOn: number;
-  startingDate: number;
-  endingDate: number;
+  startingDate: Date;
+  endingDate: Date;
   limited: boolean;
   value: number;
   active: boolean;

@@ -18,10 +18,6 @@ service cloud.firestore {
       allow read: if true;
       allow write: if write();
     }
-       match /sales/{sale} {
-          allow read: if true
-          allow write, delete: if write()
-        }
 
     match /settings/templates/{document=**} {
       allow read: if readOrWrite();
@@ -44,6 +40,12 @@ service cloud.firestore {
     }
 
     match /discounts-en/{discount=**} {
+      allow get: if true;
+      allow list: if readOrWrite();
+      allow write: if write();
+    }
+
+    match /sales-en/{sale=**} {
       allow get: if true;
       allow list: if readOrWrite();
       allow write: if write();

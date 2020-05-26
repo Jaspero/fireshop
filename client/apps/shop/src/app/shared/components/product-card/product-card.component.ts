@@ -7,12 +7,14 @@ import {
 } from '@angular/core';
 import {Price, Product} from '@jf/interfaces/product.interface';
 import {UNIQUE_ID, UNIQUE_ID_PROVIDER} from '@jf/utils/id.provider';
-import {Observable, of} from 'rxjs';
-import {map, shareReplay} from 'rxjs/operators';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import {filter, map, shareReplay} from 'rxjs/operators';
 import {CartService} from '../../services/cart/cart.service';
 import {WishListService} from '../../services/wish-list/wish-list.service';
 import {getProductFilters} from '../../utils/get-product-filters';
 import {OnChange} from '@jaspero/ng-helpers';
+import {StateService} from '../../services/state/state.service';
+import {Sale} from '@jf/interfaces/sales.interface';
 
 @Component({
   selector: 'jfs-product-card',
@@ -27,6 +29,7 @@ export class ProductCardComponent implements OnInit {
   })
   @Input()
   product: Product;
+
   price: Price;
   filters: any;
   wishList$: Observable<{
@@ -37,6 +40,8 @@ export class ProductCardComponent implements OnInit {
   canAddToCart$: Observable<boolean>;
 
   selectedWish: boolean;
+
+  sale$ = new BehaviorSubject<Sale>(null);
 
   iconObject = {
     true: {
@@ -53,10 +58,28 @@ export class ProductCardComponent implements OnInit {
     @Inject(UNIQUE_ID)
     public uniqueId: string,
     public cart: CartService,
-    public wishList: WishListService
+    public wishList: WishListService,
+    private state: StateService
   ) {}
 
   ngOnInit() {
+    if (this.product.sale) {
+      this.state.sales$.subscribe((data: any) => {
+        const sales = data.filter(sale => sale.id === this.product.sale);
+        if (!sales.length) {
+          return;
+        }
+        const sale = sales[0];
+        if (
+          !sale.active ||
+          !(sale.startingDate.seconds < Date.now() < sale.endingDate.seconds)
+        ) {
+          return;
+        }
+        this.sale$.next(sale);
+      });
+    }
+
     this.wishList$ = this.wishList.includes(this.product.id).pipe(
       map(value => {
         this.selectedWish = value;

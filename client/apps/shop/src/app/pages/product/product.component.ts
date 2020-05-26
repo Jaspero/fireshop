@@ -17,8 +17,8 @@ import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Product} from '@jf/interfaces/product.interface';
 import {Review} from '@jf/interfaces/review.interface';
 import {Sale} from '@jf/interfaces/sales.interface';
-import {combineLatest, Observable} from 'rxjs';
-import {map, startWith, switchMap, throwIfEmpty} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
+import {map, startWith, switchMap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {CartItem} from '../../shared/interfaces/cart-item.interface';
 import {CartService} from '../../shared/services/cart/cart.service';
@@ -35,20 +35,6 @@ import {MatDialog} from '@angular/material/dialog';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductComponent extends RxDestroy implements OnInit {
-  constructor(
-    public afAuth: AngularFireAuth,
-    public cart: CartService,
-    public wishList: WishListService,
-    public dialog: MatDialog,
-    private afs: AngularFirestore,
-    private state: StateService,
-    private activatedRoute: ActivatedRoute,
-    private http: HttpClient,
-    private fb: FormBuilder
-  ) {
-    super();
-  }
-
   rews$: Observable<[Review[], number]>;
   data$: Observable<{
     product: Product;
@@ -65,10 +51,23 @@ export class ProductComponent extends RxDestroy implements OnInit {
   similar$: Observable<any>;
   imgIndex = 0;
   filters: FormGroup;
-  sale$: Observable<Sale>;
+  sale$ = new BehaviorSubject<Sale>(null);
   totalValue: number;
-
   @ViewChild('reviewsDialog', {static: true}) reviewsDialog: TemplateRef<any>;
+
+  constructor(
+    public afAuth: AngularFireAuth,
+    public cart: CartService,
+    public wishList: WishListService,
+    public dialog: MatDialog,
+    private afs: AngularFirestore,
+    private state: StateService,
+    private activatedRoute: ActivatedRoute,
+    private http: HttpClient,
+    private fb: FormBuilder
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.data$ = combineLatest([
@@ -95,17 +94,26 @@ export class ProductComponent extends RxDestroy implements OnInit {
         );
 
         if (data.product.sale) {
-          this.sale$ = this.state.sales$.pipe(
-            map(sales => {
-              this.totalValue = sales.reduce(
-                (acc, val) =>
-                  val.fixed ? acc - val.value : acc - (val.value * acc) / 100,
-                data.product.price
-              );
-
-              return sales;
-            })
-          );
+          // this.state.sales$.subscribe((res: any) => {
+          //   const sales = res.filter(sale => sale.id === data.product.sale);
+          //   if (!sales.length) {
+          //     return;
+          //   }
+          //   const sale = sales[0];
+          //   if (!sale.active || !(sale.startingDate.seconds < Date.now() < sale.endingDate.seconds)) {
+          //     return;
+          //   }
+          //   this.sale$.next(sale);
+          //
+          //   this.totalValue = sale.fixed ?
+          //
+          //   this.totalValue = sales.reduce(
+          //         (acc, val) =>
+          //           val.fixed ? acc - val.value : acc - (val.value * acc) / 100,
+          //         data.product.price
+          //       );
+          //
+          // });
         }
 
         const toCombine = [

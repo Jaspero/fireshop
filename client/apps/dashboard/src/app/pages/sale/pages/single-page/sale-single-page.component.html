@@ -15,10 +15,10 @@
         <div class="flex ai-center jc-between">
           <h5>{{form.get('name').value}}</h5>
           <div>
-            <button mat-icon-button aria-label="Previous sale" matTooltip="Previous sale" (click)="move(false, form)">
+            <button mat-icon-button aria-label="Previous sale" matTooltip="Previous sale">
               <mat-icon>arrow_back</mat-icon>
             </button>
-            <button mat-icon-button aria-label="Next sale" matTooltip="Next sale" (click)="move(true, form)">
+            <button mat-icon-button aria-label="Next sale" matTooltip="Next sale">
               <mat-icon>arrow_forward</mat-icon>
             </button>
           </div>
@@ -52,6 +52,7 @@
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>URL</mat-label>
                 <input matInput formControlName="id">
+                <mat-icon class="cs-pointer" matSuffix (click)="generate()" *ngIf="currentState !== viewState.Edit">refresh</mat-icon>
               </mat-form-field>
               <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Name</mat-label>
@@ -74,21 +75,49 @@
               </mat-form-field>
               <ng-container *ngIf="!form.get('fixed').value" class="w-full" appearance="outline">
                 <mat-form-field class="w-full" appearance="outline">
-                  <mat-label>Percentage value</mat-label>
+                  <mat-label>Percentage Value</mat-label>
+                  <span matPrefix>%&nbsp;</span>
                   <input matInput type="number" formControlName="value">
                 </mat-form-field>
               </ng-container>
               <ng-container *ngIf="form.get('fixed').value" class="w-full" appearance="outline">
                 <mat-form-field class="w-full" appearance="outline">
-                  <mat-label>Fixed value</mat-label>
-                  <input matInput type="number" formControlName="value">
+                  <mat-label>Currency</mat-label>
+                  <mat-select formControlName="currency" (valueChange)="updateValues()">
+                    <mat-option *ngFor="let currency of currencies" [value]="currency.value">
+                      {{currency.value}} ({{currency.symbol}})
+                    </mat-option>
+                  </mat-select>
                 </mat-form-field>
+                <mat-form-field class="w-full" appearance="outline">
+                  <mat-label>Value</mat-label>
+                  <span matPrefix>{{objectCurrencies[form.getRawValue().currency]}}&nbsp;</span>
+                  <input placeholder="" type="number" matInput formControlName="value">
+                </mat-form-field>
+
+
+
+
+<!--                <mat-form-field class="w-full" appearance="outline">-->
+<!--                  <mat-label>Fixed value</mat-label>-->
+<!--                  <input matInput type="number" formControlName="value">-->
+<!--                </mat-form-field>-->
+
+
               </ng-container>
+
+
+
+
+
+
+
+
               <mat-form-field class="w-full" appearance="outline">
-                <mat-label>Limited number of users</mat-label>
+                <mat-label>Type</mat-label>
                 <mat-select (valueChange)="limitless($event)" formControlName="limited">
-                  <mat-option [value]="false">No</mat-option>
-                  <mat-option [value]="true">Yes</mat-option>
+                  <mat-option [value]="false">Unlimited</mat-option>
+                  <mat-option [value]="true">Limited</mat-option>
                 </mat-select>
               </mat-form-field>
 

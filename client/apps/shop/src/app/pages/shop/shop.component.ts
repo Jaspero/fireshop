@@ -24,8 +24,8 @@ import {CartService} from '../../shared/services/cart/cart.service';
 import * as firebase from 'firebase';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {animate, style, transition, trigger} from '@angular/animations';
+import {StateService} from '../../shared/services/state/state.service';
 import FieldPath = firebase.firestore.FieldPath;
-import {Sale} from '@jf/interfaces/sales.interface';
 
 @Component({
   selector: 'jfs-products',
@@ -52,8 +52,6 @@ export class ShopComponent extends RxDestroy implements OnInit {
 
   // With BehaviorSubject no twitches during loading of new products
   products$ = new BehaviorSubject([]);
-
-  sales$: Observable<Sale[]>;
 
   loading$ = new BehaviorSubject<boolean>(true);
 

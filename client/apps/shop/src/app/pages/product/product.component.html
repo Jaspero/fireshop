@@ -48,31 +48,12 @@
               </form>
             </div>
 
-            <!-- TODO(TRT): STYLE-->
-            <div *ngIf="sale$ | async as sale; else elseState">
-              <h3>Sale</h3>
-              <h4>Old price: {{data.price | sp}}</h4>
-              <h4>
-                New price:
-                {{totalValue | sp}}
-              </h4>
 
-              <p>
-                These are sale for this item:
-              </p>
-              <div *ngFor="let sal of sale">
-                <div *ngIf="sal.showRibbon">
-                    <p>Name: {{sal.name}},</p>
-                    <p>Fixed value: {{sal.fixed}}</p>
-                    <p>Value: {{sal.value}}</p>
-                </div>
-              </div>
-
+            <div *ngIf="sale$ | async as sale">
+              <h5 class="p-t-s p-b-xs">Sale</h5>
+              <div class="m-b-s">Old price: {{data.price | sp}}</div>
+              <div class="m-b-s">New price: {{totalValue | sp}}</div>
             </div>
-
-            <ng-template #elseState>
-              <h4>{{data.price | sp}}</h4>
-            </ng-template>
             <p class="m-t-s" *ngIf="data.product.showingQuantity">
               {{data.quantity ? data.quantity + ' in stock' : 'There are no more items in stock'}}
             </p>
@@ -83,7 +64,8 @@
               color="accent"
               [disabled]="data.isDisabled"
               (click)="cart.add(data.product, filters ? filters.getRawValue() : {})">
-              <span class="iblock p-x-m">{{data.itemsInCart ? 'Add more to cart (currently ' + data.itemsInCart + ')' : 'Add to cart'}} </span>
+              <span
+                class="iblock p-x-m">{{data.itemsInCart ? 'Add more to cart (currently ' + data.itemsInCart + ')' : 'Add to cart'}} </span>
             </button>
             <div class="m-y-m flex fd-col ai-start">
               <p class="m-b-xs"><b>Share this product:</b></p>
