@@ -104,6 +104,7 @@
 .mat-table.mat-table {
   width: 100%;
   background: transparent;
+  border-collapse: separate;
 }
 
 tr.mat-header-row.mat-header-row,
