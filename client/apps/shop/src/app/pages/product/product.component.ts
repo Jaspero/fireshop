@@ -27,6 +27,7 @@ import {WishListService} from '../../shared/services/wish-list/wish-list.service
 import {getProductFilters} from '../../shared/utils/get-product-filters';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {MatDialog} from '@angular/material/dialog';
+import {fromStripeFormat} from '@jf/utils/stripe-format';
 
 @Component({
   selector: 'jfs-product',
@@ -51,7 +52,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
   similar$: Observable<any>;
   imgIndex = 0;
   filters: FormGroup;
-  sale$ = new BehaviorSubject<Sale>(null);
+  sale$ = new BehaviorSubject<Sale & {defaultValue: number}>(null);
   totalValue: number;
   @ViewChild('reviewsDialog', {static: true}) reviewsDialog: TemplateRef<any>;
 
@@ -92,29 +93,6 @@ export class ProductComponent extends RxDestroy implements OnInit {
             }
           }
         );
-
-        if (data.product.sale) {
-          // this.state.sales$.subscribe((res: any) => {
-          //   const sales = res.filter(sale => sale.id === data.product.sale);
-          //   if (!sales.length) {
-          //     return;
-          //   }
-          //   const sale = sales[0];
-          //   if (!sale.active || !(sale.startingDate.seconds < Date.now() < sale.endingDate.seconds)) {
-          //     return;
-          //   }
-          //   this.sale$.next(sale);
-          //
-          //   this.totalValue = sale.fixed ?
-          //
-          //   this.totalValue = sales.reduce(
-          //         (acc, val) =>
-          //           val.fixed ? acc - val.value : acc - (val.value * acc) / 100,
-          //         data.product.price
-          //       );
-          //
-          // });
-        }
 
         const toCombine = [
           this.cart.items$,
@@ -160,6 +138,37 @@ export class ProductComponent extends RxDestroy implements OnInit {
 
             if (cart) {
               quantity -= cart.quantity;
+            }
+
+            if (data.product.sale && !this.sale$.value) {
+              this.state.sales$.subscribe((res: any) => {
+                const sales = res.filter(sale => sale.id === data.product.sale);
+                if (!sales.length) {
+                  return;
+                }
+                const sale = sales[0];
+                if (
+                  !sale.active ||
+                  !(
+                    sale.startingDate.seconds <
+                    Date.now() <
+                    sale.endingDate.seconds
+                  )
+                ) {
+                  return;
+                }
+                this.sale$.next({...sale, defaultValue: {...price}});
+                for (const value of Object.keys(price)) {
+                  if (sale.fixed) {
+                    price[value] -= sale.values[value];
+                  } else {
+                    price[value] -=
+                      (price[value] / 100) * fromStripeFormat(sale.value);
+                  }
+
+                  price[value] = Math.max(price[value], 0);
+                }
+              });
             }
 
             return {

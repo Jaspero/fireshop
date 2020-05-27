@@ -15,6 +15,7 @@ import {getProductFilters} from '../../utils/get-product-filters';
 import {OnChange} from '@jaspero/ng-helpers';
 import {StateService} from '../../services/state/state.service';
 import {Sale} from '@jf/interfaces/sales.interface';
+import {fromStripeFormat} from '@jf/utils/stripe-format';
 
 @Component({
   selector: 'jfs-product-card',
@@ -77,6 +78,18 @@ export class ProductCardComponent implements OnInit {
           return;
         }
         this.sale$.next(sale);
+
+        for (const value of Object.keys(this.product.price)) {
+          if (sale.fixed) {
+            this.product.price[value] -= sale.values[value];
+          } else {
+            this.product.price[value] -=
+              (this.product.price[value] / 100) * fromStripeFormat(sale.value);
+          }
+
+          this.product.price[value] = Math.max(this.product.price[value], 0);
+        }
+        this.price = this.product.price;
       });
     }
 

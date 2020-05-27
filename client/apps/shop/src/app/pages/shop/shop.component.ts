@@ -36,7 +36,7 @@ import FieldPath = firebase.firestore.FieldPath;
     trigger('fadeIn', [
       transition(':enter', [
         style({opacity: '0'}),
-        animate('1s ease-out', style({opacity: '1'}))
+        animate('0.5s ease-out', style({opacity: '1'}))
       ])
     ])
   ]
