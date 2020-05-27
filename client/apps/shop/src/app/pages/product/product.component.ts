@@ -148,7 +148,14 @@ export class ProductComponent extends RxDestroy implements OnInit {
                 }
                 const sale = sales[0];
 
-                if (sale.startingDate.seconds > Date.now()) {
+                if (
+                  !sale.active ||
+                  !(
+                    sale.startingDate.seconds <
+                    Date.now() <
+                    sale.endingDate.seconds
+                  )
+                ) {
                   return;
                 }
 
