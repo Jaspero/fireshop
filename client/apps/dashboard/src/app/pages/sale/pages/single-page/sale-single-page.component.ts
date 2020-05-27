@@ -43,7 +43,7 @@ export class SaleSinglePageComponent extends LangSinglePageComponent {
       endingDate: [endingDate, Validators.required],
       limited: [data.limited || false],
       active: [data.active, Validators.required],
-      showRibbon: [data.showRibbon || true],
+      showRibbon: [data.showRibbon, Validators.required],
       currency: [
         data.currency || DYNAMIC_CONFIG.currency.primary,
         Validators.required

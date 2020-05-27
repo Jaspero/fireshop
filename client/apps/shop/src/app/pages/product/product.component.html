@@ -52,9 +52,8 @@
             <div *ngIf="sale$ | async as sale; else default">
               <h5 class="p-t-s p-b-xs">Sale</h5>
               <div class="m-b-s">
-                <h4 class="m-b-xs"><span class="diagonal">{{sale.defaultValue | sp}}</span></h4>
+                <h4 class="m-b-xs"><span class="strike">{{sale.defaultValue | sp}}</span></h4>
                 <h2 class="m-b-xs">{{data.price | sp}}</h2>
-<!--                <div class="m-b-s">New price: {{totalValue | sp}}</div>-->
               </div>
             </div>
 
@@ -71,7 +70,8 @@
               color="accent"
               [disabled]="data.isDisabled"
               (click)="cart.add(data.product, filters ? filters.getRawValue() : {})">
-              <span class="iblock p-x-m">{{data.itemsInCart ? 'Add more to cart (currently ' + data.itemsInCart + ')' : 'Add to cart'}} </span>
+              <span
+                class="iblock p-x-m">{{data.itemsInCart ? 'Add more to cart (currently ' + data.itemsInCart + ')' : 'Add to cart'}} </span>
             </button>
             <div class="m-y-m flex fd-col ai-start">
               <p class="m-b-xs"><b>Share this product:</b></p>

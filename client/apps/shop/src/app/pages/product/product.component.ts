@@ -147,16 +147,11 @@ export class ProductComponent extends RxDestroy implements OnInit {
                   return;
                 }
                 const sale = sales[0];
-                if (
-                  !sale.active ||
-                  !(
-                    sale.startingDate.seconds <
-                    Date.now() <
-                    sale.endingDate.seconds
-                  )
-                ) {
+
+                if (sale.startingDate.seconds > Date.now()) {
                   return;
                 }
+
                 this.sale$.next({...sale, defaultValue: {...price}});
                 for (const value of Object.keys(price)) {
                   if (sale.fixed) {

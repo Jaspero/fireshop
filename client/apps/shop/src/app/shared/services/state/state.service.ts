@@ -32,7 +32,6 @@ export class StateService {
   loading$ = new BehaviorSubject<boolean>(false);
   checkoutResult: Array<Errors> | Partial<Order>;
   language$ = new BehaviorSubject<Language>(STATIC_CONFIG.lang);
-  currentDate = Date.now();
   currentRoute$ = new BehaviorSubject<{data: any; url: string}>({
     data: {},
     url: '/'
@@ -66,27 +65,19 @@ export class StateService {
       switchMap(lang => {
         return this.afs
           .collection<Sale>(`${FirestoreCollections.Sales}-${lang}`, ref => {
-            ref.where('active', FirebaseOperator.Equal, true);
-            ref.where(
-              'startingDate',
-              FirebaseOperator.SmallerThenOrEqual,
-              this.currentDate
-            );
-            ref.where(
-              'endingDate',
-              FirebaseOperator.LargerThenOrEqual,
-              this.currentDate
-            );
-            return ref;
+            return ref.where('active', FirebaseOperator.Equal, true);
           })
-          .snapshotChanges();
+          .get();
       }),
-      map(actions => {
-        return actions.map(action => ({
-          id: action.payload.doc.id,
-          ...action.payload.doc.data()
-        }));
-      }),
+      map(actions =>
+        actions.docs.map(
+          action =>
+            ({
+              id: action.id,
+              ...action.data()
+            } as Sale)
+        )
+      ),
       shareReplay(1)
     );
   }
