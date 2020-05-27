@@ -23,10 +23,12 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-              <button mat-icon-button aria-label="Previous product" matTooltip="Previous product"> <!-- (click)="move(false, form)" -->
+              <button mat-icon-button aria-label="Previous product" matTooltip="Previous product">
+                <!-- (click)="move(false, form)" -->
                 <mat-icon>arrow_back</mat-icon>
               </button>
-              <button mat-icon-button aria-label="Next product" matTooltip="Next product"> <!-- (click)="move(true, form)" -->
+              <button mat-icon-button aria-label="Next product" matTooltip="Next product">
+                <!-- (click)="move(true, form)" -->
                 <mat-icon>arrow_forward</mat-icon>
               </button>
             </div>
@@ -80,7 +82,7 @@
               <div class="p-y-xs">
                 <mat-form-field appearance="outline" class="w-full">
                   <mat-label>Name</mat-label>
-                  <input matInput formControlName="name" />
+                  <input matInput formControlName="name"/>
                 </mat-form-field>
               </div>
               <div class="p-y-xs">
@@ -103,7 +105,8 @@
                 <mat-divider></mat-divider>
               </div>
               <div class="p-y-xs">
-                <jfsc-gallery-upload formControlName="gallery" [moduleId]="moduleId" [productId]="form.get('id').value"></jfsc-gallery-upload>
+                <jfsc-gallery-upload formControlName="gallery" [moduleId]="moduleId"
+                                     [productId]="form.get('id').value"></jfsc-gallery-upload>
               </div>
             </mat-card>
           </div>
@@ -116,7 +119,8 @@
               </div>
 
               <div formArrayName="attributes">
-                <div *ngFor="let attribute of attributesForms.controls; index as attributeIndex" [formGroupName]="attributeIndex">
+                <div *ngFor="let attribute of attributesForms.controls; index as attributeIndex"
+                     [formGroupName]="attributeIndex">
                   <div class="p-b-xs">
                     <mat-divider></mat-divider>
                   </div>
@@ -176,13 +180,14 @@
                       <mat-form-field class="m-r-xs" appearance="outline">
                         <mat-label>Price</mat-label>
                         <span matPrefix>{{selectedCurrency.symbol}}&nbsp;</span>
-                        <input [formControl]="form.get('inventory.' + item + '.price.' + selectedCurrency.code)" matInput type="number">
+                        <input [formControl]="form.get('inventory.' + item + '.price.' + selectedCurrency.code)"
+                               matInput type="number">
                       </mat-form-field>
                     </ng-container>
 
                     <mat-radio-button [value]="item"><span class="c-d-secondary">Default</span></mat-radio-button>
                   </div>
-              </div>
+                </div>
               </mat-radio-group>
             </mat-card>
           </div>
@@ -205,7 +210,9 @@
                 </mat-form-field>
               </div>
               <div class="p-y-xs" *ngIf="metaForm">
-                <mat-checkbox color="primary" [formControl]="metaForm.get('samePriceForVariants')">Same Price For Variants</mat-checkbox>
+                <mat-checkbox color="primary" [formControl]="metaForm.get('samePriceForVariants')">Same Price For
+                  Variants
+                </mat-checkbox>
               </div>
             </mat-card>
           </div>
@@ -222,12 +229,14 @@
                 <mat-checkbox color="primary" formControlName="showingQuantity">Show quantity</mat-checkbox>
               </div>
               <div class="p-y-xs">
-                <mat-checkbox color="primary" formControlName="allowOutOfQuantityPurchase">Allow out of quantity purchase</mat-checkbox>
+                <mat-checkbox color="primary" formControlName="allowOutOfQuantityPurchase">Allow out of quantity
+                  purchase
+                </mat-checkbox>
               </div>
               <div class="p-y-xs">
                 <mat-form-field appearance="outline" class="w-full">
                   <mat-label>Items in stock</mat-label>
-                  <input matInput type="number"  formControlName="quantity">
+                  <input matInput type="number" formControlName="quantity">
                 </mat-form-field>
               </div>
             </mat-card>
@@ -241,17 +250,29 @@
               <div class="p-y-xs">
                 <mat-form-field appearance="outline" class="w-full mat-hint">
                   <mat-label>URL</mat-label>
-                  <input matInput formControlName="id" />
+                  <input matInput formControlName="id"/>
                   <mat-hint>URL will auto populate from product name if left empty.</mat-hint>
-                  <mat-error *ngIf="form.get('id').invalid">Only lowercase letters dashes and underscores are allowed</mat-error>
+                  <mat-error *ngIf="form.get('id').invalid">Only lowercase letters dashes and underscores are allowed
+                  </mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="w-full">
                   <mat-label>Category</mat-label>
                   <mat-select formControlName="category">
                     <mat-option
                       *ngFor="let category of categories$ | async"
-                      [value]="category.id">
+                      [value]="category.name">
                       {{category.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Sale</mat-label>
+                  <mat-select formControlName="sale">
+                    <mat-option>None</mat-option>
+                    <mat-option
+                      *ngFor="let sale of sales$ | async"
+                      [value]="sale.id">
+                      {{sale.name}}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
@@ -269,7 +290,8 @@
 
                 <div class="p-t-s">
                   <button mat-raised-button color="primary" (click)="relatedProducts()">
-                    Related Products <ng-container *ngIf="form.get('relatedProducts').value.length as rp">({{rp}})</ng-container>
+                    Related Products
+                    <ng-container *ngIf="form.get('relatedProducts').value.length as rp">({{rp}})</ng-container>
                   </button>
                 </div>
               </div>

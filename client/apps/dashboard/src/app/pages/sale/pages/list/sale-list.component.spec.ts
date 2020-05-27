@@ -1,19 +1,19 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {JsonEditorComponent} from './json-editor.component';
+import {SaleListComponent} from './sale-list.component';
 
-describe('JsonEditorComponent', () => {
-  let component: JsonEditorComponent;
-  let fixture: ComponentFixture<JsonEditorComponent>;
+describe('SaleListComponent', () => {
+  let component: SaleListComponent;
+  let fixture: ComponentFixture<SaleListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [JsonEditorComponent]
+      declarations: [SaleListComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(JsonEditorComponent);
+    fixture = TestBed.createComponent(SaleListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

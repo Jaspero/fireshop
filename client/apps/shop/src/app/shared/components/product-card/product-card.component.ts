@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Inject,
   Input,
@@ -7,12 +8,15 @@ import {
 } from '@angular/core';
 import {Price, Product} from '@jf/interfaces/product.interface';
 import {UNIQUE_ID, UNIQUE_ID_PROVIDER} from '@jf/utils/id.provider';
-import {Observable, of} from 'rxjs';
-import {map, shareReplay} from 'rxjs/operators';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
 import {CartService} from '../../services/cart/cart.service';
 import {WishListService} from '../../services/wish-list/wish-list.service';
 import {getProductFilters} from '../../utils/get-product-filters';
 import {OnChange} from '@jaspero/ng-helpers';
+import {StateService} from '../../services/state/state.service';
+import {Sale} from '@jf/interfaces/sales.interface';
+import {fromStripeFormat} from '@jf/utils/stripe-format';
 
 @Component({
   selector: 'jfs-product-card',
@@ -27,7 +31,8 @@ export class ProductCardComponent implements OnInit {
   })
   @Input()
   product: Product;
-  price: Price;
+
+  price$ = new BehaviorSubject<Price>(null);
   filters: any;
   wishList$: Observable<{
     icon: string;
@@ -37,6 +42,8 @@ export class ProductCardComponent implements OnInit {
   canAddToCart$: Observable<boolean>;
 
   selectedWish: boolean;
+
+  sale$: Observable<Sale>;
 
   iconObject = {
     true: {
@@ -53,7 +60,9 @@ export class ProductCardComponent implements OnInit {
     @Inject(UNIQUE_ID)
     public uniqueId: string,
     public cart: CartService,
-    public wishList: WishListService
+    public wishList: WishListService,
+    private state: StateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -87,7 +96,44 @@ export class ProductCardComponent implements OnInit {
       filters = getProductFilters(this.product, false);
     }
 
-    this.price = price;
+    if (this.product.sale) {
+      this.sale$ = this.state.sales$.pipe(
+        switchMap(data => {
+          const sales = data.filter(sale => sale.id === this.product.sale);
+          if (!sales.length) {
+            return of(null);
+          }
+
+          const sale = sales[0];
+          if (
+            !sale.active ||
+            !(sale.startingDate.seconds < Date.now() < sale.endingDate.seconds)
+          ) {
+            return of(null);
+          }
+          return of(sales[0]);
+        }),
+        tap(sale => {
+          if (!sale) {
+            return;
+          }
+
+          for (const value of Object.keys(price)) {
+            if (sale.fixed) {
+              price[value] -= sale.values[value] || 0;
+            } else {
+              price[value] -=
+                (price[value] / 100) * fromStripeFormat(sale.value);
+            }
+            price[value] = Math.max(price[value], 0);
+          }
+          this.price$.next(price);
+        })
+      );
+    } else {
+      this.price$.next(price);
+    }
+
     this.filters = filters;
     this.cartQuantity$ = this.cart.items$.pipe(
       map(items => {

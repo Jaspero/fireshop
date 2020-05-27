@@ -42,9 +42,8 @@ app.get('/', async (req, res) => {
 
   const categoryData = (await collection
     .where('category', '==', category)
-    .get())
-    .docs
-    .reduce((acc, cur) => {
+    .get()).docs.reduce(
+    (acc, cur) => {
       const data = {
         id: cur.id,
         ...cur.data()
@@ -55,7 +54,9 @@ app.get('/', async (req, res) => {
       }
 
       return acc;
-    }, [] as any[]);
+    },
+    [] as any[]
+  );
 
   for (let i = 0; i < num; i++) {
     if (categoryData.length) {

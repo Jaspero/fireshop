@@ -39,7 +39,6 @@ export class LibraryImageDirective {
       }`;
     }
 
-
     if (
       (this.webp && BROWSER_CONFIG.webpSupported) ||
       this.size === 'm' ||

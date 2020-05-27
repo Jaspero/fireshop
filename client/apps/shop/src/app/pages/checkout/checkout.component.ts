@@ -109,11 +109,11 @@ export class CheckoutComponent extends RxDestroy implements OnInit {
   termsControl = new FormControl(false);
   elementType = ElementType;
 
-  code = new FormControl('', Validators.required);
+  code = new FormControl('');
   discount = 0;
   validCode$ = new BehaviorSubject<Discount>(null);
 
-  giftCardCode = new FormControl('', Validators.required);
+  giftCardCode = new FormControl('');
   giftCardValue = new FormControl(0);
   validGiftCard$ = new BehaviorSubject(null);
 

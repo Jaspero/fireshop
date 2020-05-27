@@ -10,22 +10,14 @@ export const documentDeleted = functions.firestore
     console.log('test');
     const storage = new Storage().bucket('jaspero-site.appspot.com');
     const firestore = admin.firestore();
-    const {
-      moduleId,
-      documentId
-    } = context.params;
-
+    const {moduleId, documentId} = context.params;
 
     const [files] = await storage.getFiles({
       delimiter: '/',
       autoPaginate: true
     });
     const toExec: Array<Promise<any>> = files
-      .filter(file =>
-        file.name.startsWith(
-          `${moduleId}-${documentId}-`
-        )
-      )
+      .filter(file => file.name.startsWith(`${moduleId}-${documentId}-`))
       .map(
         file =>
           new Promise(resolve =>
@@ -39,20 +31,24 @@ export const documentDeleted = functions.firestore
           )
       );
 
-    const module = COLLECTIONS_METADATA.find(it => it.expression.test(moduleId));
+    const module = COLLECTIONS_METADATA.find(it =>
+      it.expression.test(moduleId)
+    );
 
     console.log({module});
 
     if (module && module.subCollections) {
-      module.subCollections.forEach(({name, batch}: {name: string, batch?: number}) => {
-        toExec.push(
-          deleteCollection(
-            firestore,
-            `${moduleId}/${documentId}/${name}`,
-            batch || 100
-          )
-        )
-      })
+      module.subCollections.forEach(
+        ({name, batch}: {name: string; batch?: number}) => {
+          toExec.push(
+            deleteCollection(
+              firestore,
+              `${moduleId}/${documentId}/${name}`,
+              batch || 100
+            )
+          );
+        }
+      );
     }
 
     await Promise.all(toExec);

@@ -1,34 +1,24 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Validators} from '@angular/forms';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
-import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
-import * as nanoid from 'nanoid';
 import {fromStripeFormat, toStripeFormat} from '@jf/utils/stripe-format';
+import {LangSinglePageComponent} from '../../../../shared/components/lang-single-page/lang-single-page.component';
+import {URL_REGEX} from '../../../../shared/const/url-regex.const';
+import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
+import {CURRENCIES} from '../../../../shared/const/currency.const';
 import {switchMap, take, tap} from 'rxjs/operators';
 import {notify} from '@jf/utils/notify.operator';
-import {CURRENCIES} from '../../../../shared/const/currency.const';
-import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
-
-export enum DiscountValueType {
-  FixedAmount = 'fixedAmount',
-  Percentage = 'percentage'
-}
-
-export enum LimitType {
-  Limited = 'limited',
-  Unlimited = 'unlimited'
-}
+import * as nanoid from 'nanoid';
 
 @Component({
-  selector: 'jfsc-discounts-single-page',
-  templateUrl: './discounts-single-page.component.html',
-  styleUrls: ['./discounts-single-page.component.scss'],
+  selector: 'jfsc-sale-single-page',
+  templateUrl: './sale-single-page.component.html',
+  styleUrls: ['./sale-single-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DiscountsSinglePageComponent extends LangSinglePageComponent {
-  collection = FirestoreCollections.Discounts;
-  discountValueType = DiscountValueType;
-  limitType = LimitType;
+export class SaleSinglePageComponent extends LangSinglePageComponent {
+  collection = FirestoreCollections.Sales;
+
   currencies = CURRENCIES;
   objectCurrencies = this.convertCurrencies(this.currencies);
 
@@ -41,23 +31,24 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
       : new Date();
 
     this.form = this.fb.group({
-      id: [data.id || '', Validators.required],
+      id: [
+        {value: data.id, disabled: this.currentState === this.viewState.Edit},
+        [Validators.required, Validators.pattern(URL_REGEX)]
+      ],
       name: [data.name || '', Validators.required],
       description: [data.description || ''],
-      valueType: [
-        data.valueType || this.discountValueType.Percentage,
-        Validators.required
-      ],
+      fixed: [data.fixed || false, Validators.required],
+      value: [fromStripeFormat(data.value) || '5', Validators.min(0)],
       startingDate: [startingDate, Validators.required],
       endingDate: [endingDate, Validators.required],
-      value: [fromStripeFormat(data.value) || '5'],
+      limited: [data.limited || false],
+      active: [data.active, Validators.required],
+      showRibbon: [data.showRibbon, Validators.required],
       currency: [
         data.currency || DYNAMIC_CONFIG.currency.primary,
         Validators.required
       ],
       values: [data.values || '{}'],
-      type: [data.type || '', Validators.required],
-      active: [data.active, Validators.required],
       limitedNumber: [data.limitedNumber || '5']
     });
 
@@ -67,27 +58,6 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
         fromStripeFormat(values[currentCurrency] || 0)
       );
     });
-  }
-
-  generate() {
-    this.form.get('id').setValue(
-      nanoid()
-        .replace(/-/g, '')
-        .replace(/_/g, '')
-        .slice(0, 6)
-        .toUpperCase()
-    );
-  }
-
-  updateValues() {
-    const lastInputValue = this.form.get('value').value;
-    const lastCurrency = this.form.get('currency').value;
-    const values =
-      typeof this.form.get('values').value == 'object'
-        ? this.form.get('values').value
-        : JSON.parse(this.form.get('values').value);
-    values[lastCurrency] = toStripeFormat(lastInputValue);
-    this.form.controls['values'].setValue(JSON.stringify(values));
   }
 
   save() {
@@ -109,6 +79,33 @@ export class DiscountsSinglePageComponent extends LangSinglePageComponent {
         })
       );
     };
+  }
+
+  limitless(value) {
+    if (!value) {
+      this.form.get('limitedNumber').reset();
+    }
+  }
+
+  generate() {
+    this.form.get('id').setValue(
+      nanoid()
+        .replace(/-/g, '')
+        .replace(/_/g, '')
+        .slice(0, 6)
+        .toUpperCase()
+    );
+  }
+
+  updateValues() {
+    const lastInputValue = this.form.get('value').value;
+    const lastCurrency = this.form.get('currency').value;
+    const values =
+      typeof this.form.get('values').value == 'object'
+        ? this.form.get('values').value
+        : JSON.parse(this.form.get('values').value);
+    values[lastCurrency] = toStripeFormat(lastInputValue);
+    this.form.controls['values'].setValue(JSON.stringify(values));
   }
 
   convertCurrencies(arr: any[]) {

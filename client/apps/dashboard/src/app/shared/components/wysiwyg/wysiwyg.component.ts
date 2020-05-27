@@ -124,7 +124,7 @@ export class WysiwygComponent implements AfterViewInit, ControlValueAccessor {
           this.cdr.markForCheck();
         });
       },
-      ...this.options || {}
+      ...(this.options || {})
     });
   }
 }

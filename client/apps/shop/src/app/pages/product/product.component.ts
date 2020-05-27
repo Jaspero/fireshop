@@ -16,7 +16,8 @@ import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Product} from '@jf/interfaces/product.interface';
 import {Review} from '@jf/interfaces/review.interface';
-import {combineLatest, Observable} from 'rxjs';
+import {Sale} from '@jf/interfaces/sales.interface';
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {map, startWith, switchMap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {CartItem} from '../../shared/interfaces/cart-item.interface';
@@ -26,6 +27,7 @@ import {WishListService} from '../../shared/services/wish-list/wish-list.service
 import {getProductFilters} from '../../shared/utils/get-product-filters';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {MatDialog} from '@angular/material/dialog';
+import {fromStripeFormat} from '@jf/utils/stripe-format';
 
 @Component({
   selector: 'jfs-product',
@@ -34,20 +36,6 @@ import {MatDialog} from '@angular/material/dialog';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductComponent extends RxDestroy implements OnInit {
-  constructor(
-    public afAuth: AngularFireAuth,
-    public cart: CartService,
-    public wishList: WishListService,
-    public dialog: MatDialog,
-    private afs: AngularFirestore,
-    private state: StateService,
-    private activatedRoute: ActivatedRoute,
-    private http: HttpClient,
-    private fb: FormBuilder
-  ) {
-    super();
-  }
-
   rews$: Observable<[Review[], number]>;
   data$: Observable<{
     product: Product;
@@ -64,8 +52,23 @@ export class ProductComponent extends RxDestroy implements OnInit {
   similar$: Observable<any>;
   imgIndex = 0;
   filters: FormGroup;
-
+  sale$ = new BehaviorSubject<Sale & {defaultValue: number}>(null);
+  totalValue: number;
   @ViewChild('reviewsDialog', {static: true}) reviewsDialog: TemplateRef<any>;
+
+  constructor(
+    public afAuth: AngularFireAuth,
+    public cart: CartService,
+    public wishList: WishListService,
+    public dialog: MatDialog,
+    private afs: AngularFirestore,
+    private state: StateService,
+    private activatedRoute: ActivatedRoute,
+    private http: HttpClient,
+    private fb: FormBuilder
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.data$ = combineLatest([
@@ -135,6 +138,39 @@ export class ProductComponent extends RxDestroy implements OnInit {
 
             if (cart) {
               quantity -= cart.quantity;
+            }
+
+            if (data.product.sale && !this.sale$.value) {
+              this.state.sales$.subscribe((res: any) => {
+                const sales = res.filter(sale => sale.id === data.product.sale);
+                if (!sales.length) {
+                  return;
+                }
+                const sale = sales[0];
+
+                if (
+                  !sale.active ||
+                  !(
+                    sale.startingDate.seconds <
+                    Date.now() <
+                    sale.endingDate.seconds
+                  )
+                ) {
+                  return;
+                }
+
+                this.sale$.next({...sale, defaultValue: {...price}});
+                for (const value of Object.keys(price)) {
+                  if (sale.fixed) {
+                    price[value] -= sale.values[value];
+                  } else {
+                    price[value] -=
+                      (price[value] / 100) * fromStripeFormat(sale.value);
+                  }
+
+                  price[value] = Math.max(price[value], 0);
+                }
+              });
             }
 
             return {

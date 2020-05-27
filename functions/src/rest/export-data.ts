@@ -23,9 +23,8 @@ app.post('/', (req, res) => {
     const docs = (await admin
       .firestore()
       .collection(collection)
-      .get())
-      .docs
-      .reduce((acc, doc) => {
+      .get()).docs.reduce(
+      (acc, doc) => {
         if (!ids || !ids.includes(doc.id)) {
           acc.push({
             ...doc.data(),
@@ -34,7 +33,9 @@ app.post('/', (req, res) => {
         }
 
         return acc;
-      }, [] as any[]);
+      },
+      [] as any[]
+    );
 
     if (!docs.length) {
       throw new Error('No data to export');

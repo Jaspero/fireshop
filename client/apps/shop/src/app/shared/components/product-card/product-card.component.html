@@ -1,4 +1,12 @@
 <mat-card class="cs-pointer jfs-product-card" [routerLink]="['/product', product.id]">
+  <div *ngIf="sale$ | async as sale">
+    <div *ngIf="sale">
+      <div class="jfs-product-ribbon" *ngIf="sale.showRibbon">
+        <span class="jfs-product-ribbon-text">{{sale.name}}</span>
+      </div>
+    </div>
+  </div>
+
   <mat-card-header>
     <img
       mat-card-avatar
@@ -21,7 +29,7 @@
       [attr.alt]="product.name"
     />
   </div>
-  <mat-card-content>
+  <mat-card-content *ngIf="price$ | async as price">
     <p>{{price | sp}}</p>
   </mat-card-content>
   <mat-card-actions>

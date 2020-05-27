@@ -45,6 +45,12 @@ service cloud.firestore {
       allow write: if write();
     }
 
+    match /sales-en/{sale=**} {
+      allow get: if true;
+      allow list: if readOrWrite();
+      allow write: if write();
+    }
+
     match /gift-cards/{document=**} {
   	  allow read: if readOrWrite();
   	  allow write: if write();

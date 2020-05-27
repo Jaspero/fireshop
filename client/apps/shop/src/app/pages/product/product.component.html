@@ -47,7 +47,19 @@
                 </div>
               </form>
             </div>
-            <h2 class="m-b-xs">{{data.price | sp}}</h2>
+
+
+            <div *ngIf="sale$ | async as sale; else default">
+              <h5 class="p-t-s p-b-xs">Sale</h5>
+              <div class="m-b-s">
+                <h4 class="m-b-xs"><span class="strike">{{sale.defaultValue | sp}}</span></h4>
+                <h2 class="m-b-xs">{{data.price | sp}}</h2>
+              </div>
+            </div>
+
+            <ng-template #default>
+              <h2 class="m-b-xs">{{data.price | sp}}</h2>
+            </ng-template>
             <p class="m-t-s" *ngIf="data.product.showingQuantity">
               {{data.quantity ? data.quantity + ' in stock' : 'There are no more items in stock'}}
             </p>
@@ -58,7 +70,8 @@
               color="accent"
               [disabled]="data.isDisabled"
               (click)="cart.add(data.product, filters ? filters.getRawValue() : {})">
-              <span class="iblock p-x-m">{{data.itemsInCart ? 'Add more to cart (currently ' + data.itemsInCart + ')' : 'Add to cart'}} </span>
+              <span
+                class="iblock p-x-m">{{data.itemsInCart ? 'Add more to cart (currently ' + data.itemsInCart + ')' : 'Add to cart'}} </span>
             </button>
             <div class="m-y-m flex fd-col ai-start">
               <p class="m-b-xs"><b>Share this product:</b></p>

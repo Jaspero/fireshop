@@ -26,6 +26,7 @@ import {LangSinglePageComponent} from '../../../../shared/components/lang-single
 import {ProductSelectDialogComponent} from '../../../../shared/components/product-select-dialog/product-select-dialog.component';
 import {GalleryUploadComponent} from '../../../../shared/modules/file-upload/gallery-upload/gallery-upload.component';
 import {PRODUCT_GENERATED_IMAGES} from '../../consts/product-generated-images.const';
+import {Sale} from '@jf/interfaces/sales.interface';
 
 interface Currency {
   code: string;
@@ -48,6 +49,7 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
   galleryUploadComponent: GalleryUploadComponent;
 
   categories$: Observable<Category[]>;
+  sales$: Observable<Sale[]>;
   collection = FirestoreCollections.Products;
   currencies: Currency[];
   inventoryKeys: string[] = [];
@@ -61,6 +63,15 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
 
   ngOnInit() {
     super.ngOnInit();
+
+    this.sales$ = this.state.language$.pipe(
+      switchMap(lang =>
+        this.afs
+          .collection<Sale>(`${FirestoreCollections.Sales}-${lang}`)
+          .valueChanges({idField: 'id'})
+      ),
+      shareReplay(1)
+    );
 
     this.currencies = DYNAMIC_CONFIG.currency.supportedCurrencies.map(it => ({
       code: it,
@@ -235,8 +246,9 @@ export class ProductsSinglePageComponent extends LangSinglePageComponent
       shortDescription: data.shortDescription || '',
       gallery: [data.gallery || []],
       quantity: [data.quantity || 0, Validators.min(0)],
-      category: data.category,
+      category: [data.category || ''],
       order: data.order || 0,
+      sale: [data.sale || ''],
       showingQuantity: data.hasOwnProperty('showingQuantity')
         ? data.showingQuantity
         : DYNAMIC_CONFIG.generalSettings.showingQuantity,

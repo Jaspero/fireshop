@@ -17,13 +17,14 @@ import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {Product} from '@jf/interfaces/product.interface';
-import {BehaviorSubject, Observable, of} from 'rxjs';
 import {debounceTime, delay, map, switchMap, tap} from 'rxjs/operators';
+import {BehaviorSubject, Observable, of} from 'rxjs';
 import {CartService} from '../../shared/services/cart/cart.service';
 
 import * as firebase from 'firebase';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {animate, style, transition, trigger} from '@angular/animations';
+import {StateService} from '../../shared/services/state/state.service';
 import FieldPath = firebase.firestore.FieldPath;
 
 @Component({
@@ -35,7 +36,7 @@ import FieldPath = firebase.firestore.FieldPath;
     trigger('fadeIn', [
       transition(':enter', [
         style({opacity: '0'}),
-        animate('1s ease-out', style({opacity: '1'}))
+        animate('0.5s ease-out', style({opacity: '1'}))
       ])
     ])
   ]

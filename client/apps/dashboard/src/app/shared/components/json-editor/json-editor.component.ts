@@ -23,7 +23,8 @@ import JSONEditor from 'jsoneditor';
     }
   ]
 })
-export class JsonEditorComponent implements AfterViewInit, ControlValueAccessor {
+export class JsonEditorComponent
+  implements AfterViewInit, ControlValueAccessor {
   constructor() {}
 
   @ViewChild('editor', {static: true})
