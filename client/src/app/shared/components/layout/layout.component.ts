@@ -56,8 +56,12 @@ export class LayoutComponent implements OnInit {
                     {
                       children: item.children
                         .reduce((a, c) => {
-
                           if (!c.authorized || c.authorized.includes(this.state.role)) {
+                            try {
+                              // tslint:disable-next-line:no-eval
+                              c.value = eval(c.value)(this.state.user, this.state.role);
+                            } catch (e) {}
+
                             a.push({
                               ...c,
                               routerOptions: {
