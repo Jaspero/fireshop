@@ -2,8 +2,14 @@ import {NavigationItemType} from '../enums/navigation-item-type.enum';
 
 export interface NavigationItem {
   label: string;
+
+  /**
+   * Can be a function
+   * (user, role) => role ? 'a' : 'b'
+   */
   value: string;
   icon?: string;
+  function?: boolean;
 
   /**
    * Defaults to 'empty' if unassigned

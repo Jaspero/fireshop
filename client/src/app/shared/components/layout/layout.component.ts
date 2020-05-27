@@ -7,6 +7,7 @@ import {STATIC_CONFIG} from '../../../../environments/static-config';
 import {NavigationItemType} from '../../enums/navigation-item-type.enum';
 import {NavigationItem} from '../../interfaces/navigation-item.interface';
 import {StateService} from '../../services/state/state.service';
+import {safeEval} from '../../../../../../functions/src/utils/safe-eval';
 
 interface NavigationItemWithActive extends NavigationItem {
   active?: boolean;
@@ -57,10 +58,12 @@ export class LayoutComponent implements OnInit {
                       children: item.children
                         .reduce((a, c) => {
                           if (!c.authorized || c.authorized.includes(this.state.role)) {
-                            try {
-                              // tslint:disable-next-line:no-eval
-                              c.value = eval(c.value)(this.state.user, this.state.role);
-                            } catch (e) {}
+                            if (c.function) {
+                              const value = safeEval(c.value);
+                              if (value) {
+                                c.value = value(this.state.user, this.state.role);
+                              }
+                            }
 
                             a.push({
                               ...c,
