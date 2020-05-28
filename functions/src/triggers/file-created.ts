@@ -14,8 +14,7 @@ export const fileCreated = functions
   })
   .storage
   .object()
-  .onFinalize(async ({bucket, name: named, contentType, metadata}: any) => {
-    const name = named.replace(/\s/g, '');
+  .onFinalize(async ({bucket, name: name, contentType, metadata}: any) => {
     const fileName = basename(name);
     const dirName = dirname(name);
 
