@@ -162,14 +162,10 @@ export class ProductComponent extends RxDestroy implements OnInit {
 
                 this.sale$.next({...sale, defaultValue: {...price}});
                 for (const currency of Object.keys(salePrice)) {
-                  if (sale.fixed) {
-                    salePrice[currency] -= sale.values[currency];
-                  } else {
-                    salePrice[currency] -=
-                      (salePrice[currency] / 100) *
+                  salePrice[currency] -= sale.fixed
+                    ? sale.values[currency]
+                    : (salePrice[currency] / 100) *
                       fromStripeFormat(sale.value);
-                  }
-
                   salePrice[currency] = Math.max(salePrice[currency], 0);
                 }
               });

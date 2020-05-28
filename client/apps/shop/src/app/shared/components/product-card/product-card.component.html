@@ -30,7 +30,7 @@
     />
   </div>
   <mat-card-content *ngIf="price$ | async as price">
-    <span *ngIf="price.default" class="strike">{{price.default | sp}}</span>&nbsp;
+    <span *ngIf="price.default" class="td-line">{{price.default | sp}}</span>&nbsp;
     <span *ngIf="price.current">{{price.current | sp}}</span>
   </mat-card-content>
   <mat-card-actions>

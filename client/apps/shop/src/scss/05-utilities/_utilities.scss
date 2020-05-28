@@ -13,6 +13,7 @@
 .flex {
   display: flex;
 }
+
 .iflex {
   display: inline-flex;
 }
@@ -20,9 +21,11 @@
 .fw-wrap {
   flex-wrap: wrap;
 }
+
 .fw-nowrap {
   flex-wrap: nowrap;
 }
+
 .fw-rev {
   flex-wrap: wrap-reverse;
 }
@@ -30,12 +33,15 @@
 .fd-row {
   flex-direction: row;
 }
+
 .fd-row-rev {
   flex-direction: row-reverse;
 }
+
 .fd-col {
   flex-direction: column;
 }
+
 .fd-col-rev {
   flex-direction: column-reverse;
 }
@@ -43,15 +49,19 @@
 .ai-stretch {
   align-items: stretch;
 }
+
 .ai-start {
   align-items: flex-start;
 }
+
 .ai-end {
   align-items: flex-end;
 }
+
 .ai-center {
   align-items: center;
 }
+
 .ai-base {
   align-items: baseline;
 }
@@ -59,18 +69,23 @@
 .jc-start {
   justify-content: flex-start;
 }
+
 .jc-end {
   justify-content: flex-end;
 }
+
 .jc-center {
   justify-content: center;
 }
+
 .jc-around {
   justify-content: space-around;
 }
+
 .jc-between {
   justify-content: space-between;
 }
+
 .jc-evenly {
   justify-content: space-evenly;
 }
@@ -85,6 +100,7 @@
 .block {
   display: block;
 }
+
 .iblock {
   display: inline-block;
 }
@@ -95,9 +111,11 @@
 .bg-primary {
   background-color: var(--primary);
 }
+
 .bg-accent {
   background-color: var(--accent);
 }
+
 .bg-warn {
   background-color: var(--warn);
 }
@@ -105,6 +123,7 @@
 .bg-l-primary {
   background-color: $bg-l-primary;
 }
+
 .bg-l-secondary {
   background-color: $bg-l-secondary;
 }
@@ -112,6 +131,7 @@
 .bg-d-primary {
   background-color: $bg-d-primary;
 }
+
 .bg-d-secondary {
   background-color: $bg-d-secondary;
 }
@@ -122,9 +142,11 @@
 .c-primary {
   color: var(--primary);
 }
+
 .c-accent {
   color: var(--accent);
 }
+
 .c-warm {
   color: var(--warn);
 }
@@ -132,12 +154,15 @@
 .c-l-primary {
   color: $fg-l-primary;
 }
+
 .c-l-secondary {
   color: $fg-l-secondary;
 }
+
 .c-l-tertiary {
   color: $fg-l-tertiary;
 }
+
 .c-l-quaternary {
   color: $fg-l-quaternary;
 }
@@ -145,12 +170,15 @@
 .c-d-primary {
   color: $fg-d-primary;
 }
+
 .c-d-secondary {
   color: $fg-d-secondary;
 }
+
 .c-d-tertiary {
   color: $fg-d-tertiary;
 }
+
 .c-d-quaternary {
   color: $fg-d-quaternary;
 }
@@ -161,12 +189,15 @@
 .ta-left {
   text-align: left;
 }
+
 .ta-center {
   text-align: center;
 }
+
 .ta-right {
   text-align: right;
 }
+
 .ta-justify {
   text-align: justify;
 }
@@ -174,6 +205,7 @@
 .ws-nowrap {
   white-space: nowrap;
 }
+
 .ws-normal {
   white-space: normal;
 }
@@ -181,9 +213,11 @@
 .fw-reg {
   font-weight: 400;
 }
+
 .fw-med {
   font-weight: 500;
 }
+
 .fw-bold {
   font-weight: 700;
 }
@@ -191,8 +225,13 @@
 .fs-small {
   font-size: 0.75em;
 }
+
 .fs-large {
   font-size: 1.2em;
+}
+
+.td-line {
+  text-decoration: line-through;
 }
 
 /* Cursor
@@ -208,6 +247,7 @@
 .obj-cover {
   object-fit: cover;
 }
+
 .obj-contain {
   object-fit: contain;
 }
@@ -225,9 +265,11 @@
 .w-full {
   width: 100%;
 }
+
 .w-half {
   width: 50%;
 }
+
 .w-auto {
   width: auto;
 }
@@ -235,6 +277,7 @@
 .h-full {
   height: 100%;
 }
+
 .h-auto {
   height: auto;
 }
@@ -247,16 +290,19 @@
     display: none;
   }
 }
+
 .hide-s {
   @media (max-width: $screen-s) {
     display: none;
   }
 }
+
 .hide-m {
   @media (max-width: $screen-m) {
     display: none;
   }
 }
+
 .hide-l {
   @media (max-width: $screen-l) {
     display: none;
@@ -268,16 +314,19 @@
     display: none;
   }
 }
+
 .show-s {
   @media (min-width: $screen-s + 1px) {
     display: none;
   }
 }
+
 .show-m {
   @media (min-width: $screen-m + 1px) {
     display: none;
   }
 }
+
 .show-m {
   @media (min-width: $screen-l + 1px) {
     display: none;
@@ -297,21 +346,27 @@
 .p-a-xxs {
   @include fluid(8px, 4px, padding);
 }
+
 .p-a-xs {
   @include fluid(10px, 5px, padding);
 }
+
 .p-a-s {
   @include fluid(20px, 10px, padding);
 }
+
 .p-a-m {
   @include fluid(40px, 20px, padding);
 }
+
 .p-a-l {
   @include fluid(80px, 40px, padding);
 }
+
 .p-a-xl {
   @include fluid(160px, 80px, padding);
 }
+
 .p-a-xxl {
   @include fluid(320px, 160px, padding);
 }
@@ -320,26 +375,32 @@
   @include fluid(8px, 4px, padding-left);
   @include fluid(8px, 4px, padding-right);
 }
+
 .p-x-xs {
   @include fluid(10px, 5px, padding-left);
   @include fluid(10px, 5px, padding-right);
 }
+
 .p-x-s {
   @include fluid(20px, 10px, padding-left);
   @include fluid(20px, 10px, padding-right);
 }
+
 .p-x-m {
   @include fluid(40px, 20px, padding-left);
   @include fluid(40px, 20px, padding-right);
 }
+
 .p-x-l {
   @include fluid(80px, 40px, padding-left);
   @include fluid(80px, 40px, padding-right);
 }
+
 .p-x-xl {
   @include fluid(160px, 80px, padding-left);
   @include fluid(160px, 80px, padding-right);
 }
+
 .p-x-xxl {
   @include fluid(320px, 160px, padding-left);
   @include fluid(320px, 160px, padding-right);
@@ -349,26 +410,32 @@
   @include fluid(8px, 4px, padding-top);
   @include fluid(8px, 4px, padding-bottom);
 }
+
 .p-y-xs {
   @include fluid(10px, 5px, padding-top);
   @include fluid(10px, 5px, padding-bottom);
 }
+
 .p-y-s {
   @include fluid(20px, 10px, padding-top);
   @include fluid(20px, 10px, padding-bottom);
 }
+
 .p-y-m {
   @include fluid(40px, 20px, padding-top);
   @include fluid(40px, 20px, padding-bottom);
 }
+
 .p-y-l {
   @include fluid(80px, 40px, padding-top);
   @include fluid(80px, 40px, padding-bottom);
 }
+
 .p-y-xl {
   @include fluid(160px, 80px, padding-top);
   @include fluid(160px, 80px, padding-bottom);
 }
+
 .p-y-xxl {
   @include fluid(320px, 160px, padding-top);
   @include fluid(320px, 160px, padding-bottom);
@@ -377,21 +444,27 @@
 .p-t-xxs {
   @include fluid(8px, 4px, padding-top);
 }
+
 .p-t-xs {
   @include fluid(10px, 5px, padding-top);
 }
+
 .p-t-s {
   @include fluid(20px, 10px, padding-top);
 }
+
 .p-t-m {
   @include fluid(40px, 20px, padding-top);
 }
+
 .p-t-l {
   @include fluid(80px, 40px, padding-top);
 }
+
 .p-t-xl {
   @include fluid(160px, 80px, padding-top);
 }
+
 .p-t-xxl {
   @include fluid(320px, 160px, padding-top);
 }
@@ -399,21 +472,27 @@
 .p-r-xxs {
   @include fluid(8px, 4px, padding-right);
 }
+
 .p-r-xs {
   @include fluid(10px, 5px, padding-right);
 }
+
 .p-r-s {
   @include fluid(20px, 10px, padding-right);
 }
+
 .p-r-m {
   @include fluid(40px, 20px, padding-right);
 }
+
 .p-r-l {
   @include fluid(80px, 40px, padding-right);
 }
+
 .p-r-xl {
   @include fluid(160px, 80px, padding-right);
 }
+
 .p-r-xxl {
   @include fluid(320px, 160px, padding-right);
 }
@@ -421,21 +500,27 @@
 .p-b-xxs {
   @include fluid(8px, 4px, padding-bottom);
 }
+
 .p-b-xs {
   @include fluid(10px, 5px, padding-bottom);
 }
+
 .p-b-s {
   @include fluid(20px, 10px, padding-bottom);
 }
+
 .p-b-m {
   @include fluid(40px, 20px, padding-bottom);
 }
+
 .p-b-l {
   @include fluid(80px, 40px, padding-bottom);
 }
+
 .p-b-xl {
   @include fluid(160px, 80px, padding-bottom);
 }
+
 .p-b-xxl {
   @include fluid(320px, 160px, padding-bottom);
 }
@@ -443,21 +528,27 @@
 .p-l-xxs {
   @include fluid(8px, 4px, padding-left);
 }
+
 .p-l-xs {
   @include fluid(10px, 5px, padding-left);
 }
+
 .p-l-s {
   @include fluid(20px, 10px, padding-left);
 }
+
 .p-l-m {
   @include fluid(40px, 20px, padding-left);
 }
+
 .p-l-l {
   @include fluid(80px, 40px, padding-left);
 }
+
 .p-l-xl {
   @include fluid(160px, 80px, padding-left);
 }
+
 .p-l-xxl {
   @include fluid(320px, 160px, padding-left);
 }
@@ -475,21 +566,27 @@
 .m-a-xxs {
   @include fluid(8px, 4px, margin);
 }
+
 .m-a-xs {
   @include fluid(10px, 5px, margin);
 }
+
 .m-a-s {
   @include fluid(20px, 10px, margin);
 }
+
 .m-a-m {
   @include fluid(40px, 20px, margin);
 }
+
 .m-a-l {
   @include fluid(80px, 40px, margin);
 }
+
 .m-a-xl {
   @include fluid(160px, 80px, margin);
 }
+
 .m-a-xxl {
   @include fluid(320px, 160px, margin);
 }
@@ -498,26 +595,32 @@
   @include fluid(8px, 4px, margin-left);
   @include fluid(8px, 4px, margin-right);
 }
+
 .m-x-xs {
   @include fluid(10px, 5px, margin-left);
   @include fluid(10px, 5px, margin-right);
 }
+
 .m-x-s {
   @include fluid(20px, 10px, margin-left);
   @include fluid(20px, 10px, margin-right);
 }
+
 .m-x-m {
   @include fluid(40px, 20px, margin-left);
   @include fluid(40px, 20px, margin-right);
 }
+
 .m-x-l {
   @include fluid(80px, 40px, margin-left);
   @include fluid(80px, 40px, margin-right);
 }
+
 .m-x-xl {
   @include fluid(160px, 80px, margin-left);
   @include fluid(160px, 80px, margin-right);
 }
+
 .m-x-xxl {
   @include fluid(320px, 160px, margin-left);
   @include fluid(320px, 160px, margin-right);
@@ -527,26 +630,32 @@
   @include fluid(8px, 4px, margin-top);
   @include fluid(8px, 4px, margin-bottom);
 }
+
 .m-y-xs {
   @include fluid(10px, 5px, margin-top);
   @include fluid(10px, 5px, margin-bottom);
 }
+
 .m-y-s {
   @include fluid(20px, 10px, margin-top);
   @include fluid(20px, 10px, margin-bottom);
 }
+
 .m-y-m {
   @include fluid(40px, 20px, margin-top);
   @include fluid(40px, 20px, margin-bottom);
 }
+
 .m-y-l {
   @include fluid(80px, 40px, margin-top);
   @include fluid(80px, 40px, margin-bottom);
 }
+
 .m-y-xl {
   @include fluid(160px, 80px, margin-top);
   @include fluid(160px, 80px, margin-bottom);
 }
+
 .m-y-xxl {
   @include fluid(320px, 160px, margin-top);
   @include fluid(320px, 160px, margin-bottom);
@@ -555,21 +664,27 @@
 .m-t-xxs {
   @include fluid(8px, 4px, margin-top);
 }
+
 .m-t-xs {
   @include fluid(10px, 5px, margin-top);
 }
+
 .m-t-s {
   @include fluid(20px, 10px, margin-top);
 }
+
 .m-t-m {
   @include fluid(40px, 20px, margin-top);
 }
+
 .m-t-l {
   @include fluid(80px, 40px, margin-top);
 }
+
 .m-t-xl {
   @include fluid(160px, 80px, margin-top);
 }
+
 .m-t-xxl {
   @include fluid(320px, 160px, margin-top);
 }
@@ -577,21 +692,27 @@
 .m-r-xxs {
   @include fluid(8px, 4px, margin-right);
 }
+
 .m-r-xs {
   @include fluid(10px, 5px, margin-right);
 }
+
 .m-r-s {
   @include fluid(20px, 10px, margin-right);
 }
+
 .m-r-m {
   @include fluid(40px, 20px, margin-right);
 }
+
 .m-r-l {
   @include fluid(80px, 40px, margin-right);
 }
+
 .m-r-xl {
   @include fluid(160px, 80px, margin-right);
 }
+
 .m-r-xxl {
   @include fluid(320px, 160px, margin-right);
 }
@@ -599,21 +720,27 @@
 .m-b-xxs {
   @include fluid(8px, 4px, margin-bottom);
 }
+
 .m-b-xs {
   @include fluid(10px, 5px, margin-bottom);
 }
+
 .m-b-s {
   @include fluid(20px, 10px, margin-bottom);
 }
+
 .m-b-m {
   @include fluid(40px, 20px, margin-bottom);
 }
+
 .m-b-l {
   @include fluid(80px, 40px, margin-bottom);
 }
+
 .m-b-xl {
   @include fluid(160px, 80px, margin-bottom);
 }
+
 .m-b-xxl {
   @include fluid(320px, 160px, margin-bottom);
 }
@@ -621,21 +748,27 @@
 .m-l-xxs {
   @include fluid(8px, 4px, margin-left);
 }
+
 .m-l-xs {
   @include fluid(10px, 5px, margin-left);
 }
+
 .m-l-s {
   @include fluid(20px, 10px, margin-left);
 }
+
 .m-l-m {
   @include fluid(40px, 20px, margin-left);
 }
+
 .m-l-l {
   @include fluid(80px, 40px, margin-left);
 }
+
 .m-l-xl {
   @include fluid(160px, 80px, margin-left);
 }
+
 .m-l-xxl {
   @include fluid(320px, 160px, margin-left);
 }

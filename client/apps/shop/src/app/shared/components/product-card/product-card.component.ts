@@ -121,12 +121,9 @@ export class ProductCardComponent implements OnInit {
           for (const currency of Object.keys(price)) {
             defaultPrice[currency] = price[currency];
 
-            if (sale.fixed) {
-              price[currency] -= sale.values[currency] || 0;
-            } else {
-              price[currency] -=
-                (price[currency] / 100) * fromStripeFormat(sale.value);
-            }
+            price[currency] -= sale.fixed
+              ? sale.values[currency]
+              : (price[currency] / 100) * fromStripeFormat(sale.value);
             price[currency] = Math.max(price[currency], 0);
           }
 
