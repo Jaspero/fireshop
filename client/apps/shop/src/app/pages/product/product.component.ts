@@ -42,6 +42,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
     itemsInCart: number;
     quantity: number;
     price: number;
+    salePrice: number;
     wishList: {
       label: string;
       tooltip: string;
@@ -126,7 +127,6 @@ export class ProductComponent extends RxDestroy implements OnInit {
                     ? `${statId}_${filters[key]}`
                     : `${data.product.id}_${filters[key]}`;
                 }
-
                 cart = cartData.find(c => statId === c.identifier);
                 statId = statId.replace(`${data.product.id}_`, '');
                 price = data.product.inventory[statId].price;
@@ -140,7 +140,8 @@ export class ProductComponent extends RxDestroy implements OnInit {
               quantity -= cart.quantity;
             }
 
-            if (data.product.sale && !this.sale$.value) {
+            let salePrice = {...price};
+            if (data.product.sale) {
               this.state.sales$.subscribe((res: any) => {
                 const sales = res.filter(sale => sale.id === data.product.sale);
                 if (!sales.length) {
@@ -160,15 +161,16 @@ export class ProductComponent extends RxDestroy implements OnInit {
                 }
 
                 this.sale$.next({...sale, defaultValue: {...price}});
-                for (const value of Object.keys(price)) {
+                for (const currency of Object.keys(salePrice)) {
                   if (sale.fixed) {
-                    price[value] -= sale.values[value];
+                    salePrice[currency] -= sale.values[currency];
                   } else {
-                    price[value] -=
-                      (price[value] / 100) * fromStripeFormat(sale.value);
+                    salePrice[currency] -=
+                      (salePrice[currency] / 100) *
+                      fromStripeFormat(sale.value);
                   }
 
-                  price[value] = Math.max(price[value], 0);
+                  salePrice[currency] = Math.max(salePrice[currency], 0);
                 }
               });
             }
@@ -176,6 +178,7 @@ export class ProductComponent extends RxDestroy implements OnInit {
             return {
               quantity,
               price,
+              salePrice,
               itemsInCart: cart ? cart.quantity : 0,
               isDisabled: data.product.allowOutOfQuantityPurchase
                 ? false

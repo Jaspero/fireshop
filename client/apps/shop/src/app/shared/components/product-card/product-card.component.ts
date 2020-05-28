@@ -31,7 +31,8 @@ export class ProductCardComponent implements OnInit {
   @Input()
   product: Product;
 
-  price$ = new BehaviorSubject<Price>(null);
+  price$ = new BehaviorSubject<{current?: Price; default?: Price}>({});
+  calculatedSale$ = new BehaviorSubject<boolean>(false);
   filters: any;
   wishList$: Observable<{
     icon: string;
@@ -112,24 +113,29 @@ export class ProductCardComponent implements OnInit {
           return of(sales[0]);
         }),
         tap(sale => {
-          if (!sale || this.price$.value) {
+          if (!sale || this.calculatedSale$.value) {
             return;
           }
 
-          for (const value of Object.keys(price)) {
+          const defaultPrice: Price = {};
+          for (const currency of Object.keys(price)) {
+            defaultPrice[currency] = price[currency];
+
             if (sale.fixed) {
-              price[value] -= sale.values[value] || 0;
+              price[currency] -= sale.values[currency] || 0;
             } else {
-              price[value] -=
-                (price[value] / 100) * fromStripeFormat(sale.value);
+              price[currency] -=
+                (price[currency] / 100) * fromStripeFormat(sale.value);
             }
-            price[value] = Math.max(price[value], 0);
+            price[currency] = Math.max(price[currency], 0);
           }
-          this.price$.next(price);
+
+          this.price$.next({current: price, default: defaultPrice});
+          this.calculatedSale$.next(true);
         })
       );
     } else {
-      this.price$.next(price);
+      this.price$.next({current: price});
     }
 
     this.filters = filters;
