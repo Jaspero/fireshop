@@ -7,7 +7,7 @@
     </div>
   </div>
 
-  <mat-card-header>
+  <mat-card-header matTooltipPosition="above" matTooltipShowDelay="1000" matTooltipClass="tooltip" [matTooltip]="product.name">
     <img
       mat-card-avatar
       src="assets/images/loading.svg"
@@ -16,7 +16,7 @@
       [jfsLibraryImage]="product.gallery[0]"
       [webp]="false"
     />
-    <mat-card-title>{{product.name}}</mat-card-title>
+    <mat-card-title [class.ribbon-header]="sale$ | async">{{product.name}}</mat-card-title>
     <mat-card-subtitle>{{product.shortDescription || '&nbsp;'}}</mat-card-subtitle>
   </mat-card-header>
   <div class="mat-card-image-container">

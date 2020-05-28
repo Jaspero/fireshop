@@ -34,7 +34,15 @@
               <mat-icon>{{data.discounts ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
             </button>
             <h4 mat-line>Create discounts</h4>
-            <p mat-line>Create discounts for product, or give away discount codes.</p>
+            <p mat-line>Create discounts for purchase, or give away discount codes.</p>
+          </mat-list-item>
+          <mat-list-item [routerLink]="['/sales/new']">
+            <mat-icon mat-list-icon>label_important</mat-icon>
+            <button mat-icon-button color="primary" style="pointer-events: none;">
+              <mat-icon>{{data.sales ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+            </button>
+            <h4 mat-line>Create sale</h4>
+            <p mat-line>Create sale for selected products.</p>
           </mat-list-item>
         </mat-nav-list>
       </mat-card>

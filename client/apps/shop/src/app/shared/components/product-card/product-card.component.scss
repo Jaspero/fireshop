@@ -63,3 +63,19 @@
     font-weight: bold;
   }
 }
+
+::ng-deep .mat-card-header-text,
+.mat-card-title,
+.mat-card-subtitle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ribbon-header {
+  max-width: calc(100% - 32px);
+}
+
+::ng-deep .tooltip {
+  font-size: 15px;
+}

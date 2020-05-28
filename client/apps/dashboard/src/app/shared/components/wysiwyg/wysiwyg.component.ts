@@ -87,6 +87,7 @@ export class WysiwygComponent implements AfterViewInit, ControlValueAccessor {
       selector: '#' + this.uniqueId,
       height: 420,
       plugins: ['code', 'print', 'wordcount', 'fullpage'],
+      branding: false,
       toolbar: [
         'undo redo',
         'insert',

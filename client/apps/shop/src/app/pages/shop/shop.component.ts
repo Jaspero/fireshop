@@ -24,7 +24,6 @@ import {CartService} from '../../shared/services/cart/cart.service';
 import * as firebase from 'firebase';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {animate, style, transition, trigger} from '@angular/animations';
-import {StateService} from '../../shared/services/state/state.service';
 import FieldPath = firebase.firestore.FieldPath;
 
 @Component({
@@ -48,7 +47,7 @@ export class ShopComponent extends RxDestroy implements OnInit {
   filterDialog: TemplateRef<any>;
 
   // .next() anything on this and more products will load
-  loadMore$ = new BehaviorSubject<boolean>(null);
+  loadMore$ = new BehaviorSubject<boolean>(true);
 
   // With BehaviorSubject no twitches during loading of new products
   products$ = new BehaviorSubject([]);
@@ -227,10 +226,9 @@ export class ShopComponent extends RxDestroy implements OnInit {
           }, []);
 
           this.lastProduct = products[products.length - 1];
-
           return products;
         }),
-        tap(data => {
+        map(data => {
           if (!data.length) return;
 
           if (data.length < this.pageSize) {
@@ -247,10 +245,15 @@ export class ShopComponent extends RxDestroy implements OnInit {
             .getValue()
             .filter(product => !newIds.has(product.id));
           this.products$.next([...oldProducts, ...data]);
+
+          return true;
         }),
         delay(1000),
-        tap(() => {
+        tap(response => {
           this.loading$.next(false);
+
+          if (!response) return;
+
           if (
             this.productList.nativeElement.offsetHeight < window.innerHeight &&
             this.productsLeft

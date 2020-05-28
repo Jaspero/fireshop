@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   Inject,
   Input,
@@ -61,8 +60,7 @@ export class ProductCardComponent implements OnInit {
     public uniqueId: string,
     public cart: CartService,
     public wishList: WishListService,
-    private state: StateService,
-    private cdr: ChangeDetectorRef
+    private state: StateService
   ) {}
 
   ngOnInit() {
@@ -114,7 +112,7 @@ export class ProductCardComponent implements OnInit {
           return of(sales[0]);
         }),
         tap(sale => {
-          if (!sale) {
+          if (!sale || this.price$.value) {
             return;
           }
 

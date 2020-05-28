@@ -42,8 +42,8 @@ export class SaleSinglePageComponent extends LangSinglePageComponent {
       startingDate: [startingDate, Validators.required],
       endingDate: [endingDate, Validators.required],
       limited: [data.limited || false],
-      active: [data.active, Validators.required],
-      showRibbon: [data.showRibbon, Validators.required],
+      active: [data.active],
+      showRibbon: [data.showRibbon],
       currency: [
         data.currency || DYNAMIC_CONFIG.currency.primary,
         Validators.required

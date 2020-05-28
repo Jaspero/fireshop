@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {ActivatedRoute} from '@angular/router';
 import {STATIC_CONFIG} from '@jf/consts/static-config.const';
-import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {Discount} from '@jf/interfaces/discount.interface';
@@ -10,7 +9,7 @@ import {Order} from '@jf/interfaces/order.interface';
 import {Product} from '@jf/interfaces/product.interface';
 import {forkJoin, Observable} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
-import {firstOfMonth} from '../../shared/utils/first-date-month';
+import {Sale} from '@jf/interfaces/sales.interface';
 
 @Component({
   selector: 'jfsc-dashboard',
@@ -19,24 +18,24 @@ import {firstOfMonth} from '../../shared/utils/first-date-month';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements OnInit {
+  orders = [];
+  orders$: Observable<Order[]>;
+  data$: Observable<{
+    categories: boolean;
+    products: boolean;
+    discounts: boolean;
+    sales: boolean;
+  }>;
+
   constructor(
     private afs: AngularFirestore,
     private activatedRoute: ActivatedRoute
   ) {}
 
-  orders = [];
-  orders$: Observable<Order[]>;
-  ordersInMonth$: Observable<Order[]>;
-  data$: Observable<{
-    categories: boolean;
-    products: boolean;
-    discounts: boolean;
-  }>;
-
   ngOnInit() {
     this.orders$ = this.afs
       .collection<Order>(FirestoreCollections.Orders, ref => {
-        return ref.orderBy('createdOn', 'desc').limit(3);
+        return ref.orderBy('createdOn', 'desc').limit(4);
       })
       .valueChanges({idField: 'id'});
 
@@ -74,13 +73,21 @@ export class DashboardComponent implements OnInit {
               ref => ref.limit(1)
             )
             .get()
+            .pipe(map(actions => !!actions.docs.length)),
+          this.afs
+            .collection<Sale>(
+              `${FirestoreCollections.Sales}-${STATIC_CONFIG.lang}`,
+              ref => ref.limit(1)
+            )
+            .get()
             .pipe(map(actions => !!actions.docs.length))
         ])
       ),
       map(data => ({
         categories: data[0],
         products: data[1],
-        discounts: data[2]
+        discounts: data[2],
+        sales: data[3]
       }))
     );
   }
