@@ -9,6 +9,7 @@ export interface Product {
   id: string;
   category: string;
   price: Price;
+  salePrice: Price;
   active: boolean;
   createdOn: number;
   name: string;

@@ -63,8 +63,8 @@ $grid-gutter: 32px; /* [2] */
 @for $i from 1 through 12 {
   .col-#{$i} {
     display: block;
-    width: #{$i / 12 * 100%};
     flex-basis: #{$i / 12 * 100%};
+    max-width: #{$i / 12 * 100%};
   }
 }
 
@@ -76,8 +76,8 @@ $grid-gutter: 32px; /* [2] */
   @for $i from 1 through 12 {
     .col-l-#{$i} {
       display: block;
-      width: #{$i / 12 * 100%};
       flex-basis: #{$i / 12 * 100%};
+      max-width: #{$i / 12 * 100%};
     }
   }
 }
@@ -90,8 +90,8 @@ $grid-gutter: 32px; /* [2] */
   @for $i from 1 through 12 {
     .col-m-#{$i} {
       display: block;
-      width: #{$i / 12 * 100%};
       flex-basis: #{$i / 12 * 100%};
+      max-width: #{$i / 12 * 100%};
     }
   }
 }
@@ -104,8 +104,8 @@ $grid-gutter: 32px; /* [2] */
   @for $i from 1 through 12 {
     .col-s-#{$i} {
       display: block;
-      width: #{$i / 12 * 100%};
       flex-basis: #{$i / 12 * 100%};
+      max-width: #{$i / 12 * 100%};
     }
   }
 }
@@ -118,8 +118,8 @@ $grid-gutter: 32px; /* [2] */
   @for $i from 1 through 12 {
     .col-xs-#{$i} {
       display: block;
-      width: #{$i / 12 * 100%};
       flex-basis: #{$i / 12 * 100%};
+      max-width: #{$i / 12 * 100%};
     }
   }
 }

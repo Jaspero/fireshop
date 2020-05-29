@@ -7,7 +7,7 @@
     </div>
   </div>
 
-  <mat-card-header>
+  <mat-card-header matTooltipPosition="above" matTooltipShowDelay="1000" matTooltipClass="tooltip" [matTooltip]="product.name">
     <img
       mat-card-avatar
       src="assets/images/loading.svg"
@@ -16,7 +16,7 @@
       [jfsLibraryImage]="product.gallery[0]"
       [webp]="false"
     />
-    <mat-card-title>{{product.name}}</mat-card-title>
+    <mat-card-title [class.ribbon-header]="sale$ | async">{{product.name}}</mat-card-title>
     <mat-card-subtitle>{{product.shortDescription || '&nbsp;'}}</mat-card-subtitle>
   </mat-card-header>
   <div class="mat-card-image-container">
@@ -30,7 +30,8 @@
     />
   </div>
   <mat-card-content *ngIf="price$ | async as price">
-    <p>{{price | sp}}</p>
+    <span *ngIf="price.default" class="td-line">{{price.default | sp}}</span>&nbsp;
+    <span *ngIf="price.current">{{price.current | sp}}</span>
   </mat-card-content>
   <mat-card-actions>
     <div class="flex fd-row-rev">

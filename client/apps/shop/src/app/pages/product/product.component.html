@@ -49,15 +49,15 @@
             </div>
 
 
-            <div *ngIf="sale$ | async as sale; else default">
-              <h5 class="p-t-s p-b-xs">Sale</h5>
+            <div *ngIf="sale$ | async as sale; else noSale">
+              <h5 class="p-t-s p-b-xs">Sale: {{sale.name}}</h5>
               <div class="m-b-s">
-                <h4 class="m-b-xs"><span class="strike">{{sale.defaultValue | sp}}</span></h4>
-                <h2 class="m-b-xs">{{data.price | sp}}</h2>
+                <h4 class="m-b-xs"><span class="td-line">{{sale.defaultValue | sp}}</span></h4>
+                <h2 class="m-b-xs">{{data.salePrice | sp}}</h2>
               </div>
             </div>
 
-            <ng-template #default>
+            <ng-template #noSale>
               <h2 class="m-b-xs">{{data.price | sp}}</h2>
             </ng-template>
             <p class="m-t-s" *ngIf="data.product.showingQuantity">

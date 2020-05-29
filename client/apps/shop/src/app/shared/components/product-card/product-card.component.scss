@@ -33,7 +33,7 @@
     content: '';
     position: absolute;
     z-index: -1;
-    border: 5px solid hsl(0,100,40);
+    border: 5px solid hsl(0, 100, 35);
     border-top-color: transparent;
     border-right-color: transparent;
   }
@@ -57,9 +57,24 @@
     width: 200%;
     padding: 8px 0;
     text-align: center;
-    //box-shadow: 0 5px 10px rgba(0,0,0,.1);
-    background: hsl(0,100,50);
+    background: hsl(0, 100, 50);
     color: #fff;
     font-weight: bold;
   }
+}
+
+::ng-deep .mat-card-header-text,
+.mat-card-title,
+.mat-card-subtitle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ribbon-header {
+  max-width: calc(100% - 32px);
+}
+
+::ng-deep .tooltip {
+  font-size: 15px;
 }

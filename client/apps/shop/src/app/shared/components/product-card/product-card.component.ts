@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   Inject,
   Input,
@@ -32,7 +31,8 @@ export class ProductCardComponent implements OnInit {
   @Input()
   product: Product;
 
-  price$ = new BehaviorSubject<Price>(null);
+  price$ = new BehaviorSubject<{current?: Price; default?: Price}>({});
+  calculatedSale$ = new BehaviorSubject<boolean>(false);
   filters: any;
   wishList$: Observable<{
     icon: string;
@@ -61,8 +61,7 @@ export class ProductCardComponent implements OnInit {
     public uniqueId: string,
     public cart: CartService,
     public wishList: WishListService,
-    private state: StateService,
-    private cdr: ChangeDetectorRef
+    private state: StateService
   ) {}
 
   ngOnInit() {
@@ -114,24 +113,26 @@ export class ProductCardComponent implements OnInit {
           return of(sales[0]);
         }),
         tap(sale => {
-          if (!sale) {
+          if (!sale || this.calculatedSale$.value) {
             return;
           }
 
-          for (const value of Object.keys(price)) {
-            if (sale.fixed) {
-              price[value] -= sale.values[value] || 0;
-            } else {
-              price[value] -=
-                (price[value] / 100) * fromStripeFormat(sale.value);
-            }
-            price[value] = Math.max(price[value], 0);
+          const defaultPrice: Price = {};
+          for (const currency of Object.keys(price)) {
+            defaultPrice[currency] = price[currency];
+
+            price[currency] -= sale.fixed
+              ? sale.values[currency]
+              : (price[currency] / 100) * fromStripeFormat(sale.value);
+            price[currency] = Math.max(price[currency], 0);
           }
-          this.price$.next(price);
+
+          this.price$.next({current: price, default: defaultPrice});
+          this.calculatedSale$.next(true);
         })
       );
     } else {
-      this.price$.next(price);
+      this.price$.next({current: price});
     }
 
     this.filters = filters;
