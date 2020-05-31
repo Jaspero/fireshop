@@ -14,7 +14,7 @@ export const fileCreated = functions
   })
   .storage
   .object()
-  .onFinalize(async ({bucket, name: name, contentType, metadata}: any) => {
+  .onFinalize(async ({bucket, name, contentType, metadata}: any) => {
     const fileName = basename(name);
     const dirName = dirname(name);
 
