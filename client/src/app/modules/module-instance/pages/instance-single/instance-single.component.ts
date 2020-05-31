@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Definitions, FormBuilderComponent, safeEval, Segment} from '@jaspero/form-builder';
+import {Definitions, FormBuilderComponent, safeEval, Segment, State} from '@jaspero/form-builder';
 import {JSONSchema7} from 'json-schema';
 // @ts-ignore
 import * as nanoid from 'nanoid';
@@ -61,6 +61,7 @@ export class InstanceSingleComponent implements OnInit {
   currentValue: string;
   viewState = ViewState;
   currentState: ViewState;
+  formState: State;
 
   data$: Observable<Instance>;
 
@@ -71,14 +72,17 @@ export class InstanceSingleComponent implements OnInit {
           switchMap(params => {
             if (params.id === 'new') {
               this.currentState = ViewState.New;
+              this.formState = State.Create;
               return of(null);
             } else if (params.id.endsWith('--copy')) {
               this.currentState = ViewState.Copy;
+              this.formState = State.Create;
               return this.dbService
                 .getDocument(module.id, params.id.replace('--copy', ''))
                 .pipe(queue());
             } else {
               this.currentState = ViewState.Edit;
+              this.formState = State.Edit;
               return this.dbService
                 .getDocument(module.id, params.id)
                 .pipe(queue());
