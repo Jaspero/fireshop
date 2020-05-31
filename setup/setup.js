@@ -144,6 +144,11 @@ const MODULES = [
             label: 'Role',
             control: true
           }
+        ],
+        actions: [
+          {
+            value: `it => '<jms-e-tpr data-email="' + it.email + '"></jms-e-tpr>'`
+          }
         ]
       }
     },

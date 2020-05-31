@@ -1,6 +1,7 @@
 import {initializeApp} from 'firebase-admin';
 import {createUser} from './callable/create-user';
 import {removeUser} from './callable/remove-user';
+import {triggerPasswordReset} from './callable/trigger-password-reset';
 import {api} from './rest/api';
 import {exportData} from './rest/export-data';
 import {importData} from './rest/import-data';
@@ -23,6 +24,7 @@ export const cms = {
   fileCreated,
   fileDeleted,
   documentDeleted,
+  triggerPasswordReset,
 
   // Callable
   createUser,
