@@ -274,16 +274,22 @@ const MODULES = [
           configuration: {
             format: 'number'
           }
-        }
+        },
+        columnsDesktop: 4,
+        columnsMobile: 12
       },
       name: {
-        label: 'Name'
+        label: 'Name',
+        columnsDesktop: 4,
+        columnsMobile: 12
       },
       description: {
         label: 'Description',
         component: {
           type: 'textarea'
-        }
+        },
+        columnsDesktop: 4,
+        columnsMobile: 12
       }
     }
   }

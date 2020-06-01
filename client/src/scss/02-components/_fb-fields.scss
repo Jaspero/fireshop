@@ -1,0 +1,51 @@
+@import "../breakpoints";
+
+/**
+ * Fields
+ *
+ * A 12-column grid for displaying fields.
+ *
+ *============================================================================*/
+
+
+
+/* Fields (parent)
+ *============================================================================*/
+
+.fb-fields {
+  display: grid;
+  grid-gap: 0 1em;
+  grid-template-columns: repeat(12, 1fr);
+}
+
+
+
+/* Field (child)
+ *============================================================================*/
+
+@for $i from 1 through 12 {
+  .fb-field-#{$i} {
+    grid-column: span #{$i};
+  }
+}
+@media (max-width: $screen-m) {
+  @for $i from 1 through 12 {
+    .m-fb-field-#{$i} {
+      grid-column: span #{$i};
+    }
+  }
+}
+@media (max-width: $screen-s) {
+  @for $i from 1 through 12 {
+    .s-fb-field-#{$i} {
+      grid-column: span #{$i};
+    }
+  }
+}
+@media (max-width: $screen-xs) {
+  @for $i from 1 through 12 {
+    .xs-fb-field-#{$i} {
+      grid-column: span #{$i};
+    }
+  }
+}

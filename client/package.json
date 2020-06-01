@@ -23,7 +23,7 @@
     "@angular/platform-browser": "9.1.0",
     "@angular/platform-browser-dynamic": "9.1.0",
     "@angular/router": "9.1.0",
-    "@jaspero/form-builder": "1.12.0",
+    "@jaspero/form-builder": "1.14.0",
     "@jaspero/ng-helpers": "3.4.0",
     "@ngneat/transloco": "2.14.0",
     "ajv": "6.12.0",

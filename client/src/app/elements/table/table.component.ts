@@ -317,7 +317,8 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
         this.parserCache[rowData.id] = new Parser(
           overview.schema,
           this.injector,
-          State.Edit
+          State.Edit,
+          this.state.role
         );
         this.parserCache[rowData.id].buildForm(rowData);
       }
