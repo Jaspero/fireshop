@@ -161,9 +161,10 @@ export class InstanceSingleComponent implements OnInit {
 
   save(instance: Instance) {
     return () => {
-      const id = instance.formBuilder.value ? instance.formBuilder.value.id : nanoid();
+      this.formBuilderComponent.process();
+      const id = this.formBuilderComponent.form.getRawValue().id || nanoid();
 
-      return this.formBuilderComponent.saveAndProcess(
+      return this.formBuilderComponent.save(
         instance.module.id,
         id
       ).pipe(
