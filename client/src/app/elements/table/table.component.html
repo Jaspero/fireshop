@@ -168,8 +168,8 @@
 
         <ng-container *ngIf="ioc.emptyState$ | async; else hasContent;">
           <mat-toolbar class="jc-center" *ngIf="!data.hideAdd">
-            <p>{{'INSTANCE_OVERVIEW.NO_ITEMS' | transloco:{value: data.name} }}</p>
-            <button mat-button color="primary" [routerLink]="['/m', data.moduleId, 'single/new']">
+            <p class="m-r-s">{{'INSTANCE_OVERVIEW.NO_ITEMS' | transloco:{value: data.name} }}</p>
+            <button mat-button color="primary" [routerLink]="['/m', data.moduleId, 'single', 'new']">
               {{'GENERAL.ADD' | transloco}} {{data.name}}
             </button>
           </mat-toolbar>
