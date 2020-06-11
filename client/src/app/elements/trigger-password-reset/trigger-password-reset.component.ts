@@ -24,7 +24,10 @@ export class TriggerPasswordResetComponent {
 
       return from(func(email))
         .pipe(
-          notify()
+          notify({
+            success: 'Reset password request sent successfully',
+            error: 'There was an error sending the request'
+          })
         )
     }
   }
