@@ -32,12 +32,12 @@ export class InstanceOverviewComponent extends RxDestroy
     super();
   }
 
-  hideAdd: boolean;
   currentView: string;
   activeView: string;
   showViewSelector: boolean;
   name: string;
   views: ModuleOverviewView[];
+  toolbar: string[] = [];
 
   ngOnInit() {
     this.ioc.module$
@@ -66,7 +66,6 @@ export class InstanceOverviewComponent extends RxDestroy
         this.currentView = this.getCurrentView('table');
         this.showViewSelector = false;
         this.views = [];
-        this.hideAdd = false;
 
         if (module.layout) {
 
@@ -87,14 +86,20 @@ export class InstanceOverviewComponent extends RxDestroy
               this.currentView = this.getCurrentView(module.layout.overview.defaultView);
             }
 
+            if (module.layout.overview.toolbar) {
+              this.toolbar = module.layout.overview.toolbar.reduce((acc, cur: any) => {
+                if (typeof cur === 'string' || !cur.roles || cur.roles.includes(this.state.role)) {
+                  acc.push((cur as any).item || cur)
+                }
+
+                return acc;
+              }, []);
+            }
+
             this.showViewSelector = !!module.layout.overview.showViewSelector;
 
             if (this.showViewSelector) {
               this.views = module.layout.overview.views || [];
-            }
-
-            if (module.layout.hideAdd) {
-              this.hideAdd = module.layout.hideAdd.includes(this.state.role);
             }
           }
         }

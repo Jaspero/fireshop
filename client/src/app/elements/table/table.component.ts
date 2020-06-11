@@ -181,7 +181,11 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
               'hideExport',
               'hideImport'
             ].reduce((acc, key) => {
-              acc[key] = data.layout.table[key] ? data.layout.table[key].includes(this.state.role) : false;
+              acc[key] = data.layout.table[key] ?
+                typeof data.layout.table[key] === 'boolean' ?
+                  true :
+                  data.layout.table[key].includes(this.state.role) :
+                false;
               return acc;
             }, {});
 
@@ -198,10 +202,12 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
                 return acc;
               }, [])
             }
-          }
 
-          if (data.layout.hideAdd) {
-            hide.hideAdd = data.layout.hideAdd.includes(this.state.role);
+            if (data.layout.table.hideAdd) {
+              hide.hideAdd = typeof data.layout.table.hideAdd === 'boolean' ?
+                true :
+                data.layout.table.hideAdd.includes(this.state.role);
+            }
           }
         }
 

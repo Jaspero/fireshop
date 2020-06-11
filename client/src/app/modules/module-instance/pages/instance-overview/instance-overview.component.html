@@ -2,12 +2,19 @@
   <mat-toolbar role="heading" color="primary" class="sticky-header">
     <span>{{name}}</span>
     <div class="flex-1"></div>
-    <a
-      *ngIf="!hideAdd"
-      mat-flat-button
-      routerLink="../single/new">
-      {{'GENERAL.ADD' | transloco}} {{name}}
-    </a>
+    <div>
+      <ng-container *ngFor="let item of toolbar">
+        <a
+          *ngIf="item === 'add'; else element;"
+          mat-flat-button
+          routerLink="../single/new">
+          {{'GENERAL.ADD' | transloco}} {{name}}
+        </a>
+        <ng-template #element>
+          <div [innerHTML]="item | jpSanitize"></div>
+        </ng-template>
+      </ng-container>
+    </div>
   </mat-toolbar>
 
   <div class="flex ai-center fd-row-rev jc-between p-a-s" *ngIf="views && views.length">

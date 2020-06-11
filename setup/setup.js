@@ -124,6 +124,7 @@ const MODULES = [
         }]
       },
       table: {
+        hideImport: true,
         tableColumns: [
           {
             key: '/createdOn',
@@ -150,6 +151,9 @@ const MODULES = [
             value: `it => '<jms-e-tpr data-email="' + it.email + '"></jms-e-tpr>'`
           }
         ]
+      },
+      overview: {
+        toolbar: ['<jms-e-user-add></jms-e-user-add>']
       }
     },
     schema: {

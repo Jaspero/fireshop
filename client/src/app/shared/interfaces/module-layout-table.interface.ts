@@ -35,11 +35,12 @@ export interface ModuleLayoutTableAction {
 
 export interface ModuleLayoutTable {
   tableColumns?: ModuleLayoutTableColumn[];
-  hideCheckbox?: string[];
-  hideEdit?: string[];
-  hideDelete?: string[];
-  hideExport?: string[];
-  hideImport?: string[];
+  hideAdd?: string[] | boolean;
+  hideCheckbox?: string[] | boolean;
+  hideEdit?: string[] | boolean;
+  hideDelete?: string[] | boolean;
+  hideExport?: string[] | boolean;
+  hideImport?: string[] | boolean;
   actions?: ModuleLayoutTableAction[];
 
   /**

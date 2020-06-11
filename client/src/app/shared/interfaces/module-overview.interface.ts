@@ -4,4 +4,5 @@ export interface ModuleOverview {
   showViewSelector?: boolean;
   defaultView?: string;
   views?: ModuleOverviewView[];
+  toolbar?: Array<string | {item: string, roles?: string[]}>;
 }

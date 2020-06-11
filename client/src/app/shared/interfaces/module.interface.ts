@@ -21,7 +21,6 @@ export interface ModuleLayout {
    * directly to the provided id.
    */
   directLink?: string;
-  hideAdd?: string[];
   sort?: InstanceSort;
   pageSize?: number;
   table?: ModuleLayoutTable;
