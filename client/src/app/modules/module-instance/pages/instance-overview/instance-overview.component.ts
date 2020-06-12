@@ -37,7 +37,7 @@ export class InstanceOverviewComponent extends RxDestroy
   showViewSelector: boolean;
   name: string;
   views: ModuleOverviewView[];
-  toolbar: string[] = [];
+  toolbar: string[];
 
   ngOnInit() {
     this.ioc.module$
@@ -66,6 +66,7 @@ export class InstanceOverviewComponent extends RxDestroy
         this.currentView = this.getCurrentView('table');
         this.showViewSelector = false;
         this.views = [];
+        this.toolbar = ['add'];
 
         if (module.layout) {
 
