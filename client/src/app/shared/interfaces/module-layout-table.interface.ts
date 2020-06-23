@@ -1,3 +1,4 @@
+import {FilterMethod} from '../enums/filter-method.enum';
 import {PipeType} from '../enums/pipe-type.enum';
 
 export interface ModuleLayoutTableColumn {
@@ -19,6 +20,32 @@ export interface ModuleLayoutTableColumn {
   tooltipFunction?: boolean;
   nestedColumns?: ModuleLayoutTableNestedColumn[];
   authorization?: string[];
+  /**
+   * Either ID or lookup need to be specified
+   */
+  populate?: {
+    collection: string;
+
+    /**
+     * If a lookup is provided then the id isn't used
+     */
+    lookUp?: {
+      key: string;
+      operator: FilterMethod;
+    };
+
+    /**
+     * What key from the document to display
+     * defaults to name
+     */
+    displayKey?: string;
+
+    /**
+     * What to show when a matching document isn't found
+     * defaults to '-'
+     */
+    fallback?: string;
+  }
 }
 
 export interface ModuleLayoutTableNestedColumn extends ModuleLayoutTableColumn {

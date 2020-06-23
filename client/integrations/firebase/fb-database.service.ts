@@ -86,11 +86,12 @@ export class FbDatabaseService extends DbService {
     pageSize,
     sort?,
     cursor?,
-    filters?
+    filters?,
+    source?
   ) {
     return this.collection(moduleId, pageSize, sort, cursor, this.filterMethod(filters))
       .get({
-        source: 'server'
+        source: source || 'server'
       })
       .pipe(
         take(1),

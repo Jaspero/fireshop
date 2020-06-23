@@ -12,6 +12,10 @@
   <div class="column-inner" [innerHTML]="value"></div>
 </ng-template>
 
+<ng-template #populateColumn let-value="value">
+  <div class="column-inner">{{value | async}}</div>
+</ng-template>
+
 <ng-template #subHeaderTemplate>
   <jms-filter-tags [items$]="ioc.filterChange$" [search]="ioc.searchControl"></jms-filter-tags>
 </ng-template>

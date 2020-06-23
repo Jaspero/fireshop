@@ -86,10 +86,14 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
   @ViewChild('simpleColumn', {static: true})
   simpleColumnTemplate: TemplateRef<any>;
 
+  @ViewChild('populateColumn', {static: true})
+  populateColumnTemplate: TemplateRef<any>;
+
   data$: Observable<TableData>;
   items$: Observable<any>;
 
   parserCache: {[key: string]: Parser} = {};
+  populateCache: {[key: string]: Observable<any>} = {};
 
   ngOnInit() {
 
@@ -378,6 +382,60 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
 
       if (nested) {
         return value;
+      } else if (column.populate) {
+        const id = get(rowData, column.key as string);
+
+        if (!id) {
+          return new TemplatePortal(
+            this.simpleColumnTemplate,
+            this.viewContainerRef,
+            {value: column.populate.fallback || '-'}
+          );
+        }
+
+        const popKey = `${column.populate.collection}-${
+          column.populate.lookUp ?
+            [column.populate.lookUp.key, column.populate.lookUp.operator, id].join('-') :
+            id
+        }`;
+
+        if (!this.populateCache[popKey]) {
+          if (column.populate.lookUp) {
+            this.populateCache[popKey] = this.dbService.getDocuments(
+              column.populate.collection,
+              1,
+              undefined,
+              undefined,
+              [{
+                ...column.populate.lookUp,
+                value: id
+              }],
+              'default'
+            )
+              .pipe(
+                map(docs => docs[0] ?
+                  (docs[0].data())[column.populate.displayKey || 'name'] || column.populate.fallback || '-' :
+                  column.populate.fallback || '-'
+                ),
+                shareReplay(1)
+              )
+          } else {
+            this.populateCache[popKey] = this.dbService.getDocument(
+              column.populate.collection,
+              id
+            )
+              .pipe(
+                map(it => it[column.populate.displayKey || 'name'] || column.populate.fallback || '-'),
+                shareReplay(1)
+              )
+          }
+        }
+
+        return new TemplatePortal(
+          this.populateColumnTemplate,
+          this.viewContainerRef,
+          {value: this.populateCache[popKey]}
+        )
       } else {
         return new TemplatePortal(
           this.simpleColumnTemplate,
