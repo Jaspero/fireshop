@@ -383,7 +383,12 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
       if (nested) {
         return value;
       } else if (column.populate) {
-        const id = get(rowData, column.key as string);
+        let id;
+
+        try {
+          id = get(rowData, column.key as string);
+        } catch (e) {}
+
 
         if (!id) {
           return new TemplatePortal(
