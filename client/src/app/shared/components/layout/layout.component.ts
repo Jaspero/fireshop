@@ -1,13 +1,13 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
+import {safeEval} from '@jaspero/form-builder';
 import {combineLatest, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {STATIC_CONFIG} from '../../../../environments/static-config';
 import {NavigationItemType} from '../../enums/navigation-item-type.enum';
 import {NavigationItem} from '../../interfaces/navigation-item.interface';
 import {StateService} from '../../services/state/state.service';
-import {safeEval} from '../../../../../../functions/src/utils/safe-eval';
 
 interface NavigationItemWithActive extends NavigationItem {
   active?: boolean;
