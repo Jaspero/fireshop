@@ -12,6 +12,7 @@ import {Settings} from '../../shared/interfaces/settings.interface';
 import {DbService} from '../../shared/services/db/db.service';
 import {notify} from '../../shared/utils/notify.operator';
 import {randomPassword} from '../../shared/utils/random-password';
+import {User} from '../../shared/interfaces/user.interface';
 
 @Component({
   selector: 'jms-settings',

@@ -5,6 +5,7 @@ import {map, shareReplay} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../../integrations/firebase/firestore-collection.enum';
 import {Layout} from '../../interfaces/layout.interface';
 import {Module} from '../../interfaces/module.interface';
+import {User} from '../../interfaces/user.interface';
 import {DbService} from '../db/db.service';
 
 @Injectable({
