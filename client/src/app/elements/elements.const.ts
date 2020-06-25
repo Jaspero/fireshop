@@ -2,6 +2,7 @@ import {STATIC_CONFIG} from '../../environments/static-config';
 import {ChangePasswordComponent} from './change-password/change-password.component';
 import {LinkComponent} from './link/link.component';
 import {TableComponent} from './table/table.component';
+import {ToggleUserStatusComponent} from './toggle-user-status/toggle-user-status.component';
 import {TriggerPasswordResetComponent} from './trigger-password-reset/trigger-password-reset.component';
 import {UserAddComponent} from './user-add/user-add.component';
 
@@ -10,7 +11,8 @@ export const ELEMENTS = [
   TableComponent,
   TriggerPasswordResetComponent,
   UserAddComponent,
-  ChangePasswordComponent
+  ChangePasswordComponent,
+  ToggleUserStatusComponent
 ];
 
 export const ELEMENT_SELECTOR = [
@@ -33,5 +35,9 @@ export const ELEMENT_SELECTOR = [
   {
     selector: STATIC_CONFIG.elementSelectorPrefix + 'cp',
     component: ChangePasswordComponent
+  },
+  {
+    selector: STATIC_CONFIG.elementSelectorPrefix + 'tus',
+    component: ToggleUserStatusComponent
   }
 ];

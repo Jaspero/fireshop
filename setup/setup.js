@@ -152,6 +152,9 @@ const MODULES = [
           },
           {
             value: `it => '<jms-e-cp data-id="' + it.id + '"></jms-e-cp>'`
+          },
+          {
+            value: `it => '<jms-e-tus data-id="' + it.id + '"></jms-e-tus>'`
           }
         ]
       },

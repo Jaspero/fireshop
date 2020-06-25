@@ -50,7 +50,7 @@ export class ChangePasswordComponent implements OnInit {
     return () => {
       const {password} = this.form.getRawValue();
       const {id} = this.el.nativeElement.dataset;
-      const func = this.aff.functions.httpsCallable('cms-triggerPasswordReset');
+      const func = this.aff.functions.httpsCallable('cms-updateUser');
 
       return from(func({id, password}))
         .pipe(
