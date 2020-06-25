@@ -1,4 +1,5 @@
 import {STATIC_CONFIG} from '../../environments/static-config';
+import {ChangePasswordComponent} from './change-password/change-password.component';
 import {LinkComponent} from './link/link.component';
 import {TableComponent} from './table/table.component';
 import {TriggerPasswordResetComponent} from './trigger-password-reset/trigger-password-reset.component';
@@ -8,7 +9,8 @@ export const ELEMENTS = [
   LinkComponent,
   TableComponent,
   TriggerPasswordResetComponent,
-  UserAddComponent
+  UserAddComponent,
+  ChangePasswordComponent
 ];
 
 export const ELEMENT_SELECTOR = [
@@ -27,5 +29,9 @@ export const ELEMENT_SELECTOR = [
   {
     selector: STATIC_CONFIG.elementSelectorPrefix + 'user-add',
     component: UserAddComponent
+  },
+  {
+    selector: STATIC_CONFIG.elementSelectorPrefix + 'cp',
+    component: ChangePasswordComponent
   }
 ];

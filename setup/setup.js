@@ -149,6 +149,9 @@ const MODULES = [
         actions: [
           {
             value: `it => '<jms-e-tpr data-email="' + it.data.email + '"></jms-e-tpr>'`
+          },
+          {
+            value: `it => '<jms-e-cp data-id="' + it.id + '"></jms-e-cp>'`
           }
         ]
       },
