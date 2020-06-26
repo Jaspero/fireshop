@@ -414,8 +414,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
               [{
                 ...column.populate.lookUp,
                 value: id
-              }],
-              'default'
+              }]
             )
               .pipe(
                 map(docs => docs[0] ?

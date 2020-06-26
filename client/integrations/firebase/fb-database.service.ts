@@ -4,7 +4,7 @@ import {AngularFireFunctions} from '@angular/fire/functions';
 // @ts-ignore
 import * as nanoid from 'nanoid';
 import {from, Observable} from 'rxjs';
-import {map, take} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {ExampleType} from '../../src/app/shared/enums/example-type.enum';
 import {FilterMethod} from '../../src/app/shared/enums/filter-method.enum';
 import {Example} from '../../src/app/shared/interfaces/example.interface';
@@ -68,8 +68,13 @@ export class FbDatabaseService extends DbService {
     return this.afs
       .collection(FirestoreCollection.Settings)
       .doc<Settings>('user')
-      .valueChanges()
-      .pipe(take(1));
+      .get()
+      .pipe(
+        map(it => ({
+          id: it.id,
+          ...it.data() as Settings
+        }))
+      )
   }
 
   updateUserSettings(settings: Partial<Settings>) {
@@ -91,10 +96,9 @@ export class FbDatabaseService extends DbService {
   ) {
     return this.collection(moduleId, pageSize, sort, cursor, this.filterMethod(filters))
       .get({
-        source: source || 'server'
+        source: source || 'default'
       })
       .pipe(
-        take(1),
         map(res =>
           res.docs
         )
@@ -126,25 +130,40 @@ export class FbDatabaseService extends DbService {
 
     const pipes = [];
 
-    if (!stream) {
-      pipes.push(take(1));
-    }
+    if (stream) {
 
-    pipes.push(
-      map((value: any) => ({
-        ...value,
-        id: documentId
-      }))
-    );
-
-    return this.afs
-      .collection(moduleId)
-      .doc<T>(documentId)
-      .valueChanges()
-      .pipe(
-        // @ts-ignore
-        ...pipes
+      pipes.push(
+        map((value: any) => ({
+          ...value,
+          id: documentId
+        }))
       );
+
+      return this.afs
+        .collection(moduleId)
+        .doc<T>(documentId)
+        .valueChanges()
+        .pipe(
+          // @ts-ignore
+          ...pipes
+        );
+    } else {
+      pipes.push(
+        map((value: any) => ({
+          id: documentId,
+          ...value.data()
+        }))
+      );
+
+      return this.afs
+        .collection(moduleId)
+        .doc<T>(documentId)
+        .get()
+        .pipe(
+          // @ts-ignore
+          ...pipes
+        );
+    }
   }
 
   getDocumentsSimple(moduleId, orderBy?, filter?) {
@@ -160,8 +179,15 @@ export class FbDatabaseService extends DbService {
 
         return ref;
       })
-      .valueChanges({idField: 'id'})
-      .pipe(take(1));
+      .get()
+      .pipe(
+        map(data =>
+          data.docs.map(it => ({
+            id: it.id,
+            ...it.data()
+          }))
+        )
+      );
   }
 
   setDocument(moduleId, documentId, data, options) {
