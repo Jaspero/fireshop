@@ -1,8 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore, CollectionReference} from '@angular/fire/firestore';
 import {AngularFireFunctions} from '@angular/fire/functions';
-// @ts-ignore
-import * as nanoid from 'nanoid';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {ExampleType} from '../../src/app/shared/enums/example-type.enum';
@@ -45,7 +43,7 @@ export class FbDatabaseService extends DbService {
     return from(
       this.afs
         .collection(FirestoreCollection.Modules)
-        .doc(id || nanoid())
+        .doc(id || this.afs.createId())
         .set(data)
     );
   }

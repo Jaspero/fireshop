@@ -17,8 +17,6 @@ import {Parser, safeEval, State} from '@jaspero/form-builder';
 import {RxDestroy} from '@jaspero/ng-helpers';
 import {get, has} from 'json-pointer';
 import {JSONSchema7} from 'json-schema';
-// @ts-ignore
-import * as nanoid from 'nanoid';
 import {Observable} from 'rxjs';
 import {filter, map, shareReplay, startWith, switchMap, takeUntil} from 'rxjs/operators';
 import {InstanceOverviewContextService} from '../../modules/module-instance/services/instance-overview-context.service';
@@ -33,6 +31,7 @@ import {SortModule} from '../../shared/interfaces/sort-module.interface';
 import {DbService} from '../../shared/services/db/db.service';
 import {StateService} from '../../shared/services/state/state.service';
 import {notify} from '../../shared/utils/notify.operator';
+import {AngularFirestore} from '@angular/fire/firestore';
 
 interface TableData {
   moduleId: string;
@@ -69,7 +68,8 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
     private state: StateService,
     private injector: Injector,
     private viewContainerRef: ViewContainerRef,
-    private dbService: DbService
+    private dbService: DbService,
+    private afs: AngularFirestore
   ) {
     super();
   }
@@ -138,7 +138,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
                 typeof column.key === 'string' ? column.key : column.key[0];
 
               if (acc.includes(key)) {
-                key = nanoid();
+                key = this.afs.createId();
               }
 
               acc.push(key);
@@ -163,7 +163,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
           const topLevelProperties = Object.keys(data.schema.properties || {});
 
           displayColumns = topLevelProperties.reduce((acc, key) => {
-            acc.push(key || nanoid());
+            acc.push(key || this.afs.createId());
             return acc;
           }, []);
           tableColumns = topLevelProperties.map(key => ({

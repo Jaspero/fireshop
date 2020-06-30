@@ -3,8 +3,6 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Definitions, FormBuilderComponent, safeEval, Segment, State} from '@jaspero/form-builder';
 import {JSONSchema7} from 'json-schema';
-// @ts-ignore
-import * as nanoid from 'nanoid';
 import {Observable, of} from 'rxjs';
 import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../shared/enums/view-state.enum';
@@ -15,7 +13,7 @@ import {StateService} from '../../../../shared/services/state/state.service';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {queue} from '../../../../shared/utils/queue.operator';
 import {ModuleInstanceComponent} from '../../module-instance.component';
-
+import {AngularFirestore} from '@angular/fire/firestore';
 
 interface Instance {
   hideDuplicate: boolean;
@@ -51,7 +49,8 @@ export class InstanceSingleComponent implements OnInit {
     private state: StateService,
     private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
-    private moduleInstance: ModuleInstanceComponent
+    private moduleInstance: ModuleInstanceComponent,
+    private afs: AngularFirestore
   ) {}
 
   @ViewChild(FormBuilderComponent, {static: false})
@@ -162,7 +161,7 @@ export class InstanceSingleComponent implements OnInit {
   save(instance: Instance) {
     return () => {
       this.formBuilderComponent.process();
-      const id = this.formBuilderComponent.form.getRawValue().id || nanoid();
+      const id = this.formBuilderComponent.form.getRawValue().id || this.afs.createId();
 
       return this.formBuilderComponent.save(
         instance.module.id,
