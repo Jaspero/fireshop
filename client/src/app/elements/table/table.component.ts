@@ -12,6 +12,7 @@ import {
   ViewChildren,
   ViewContainerRef
 } from '@angular/core';
+import {AngularFirestore} from '@angular/fire/firestore';
 import {MatSort} from '@angular/material/sort';
 import {Parser, safeEval, State} from '@jaspero/form-builder';
 import {RxDestroy} from '@jaspero/ng-helpers';
@@ -31,7 +32,6 @@ import {SortModule} from '../../shared/interfaces/sort-module.interface';
 import {DbService} from '../../shared/services/db/db.service';
 import {StateService} from '../../shared/services/state/state.service';
 import {notify} from '../../shared/utils/notify.operator';
-import {AngularFirestore} from '@angular/fire/firestore';
 
 interface TableData {
   moduleId: string;

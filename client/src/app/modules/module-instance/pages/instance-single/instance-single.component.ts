@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Definitions, FormBuilderComponent, safeEval, Segment, State} from '@jaspero/form-builder';
@@ -13,7 +14,6 @@ import {StateService} from '../../../../shared/services/state/state.service';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {queue} from '../../../../shared/utils/queue.operator';
 import {ModuleInstanceComponent} from '../../module-instance.component';
-import {AngularFirestore} from '@angular/fire/firestore';
 
 interface Instance {
   hideDuplicate: boolean;
