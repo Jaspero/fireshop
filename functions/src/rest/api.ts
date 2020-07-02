@@ -57,7 +57,7 @@ app.get('/:collection', ca('read'), (req: RequestWithCollection, res: express.Re
       direction = 'asc',
       limit,
       query = '[]'
-    } = req.query;
+    } = req.query as any;
 
     const lookup = req.ref;
 

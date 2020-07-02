@@ -68,7 +68,7 @@ app.post('/', authenticated, (req, res) => {
             let {id, ...saveData} = cur;
 
             if (!id) {
-              id = nanoid();
+              id = nanoid.nanoid();
             }
 
             if (rowFunction) {
