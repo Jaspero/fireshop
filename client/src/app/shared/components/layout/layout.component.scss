@@ -99,6 +99,7 @@
  *============================================================================*/
 
 .dashboard-nav-link {
+  position: relative;
   cursor: pointer;
   white-space: nowrap;
   display: flex;
@@ -130,9 +131,27 @@
   &-text {
     margin-left: 16px;
   }
+
+  &-tooltip {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    @media (max-width: $screen-m) {
+      display: block;
+
+      .dashboard-nav-expanded & {
+        display: none;
+      }
+    }
+  }
 }
 
 .dashboard-nav-empty {
+  position: relative;
   white-space: nowrap;
   display: flex;
   align-items: center;
@@ -154,6 +173,23 @@
   &-text {
     margin-left: 16px;
   }
+
+  &-tooltip {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    @media (max-width: $screen-m) {
+      display: block;
+
+      .dashboard-nav-expanded & {
+        display: none;
+      }
+    }
+  }
 }
 
 .dashboard-nav-expandable {
@@ -170,6 +206,7 @@
   }
 
   &-label {
+    position: relative;
     white-space: nowrap;
     display: flex;
     align-items: center;
@@ -195,9 +232,27 @@
     &-text {
       margin-left: 16px;
     }
+
+    &-tooltip {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      @media (max-width: $screen-m) {
+        display: block;
+
+        .dashboard-nav-expanded & {
+          display: none;
+        }
+      }
+    }
   }
 
   &-item {
+    position: relative;
     cursor: pointer;
     white-space: nowrap;
     display: flex;
@@ -229,6 +284,23 @@
 
     &-text {
       margin-left: 16px;
+    }
+
+    &-tooltip {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      @media (max-width: $screen-m) {
+        display: block;
+
+        .dashboard-nav-expanded & {
+          display: none;
+        }
+      }
     }
   }
 }
@@ -265,6 +337,7 @@
   }
 
   &-item {
+    position: relative;
     cursor: pointer;
     white-space: nowrap;
     display: flex;
@@ -295,6 +368,23 @@
     &-text {
       margin-left: 16px;
     }
+
+    &-tooltip {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      @media (max-width: $screen-m) {
+        display: block;
+
+        .dashboard-nav-expanded & {
+          display: none;
+        }
+      }
+    }
   }
 }
 
@@ -304,6 +394,7 @@
  *============================================================================*/
 
 .dashboard-nav-footer {
+  position: relative;
   cursor: pointer;
   white-space: nowrap;
   display: flex;
@@ -341,6 +432,23 @@
     margin-left: 16px;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  &-tooltip {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    @media (max-width: $screen-m) {
+      display: block;
+
+      .dashboard-nav-expanded & {
+        display: none;
+      }
+    }
   }
 }
 

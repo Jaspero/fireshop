@@ -11,11 +11,13 @@
       <a *ngSwitchCase="navigationItemType.Link" class="dashboard-nav-link" [routerLink]="item.value" routerLinkActive="active" [routerLinkActiveOptions]="item.routerOptions" (click)="closeMenu()">
         <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-link-icon">{{item.icon}}</mat-icon>
         <span class="dashboard-nav-link-text">{{item.label | transloco}}</span>
+        <span class="dashboard-nav-link-tooltip" [matTooltip]="item.label | transloco" matTooltipPosition="right"></span>
       </a>
 
       <div *ngSwitchCase="navigationItemType.Empty" class="dashboard-nav-empty">
         <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-empty-icon">{{item.icon}}</mat-icon>
         <span class="dashboard-nav-empty-text">{{item.label | transloco}}</span>
+        <span class="dashboard-nav-empty-tooltip" [matTooltip]="item.label | transloco" matTooltipPosition="right"></span>
       </div>
 
       <div
@@ -25,10 +27,12 @@
         <button class="dashboard-nav-expandable-label" (click)="item.active = !item.active">
           <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-expandable-label-icon">{{item.icon}}</mat-icon>
           <span class="dashboard-nav-expandable-label-text">{{item.label | transloco}}</span>
+          <span class="dashboard-nav-expandable-label-tooltip" [matTooltip]="item.label | transloco" matTooltipPosition="right"></span>
         </button>
         <a class="dashboard-nav-expandable-item" *ngFor="let child of item.children" [routerLink]="child.value" routerLinkActive="active" [routerLinkActiveOptions]="item.routerOptions" (click)="closeMenu()">
           <mat-icon *ngIf="child.icon" aria-hidden="true" class="dashboard-nav-expandable-item-icon">{{child.icon}}</mat-icon>
           <span class="dashboard-nav-expandable-item-text">{{child.label | transloco}}</span>
+          <span class="dashboard-nav-expandable-item-tooltip" [matTooltip]="child.label | transloco" matTooltipPosition="right"></span>
         </a>
       </div>
 
@@ -36,18 +40,21 @@
         <a *ngIf="item.value; else empty;" class="dashboard-nav-expanded-label" routerLinkActive="active" [routerLink]="item.value" [routerLinkActiveOptions]="item.routerOptions">
           <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-expanded-label-icon">{{item.icon}}</mat-icon>
           <span class="dashboard-nav-expanded-label-text">{{item.label | transloco}}</span>
+          <span class="dashboard-nav-expanded-label-tooltip" [matTooltip]="item.label | transloco" matTooltipPosition="right"></span>
         </a>
 
         <ng-template #empty>
           <div class="dashboard-nav-expanded-label">
             <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-expanded-label-icon">{{item.icon}}</mat-icon>
             <span class="dashboard-nav-expanded-label-text">{{item.label | transloco}}</span>
+            <span class="dashboard-nav-expandable-item-tooltip" [matTooltip]="item.label | transloco" matTooltipPosition="right"></span>
           </div>
         </ng-template>
 
         <a *ngFor="let child of item.children" class="dashboard-nav-expanded-item" [routerLink]="child.value" routerLinkActive="active" [routerLinkActiveOptions]="item.routerOptions" (click)="closeMenu()">
           <mat-icon *ngIf="child.icon" aria-hidden="true" class="dashboard-nav-expanded-item-icon">{{child.icon}}</mat-icon>
           <span class="dashboard-nav-expanded-item-text">{{child.label | transloco}}</span>
+          <span class="dashboard-nav-expanded-item-tooltip" [matTooltip]="child.label | transloco" matTooltipPosition="right"></span>
         </a>
       </div>
 
@@ -57,11 +64,13 @@
   <span class="dashboard-nav-footer inactive" *ngIf="currentUser$ | async as user">
     <mat-icon aria-hidden="true" class="dashboard-nav-footer-icon">account_circle</mat-icon>
     <span class="dashboard-nav-footer-text">{{user.email}}</span>
+    <span class="dashboard-nav-footer-tooltip" [matTooltip]="user.email" matTooltipPosition="right"></span>
   </span>
 
   <a class="dashboard-nav-footer" (click)="logOut()">
     <mat-icon aria-hidden="true" class="dashboard-nav-footer-icon">power_settings_new</mat-icon>
     <span class="dashboard-nav-footer-text">{{'LAYOUT.LOG_OUT' | transloco}}</span>
+    <span class="dashboard-nav-footer-tooltip" [matTooltip]="'LAYOUT.LOG_OUT' | transloco" matTooltipPosition="right"></span>
   </a>
 </nav>
 
