@@ -10,6 +10,7 @@ import {DEFAULT_PAGE_SIZE} from '../../../../shared/consts/page-sizes.const';
 import {FilterMethod} from '../../../../shared/enums/filter-method.enum';
 import {InstanceSort} from '../../../../shared/interfaces/instance-sort.interface';
 import {ModuleOverviewView} from '../../../../shared/interfaces/module-overview-view.interface';
+import {Module} from '../../../../shared/interfaces/module.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {queue} from '../../../../shared/utils/queue.operator';
@@ -55,7 +56,6 @@ export class InstanceOverviewComponent extends RxDestroy
 
         this.state.restoreRouteData(defaultData);
         this.ioc.routeData = this.state.getRouterData(defaultData);
-        console.log('test', this.ioc.routeData);
 
         this.ioc.pageSize = new FormControl(this.ioc.routeData.pageSize || DEFAULT_PAGE_SIZE);
         this.ioc.emptyState$ = new BehaviorSubject(false);
@@ -149,13 +149,11 @@ export class InstanceOverviewComponent extends RxDestroy
               pageSize,
               sort,
               null,
-              search ?
-                [{
-                  key: module.layout.searchModule.key,
-                  operator: module.layout.searchModule.simple ? FilterMethod.Equal : FilterMethod.ArrayContains,
-                  value: search.trim().toLowerCase()
-                }] :
+              this.generateFilters(
+                module,
+                search,
                 filter
+              )
             )
               .pipe(
                 queue()
@@ -179,13 +177,7 @@ export class InstanceOverviewComponent extends RxDestroy
                 this.ioc.routeData.pageSize,
                 this.ioc.routeData.sort,
                 cu,
-                this.ioc.searchControl.value ?
-                  [{
-                    key: module.layout.searchModule.key,
-                    operator: FilterMethod.ArrayContains,
-                    value: this.ioc.searchControl.value.trim().toLowerCase()
-                  }] :
-                  this.ioc.routeData.filter
+                this.generateFilters(module)
               ).pipe(
                 skip(1),
                 tap(snaps => {
@@ -227,13 +219,7 @@ export class InstanceOverviewComponent extends RxDestroy
                           this.ioc.routeData.pageSize,
                           this.ioc.routeData.sort,
                           cursor,
-                          this.ioc.searchControl.value ?
-                            [{
-                              key: module.layout.searchModule.key,
-                              operator: module.layout.searchModule.simple ? FilterMethod.Equal : FilterMethod.ArrayContains,
-                              value: this.ioc.searchControl.value.trim().toLowerCase()
-                            }] :
-                            this.ioc.routeData.filter
+                          this.generateFilters(module)
                         )
                         .pipe(
                           queue(),
@@ -305,5 +291,19 @@ export class InstanceOverviewComponent extends RxDestroy
   changeCurrentView(view: string) {
     this.currentView = this.getCurrentView(view);
     this.cdr.markForCheck();
+  }
+
+  generateFilters(
+    module: Module,
+    search = this.ioc.searchControl.value,
+    filter = this.ioc.routeData.filter
+  ) {
+    return search ?
+      [{
+        key: module.layout.searchModule.key,
+        operator: module.layout.searchModule.simple ? FilterMethod.Equal : FilterMethod.ArrayContains,
+        value: search.trim().toLowerCase()
+      }] :
+      filter
   }
 }
