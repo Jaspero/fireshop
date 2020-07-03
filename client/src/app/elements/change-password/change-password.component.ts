@@ -3,6 +3,7 @@ import {AngularFireFunctions} from '@angular/fire/functions';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {from} from 'rxjs';
+import {tap} from 'rxjs/operators';
 import {notify} from '../../shared/utils/notify.operator';
 import {RepeatPasswordValidator} from '../../shared/validators/repeat-password.validator';
 
@@ -57,6 +58,9 @@ export class ChangePasswordComponent implements OnInit {
           notify({
             success: 'Password updated successfully',
             error: 'There was an error sending the request'
+          }),
+          tap(() => {
+            this.dialog.closeAll();
           })
         )
     }
