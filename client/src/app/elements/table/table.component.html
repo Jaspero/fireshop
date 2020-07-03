@@ -67,23 +67,35 @@
             [schema]="data.schema">
           </jms-import>
 
-          <button
-            *ngIf="data.filterModule"
-            mat-button
-            (click)="ioc.openFilterDialog(data.filterModule)">
-            <mat-icon>vertical_split</mat-icon>
-            <span>{{'GENERAL.FILTER' | transloco}}</span>
-          </button>
+          <ng-container *ngIf="data.filterModule">
+            <span class="hide-xs">
+              <button mat-button (click)="ioc.openFilterDialog(data.filterModule)">
+                <mat-icon>vertical_split</mat-icon>
+                <span>{{'GENERAL.FILTER' | transloco}}</span>
+              </button>
+            </span>
+            <span class="show-xs">
+              <button mat-icon-button (click)="ioc.openFilterDialog(data.filterModule)" [matTooltip]="'GENERAL.FILTER' | transloco">
+                <mat-icon>vertical_split</mat-icon>
+              </button>
+            </span>
+          </ng-container>
 
-          <button
-            *ngIf="data.sortModule"
-            mat-button
-            (click)="ioc.openSortDialog(data.moduleId, data.name, data.sortModule)">
-            <mat-icon>vertical_split</mat-icon>
-            <span>{{'GENERAL.SORT' | transloco}}</span>
-          </button>
+          <ng-container *ngIf="data.sortModule">
+            <span class="hide-xs">
+              <button mat-button (click)="ioc.openSortDialog(data.moduleId, data.name, data.sortModule)">
+                <mat-icon>vertical_split</mat-icon>
+                <span>{{'GENERAL.SORT' | transloco}}</span>
+              </button>
+            </span>
+            <span class="show-xs">
+              <button mat-icon-button (click)="ioc.openSortDialog(data.moduleId, data.name, data.sortModule)" [matTooltip]="'GENERAL.SORT' | transloco">
+                <mat-icon>vertical_split</mat-icon>
+              </button>
+            </span>
+          </ng-container>
 
-          <div *ngIf="data.searchModule" class="m-l-s">
+          <div *ngIf="data.searchModule" class="m-l-s hide-xs">
             <jms-search-input [formControl]="ioc.searchControl"></jms-search-input>
           </div>
         </mat-toolbar>
