@@ -27,4 +27,9 @@ export interface FilterModule {
   clearFilters?: any;
   clearFiltersLabel?: string;
   dialogOptions?: Partial<MatDialogConfig>;
+
+  /**
+   * Flags all where filters with the persist value
+   */
+  persist?: boolean;
 }

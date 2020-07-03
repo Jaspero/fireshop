@@ -108,6 +108,35 @@ const MODULES = [
       order: 0,
       editTitleKey: 'name',
       icon: 'supervised_user_circle',
+      filterModule: {
+        persist: true,
+        schema: {
+          properties: {
+            role: {
+              type: 'string'
+            }
+          }
+        },
+        definitions: {
+          role: {
+            label: 'Role',
+            component: {
+              type: 'select',
+              configuration: {
+                populate: {
+                  collection: 'roles'
+                }
+              }
+            }
+          }
+        },
+        segments: [{
+          type: 'empty',
+          fields: [
+            '/role'
+          ]
+        }]
+      },
       sort: {
         active: 'createdOn',
         direction: 'desc'

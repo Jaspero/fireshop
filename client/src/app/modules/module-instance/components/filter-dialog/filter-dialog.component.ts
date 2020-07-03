@@ -38,7 +38,8 @@ export class FilterDialogComponent {
           key,
           value: data[key],
           operator: definition.filterMethod || FilterMethod.Equal,
-          ...definition.filterLabel && {label: definition.filterLabel}
+          ...definition.filterLabel && {label: definition.filterLabel},
+          ...this.data.persist && {persist: this.data.persist}
         });
       }
     }

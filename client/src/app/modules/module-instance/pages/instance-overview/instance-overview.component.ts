@@ -46,12 +46,16 @@ export class InstanceOverviewComponent extends RxDestroy
       )
       .subscribe(module => {
 
-        this.ioc.routeData = this.state.getRouterData({
+        const defaultData = {
           pageSize: null,
           sort: null,
           filter: null,
           search: ''
-        });
+        };
+
+        this.state.restoreRouteData(defaultData);
+        this.ioc.routeData = this.state.getRouterData(defaultData);
+        console.log('test', this.ioc.routeData);
 
         this.ioc.pageSize = new FormControl(this.ioc.routeData.pageSize || DEFAULT_PAGE_SIZE);
         this.ioc.emptyState$ = new BehaviorSubject(false);
