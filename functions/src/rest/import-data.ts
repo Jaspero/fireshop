@@ -74,7 +74,7 @@ app.post('/', authenticated, (req, res) => {
 
             if (rowFunction) {
               acc.created.push(async () => {
-                const sd = await rowFunction(saveData);
+                const sd = await rowFunction(saveData, afs);
 
                 return afs
                   .collection(parsedData.collection)
