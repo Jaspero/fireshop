@@ -65,7 +65,7 @@ app.post('/', authenticated, (req, res) => {
           if (validator.errors) {
             acc.errors.push({index, errors: validator.errors});
           } else {
-
+            // tslint:disable-next-line:prefer-const
             let {id, ...saveData} = cur;
 
             if (!id) {
@@ -73,25 +73,20 @@ app.post('/', authenticated, (req, res) => {
             }
 
             if (rowFunction) {
-              acc.created.push(
-                async () => {
-                  const sd = await rowFunction(
-                    saveData
-                  );
+              acc.created.push(async () => {
+                const sd = await rowFunction(saveData);
 
-                  return afs
-                    .collection(parsedData.collection)
-                    .doc(id)
-                    .set(sd)
-                }
-              )
+                return afs
+                  .collection(parsedData.collection)
+                  .doc(id)
+                  .set(sd);
+              });
             } else {
-              acc.created.push(
-                () =>
-                  afs
-                    .collection(parsedData.collection)
-                    .doc(id)
-                    .set(saveData)
+              acc.created.push(() =>
+                afs
+                  .collection(parsedData.collection)
+                  .doc(id)
+                  .set(saveData)
               );
             }
           }
@@ -105,9 +100,7 @@ app.post('/', authenticated, (req, res) => {
       );
 
       if (created.length) {
-        await Promise.all(
-          created.map((it: any) => it())
-        );
+        await Promise.all(created.map((it: any) => it()));
       }
 
       return {
