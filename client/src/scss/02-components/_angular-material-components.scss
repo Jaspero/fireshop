@@ -94,6 +94,16 @@
 .mat-toolbar-row.mat-toolbar-row,
 .mat-toolbar-single-row.mat-toolbar-single-row {
   height: 64px;
+
+  @media (max-width: $screen-m) {
+    font-size: 16px;
+  }
+
+  span, button, a {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 
