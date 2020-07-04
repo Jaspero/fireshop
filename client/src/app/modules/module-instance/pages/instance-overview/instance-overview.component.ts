@@ -298,7 +298,7 @@ export class InstanceOverviewComponent extends RxDestroy
     search = this.ioc.searchControl.value,
     filter = this.ioc.routeData.filter
   ) {
-    return search ?
+    return search && search.trim() ?
       [{
         key: module.layout.searchModule.key,
         operator: module.layout.searchModule.simple ? FilterMethod.Equal : FilterMethod.ArrayContains,
