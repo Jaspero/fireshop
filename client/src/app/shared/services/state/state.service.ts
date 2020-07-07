@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Observable, Subject} from 'rxjs';
 import {map, shareReplay} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../../integrations/firebase/firestore-collection.enum';
@@ -12,7 +12,11 @@ import {DbService} from '../db/db.service';
   providedIn: 'root'
 })
 export class StateService {
-  constructor(private dbService: DbService, private router: Router) {
+  constructor(
+    private dbService: DbService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {
     this.modules$ = this.dbService.getModules().pipe(shareReplay(1));
     this.layout$ = this.dbService.getDocument(
       FirestoreCollection.Settings,
@@ -45,6 +49,14 @@ export class StateService {
     url = this.router.routerState.snapshot.url
   ) {
     this.routerData[url] = data;
+
+    const persisted = data.filter ? data.filter.filter(it => it.persist) : null;
+
+    this.router.navigate([], {
+      queryParams: persisted && persisted.length ? {
+        filter: JSON.stringify(persisted)
+      } : {}
+    })
   }
 
   getRouterData<T = any>(
@@ -59,12 +71,33 @@ export class StateService {
       }
     }
   ): T {
-    const url = this.router.routerState.snapshot.url;
+    const {url} = this.router.routerState.snapshot;
 
     if (this.routerData[url]) {
       return this.routerData[url];
     } else {
       return defaultData;
+    }
+  }
+
+  restoreRouteData(defaultData = {}) {
+    const {url} = this.router.routerState.snapshot;
+    const {queryParams} = this.activatedRoute.snapshot;
+
+    if (queryParams.filter) {
+
+      let filter;
+
+      try {
+        filter = JSON.parse(queryParams.filter);
+      } catch (e) {}
+
+      if (filter) {
+        this.routerData[url] = {
+          ...defaultData,
+          filter
+        }
+      }
     }
   }
 }
