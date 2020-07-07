@@ -29,6 +29,12 @@ export interface FilterModule {
   dialogOptions?: Partial<MatDialogConfig>;
 
   /**
+   * Hides the dialog for opening filters if true
+   * usefully for applying persistent filters to a table
+   */
+  hidden?: boolean;
+
+  /**
    * Flags all where filters with the persist value
    */
   persist?: boolean;

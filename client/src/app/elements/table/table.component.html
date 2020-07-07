@@ -67,7 +67,7 @@
             [schema]="data.schema">
           </jms-import>
 
-          <ng-container *ngIf="data.filterModule">
+          <ng-container *ngIf="data.filterModule && !data.filterModule.hidden">
             <span class="hide-xs">
               <button mat-button (click)="ioc.openFilterDialog(data.filterModule)">
                 <mat-icon>vertical_split</mat-icon>
