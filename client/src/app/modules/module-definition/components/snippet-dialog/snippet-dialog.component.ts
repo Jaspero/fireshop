@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialogRef} from '@angular/material/dialog';
 import {ComponentType, FormBuilderComponent} from '@jaspero/form-builder';
-import {RxDestroy} from '@jaspero/ng-helpers';
 import {Observable} from 'rxjs';
 import {map, shareReplay, take} from 'rxjs/operators';
 import {ExampleType} from '../../../../shared/enums/example-type.enum';
@@ -17,15 +16,13 @@ import {SNIPPET_FORM_MAP} from '../../../module-instance/consts/snippet-form-map
   styleUrls: ['./snippet-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SnippetDialogComponent extends RxDestroy implements OnInit {
+export class SnippetDialogComponent implements OnInit {
   constructor(
     private dbService: DbService,
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<SnippetDialogComponent>,
     private cdr: ChangeDetectorRef
-  ) {
-    super();
-  }
+  ) {}
 
   @ViewChild(FormBuilderComponent, {static: false})
   compiledFormComponent: FormBuilderComponent;

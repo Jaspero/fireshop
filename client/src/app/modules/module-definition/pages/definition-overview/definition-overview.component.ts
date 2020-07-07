@@ -2,46 +2,44 @@ import {Clipboard} from '@angular/cdk/clipboard';
 import {SelectionModel} from '@angular/cdk/collections';
 import {ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
 import {MatSort} from '@angular/material/sort';
+import {Router} from '@angular/router';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {saveAs} from 'file-saver';
+import {functions} from 'firebase';
 import {BehaviorSubject, combineLatest, forkJoin, from, merge, Observable} from 'rxjs';
-import {map, shareReplay, startWith, switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import {map, shareReplay, startWith, switchMap, take, tap} from 'rxjs/operators';
 import {LayoutSettingsComponent} from '../../../../shared/components/layout-settings/layout-settings.component';
+import {ExampleType} from '../../../../shared/enums/example-type.enum';
+import {Example} from '../../../../shared/interfaces/example.interface';
 import {Module} from '../../../../shared/interfaces/module.interface';
 import {RouteData} from '../../../../shared/interfaces/route-data.interface';
 import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {confirmation} from '../../../../shared/utils/confirmation';
 import {notify} from '../../../../shared/utils/notify.operator';
-import {AngularFireFunctions} from '@angular/fire/functions';
-import {RxDestroy} from '@jaspero/ng-helpers';
 import {queue} from '../../../../shared/utils/queue.operator';
-import {MatDialog} from '@angular/material/dialog';
-import {ExampleType} from '../../../../shared/enums/example-type.enum';
-import {Router} from '@angular/router';
-import {DEFAULT_SCHEMA_VALUE} from '../definition-instance/consts/default-schema-value.const';
-import {DEFAULT_LAYOUT_VALUE} from '../definition-instance/consts/default-layout-value.const';
 import {DEFAULT_DEFINITION_VALUE} from '../definition-instance/consts/default-definition-value.const';
-import {Example} from '../../../../shared/interfaces/example.interface';
-import {saveAs} from 'file-saver';
+import {DEFAULT_LAYOUT_VALUE} from '../definition-instance/consts/default-layout-value.const';
+import {DEFAULT_SCHEMA_VALUE} from '../definition-instance/consts/default-schema-value.const';
 
+@UntilDestroy()
 @Component({
   selector: 'jms-definition-overview',
   templateUrl: './definition-overview.component.html',
   styleUrls: ['./definition-overview.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
+export class DefinitionOverviewComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private dbService: DbService,
     private state: StateService,
     private fb: FormBuilder,
-    private aff: AngularFireFunctions,
     private router: Router,
     private clipboard: Clipboard
-  ) {
-    super();
-  }
+  ) {}
 
   @ViewChild('modal', {static: true})
   modalTemplate: TemplateRef<any>;
@@ -198,7 +196,7 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
   }
 
   export(schemes: any[]) {
-    const func = this.aff.functions.httpsCallable('cms-jsonSchemaToTypescript');
+    const func = functions().httpsCallable('cms-jsonSchemaToTypescript');
 
     forkJoin(
       schemes.map(schema => from(func(schema)))
@@ -206,13 +204,13 @@ export class DefinitionOverviewComponent extends RxDestroy implements OnInit {
       .pipe(
         queue(),
         map(res => res.reduce((acc, item: any) => acc + item.data, '')),
-        tap(res => {
+        tap((res: string) => {
           this.clipboard.copy(res);
         }),
         notify({
           success: 'MODULES.COPIED_TO_CLIPBOARD'
         }),
-        takeUntil(this.destroyed$)
+        untilDestroyed(this)
       )
       .subscribe();
   }

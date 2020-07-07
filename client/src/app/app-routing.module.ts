@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {AngularFireAuthGuard, canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
+import {AngularFireAuthGuard, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
 import {RouterModule, Routes} from '@angular/router';
 import {DashboardComponent} from './modules/dashboard/dashboard.component';
 import {LoginComponent} from './modules/login/login.component';
@@ -18,6 +18,7 @@ import {HasClaimGuard} from './shared/guards/has-claim/has-claim.guard';
 import {HasCodeGuard} from './shared/guards/has-code/has-code.guard';
 
 const redirectUnauthorized = () => redirectUnauthorizedTo(['/login']);
+const redirectLoggedInToDashboard = () => redirectLoggedInTo(['/dashboard']);
 
 const routes: Routes = [
   {
@@ -80,12 +81,22 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    ...canActivate(redirectLoggedInTo(['/dashboard']))
+    canActivate: [
+      AngularFireAuthGuard
+    ],
+    data: {
+      authGuardPipe: redirectLoggedInToDashboard
+    },
   },
   {
     path: 'trigger-password-reset',
     component: TriggerPasswordResetComponent,
-    ...canActivate(redirectLoggedInTo(['/dashboard']))
+    canActivate: [
+      AngularFireAuthGuard
+    ],
+    data: {
+      authGuardPipe: redirectLoggedInToDashboard
+    },
   },
   {
     path: 'reset-password',

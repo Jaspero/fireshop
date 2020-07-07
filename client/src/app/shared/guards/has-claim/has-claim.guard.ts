@@ -6,6 +6,7 @@ import {catchError, map, switchMap, take} from 'rxjs/operators';
 import {StateService} from '../../services/state/state.service';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {FirestoreCollection} from '../../../../../integrations/firebase/firestore-collection.enum';
+import {auth} from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
@@ -53,7 +54,7 @@ export class HasClaimGuard implements CanActivate {
   }
 
   signOut() {
-    this.afAuth.auth.signOut()
+    auth().signOut()
       .then()
       .catch()
       .finally(() => {

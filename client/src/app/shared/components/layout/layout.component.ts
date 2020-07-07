@@ -8,6 +8,7 @@ import {STATIC_CONFIG} from '../../../../environments/static-config';
 import {NavigationItemType} from '../../enums/navigation-item-type.enum';
 import {NavigationItem} from '../../interfaces/navigation-item.interface';
 import {StateService} from '../../services/state/state.service';
+import {auth} from 'firebase/app';
 
 interface NavigationItemWithActive extends NavigationItem {
   active?: boolean;
@@ -163,6 +164,6 @@ export class LayoutComponent implements OnInit {
 
   logOut() {
     this.router.navigate(['/login']);
-    this.afAuth.auth.signOut();
+    auth().signOut();
   }
 }

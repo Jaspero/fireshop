@@ -1,32 +1,30 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit} from '@angular/core';
-import {AngularFireFunctions} from '@angular/fire/functions';
 import {FormControl} from '@angular/forms';
-import {RxDestroy} from '@jaspero/ng-helpers';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {functions} from 'firebase';
 import {from} from 'rxjs';
-import {switchMap, takeUntil} from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
 import {queue} from '../../shared/utils/queue.operator';
 
+@UntilDestroy()
 @Component({
   selector: 'jms-toggle-user-status',
   templateUrl: './toggle-user-status.component.html',
   styleUrls: ['./toggle-user-status.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ToggleUserStatusComponent extends RxDestroy implements OnInit {
+export class ToggleUserStatusComponent implements OnInit {
   constructor(
-    private aff: AngularFireFunctions,
     private cdr: ChangeDetectorRef,
     private el: ElementRef
-  ) {
-    super();
-  }
+  ) {}
 
   status: FormControl;
   loading = true;
 
   ngOnInit() {
     const {id} = this.el.nativeElement.dataset;
-    this.aff.functions.httpsCallable('cms-getUser')(id)
+    functions().httpsCallable('cms-getUser')(id)
       .then((user: any) => {
         this.status = new FormControl(user.disabled);
         this.loading = false;
@@ -35,7 +33,7 @@ export class ToggleUserStatusComponent extends RxDestroy implements OnInit {
           .pipe(
             switchMap(disabled =>
               from(
-                this.aff.functions.httpsCallable('cms-updateUser')({
+                functions().httpsCallable('cms-updateUser')({
                   id,
                   disabled
                 })
@@ -44,7 +42,7 @@ export class ToggleUserStatusComponent extends RxDestroy implements OnInit {
                   queue()
                 )
             ),
-            takeUntil(this.destroyed$)
+            untilDestroyed(this)
           )
           .subscribe();
 

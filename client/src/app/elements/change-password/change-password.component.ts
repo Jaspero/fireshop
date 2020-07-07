@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, ElementRef, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {AngularFireFunctions} from '@angular/fire/functions';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
+import {functions} from 'firebase';
 import {from} from 'rxjs';
 import {notify} from '../../shared/utils/notify.operator';
 import {RepeatPasswordValidator} from '../../shared/validators/repeat-password.validator';
@@ -15,7 +15,6 @@ import {RepeatPasswordValidator} from '../../shared/validators/repeat-password.v
 export class ChangePasswordComponent implements OnInit {
   constructor(
     private el: ElementRef,
-    private aff: AngularFireFunctions,
     private dialog: MatDialog,
     private fb: FormBuilder
   ) { }
@@ -50,7 +49,7 @@ export class ChangePasswordComponent implements OnInit {
     return () => {
       const {password} = this.form.getRawValue();
       const {id} = this.el.nativeElement.dataset;
-      const func = this.aff.functions.httpsCallable('cms-updateUser');
+      const func = functions().httpsCallable('cms-updateUser');
 
       return from(func({id, password}))
         .pipe(

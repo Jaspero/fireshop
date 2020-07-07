@@ -2,9 +2,9 @@ import {SelectionModel} from '@angular/cdk/collections';
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {Parser} from '@jaspero/form-builder';
-import {RxDestroy} from '@jaspero/ng-helpers';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {BehaviorSubject, combineLatest, merge, Subject} from 'rxjs';
-import {map, shareReplay, skip, startWith, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {map, shareReplay, skip, startWith, switchMap, tap} from 'rxjs/operators';
 import {STATIC_CONFIG} from '../../../../../environments/static-config';
 import {DEFAULT_PAGE_SIZE} from '../../../../shared/consts/page-sizes.const';
 import {FilterMethod} from '../../../../shared/enums/filter-method.enum';
@@ -15,22 +15,20 @@ import {StateService} from '../../../../shared/services/state/state.service';
 import {queue} from '../../../../shared/utils/queue.operator';
 import {InstanceOverviewContextService} from '../../services/instance-overview-context.service';
 
+@UntilDestroy()
 @Component({
   selector: 'jms-instance-overview',
   templateUrl: './instance-overview.component.html',
   styleUrls: ['./instance-overview.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InstanceOverviewComponent extends RxDestroy
-  implements OnInit, AfterViewInit {
+export class InstanceOverviewComponent implements OnInit, AfterViewInit {
   constructor(
     private dbService: DbService,
     private state: StateService,
     private ioc: InstanceOverviewContextService,
     private cdr: ChangeDetectorRef
-  ) {
-    super();
-  }
+  ) {}
 
   currentView: string;
   activeView: string;
@@ -42,7 +40,7 @@ export class InstanceOverviewComponent extends RxDestroy
   ngOnInit() {
     this.ioc.module$
       .pipe(
-        takeUntil(this.destroyed$)
+        untilDestroyed(this)
       )
       .subscribe(module => {
 

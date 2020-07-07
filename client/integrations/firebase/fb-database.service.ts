@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore, CollectionReference} from '@angular/fire/firestore';
-import {AngularFireFunctions} from '@angular/fire/functions';
+import {functions} from 'firebase';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {ExampleType} from '../../src/app/shared/enums/example-type.enum';
@@ -17,8 +17,7 @@ type FilterFunction = (ref: CollectionReference) => CollectionReference;
 @Injectable()
 export class FbDatabaseService extends DbService {
   constructor(
-    private afs: AngularFirestore,
-    private aff: AngularFireFunctions
+    private afs: AngularFirestore
   ) {
     super();
   }
@@ -58,7 +57,7 @@ export class FbDatabaseService extends DbService {
   }
 
   getExamples(type: ExampleType): Observable<{data: Example[]}> {
-    const func = this.aff.functions.httpsCallable('cms-getExamples');
+    const func = functions().httpsCallable('cms-getExamples');
     return from(func(type)) as any;
   }
 
@@ -207,12 +206,12 @@ export class FbDatabaseService extends DbService {
   }
 
   createUserAccount(email: string, password: string) {
-    const func = this.aff.functions.httpsCallable('cms-createUser');
+    const func = functions().httpsCallable('cms-createUser');
     return from(func({email, password})) as any;
   }
 
   removeUserAccount(id: string) {
-    const func = this.aff.functions.httpsCallable('cms-removeUser');
+    const func = functions().httpsCallable('cms-removeUser');
     return from(func({id}));
   }
 

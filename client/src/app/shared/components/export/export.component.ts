@@ -1,17 +1,14 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, Inject} from '@angular/core';
-import {AngularFireAuth} from '@angular/fire/auth';
-import {
-  MAT_BOTTOM_SHEET_DATA,
-  MatBottomSheetRef
-} from '@angular/material/bottom-sheet';
-import {RxDestroy} from '@jaspero/ng-helpers';
+import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from '@angular/material/bottom-sheet';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {saveAs} from 'file-saver';
 import {from} from 'rxjs';
-import {finalize, switchMap, takeUntil} from 'rxjs/operators';
+import {finalize, switchMap} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
 import {notify} from '../../utils/notify.operator';
 import {queue} from '../../utils/queue.operator';
+import {auth} from 'firebase/app';
 
 enum ExportType {
   csv = 'csv',
@@ -20,12 +17,13 @@ enum ExportType {
   xls = 'xls'
 }
 
+@UntilDestroy()
 @Component({
   selector: 'jms-export',
   templateUrl: './export.component.html',
   styleUrls: ['./export.component.scss']
 })
-export class ExportComponent extends RxDestroy {
+export class ExportComponent {
   constructor(
     @Inject(MAT_BOTTOM_SHEET_DATA)
     private data: {
@@ -33,11 +31,8 @@ export class ExportComponent extends RxDestroy {
       ids?: string[];
     },
     private http: HttpClient,
-    private sheetRef: MatBottomSheetRef<ExportComponent>,
-    private afa: AngularFireAuth
-  ) {
-    super();
-  }
+    private sheetRef: MatBottomSheetRef<ExportComponent>
+  ) {}
 
   types = ExportType;
 
@@ -54,7 +49,7 @@ export class ExportComponent extends RxDestroy {
     };
 
     from(
-      this.afa.auth.currentUser.getIdToken()
+      auth().currentUser.getIdToken()
     )
       .pipe(
         switchMap(token =>
@@ -80,7 +75,7 @@ export class ExportComponent extends RxDestroy {
           error: 'EXPORT.ERROR'
         }),
         finalize(() => this.sheetRef.dismiss()),
-        takeUntil(this.destroyed$)
+        untilDestroyed(this)
       )
       .subscribe(res => {
         saveAs(

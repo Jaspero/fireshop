@@ -1,15 +1,8 @@
 import {HttpClient} from '@angular/common/http';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  Input,
-  TemplateRef,
-  ViewChild
-} from '@angular/core';
-import {AngularFireAuth} from '@angular/fire/auth';
+import {ChangeDetectionStrategy, Component, ElementRef, Input, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
+import {auth} from 'firebase/app';
 import {from} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
@@ -37,8 +30,7 @@ export class ImportComponent {
   constructor(
     public dialog: MatDialog,
     private http: HttpClient,
-    private fb: FormBuilder,
-    private afa: AngularFireAuth
+    private fb: FormBuilder
   ) {}
 
   @ViewChild('file', {static: true})
@@ -95,7 +87,7 @@ export class ImportComponent {
     this.dialog.closeAll();
 
     from(
-      this.afa.auth.currentUser.getIdToken()
+      auth().currentUser.getIdToken()
     )
       .pipe(
         switchMap(token =>

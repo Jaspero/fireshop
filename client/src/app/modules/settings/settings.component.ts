@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormGroupDirective, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {RxDestroy} from '@jaspero/ng-helpers';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import {forkJoin, Observable, of} from 'rxjs';
-import {switchMap, takeUntil, tap} from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../integrations/firebase/firestore-collection.enum';
 import {environment} from '../../../environments/environment';
 import {FilterMethod} from '../../shared/enums/filter-method.enum';
@@ -14,21 +14,20 @@ import {notify} from '../../shared/utils/notify.operator';
 import {randomPassword} from '../../shared/utils/random-password';
 import {User} from '../../shared/interfaces/user.interface';
 
+@UntilDestroy()
 @Component({
   selector: 'jms-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SettingsComponent extends RxDestroy implements OnInit {
+export class SettingsComponent implements OnInit {
   constructor(
     private dbService: DbService,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
     private router: Router
-  ) {
-    super();
-  }
+  ) {}
 
   form: FormGroup;
   settings: Settings;
@@ -56,7 +55,7 @@ export class SettingsComponent extends RxDestroy implements OnInit {
             )
           ]);
         }),
-        takeUntil(this.destroyed$)
+        untilDestroyed(this)
       )
       .subscribe(([roles, ...users]: any) => {
 

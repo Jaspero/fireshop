@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {AngularFireAuth} from '@angular/fire/auth';
 import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
+import {auth} from 'firebase/app';
 import {from} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {STATIC_CONFIG} from '../../../environments/static-config';
@@ -15,9 +15,8 @@ import {notify} from '../../shared/utils/notify.operator';
 })
 export class TriggerPasswordResetComponent implements OnInit {
   constructor(
-    public afAuth: AngularFireAuth,
     public router: Router,
-    private fb: FormBuilder,
+    private fb: FormBuilder
   ) {}
 
   resetControl: FormControl;
@@ -31,7 +30,7 @@ export class TriggerPasswordResetComponent implements OnInit {
   }
 
   reset() {
-    from(this.afAuth.auth.sendPasswordResetEmail(this.resetControl.value))
+    from(auth().sendPasswordResetEmail(this.resetControl.value))
       .pipe(
         tap(() => {
           this.resetControl.reset();

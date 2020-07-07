@@ -30,7 +30,7 @@ export class FirebaseModule {
     }
   }
 
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<FirebaseModule> {
     return {
       ngModule: FirebaseModule,
       providers: [{provide: DbService, useClass: FbDatabaseService}]

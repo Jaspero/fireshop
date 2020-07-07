@@ -1,22 +1,21 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {RxDestroy} from '@jaspero/ng-helpers';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {BehaviorSubject} from 'rxjs';
-import {startWith, takeUntil} from 'rxjs/operators';
+import {startWith} from 'rxjs/operators';
 import {WhereFilter} from '../../interfaces/where-filter.interface';
 
+@UntilDestroy()
 @Component({
   selector: 'jms-filter-tags',
   templateUrl: './filter-tags.component.html',
   styleUrls: ['./filter-tags.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FilterTagsComponent extends RxDestroy implements OnInit {
+export class FilterTagsComponent implements OnInit {
   constructor(
     private cdr: ChangeDetectorRef
-  ) {
-    super();
-  }
+  ) {}
 
   @Input()
   items$: BehaviorSubject<WhereFilter[]>;
@@ -31,7 +30,7 @@ export class FilterTagsComponent extends RxDestroy implements OnInit {
       .valueChanges
       .pipe(
         startWith(this.search.value),
-        takeUntil(this.destroyed$)
+        untilDestroyed(this)
       )
       .subscribe(value => {
         this.searchValue = value;

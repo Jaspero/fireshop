@@ -15,11 +15,11 @@ import {
 import {AngularFirestore} from '@angular/fire/firestore';
 import {MatSort} from '@angular/material/sort';
 import {Parser, safeEval, State} from '@jaspero/form-builder';
-import {RxDestroy} from '@jaspero/ng-helpers';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {get, has} from 'json-pointer';
 import {JSONSchema7} from 'json-schema';
 import {Observable} from 'rxjs';
-import {filter, map, shareReplay, startWith, switchMap, takeUntil} from 'rxjs/operators';
+import {filter, map, shareReplay, startWith, switchMap} from 'rxjs/operators';
 import {InstanceOverviewContextService} from '../../modules/module-instance/services/instance-overview-context.service';
 import {FilterModule} from '../../shared/interfaces/filter-module.interface';
 import {ImportModule} from '../../shared/interfaces/import-module.interface';
@@ -56,13 +56,14 @@ interface TableData {
   actions?: Array<(it: any) => string>;
 }
 
+@UntilDestroy()
 @Component({
   selector: 'jms-e-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, OnDestroy {
+export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public ioc: InstanceOverviewContextService,
     private state: StateService,
@@ -70,9 +71,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
     private viewContainerRef: ViewContainerRef,
     private dbService: DbService,
     private afs: AngularFirestore
-  ) {
-    super();
-  }
+  ) {}
 
   /**
    * Using view children so we can listen for changes
@@ -272,7 +271,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
       startWith(this.sort),
       filter(change => change.last),
       switchMap(change => change.last.sortChange),
-      takeUntil(this.destroyed$)
+      untilDestroyed(this)
     )
       .subscribe((value: any) => {
         this.ioc.sortChange$.next(value);
@@ -281,7 +280,6 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
 
   ngOnDestroy() {
     this.ioc.subHeaderTemplate$.next(null);
-    super.ngOnDestroy();
   }
 
   private mapRow(
@@ -355,7 +353,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
           notify({
             success: null
           }),
-          takeUntil(this.destroyed$)
+          untilDestroyed(this)
         )
         .subscribe();
 
