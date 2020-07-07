@@ -7,8 +7,7 @@ import {MatSort} from '@angular/material/sort';
 import {Router} from '@angular/router';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {saveAs} from 'file-saver';
-import {functions} from 'firebase';
-import {BehaviorSubject, combineLatest, forkJoin, from, merge, Observable} from 'rxjs';
+import {BehaviorSubject, combineLatest, forkJoin, merge, Observable} from 'rxjs';
 import {map, shareReplay, startWith, switchMap, take, tap} from 'rxjs/operators';
 import {LayoutSettingsComponent} from '../../../../shared/components/layout-settings/layout-settings.component';
 import {ExampleType} from '../../../../shared/enums/example-type.enum';
@@ -196,10 +195,9 @@ export class DefinitionOverviewComponent implements OnInit {
   }
 
   export(schemes: any[]) {
-    const func = functions().httpsCallable('cms-jsonSchemaToTypescript');
-
+    console.log(1);
     forkJoin(
-      schemes.map(schema => from(func(schema)))
+      schemes.map(schema => this.dbService.callFunction('cms-jsonSchemaToTypescript', schema))
     )
       .pipe(
         queue(),

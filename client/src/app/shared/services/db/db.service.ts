@@ -98,4 +98,8 @@ export abstract class DbService {
   removeUserAccount(id: string): Observable<any> {
     return of();
   }
+
+  callFunction(name: string, data: any): Observable<any> {
+    return of();
+  }
 }

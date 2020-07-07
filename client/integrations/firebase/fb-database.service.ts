@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {AngularFirestore, CollectionReference} from '@angular/fire/firestore';
-import {functions} from 'firebase';
+import {app} from 'firebase/app';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {ExampleType} from '../../src/app/shared/enums/example-type.enum';
@@ -11,12 +11,15 @@ import {Settings} from '../../src/app/shared/interfaces/settings.interface';
 import {WhereFilter} from '../../src/app/shared/interfaces/where-filter.interface';
 import {DbService} from '../../src/app/shared/services/db/db.service';
 import {FirestoreCollection} from './firestore-collection.enum';
+import {FUNCTIONS_REGION} from './functions-region.token';
 
 type FilterFunction = (ref: CollectionReference) => CollectionReference;
 
 @Injectable()
 export class FbDatabaseService extends DbService {
   constructor(
+    @Inject(FUNCTIONS_REGION)
+    private region: string,
     private afs: AngularFirestore
   ) {
     super();
@@ -57,8 +60,7 @@ export class FbDatabaseService extends DbService {
   }
 
   getExamples(type: ExampleType): Observable<{data: Example[]}> {
-    const func = functions().httpsCallable('cms-getExamples');
-    return from(func(type)) as any;
+    return this.callFunction('cms-getExamples', type);
   }
 
   getUserSettings() {
@@ -206,13 +208,16 @@ export class FbDatabaseService extends DbService {
   }
 
   createUserAccount(email: string, password: string) {
-    const func = functions().httpsCallable('cms-createUser');
-    return from(func({email, password})) as any;
+    return this.callFunction('cms-createUser', {email, password}) as any;
   }
 
   removeUserAccount(id: string) {
-    const func = functions().httpsCallable('cms-removeUser');
-    return from(func({id}));
+    return this.callFunction('cms-removeUser', {id});
+  }
+
+  callFunction(name: string, data) {
+    const func = app().functions(this.region).httpsCallable(name)
+    return from(func(data));
   }
 
   private collection(

@@ -36,6 +36,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DbService as FDbService, FormBuilderModule, ROLE, STORAGE_URL, StorageService} from '@jaspero/form-builder';
 import {LoadClickModule, SanitizeModule} from '@jaspero/ng-helpers';
 import {FirebaseModule} from '../../integrations/firebase/fb.module';
+import {FUNCTIONS_REGION} from '../../integrations/firebase/functions-region.token';
 import {ENV_CONFIG} from '../env-config';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -196,6 +197,10 @@ const PIPES = [
       useFactory: init,
       deps: [Injector],
       multi: true
+    },
+    {
+      provide: FUNCTIONS_REGION,
+      useValue: 'us-central1'
     },
 
     /**

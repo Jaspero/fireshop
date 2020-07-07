@@ -1,6 +1,5 @@
 import {ChangeDetectionStrategy, Component, ElementRef} from '@angular/core';
-import {functions} from 'firebase';
-import {from} from 'rxjs';
+import {DbService} from '../../shared/services/db/db.service';
 import {notify} from '../../shared/utils/notify.operator';
 
 @Component({
@@ -11,7 +10,8 @@ import {notify} from '../../shared/utils/notify.operator';
 })
 export class TriggerPasswordResetComponent {
   constructor(
-    private el: ElementRef
+    private el: ElementRef,
+    private dbService: DbService
   ) { }
 
   trigger() {
@@ -19,9 +19,8 @@ export class TriggerPasswordResetComponent {
       const {
         email
       } = this.el.nativeElement.dataset;
-      const func = functions().httpsCallable('cms-triggerPasswordReset');
 
-      return from(func(email))
+      return this.dbService.callFunction('cms-triggerPasswordReset', email)
         .pipe(
           notify({
             success: 'Reset password request sent successfully',

@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {functions} from 'firebase';
-import {from} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {throwError} from 'rxjs';
+import {catchError, switchMap, tap} from 'rxjs/operators';
+import {DbService} from '../../shared/services/db/db.service';
 import {queue} from '../../shared/utils/queue.operator';
 
 @UntilDestroy()
@@ -16,7 +16,8 @@ import {queue} from '../../shared/utils/queue.operator';
 export class ToggleUserStatusComponent implements OnInit {
   constructor(
     private cdr: ChangeDetectorRef,
-    private el: ElementRef
+    private el: ElementRef,
+    private dbService: DbService
   ) {}
 
   status: FormControl;
@@ -24,36 +25,33 @@ export class ToggleUserStatusComponent implements OnInit {
 
   ngOnInit() {
     const {id} = this.el.nativeElement.dataset;
-    functions().httpsCallable('cms-getUser')(id)
-      .then((user: any) => {
-        this.status = new FormControl(user.disabled);
-        this.loading = false;
 
-        this.status.valueChanges
-          .pipe(
-            switchMap(disabled =>
-              from(
-                functions().httpsCallable('cms-updateUser')({
-                  id,
-                  disabled
-                })
-              )
-                .pipe(
-                  queue()
-                )
-            ),
-            untilDestroyed(this)
-          )
-          .subscribe();
-
-        this.cdr.markForCheck();
-      })
-      .catch(error => {
-        this.status = new FormControl(false);
-        this.loading = false;
-        this.cdr.markForCheck();
-        console.error(error);
-      })
+    this.dbService.callFunction('cms-getUser', id)
+      .pipe(
+        catchError((error => {
+          this.status = new FormControl(false);
+          this.loading = false;
+          this.cdr.markForCheck();
+          console.error(error);
+          return throwError(error);
+        })),
+        tap(user => {
+          this.status = new FormControl(user.disabled);
+          this.loading = false;
+        }),
+        switchMap(() => {
+          return this.status.valueChanges
+        }),
+        switchMap(disabled => {
+          return this.dbService.callFunction('cms-updateUser', {
+            id,
+            disabled
+          })
+        }),
+        queue(),
+        untilDestroyed(this)
+      )
+      .subscribe(() => this.cdr.markForCheck());
   }
 
   dummy(event) {
