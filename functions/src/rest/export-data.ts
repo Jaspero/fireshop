@@ -17,7 +17,7 @@ enum Type {
 const app = express();
 app.use(CORS);
 
-app.post('/', authenticated, (req, res) => {
+app.post('/', authenticated(['admin']), (req, res) => {
   async function exec() {
     const {collection, type, ids} = req.body;
 
