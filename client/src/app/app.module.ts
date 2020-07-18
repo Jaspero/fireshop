@@ -64,6 +64,7 @@ import {JsonEditorComponent} from './shared/components/json-editor/json-editor.c
 import {LayoutSettingsComponent} from './shared/components/layout-settings/layout-settings.component';
 import {LayoutComponent} from './shared/components/layout/layout.component';
 import {SearchInputComponent} from './shared/components/search-input/search-input.component';
+import {ActiveLinkDirective} from './shared/directives/active-link/active-link.directive';
 import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
 import {MathPipe} from './shared/pipes/math/math-pipe.';
 import {ParseTemplatePipe} from './shared/pipes/parse-template/parse-template.pipe';
@@ -114,7 +115,10 @@ const ENTRY_COMPONENTS = [
   ConfirmationComponent
 ];
 
-const DIRECTIVES = [ForceDisableDirective];
+const DIRECTIVES = [
+  ForceDisableDirective,
+  ActiveLinkDirective
+];
 
 const PIPES = [
   ColumnPipe,

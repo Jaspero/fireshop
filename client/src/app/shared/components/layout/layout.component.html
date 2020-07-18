@@ -8,7 +8,7 @@
   <div class="dashboard-nav-scrollable">
     <ng-container *ngFor="let item of links$ | async" [ngSwitch]="item.type">
 
-      <a *ngSwitchCase="navigationItemType.Link" class="dashboard-nav-link" [routerLink]="item.value" routerLinkActive="active" [routerLinkActiveOptions]="item.routerOptions" (click)="closeMenu()">
+      <a *ngSwitchCase="navigationItemType.Link" class="dashboard-nav-link" [jmsActiveLink]="item" (click)="closeMenu()">
         <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-link-icon">{{item.icon}}</mat-icon>
         <span class="dashboard-nav-link-text">{{item.label | transloco}}</span>
         <span class="dashboard-nav-link-tooltip" [matTooltip]="item.label | transloco" matTooltipPosition="right"></span>
@@ -29,7 +29,7 @@
           <span class="dashboard-nav-expandable-label-text">{{item.label | transloco}}</span>
           <span class="dashboard-nav-expandable-label-tooltip" [matTooltip]="item.label | transloco" matTooltipPosition="right"></span>
         </button>
-        <a class="dashboard-nav-expandable-item" *ngFor="let child of item.children" [routerLink]="child.value" routerLinkActive="active" [routerLinkActiveOptions]="item.routerOptions" (click)="closeMenu()">
+        <a class="dashboard-nav-expandable-item" *ngFor="let child of item.children" [jmsActiveLink]="child" (click)="closeMenu()">
           <mat-icon *ngIf="child.icon" aria-hidden="true" class="dashboard-nav-expandable-item-icon">{{child.icon}}</mat-icon>
           <span class="dashboard-nav-expandable-item-text">{{child.label | transloco}}</span>
           <span class="dashboard-nav-expandable-item-tooltip" [matTooltip]="child.label | transloco" matTooltipPosition="right"></span>
@@ -37,7 +37,7 @@
       </div>
 
       <div *ngSwitchCase="navigationItemType.Expanded" class="dashboard-nav-expanded">
-        <a *ngIf="item.value; else empty;" class="dashboard-nav-expanded-label" routerLinkActive="active" [routerLink]="item.value" [routerLinkActiveOptions]="item.routerOptions">
+        <a *ngIf="item.value; else empty;" class="dashboard-nav-expanded-label" [jmsActiveLink]="item">
           <mat-icon *ngIf="item.icon" aria-hidden="true" class="dashboard-nav-expanded-label-icon">{{item.icon}}</mat-icon>
           <span class="dashboard-nav-expanded-label-text">{{item.label | transloco}}</span>
           <span class="dashboard-nav-expanded-label-tooltip" [matTooltip]="item.label | transloco" matTooltipPosition="right"></span>
@@ -51,7 +51,7 @@
           </div>
         </ng-template>
 
-        <a *ngFor="let child of item.children" class="dashboard-nav-expanded-item" [routerLink]="child.value" routerLinkActive="active" [routerLinkActiveOptions]="item.routerOptions" (click)="closeMenu()">
+        <a *ngFor="let child of item.children" class="dashboard-nav-expanded-item" [jmsActiveLink]="child" (click)="closeMenu()">
           <mat-icon *ngIf="child.icon" aria-hidden="true" class="dashboard-nav-expanded-item-icon">{{child.icon}}</mat-icon>
           <span class="dashboard-nav-expanded-item-text">{{child.label | transloco}}</span>
           <span class="dashboard-nav-expanded-item-tooltip" [matTooltip]="child.label | transloco" matTooltipPosition="right"></span>
