@@ -8,10 +8,18 @@ import {
   TitleCasePipe,
   UpperCasePipe
 } from '@angular/common';
-import {Pipe, PipeTransform} from '@angular/core';
+import {ChangeDetectorRef, Inject, Optional, Pipe, PipeTransform} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {safeEval} from '@jaspero/form-builder';
 import {SanitizePipe} from '@jaspero/ng-helpers';
+import {
+  MaybeArray,
+  TRANSLOCO_LANG,
+  TRANSLOCO_SCOPE,
+  TranslocoPipe,
+  TranslocoScope,
+  TranslocoService
+} from '@ngneat/transloco';
 import {PipeType} from '../../../shared/enums/pipe-type.enum';
 import {MathPipe} from '../../../shared/pipes/math/math-pipe.';
 
@@ -19,7 +27,17 @@ import {MathPipe} from '../../../shared/pipes/math/math-pipe.';
   name: 'column'
 })
 export class ColumnPipe implements PipeTransform {
-  constructor(private sanitizer: DomSanitizer) {
+  constructor(
+    private sanitizer: DomSanitizer,
+    private transloco: TranslocoService,
+    private cdr: ChangeDetectorRef,
+    @Optional()
+    @Inject(TRANSLOCO_SCOPE)
+    private providerScope: MaybeArray<TranslocoScope>,
+    @Optional()
+    @Inject(TRANSLOCO_LANG)
+    private providerLang: string | null,
+  ) {
     this.pipes = {
       [PipeType.Number]: new DecimalPipe('en'),
       [PipeType.Currency]: new CurrencyPipe('en'),
@@ -32,6 +50,12 @@ export class ColumnPipe implements PipeTransform {
       [PipeType.Titlecase]: new TitleCasePipe(),
       [PipeType.Sanitize]: new SanitizePipe(this.sanitizer),
       [PipeType.SanitizeFb]: new SanitizePipe(this.sanitizer),
+      [PipeType.Transloco]: new TranslocoPipe(
+        this.transloco,
+        this.providerScope,
+        this.providerLang,
+        this.cdr
+      ),
       [PipeType.Custom]: ''
     };
   }
