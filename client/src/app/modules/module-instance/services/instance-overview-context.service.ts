@@ -1,9 +1,10 @@
 import {SelectionModel} from '@angular/cdk/collections';
-import {Injectable, TemplateRef} from '@angular/core';
+import {ChangeDetectorRef, Inject, Injectable, Optional, TemplateRef} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatDialog} from '@angular/material/dialog';
 import {DomSanitizer} from '@angular/platform-browser';
+import {MaybeArray, TRANSLOCO_LANG, TRANSLOCO_SCOPE, TranslocoScope, TranslocoService} from '@ngneat/transloco';
 import {BehaviorSubject, combineLatest, forkJoin, Observable, Subject} from 'rxjs';
 import {filter, map, switchMap, take, tap} from 'rxjs/operators';
 import {ExportComponent} from '../../../shared/components/export/export.component';
@@ -30,13 +31,27 @@ export class InstanceOverviewContextService {
     private domSanitizer: DomSanitizer,
     private dialog: MatDialog,
     private bottomSheet: MatBottomSheet,
-    private dbService: DbService
+    private dbService: DbService,
+    private transloco: TranslocoService,
+    private cdr: ChangeDetectorRef,
+    @Optional()
+    @Inject(TRANSLOCO_SCOPE)
+    private providerScope: MaybeArray<TranslocoScope>,
+    @Optional()
+    @Inject(TRANSLOCO_LANG)
+    private providerLang: string | null
   ) {}
 
   module$: Observable<Module>;
   items$: Observable<any[]>;
 
-  columnPipe = new ColumnPipe(this.domSanitizer);
+  columnPipe = new ColumnPipe(
+    this.domSanitizer,
+    this.transloco,
+    this.cdr,
+    this.providerScope,
+    this.providerLang
+  );
   loading$ = this.state.loadingQue$
     .pipe(
       map(items => !!items.length)
