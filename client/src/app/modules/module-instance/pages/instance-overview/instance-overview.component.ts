@@ -52,6 +52,7 @@ export class InstanceOverviewComponent implements OnInit, AfterViewInit {
           search: ''
         };
 
+        this.ioc.setUp(this.cdr);
         this.state.restoreRouteData(defaultData);
         this.ioc.routeData = this.state.getRouterData(defaultData);
 

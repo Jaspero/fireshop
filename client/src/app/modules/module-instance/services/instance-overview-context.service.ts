@@ -33,7 +33,6 @@ export class InstanceOverviewContextService {
     private bottomSheet: MatBottomSheet,
     private dbService: DbService,
     private transloco: TranslocoService,
-    private cdr: ChangeDetectorRef,
     @Optional()
     @Inject(TRANSLOCO_SCOPE)
     private providerScope: MaybeArray<TranslocoScope>,
@@ -45,13 +44,7 @@ export class InstanceOverviewContextService {
   module$: Observable<Module>;
   items$: Observable<any[]>;
 
-  columnPipe = new ColumnPipe(
-    this.domSanitizer,
-    this.transloco,
-    this.cdr,
-    this.providerScope,
-    this.providerLang
-  );
+  columnPipe: ColumnPipe;
   loading$ = this.state.loadingQue$
     .pipe(
       map(items => !!items.length)
@@ -181,5 +174,17 @@ export class InstanceOverviewContextService {
 
   trackById(index, item) {
     return item.id;
+  }
+
+  setUp(
+    cdr: ChangeDetectorRef
+  ) {
+    this.columnPipe = new ColumnPipe(
+      this.domSanitizer,
+      this.transloco,
+      cdr,
+      this.providerScope,
+      this.providerLang
+    )
   }
 }
