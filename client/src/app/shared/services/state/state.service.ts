@@ -7,16 +7,33 @@ import {Layout} from '../../interfaces/layout.interface';
 import {Module} from '../../interfaces/module.interface';
 import {User} from '../../interfaces/user.interface';
 import {DbService} from '../db/db.service';
+import {TranslocoService} from '@ngneat/transloco';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StateService {
+  role: string;
+  user: User;
+  loadingQue$ = new Subject<Array<string | boolean>>();
+  modules$: Observable<Module[]>;
+  layout$: Observable<Layout>;
+  language: string;
+  /**
+   * Holds state information for all
+   * previously loaded routes
+   */
+  routerData: {[url: string]: any} = {};
+
   constructor(
     private dbService: DbService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private transloco: TranslocoService
   ) {
+    this.language = localStorage.getItem('language') || 'en';
+    this.transloco.setActiveLang(this.language);
+
     this.modules$ = this.dbService.getModules().pipe(shareReplay(1));
     this.layout$ = this.dbService.getDocument(
       FirestoreCollection.Settings,
@@ -32,18 +49,6 @@ export class StateService {
       );
   }
 
-  role: string;
-  user: User;
-  loadingQue$ = new Subject<Array<string | boolean>>();
-  modules$: Observable<Module[]>;
-  layout$: Observable<Layout>;
-
-  /**
-   * Holds state information for all
-   * previously loaded routes
-   */
-  routerData: {[url: string]: any} = {};
-
   setRouteData(
     data: any,
     url = this.router.routerState.snapshot.url
@@ -56,7 +61,7 @@ export class StateService {
       queryParams: persisted && persisted.length ? {
         filter: JSON.stringify(persisted)
       } : {}
-    })
+    });
   }
 
   getRouterData<T = any>(
@@ -90,13 +95,14 @@ export class StateService {
 
       try {
         filter = JSON.parse(queryParams.filter);
-      } catch (e) {}
+      } catch (e) {
+      }
 
       if (filter) {
         this.routerData[url] = {
           ...defaultData,
           filter
-        }
+        };
       }
     }
   }

@@ -26,7 +26,9 @@
     "PAGE_SIZE": "Page size",
     "DISMISS": "Dismiss",
     "OPERATION_COMPLETED": "Operation completed",
-    "OPERATION_FAILED": "Operation failed"
+    "OPERATION_FAILED": "Operation failed",
+    "USERS": "Users",
+    "ROLES": "Roles"
   },
   "LOGIN": {
     "LOGIN": "Login",
@@ -131,6 +133,7 @@
     "PROVIDER": "Provider",
     "ADD_MEMBERS": "Add members",
     "PASSWORD_INSTRUCTIONS": "A user will only be automatically created if a password is provided",
-    "PASSWORD_RULES": "Must be at least 6 characters"
+    "PASSWORD_RULES": "Must be at least 6 characters",
+    "LANGUAGE": "Language"
   }
 }
