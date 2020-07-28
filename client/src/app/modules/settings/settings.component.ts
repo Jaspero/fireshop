@@ -1,8 +1,8 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, FormGroupDirective, Validators} from '@angular/forms';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import {forkJoin, Observable, of} from 'rxjs';
+import {forkJoin, Observable, of, Subscription} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../integrations/firebase/firestore-collection.enum';
 import {environment} from '../../../environments/environment';
@@ -13,6 +13,7 @@ import {DbService} from '../../shared/services/db/db.service';
 import {notify} from '../../shared/utils/notify.operator';
 import {randomPassword} from '../../shared/utils/random-password';
 import {User} from '../../shared/interfaces/user.interface';
+import {AvailableLangs, TranslocoService} from '@ngneat/transloco';
 
 @UntilDestroy()
 @Component({
@@ -21,12 +22,13 @@ import {User} from '../../shared/interfaces/user.interface';
   styleUrls: ['./settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy {
   constructor(
     private dbService: DbService,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private transloco: TranslocoService
   ) {}
 
   form: FormGroup;
@@ -35,6 +37,9 @@ export class SettingsComponent implements OnInit {
   columns = ['exists', 'email', 'role', 'providerData', 'actions'];
   timeStamp = environment.timeStamp;
   roles$: Observable<Role[]>;
+  availableLanguages: AvailableLangs;
+  languageControl: FormControl;
+  languageListener: Subscription;
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -42,6 +47,13 @@ export class SettingsComponent implements OnInit {
       password: ['', Validators.minLength(6)],
       role: ''
     });
+
+    this.availableLanguages = this.transloco.getAvailableLangs();
+    this.languageControl = new FormControl(this.transloco.getActiveLang(), [Validators.required]);
+    this.languageListener = this.languageControl.valueChanges.pipe(tap((language) => {
+      this.transloco.setActiveLang(language);
+      this.transloco.setDefaultLang(language);
+    })).subscribe();
 
     this.roles$ = this.dbService.getDocumentsSimple(FirestoreCollection.Roles);
 
@@ -74,6 +86,10 @@ export class SettingsComponent implements OnInit {
 
         this.cdr.detectChanges();
       });
+  }
+
+  ngOnDestroy() {
+    this.languageListener.unsubscribe();
   }
 
   remove(user: User) {

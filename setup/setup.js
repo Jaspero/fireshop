@@ -37,13 +37,13 @@ const COLLECTIONS = [
               children: [
                 {
                   icon: 'supervised_user_circle',
-                  label: 'Users',
+                  label: 'GENERAL.USERS',
                   type: 'link',
                   value: '/m/users/overview'
                 },
                 {
                   icon: 'vpn_key',
-                  label: 'Roles',
+                  label: 'GENERAL.ROLES',
                   type: 'link',
                   value: '/m/roles/overview'
                 }
@@ -193,6 +193,9 @@ const MODULES = [
     },
     schema: {
       properties: {
+        id: {
+          type: 'string'
+        },
         name: {
           type: 'string',
         },
