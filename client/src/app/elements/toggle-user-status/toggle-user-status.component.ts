@@ -28,6 +28,7 @@ export class ToggleUserStatusComponent implements OnInit {
 
     this.dbService.callFunction('cms-getUser', id)
       .pipe(
+        queue(),
         catchError((error => {
           this.status = new FormControl(false);
           this.loading = false;
@@ -38,20 +39,20 @@ export class ToggleUserStatusComponent implements OnInit {
         tap(user => {
           this.status = new FormControl(user.disabled);
           this.loading = false;
+          this.cdr.markForCheck();
         }),
-        switchMap(() => {
-          return this.status.valueChanges
-        }),
-        switchMap(disabled => {
-          return this.dbService.callFunction('cms-updateUser', {
+        switchMap(() =>
+          this.status.valueChanges
+        ),
+        switchMap(disabled =>
+          this.dbService.callFunction('cms-updateUser', {
             id,
             disabled
           })
-        }),
-        queue(),
+        ),
         untilDestroyed(this)
       )
-      .subscribe(() => this.cdr.markForCheck());
+      .subscribe();
   }
 
   dummy(event) {

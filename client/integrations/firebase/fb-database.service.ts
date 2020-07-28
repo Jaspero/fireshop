@@ -216,7 +216,7 @@ export class FbDatabaseService extends DbService {
   }
 
   callFunction(name: string, data) {
-    const func = app().functions(this.region).httpsCallable(name)
+    const func = app().functions(this.region).httpsCallable(name);
     return from(func(data));
   }
 
