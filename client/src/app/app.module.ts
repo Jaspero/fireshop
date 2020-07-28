@@ -189,7 +189,7 @@ const PIPES = [
     // Ng Helpers
     LoadClickModule,
     SanitizeModule,
-    TranslocoRootModule
+    TranslocoRootModule,
   ],
   providers: [
     {

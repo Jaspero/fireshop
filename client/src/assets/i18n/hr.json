@@ -8,12 +8,12 @@
     "ACTIONS": "Akcije",
     "SORT": "Sortiraj",
     "FILTER": "Filteri",
-    "IMPORT": "Import",
-    "EXPORT": "Export",
+    "IMPORT": "Uvoz",
+    "EXPORT": "Izvoz",
     "SELECT": "Odaberi",
     "OK": "Ok",
-    "ERROR": "Error",
-    "SUCCESS": "Success",
+    "ERROR": "Pogreška",
+    "SUCCESS": "Uspjeh",
     "OR": "ili",
     "EMAIL": "Email",
     "PASSWORD": "Lozinka",
@@ -22,15 +22,17 @@
     "PREVIOUS": "Prethodno",
     "NEXT": "Slijedeće",
     "CANCEL": "Prekini",
-    "SAVE": "Snimi",
+    "SAVE": "Spremi",
     "PAGE_SIZE": "Veličina stranice",
-    "DISMISS": "Dismiss",
+    "DISMISS": "Odbaci",
     "OPERATION_COMPLETED": "Operacija završena",
-    "OPERATION_FAILED": "Operacija neuspješna"
+    "OPERATION_FAILED": "Operacija neuspješna",
+    "USERS": "Korisnici",
+    "ROLES": "Uloge"
   },
   "LOGIN": {
-    "LOGIN": "Login",
-    "LOGIN_WITH": "Log in koristeći {{value}}",
+    "LOGIN": "Prijava",
+    "LOGIN_WITH": "Prijava koristeći {{value}}",
     "FORGOT_PASSWORD": "Zaboravljena lozinka?",
     "ERROR_MESSAGE": "Uneseni Email i Lozinka nisu pronađeni. Molim vas pokušajte ponovo."
   },
@@ -47,14 +49,17 @@
     "DASHBOARD": "Nadzorna ploča",
     "MODULES": "Moduli",
     "SETTINGS": "Postavke",
-    "LOG_OUT": "Log out"
+    "LOG_OUT": "Odjavi se",
+
+    "MANAGEMENT": "Upravljanje",
+    "SYSTEM": "Sustav"
   },
   "MODULES": {
     "ADD_MODULE": "Dodaj Modul",
     "REMOVE_ITEMS": "Ukloni {{value}} predmete",
     "REMOVE_ONE": "Ova akcija će u potpunosti ukloniti {{value}}",
     "REMOVE_MODULE_SETUP": "Ova akcija će prepraviti trenutnu kofiguraciju modula.",
-    "EXPORT_SELECTED_FILES": "Export odabrane dokumente",
+    "EXPORT_SELECTED_FILES": "Izvezi odabrane dokumente",
     "CREATE_INTERFACES_FOR_SELECTION": "Kreiraj sučelja za odabir.",
     "NAME_ID": "Ime/ID",
     "CREATED_ON": "Kreirano na",
@@ -64,7 +69,8 @@
     "SELECT_TEMPLATE": "Odaberi predložak",
     "NAME": "Ime",
     "NO_MODULES": "Nijedan Modul ne postoji.",
-    "COPIED_TO_CLIPBOARD": "Kopirano u međuspremnik"
+    "COPIED_TO_CLIPBOARD": "Kopirano u međuspremnik",
+    "LAYOUT_SETTINGS": "Postavke izgleda"
   },
   "INSTANCE_OVERVIEW": {
     "REMOVE_ITEMS": "Ukloni {{value}} predmete",
@@ -88,7 +94,7 @@
       "SORT_IMAGES": "Sortiraj slike",
       "IMAGE_URL": "URL Slike",
       "ADD_IMAGE": "Dodaj sliku",
-      "UPLOAD_ERROR": "Error s upload slike."
+      "UPLOAD_ERROR": "Pogreška s učitavanjem slike."
     },
     "WYSIWYG": {
       "EMBED_YOUTUBE": "Embed YouTube",
@@ -103,14 +109,14 @@
     }
   },
   "IMPORT": {
-    "TYPE": "Type",
-    "DELIMITER": "Delimiter",
+    "TYPE": "Vrsta",
+    "DELIMITER": "Graničnik",
     "PROBLEM_UPLOADING": "Problem s prenošenjem podataka",
     "SUCCESS_MESSAGE": "Uspješno preneseno {{value}} stavki",
     "ERROR": "Došlo je do pogreške pri importu podataka"
   },
   "EXPORT": {
-    "ERROR": "Nepoznati error pri exportu"
+    "ERROR": "Nepoznata pogreška pri izvozu"
   },
   "CONFIRMATION": {
     "TITLE": "Jeste li sigurni?"
@@ -123,6 +129,7 @@
     "PROVIDER": "Pružatelj usluge",
     "ADD_MEMBERS": "Dodaj korisnike",
     "PASSWORD_INSTRUCTIONS": "Korisnik će se automatski kreirati jedino ako je šifra unesena",
-    "PASSWORD_RULES": "Najmanje 6 znamenki"
+    "PASSWORD_RULES": "Najmanje 6 znamenki",
+    "LANGUAGE": "Jezik"
   }
 }
