@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "npm --prefix client run build && npm --prefix functions run build",
+    "build:cms": "npm --prefix client run build",
+    "build:functions": "npm --prefix functions run build",
+    "build": "npm run build:cms && npm run build:functions",
     "lint:client": "npm --prefix client run lint",
     "lint:functions": "npm --prefix functions run lint",
     "lint": "npm run lint:client && npm run lint:functions",
