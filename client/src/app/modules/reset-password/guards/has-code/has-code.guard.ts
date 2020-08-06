@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router} from '@angular/router';
+import 'firebase/auth';
 import {auth} from 'firebase/app';
 import {from, of} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
+import {notify} from '../../../../shared/utils/notify.operator';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class HasCodeGuard implements CanActivate {
   constructor(
     private router: Router
@@ -19,7 +19,13 @@ export class HasCodeGuard implements CanActivate {
       )
         .pipe(
           map(() => true),
-          catchError(() => of(false))
+          notify({
+            error: 'RESET_PASSWORD.INVALID_OOB_CODE'
+          }),
+          catchError(() => {
+            this.router.navigate(['/login']);
+            return of(false)
+          })
         )
     }
 

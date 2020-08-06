@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {TranslocoService} from '@ngneat/transloco';
 import {auth} from 'firebase/app';
 import {from} from 'rxjs';
 import {tap} from 'rxjs/operators';
@@ -19,8 +18,7 @@ export class ResetPasswordComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private transloco: TranslocoService
+    private activatedRoute: ActivatedRoute
   ) { }
 
   form: FormGroup;
@@ -52,7 +50,7 @@ export class ResetPasswordComponent implements OnInit {
       )
         .pipe(
           notify({
-            success: this.transloco.translate('RESET_PASSWORD.RESET_SUCCESSFUL')
+            success: 'RESET_PASSWORD.RESET_SUCCESSFUL'
           }),
           tap(() =>
             this.router.navigate(['/login'])

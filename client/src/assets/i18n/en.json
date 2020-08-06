@@ -44,7 +44,8 @@
     "RESET_MY_PASSWORD": "Reset my password",
     "SUCCESS_MESSAGE": "Password reset email has been sent to your email",
     "ERROR_MESSAGE": "Email is invalid",
-    "RESET_SUCCESSFUL": "Your password has been reset successfully. You can now log in."
+    "RESET_SUCCESSFUL": "Your password has been reset successfully. You can now log in.",
+    "INVALID_OOB_CODE": "Your code has expired. Please restart the process of resetting your password."
   },
   "LAYOUT": {
     "MENU": "Menu",

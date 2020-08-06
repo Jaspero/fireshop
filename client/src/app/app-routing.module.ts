@@ -2,20 +2,16 @@ import {NgModule} from '@angular/core';
 import {AngularFireAuthGuard, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
 import {RouterModule, Routes} from '@angular/router';
 import {DashboardComponent} from './modules/dashboard/dashboard.component';
-import {LoginComponent} from './modules/login/login.component';
 import {ModuleDefinitionComponent} from './modules/module-definition/module-definition.component';
 import {DefinitionInstanceComponent} from './modules/module-definition/pages/definition-instance/definition-instance.component';
 import {DefinitionOverviewComponent} from './modules/module-definition/pages/definition-overview/definition-overview.component';
 import {ModuleInstanceComponent} from './modules/module-instance/module-instance.component';
 import {InstanceOverviewComponent} from './modules/module-instance/pages/instance-overview/instance-overview.component';
 import {InstanceSingleComponent} from './modules/module-instance/pages/instance-single/instance-single.component';
-import {ResetPasswordComponent} from './modules/reset-password/reset-password.component';
 import {SettingsComponent} from './modules/settings/settings.component';
-import {TriggerPasswordResetComponent} from './modules/trigger-password-reset/trigger-password-reset.component';
 import {LayoutComponent} from './shared/components/layout/layout.component';
 import {CanReadModuleGuard} from './shared/guards/can-read-module/can-read-module.guard';
 import {HasClaimGuard} from './shared/guards/has-claim/has-claim.guard';
-import {HasCodeGuard} from './shared/guards/has-code/has-code.guard';
 
 const redirectUnauthorized = () => redirectUnauthorizedTo(['/login']);
 const redirectLoggedInToDashboard = () => redirectLoggedInTo(['/dashboard']);
@@ -80,7 +76,9 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    component: LoginComponent,
+    loadChildren: () =>
+      import('./modules/login/login.module')
+        .then(m => m.LoginModule),
     canActivate: [
       AngularFireAuthGuard
     ],
@@ -90,7 +88,9 @@ const routes: Routes = [
   },
   {
     path: 'trigger-password-reset',
-    component: TriggerPasswordResetComponent,
+    loadChildren: () =>
+      import('./modules/trigger-password-reset/trigger-password-reset.module')
+        .then(m => m.TriggerPasswordResetModule),
     canActivate: [
       AngularFireAuthGuard
     ],
@@ -100,8 +100,9 @@ const routes: Routes = [
   },
   {
     path: 'reset-password',
-    component: ResetPasswordComponent,
-    canActivate: [HasCodeGuard]
+    loadChildren: () =>
+      import('./modules/reset-password/reset-password.module')
+        .then(m => m.ResetPasswordModule)
   },
   {
     path: '**',

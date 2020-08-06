@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {auth} from 'firebase/app';
 import {from} from 'rxjs';
@@ -19,28 +19,32 @@ export class TriggerPasswordResetComponent implements OnInit {
     private fb: FormBuilder
   ) {}
 
-  resetControl: FormControl;
+  form: FormGroup;
   staticConfig = STATIC_CONFIG;
 
   ngOnInit() {
-    this.resetControl = this.fb.control('', [
-      Validators.required,
-      Validators.email
-    ]);
+    this.form = this.fb.group({
+      email: ['',
+        [
+          Validators.required,
+          Validators.email
+        ]
+      ]
+    });
   }
 
   reset() {
-    from(auth().sendPasswordResetEmail(this.resetControl.value))
-      .pipe(
-        tap(() => {
-          this.resetControl.reset();
-          this.resetControl.markAsPristine();
-        }),
-        notify({
-          success: 'RESET_PASSWORD.SUCCESS_MESSAGE',
-          error: 'RESET_PASSWORD.ERROR_MESSAGE'
-        })
-      )
-      .subscribe();
+    return () =>
+      from(auth().sendPasswordResetEmail(this.form.get('email').value))
+        .pipe(
+          tap(() => {
+            this.form.reset();
+            this.form.markAsPristine();
+          }),
+          notify({
+            success: 'RESET_PASSWORD.SUCCESS_MESSAGE',
+            error: 'RESET_PASSWORD.ERROR_MESSAGE'
+          })
+        )
   }
 }

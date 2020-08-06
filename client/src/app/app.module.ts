@@ -42,7 +42,6 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {ELEMENTS} from './elements/elements.const';
 import {DashboardComponent} from './modules/dashboard/dashboard.component';
-import {LoginComponent} from './modules/login/login.component';
 import {SnippetDialogComponent} from './modules/module-definition/components/snippet-dialog/snippet-dialog.component';
 import {ModuleDefinitionComponent} from './modules/module-definition/module-definition.component';
 import {DefinitionInstanceComponent} from './modules/module-definition/pages/definition-instance/definition-instance.component';
@@ -53,9 +52,7 @@ import {ModuleInstanceComponent} from './modules/module-instance/module-instance
 import {InstanceOverviewComponent} from './modules/module-instance/pages/instance-overview/instance-overview.component';
 import {InstanceSingleComponent} from './modules/module-instance/pages/instance-single/instance-single.component';
 import {ColumnPipe} from './modules/module-instance/pipes/column.pipe';
-import {ResetPasswordComponent} from './modules/reset-password/reset-password.component';
 import {SettingsComponent} from './modules/settings/settings.component';
-import {TriggerPasswordResetComponent} from './modules/trigger-password-reset/trigger-password-reset.component';
 import {ConfirmationComponent} from './shared/components/confirmation/confirmation.component';
 import {ExportComponent} from './shared/components/export/export.component';
 import {FilterTagsComponent} from './shared/components/filter-tags/filter-tags.component';
@@ -91,11 +88,7 @@ const PAGES = [
   DefinitionOverviewComponent,
   DefinitionInstanceComponent,
   SettingsComponent,
-  DashboardComponent,
-
-  LoginComponent,
-  TriggerPasswordResetComponent,
-  ResetPasswordComponent
+  DashboardComponent
 ];
 
 const COMPONENTS = [
