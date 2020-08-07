@@ -6,10 +6,10 @@
     <div class="flex-1"></div>
     <ng-container *ngIf="!data.directLink">
       <span class="hide-xs">
-        <a mat-button (click)="back(data)">{{'GENERAL.CANCEL' | transloco}}</a>&nbsp;
+        <a mat-button (click)="back()">{{'GENERAL.CANCEL' | transloco}}</a>&nbsp;
       </span>
       <span class="show-xs">
-        <a mat-icon-button (click)="back(data)" [matTooltip]="'GENERAL.CANCEL' | transloco">
+        <a mat-icon-button (click)="back()" [matTooltip]="'GENERAL.CANCEL' | transloco">
           <mat-icon>cancel</mat-icon>
         </a>&nbsp;
       </span>

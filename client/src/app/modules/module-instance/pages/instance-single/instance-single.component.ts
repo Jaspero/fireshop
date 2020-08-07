@@ -185,26 +185,27 @@ export class InstanceSingleComponent implements OnInit {
         notify(),
         tap(() => {
           if (!instance.directLink) {
-            this.back(instance);
+            this.back();
           }
         })
       );
     };
   }
 
-  back(instance: Instance) {
+  back() {
     this.initialValue = '';
     this.currentValue = '';
-    this.router.navigate(['/m', instance.module.id, 'overview']);
+    this.router.navigate(['../..', 'overview'], {relativeTo: this.activatedRoute});
   }
 
   duplicate(instance: Instance) {
     this.router.navigate([
-      '/m',
-      instance.module.id,
+      '..',
       'single',
       `${instance.formBuilder.value.id}--copy`
-    ]);
+    ], {
+      relativeTo: this.activatedRoute
+    });
   }
 
   move(forward: boolean, form: FormGroup) {}
