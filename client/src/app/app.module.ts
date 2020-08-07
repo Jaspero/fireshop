@@ -42,26 +42,19 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {ELEMENTS} from './elements/elements.const';
 import {DashboardComponent} from './modules/dashboard/dashboard.component';
-import {SnippetDialogComponent} from './modules/module-definition/components/snippet-dialog/snippet-dialog.component';
-import {ModuleDefinitionComponent} from './modules/module-definition/module-definition.component';
-import {DefinitionInstanceComponent} from './modules/module-definition/pages/definition-instance/definition-instance.component';
-import {DefinitionOverviewComponent} from './modules/module-definition/pages/definition-overview/definition-overview.component';
-import {FilterDialogComponent} from './modules/module-instance/components/filter-dialog/filter-dialog.component';
-import {SortDialogComponent} from './modules/module-instance/components/sort-dialog/sort-dialog.component';
-import {ModuleInstanceComponent} from './modules/module-instance/module-instance.component';
-import {InstanceOverviewComponent} from './modules/module-instance/pages/instance-overview/instance-overview.component';
-import {InstanceSingleComponent} from './modules/module-instance/pages/instance-single/instance-single.component';
-import {ColumnPipe} from './modules/module-instance/pipes/column.pipe';
-import {SettingsComponent} from './modules/settings/settings.component';
+import {SnippetDialogComponent} from './modules/dashboard/modules/module-definition/components/snippet-dialog/snippet-dialog.component';
+import {FilterDialogComponent} from './modules/dashboard/modules/module-instance/components/filter-dialog/filter-dialog.component';
+import {SortDialogComponent} from './modules/dashboard/modules/module-instance/components/sort-dialog/sort-dialog.component';
+import {ModuleInstanceComponent} from './modules/dashboard/modules/module-instance/module-instance.component';
+import {InstanceOverviewComponent} from './modules/dashboard/modules/module-instance/pages/instance-overview/instance-overview.component';
+import {InstanceSingleComponent} from './modules/dashboard/modules/module-instance/pages/instance-single/instance-single.component';
+import {ColumnPipe} from './modules/dashboard/modules/module-instance/pipes/column.pipe';
 import {ConfirmationComponent} from './shared/components/confirmation/confirmation.component';
 import {ExportComponent} from './shared/components/export/export.component';
 import {FilterTagsComponent} from './shared/components/filter-tags/filter-tags.component';
 import {ImportComponent} from './shared/components/import/import.component';
-import {JsonEditorComponent} from './shared/components/json-editor/json-editor.component';
 import {LayoutSettingsComponent} from './shared/components/layout-settings/layout-settings.component';
-import {LayoutComponent} from './shared/components/layout/layout.component';
 import {SearchInputComponent} from './shared/components/search-input/search-input.component';
-import {ActiveLinkDirective} from './shared/directives/active-link/active-link.directive';
 import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
 import {MathPipe} from './shared/pipes/math/math-pipe.';
 import {ParseTemplatePipe} from './shared/pipes/parse-template/parse-template.pipe';
@@ -81,20 +74,14 @@ export function roleFactory(state: StateService) {
 }
 
 const PAGES = [
-  ModuleDefinitionComponent,
   ModuleInstanceComponent,
   InstanceSingleComponent,
   InstanceOverviewComponent,
-  DefinitionOverviewComponent,
-  DefinitionInstanceComponent,
-  SettingsComponent,
   DashboardComponent
 ];
 
 const COMPONENTS = [
   SearchInputComponent,
-  JsonEditorComponent,
-  LayoutComponent,
   ImportComponent
 ];
 
@@ -104,13 +91,11 @@ const ENTRY_COMPONENTS = [
   FilterDialogComponent,
   FilterTagsComponent,
   LayoutSettingsComponent,
-  SnippetDialogComponent,
   ConfirmationComponent
 ];
 
 const DIRECTIVES = [
-  ForceDisableDirective,
-  ActiveLinkDirective
+  ForceDisableDirective
 ];
 
 const PIPES = [

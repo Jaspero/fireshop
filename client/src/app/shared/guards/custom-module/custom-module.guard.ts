@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate} from '@angular/router';
 import {of} from 'rxjs';
-import {InstanceOverviewContextService} from '../../../modules/module-instance/services/instance-overview-context.service';
+import {InstanceOverviewContextService} from '../../../modules/dashboard/modules/module-instance/services/instance-overview-context.service';
 import {StateService} from '../../services/state/state.service';
 
 @Injectable({

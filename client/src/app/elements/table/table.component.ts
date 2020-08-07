@@ -19,7 +19,7 @@ import {get, has} from 'json-pointer';
 import {JSONSchema7} from 'json-schema';
 import {Observable} from 'rxjs';
 import {filter, map, shareReplay, startWith, switchMap} from 'rxjs/operators';
-import {InstanceOverviewContextService} from '../../modules/module-instance/services/instance-overview-context.service';
+import {InstanceOverviewContextService} from '../../modules/dashboard/modules/module-instance/services/instance-overview-context.service';
 import {FilterModule} from '../../shared/interfaces/filter-module.interface';
 import {ImportModule} from '../../shared/interfaces/import-module.interface';
 import {InstanceSort} from '../../shared/interfaces/instance-sort.interface';
