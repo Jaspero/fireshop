@@ -12,7 +12,6 @@ import {
   ViewChildren,
   ViewContainerRef
 } from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
 import {MatSort} from '@angular/material/sort';
 import {Parser, safeEval, State} from '@jaspero/form-builder';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
@@ -69,8 +68,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     private state: StateService,
     private injector: Injector,
     private viewContainerRef: ViewContainerRef,
-    private dbService: DbService,
-    private afs: AngularFirestore
+    private dbService: DbService
   ) {}
 
   /**
@@ -137,7 +135,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
                 typeof column.key === 'string' ? column.key : column.key[0];
 
               if (acc.includes(key)) {
-                key = this.afs.createId();
+                key = this.dbService.createId();
               }
 
               acc.push(key);
@@ -162,7 +160,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
           const topLevelProperties = Object.keys(data.schema.properties || {});
 
           displayColumns = topLevelProperties.reduce((acc, key) => {
-            acc.push(key || this.afs.createId());
+            acc.push(key || this.dbService.createId());
             return acc;
           }, []);
           tableColumns = topLevelProperties.map(key => ({

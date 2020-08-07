@@ -220,6 +220,10 @@ export class FbDatabaseService extends DbService {
     return from(func(data));
   }
 
+  createId() {
+    return this.afs.createId();
+  }
+
   private collection(
     moduleId,
     pageSize,

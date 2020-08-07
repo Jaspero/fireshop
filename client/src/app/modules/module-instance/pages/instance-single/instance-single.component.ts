@@ -1,5 +1,4 @@
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Definitions, FormBuilderComponent, safeEval, Segment, State} from '@jaspero/form-builder';
@@ -13,7 +12,7 @@ import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {notify} from '../../../../shared/utils/notify.operator';
 import {queue} from '../../../../shared/utils/queue.operator';
-import {ModuleInstanceComponent} from '../../module-instance.component';
+import {InstanceOverviewContextService} from '../../services/instance-overview-context.service';
 
 interface Instance {
   hideDuplicate: boolean;
@@ -49,8 +48,7 @@ export class InstanceSingleComponent implements OnInit {
     private state: StateService,
     private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
-    private moduleInstance: ModuleInstanceComponent,
-    private afs: AngularFirestore
+    private ioc: InstanceOverviewContextService
   ) {}
 
   @ViewChild(FormBuilderComponent, {static: false})
@@ -65,7 +63,7 @@ export class InstanceSingleComponent implements OnInit {
   data$: Observable<Instance>;
 
   ngOnInit() {
-    this.data$ = this.moduleInstance.module$.pipe(
+    this.data$ = this.ioc.module$.pipe(
       switchMap(module =>
         this.activatedRoute.params.pipe(
           switchMap(params => {
@@ -161,7 +159,7 @@ export class InstanceSingleComponent implements OnInit {
   save(instance: Instance) {
     return () => {
       this.formBuilderComponent.process();
-      const id = this.formBuilderComponent.form.getRawValue().id || this.afs.createId();
+      const id = this.formBuilderComponent.form.getRawValue().id || this.dbService.createId();
 
       return this.formBuilderComponent.save(
         instance.module.id,

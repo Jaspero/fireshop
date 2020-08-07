@@ -31,8 +31,13 @@ export class StateService {
     private activatedRoute: ActivatedRoute,
     private transloco: TranslocoService
   ) {
-    this.language = localStorage.getItem('language') || 'en';
-    this.transloco.setActiveLang(this.language);
+    this.language = localStorage.getItem('language');
+
+    if (this.language) {
+      this.transloco.setActiveLang(this.language);
+    } else {
+      this.language = this.transloco.getActiveLang();
+    }
 
     this.modules$ = this.dbService.getModules().pipe(shareReplay(1));
     this.layout$ = this.dbService.getDocument(

@@ -102,4 +102,8 @@ export abstract class DbService {
   callFunction(name: string, data: any): Observable<any> {
     return of();
   }
+
+  createId() {
+    return '';
+  }
 }
