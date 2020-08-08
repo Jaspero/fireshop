@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {AngularFireAuthGuard, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
 import {RouterModule, Routes} from '@angular/router';
-import {LayoutComponent} from './modules/dashboard/components/layout/layout.component';
 import {HasClaimGuard} from './shared/guards/has-claim/has-claim.guard';
 
 const redirectUnauthorized = () => redirectUnauthorizedTo(['/login']);
@@ -10,7 +9,6 @@ const redirectLoggedInToDashboard = () => redirectLoggedInTo(['/dashboard']);
 const routes: Routes = [
   {
     path: '',
-    component: LayoutComponent,
     loadChildren: () =>
       import('./modules/dashboard/dashboard.module')
         .then(m => m.DashboardModule),

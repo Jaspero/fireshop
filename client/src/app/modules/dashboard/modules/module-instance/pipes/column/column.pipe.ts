@@ -20,8 +20,8 @@ import {
   TranslocoScope,
   TranslocoService
 } from '@ngneat/transloco';
-import {PipeType} from '../../../../../shared/enums/pipe-type.enum';
-import {MathPipe} from '../../../../../shared/pipes/math/math-pipe.';
+import {PipeType} from '../../../../../../shared/enums/pipe-type.enum';
+import {MathPipe} from '../../../../../../shared/pipes/math/math-pipe.';
 
 @Pipe({
   name: 'column'

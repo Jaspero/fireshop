@@ -20,7 +20,7 @@ import {confirmation} from '../../../../../shared/utils/confirmation';
 import {notify} from '../../../../../shared/utils/notify.operator';
 import {FilterDialogComponent} from '../components/filter-dialog/filter-dialog.component';
 import {SortDialogComponent} from '../components/sort-dialog/sort-dialog.component';
-import {ColumnPipe} from '../pipes/column.pipe';
+import {ColumnPipe} from '../pipes/column/column.pipe';
 
 @Injectable()
 export class InstanceOverviewContextService {

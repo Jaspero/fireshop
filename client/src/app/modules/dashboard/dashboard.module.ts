@@ -6,7 +6,6 @@ import {RouterModule, Routes} from '@angular/router';
 import {TranslocoModule} from '@ngneat/transloco';
 import {ActiveLinkDirective} from './components/active-link/active-link.directive';
 import {LayoutComponent} from './components/layout/layout.component';
-import {DashboardComponent} from './dashboard.component';
 
 const routes: Routes = [{
   path: '',
@@ -20,7 +19,9 @@ const routes: Routes = [{
     },
     {
       path: 'dashboard',
-      component: DashboardComponent
+      loadChildren: () =>
+        import('./modules/overview/overview.module')
+          .then(m => m.OverviewModule)
     },
     {
       path: 'module-definition',

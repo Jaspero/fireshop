@@ -1,8 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {AngularFireStorage} from '@angular/fire/storage';
-import {FormBuilderModule, ROLE, STORAGE_URL, StorageService} from '@jaspero/form-builder';
-import {DbService as FDbService} from '@jaspero/form-builder/lib/services/db.service';
+import {DbService as FDbService, FormBuilderModule, ROLE, STORAGE_URL, StorageService} from '@jaspero/form-builder';
 import {ENV_CONFIG} from '../../../../env-config';
 import {DbService} from '../../services/db/db.service';
 import {StateService} from '../../services/state/state.service';
@@ -39,4 +38,4 @@ export function roleFactory(state: StateService) {
     }
   ]
 })
-export class FbModule {}
+export class FormBuilderSharedModule {}

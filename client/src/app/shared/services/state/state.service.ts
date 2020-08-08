@@ -13,18 +13,6 @@ import {TranslocoService} from '@ngneat/transloco';
   providedIn: 'root'
 })
 export class StateService {
-  role: string;
-  user: User;
-  loadingQue$ = new Subject<Array<string | boolean>>();
-  modules$: Observable<Module[]>;
-  layout$: Observable<Layout>;
-  language: string;
-  /**
-   * Holds state information for all
-   * previously loaded routes
-   */
-  routerData: {[url: string]: any} = {};
-
   constructor(
     private dbService: DbService,
     private router: Router,
@@ -53,6 +41,21 @@ export class StateService {
         shareReplay(1)
       );
   }
+
+  role: string;
+  user: User;
+  loadingQue$ = new Subject<Array<string | boolean>>();
+  modules$: Observable<Module[]>;
+  layout$: Observable<Layout>;
+  language: string;
+
+  /**
+   * Holds state information for all
+   * previously loaded routes
+   */
+  routerData: {[url: string]: any} = {};
+
+  elementsRegistered = false;
 
   setRouteData(
     data: any,
