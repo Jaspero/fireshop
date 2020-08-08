@@ -1,30 +1,28 @@
 <h4 mat-dialog-title>Select snippet template</h4>
 
-<form>
+<form [formGroup]="snippetForm">
   <mat-dialog-content>
-    <div [formGroup]="snippetForm">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Snippet</mat-label>
-        <mat-select formControlName="snippet">
-          <mat-option *ngFor="let item of snippetExamples$ | async" [value]="item.name">{{item.name | titlecase}}</mat-option>
-        </mat-select>
-      </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Snippet</mat-label>
+      <mat-select formControlName="snippet">
+        <mat-option *ngFor="let item of snippetExamples$ | async" [value]="item.name">{{item.name | titlecase}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Field name</mat-label>
-        <input matInput formControlName="name">
-      </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Field name</mat-label>
+      <input matInput formControlName="name">
+    </mat-form-field>
 
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Label</mat-label>
-        <input matInput formControlName="label">
-      </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Label</mat-label>
+      <input matInput formControlName="label">
+    </mat-form-field>
 
-      <label class="mat-form-field-wrapper flex jc-between">
-        <span>Required</span>
-        <mat-slide-toggle formControlName="required"></mat-slide-toggle>
-      </label>
-    </div>
+    <label class="mat-form-field-wrapper flex jc-between">
+      <span>Required</span>
+      <mat-slide-toggle formControlName="required"></mat-slide-toggle>
+    </label>
 
     <fb-form-builder *ngIf="data" [data]="data"></fb-form-builder>
   </mat-dialog-content>

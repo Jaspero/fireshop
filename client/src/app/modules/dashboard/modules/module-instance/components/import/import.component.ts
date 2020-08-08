@@ -5,10 +5,10 @@ import {MatDialog} from '@angular/material/dialog';
 import {auth} from 'firebase/app';
 import {from} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-import {environment} from '../../../../environments/environment';
-import {ImportModule} from '../../interfaces/import-module.interface';
-import {notify} from '../../utils/notify.operator';
-import {queue} from '../../utils/queue.operator';
+import {environment} from '../../../../../../../environments/environment';
+import {ImportModule} from '../../../../../../shared/interfaces/import-module.interface';
+import {notify} from '../../../../../../shared/utils/notify.operator';
+import {queue} from '../../../../../../shared/utils/queue.operator';
 
 interface ImportResponse {
   errors?: any;

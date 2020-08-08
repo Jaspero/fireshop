@@ -3,7 +3,7 @@ import {FormControl} from '@angular/forms';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {BehaviorSubject} from 'rxjs';
 import {startWith} from 'rxjs/operators';
-import {WhereFilter} from '../../interfaces/where-filter.interface';
+import {WhereFilter} from '../../../../../../shared/interfaces/where-filter.interface';
 
 @UntilDestroy()
 @Component({

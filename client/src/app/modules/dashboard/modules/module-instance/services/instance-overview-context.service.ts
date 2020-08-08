@@ -7,7 +7,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {MaybeArray, TRANSLOCO_LANG, TRANSLOCO_SCOPE, TranslocoScope, TranslocoService} from '@ngneat/transloco';
 import {BehaviorSubject, combineLatest, forkJoin, Observable, Subject} from 'rxjs';
 import {filter, map, switchMap, take, tap} from 'rxjs/operators';
-import {ExportComponent} from '../../../../../shared/components/export/export.component';
+import {ExportComponent} from '../components/export/export.component';
 import {PAGE_SIZES} from '../../../../../shared/consts/page-sizes.const';
 import {FilterModule} from '../../../../../shared/interfaces/filter-module.interface';
 import {InstanceSort} from '../../../../../shared/interfaces/instance-sort.interface';
@@ -22,9 +22,7 @@ import {FilterDialogComponent} from '../components/filter-dialog/filter-dialog.c
 import {SortDialogComponent} from '../components/sort-dialog/sort-dialog.component';
 import {ColumnPipe} from '../pipes/column.pipe';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class InstanceOverviewContextService {
   constructor(
     private state: StateService,

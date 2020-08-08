@@ -3,10 +3,10 @@ import {FormControl} from '@angular/forms';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
 import {map, take, tap} from 'rxjs/operators';
-import {FirestoreCollection} from '../../../../../integrations/firebase/firestore-collection.enum';
-import {DbService} from '../../services/db/db.service';
-import {StateService} from '../../services/state/state.service';
-import {notify} from '../../utils/notify.operator';
+import {FirestoreCollection} from '../../../../../../../../integrations/firebase/firestore-collection.enum';
+import {DbService} from '../../../../../../shared/services/db/db.service';
+import {StateService} from '../../../../../../shared/services/state/state.service';
+import {notify} from '../../../../../../shared/utils/notify.operator';
 
 @Component({
   selector: 'jms-layout-settings',

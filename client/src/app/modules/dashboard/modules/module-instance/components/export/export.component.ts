@@ -5,9 +5,9 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {saveAs} from 'file-saver';
 import {from} from 'rxjs';
 import {finalize, switchMap} from 'rxjs/operators';
-import {environment} from '../../../../environments/environment';
-import {notify} from '../../utils/notify.operator';
-import {queue} from '../../utils/queue.operator';
+import {environment} from '../../../../../../../environments/environment';
+import {notify} from '../../../../../../shared/utils/notify.operator';
+import {queue} from '../../../../../../shared/utils/queue.operator';
 import {auth} from 'firebase/app';
 
 enum ExportType {

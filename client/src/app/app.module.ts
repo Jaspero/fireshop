@@ -42,20 +42,10 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {ELEMENTS} from './elements/elements.const';
 import {DashboardComponent} from './modules/dashboard/dashboard.component';
-import {SnippetDialogComponent} from './modules/dashboard/modules/module-definition/components/snippet-dialog/snippet-dialog.component';
-import {FilterDialogComponent} from './modules/dashboard/modules/module-instance/components/filter-dialog/filter-dialog.component';
-import {SortDialogComponent} from './modules/dashboard/modules/module-instance/components/sort-dialog/sort-dialog.component';
 import {ModuleInstanceComponent} from './modules/dashboard/modules/module-instance/module-instance.component';
 import {InstanceOverviewComponent} from './modules/dashboard/modules/module-instance/pages/instance-overview/instance-overview.component';
 import {InstanceSingleComponent} from './modules/dashboard/modules/module-instance/pages/instance-single/instance-single.component';
-import {ColumnPipe} from './modules/dashboard/modules/module-instance/pipes/column.pipe';
 import {ConfirmationComponent} from './shared/components/confirmation/confirmation.component';
-import {ExportComponent} from './shared/components/export/export.component';
-import {FilterTagsComponent} from './shared/components/filter-tags/filter-tags.component';
-import {ImportComponent} from './shared/components/import/import.component';
-import {LayoutSettingsComponent} from './shared/components/layout-settings/layout-settings.component';
-import {SearchInputComponent} from './shared/components/search-input/search-input.component';
-import {ForceDisableDirective} from './shared/directives/force-disable/force-disable.directive';
 import {MathPipe} from './shared/pipes/math/math-pipe.';
 import {ParseTemplatePipe} from './shared/pipes/parse-template/parse-template.pipe';
 import {DbService} from './shared/services/db/db.service';
@@ -69,10 +59,6 @@ export function init(injector: Injector) {
   };
 }
 
-export function roleFactory(state: StateService) {
-  return state.role;
-}
-
 const PAGES = [
   ModuleInstanceComponent,
   InstanceSingleComponent,
@@ -80,26 +66,15 @@ const PAGES = [
   DashboardComponent
 ];
 
-const COMPONENTS = [
-  SearchInputComponent,
-  ImportComponent
-];
+const COMPONENTS = [];
 
 const ENTRY_COMPONENTS = [
-  ExportComponent,
-  SortDialogComponent,
-  FilterDialogComponent,
-  FilterTagsComponent,
-  LayoutSettingsComponent,
   ConfirmationComponent
 ];
 
-const DIRECTIVES = [
-  ForceDisableDirective
-];
+const DIRECTIVES = [];
 
 const PIPES = [
-  ColumnPipe,
   MathPipe,
   ParseTemplatePipe
 ];
@@ -124,7 +99,6 @@ const PIPES = [
      * if necessary
      */
     FirebaseModule.forRoot(),
-    FormBuilderModule,
 
     BrowserModule,
     AppRoutingModule,
@@ -183,27 +157,6 @@ const PIPES = [
     {
       provide: FUNCTIONS_REGION,
       useValue: 'us-central1'
-    },
-
-    /**
-     * FormBuilderModule Requirements
-     */
-    {
-      provide: StorageService,
-      useExisting: AngularFireStorage
-    },
-    {
-      provide: FDbService,
-      useExisting: DbService
-    },
-    {
-      provide: ROLE,
-      useFactory: roleFactory,
-      deps: [StateService]
-    },
-    {
-      provide: STORAGE_URL,
-      useValue: 'https://firebasestorage.googleapis.com/v0/b/' + ENV_CONFIG.firebase.storageBucket
     }
   ],
   bootstrap: [AppComponent]

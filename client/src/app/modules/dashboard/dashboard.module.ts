@@ -4,13 +4,9 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule, Routes} from '@angular/router';
 import {TranslocoModule} from '@ngneat/transloco';
-import {CanReadModuleGuard} from '../../shared/guards/can-read-module/can-read-module.guard';
 import {ActiveLinkDirective} from './components/active-link/active-link.directive';
 import {LayoutComponent} from './components/layout/layout.component';
 import {DashboardComponent} from './dashboard.component';
-import {ModuleInstanceComponent} from './modules/module-instance/module-instance.component';
-import {InstanceOverviewComponent} from './modules/module-instance/pages/instance-overview/instance-overview.component';
-import {InstanceSingleComponent} from './modules/module-instance/pages/instance-single/instance-single.component';
 
 const routes: Routes = [{
   path: '',
@@ -33,21 +29,10 @@ const routes: Routes = [{
           .then(m => m.ModuleDefinitionModule)
     },
     {
-      path: 'm/:id',
-      component: ModuleInstanceComponent,
-      canActivate: [
-        CanReadModuleGuard
-      ],
-      children: [
-        {
-          path: 'overview',
-          component: InstanceOverviewComponent
-        },
-        {
-          path: 'single/:id',
-          component: InstanceSingleComponent
-        }
-      ]
+      path: 'm',
+      loadChildren: () =>
+        import('./modules/module-instance/module-instance.module')
+          .then(m => m.ModuleInstanceModule)
     },
     {
       path: '',

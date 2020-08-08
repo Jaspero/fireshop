@@ -9,7 +9,7 @@ import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {saveAs} from 'file-saver';
 import {BehaviorSubject, combineLatest, forkJoin, merge, Observable} from 'rxjs';
 import {map, shareReplay, startWith, switchMap, take, tap} from 'rxjs/operators';
-import {LayoutSettingsComponent} from '../../../../../../shared/components/layout-settings/layout-settings.component';
+import {LayoutSettingsComponent} from '../../components/layout-settings/layout-settings.component';
 import {ExampleType} from '../../../../../../shared/enums/example-type.enum';
 import {Example} from '../../../../../../shared/interfaces/example.interface';
 import {Module} from '../../../../../../shared/interfaces/module.interface';
