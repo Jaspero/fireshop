@@ -40,7 +40,7 @@
   </mat-toolbar>
 
   <ng-container *ngSwitchCase="viewState.Edit">
-    <section class="grid" *ngIf="!data.directLink && (!data.hideDuplicate || !data.hideNavigation)">
+    <section class="grid" *ngIf="!data.directLink && !data.hideDuplicate">
       <div class="col-12">
         <mat-card>
           <div class="flex ai-center">
@@ -50,14 +50,6 @@
                 <span>&nbsp;{{'GENERAL.DUPLICATE' | transloco}}</span>
               </button>
               <div class="flex-1"></div>
-            </ng-container>
-            <ng-container *ngIf="!data.hideNavigation">
-              <button mat-icon-button [attr.aria-label]="'GENERAL.PREVIOUS' | transloco" [matTooltip]="'GENERAL.PREVIOUS' | transloco" (click)="move(false, formBuilderComponent?.form)">
-                <mat-icon>arrow_back</mat-icon>
-              </button>
-              <button mat-icon-button [attr.aria-label]="'GENERAL.NEXT' | transloco" [matTooltip]="'GENERAL.NEXT' | transloco" (click)="move(true, formBuilderComponent?.form)">
-                <mat-icon>arrow_forward</mat-icon>
-              </button>
             </ng-container>
           </div>
         </mat-card>

@@ -35,7 +35,7 @@ export class ResetPasswordComponent implements OnInit {
         repeatPassword: ['', Validators.required]
       },
       {
-        validator: RepeatPasswordValidator('Passwords not matching')
+        validator: RepeatPasswordValidator('')
       }
     );
   }

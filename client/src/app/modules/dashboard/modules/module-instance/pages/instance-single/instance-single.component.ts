@@ -16,7 +16,6 @@ import {InstanceOverviewContextService} from '../../services/instance-overview-c
 
 interface Instance {
   hideDuplicate: boolean;
-  hideNavigation: boolean;
   module: {
     id: string;
     name: string;
@@ -91,7 +90,6 @@ export class InstanceSingleComponent implements OnInit {
 
             let editTitleKey = 'id';
             let hideDuplicate = false;
-            let hideNavigation = false;
 
             const formatOn: any = {};
 
@@ -103,10 +101,6 @@ export class InstanceSingleComponent implements OnInit {
               if (module.layout.instance) {
                 if (module.layout.instance.hideDuplicate) {
                   hideDuplicate = module.layout.instance.hideDuplicate.includes(this.state.role);
-                }
-
-                if (module.layout.instance.hideNavigation) {
-                  hideNavigation = module.layout.instance.hideNavigation.includes(this.state.role);
                 }
 
                 if (module.layout.instance.formatOnLoad) {
@@ -131,7 +125,6 @@ export class InstanceSingleComponent implements OnInit {
 
             return {
               hideDuplicate,
-              hideNavigation,
               module: {
                 id: module.id,
                 name: module.name,
@@ -207,6 +200,4 @@ export class InstanceSingleComponent implements OnInit {
       relativeTo: this.activatedRoute
     });
   }
-
-  move(forward: boolean, form: FormGroup) {}
 }
