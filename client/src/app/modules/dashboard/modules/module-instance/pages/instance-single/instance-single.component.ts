@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Definitions, FormBuilderComponent, safeEval, Segment, State} from '@jaspero/form-builder';
 import {JSONSchema7} from 'json-schema';
