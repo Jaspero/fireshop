@@ -1,4 +1,3 @@
-import {OverlayModule} from '@angular/cdk/overlay';
 import {HttpClientModule} from '@angular/common/http';
 import {APP_INITIALIZER, Injector, NgModule} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
@@ -6,7 +5,6 @@ import {MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FirebaseModule} from '../../integrations/firebase/fb.module';
@@ -49,8 +47,6 @@ const PIPES = [
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    OverlayModule,
-    MatTooltipModule,
 
     // Material
     MatProgressBarModule,
