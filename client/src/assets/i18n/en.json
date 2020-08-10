@@ -77,6 +77,7 @@
   "INSTANCE_OVERVIEW": {
     "REMOVE_ITEMS": "Remove {{value}} items",
     "REMOVE_ONE": "This action will remove {{value}} permanently",
+    "REMOVE_ITEMS_WARNING": "This action will remove all of the following documents:",
     "NO_ITEMS": "No {{value}} yet.",
     "LOAD_MORE": "More...",
     "APPLY": "Apply",

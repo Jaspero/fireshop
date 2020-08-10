@@ -52,6 +52,18 @@
               {
                 "input": "node_modules/document-register-element/build/document-register-element.js"
               }
+            ],
+            "allowedCommonJsDependencies": [
+              "firebase/app",
+              "@firebase/app",
+              "@firebase/util",
+              "@firebase/component",
+              "@firebase/performance",
+              "@firebase/functions",
+              "@firebase/firestore",
+              "file-saver",
+              "jsoneditor",
+              "flat"
             ]
           },
           "configurations": {

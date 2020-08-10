@@ -123,7 +123,7 @@ export class InstanceOverviewContextService {
       {
         description: this.selection.selected.reduce((acc, cur) =>
           acc + cur + '\n',
-          `This action will remove all of the following documents:\n`
+          `${this.transloco.translate('INSTANCE_OVERVIEW.REMOVE_ITEMS_WARNING')}\n`
         )
       }
     );

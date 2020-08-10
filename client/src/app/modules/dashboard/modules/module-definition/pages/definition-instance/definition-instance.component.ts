@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {BehaviorSubject, combineLatest, forkJoin, Observable, of} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../../../../../integrations/firebase/firestore-collection.enum';
 import {Color} from '../../../../../../shared/enums/color.enum';
@@ -194,8 +194,6 @@ export class DefinitionInstanceComponent implements OnInit {
       `${form.get('id').value}--copy`
     ]);
   }
-
-  move(forward: boolean, form: FormGroup) {}
 
   openSnippetSelection(form) {
     this.dialog.open(SnippetDialogComponent, {
