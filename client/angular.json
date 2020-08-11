@@ -63,7 +63,18 @@
               "@firebase/firestore",
               "file-saver",
               "jsoneditor",
-              "flat"
+              "flat",
+              "json-pointer",
+
+              "tinymce/plugins/autolink",
+              "tinymce/plugins/lists",
+              "tinymce/plugins/fullscreen",
+              "tinymce/plugins/imagetools",
+              "tinymce/plugins/image",
+              "tinymce/plugins/wordcount",
+              "tinymce/plugins/link",
+              "tinymce/plugins/print",
+              "tinymce/plugins/code"
             ]
           },
           "configurations": {
