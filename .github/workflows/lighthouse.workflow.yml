@@ -10,12 +10,16 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10.x
-      - name: npm install, build
+      - name: Install Dependencies
         run: |
-          cd client
-          npm install
-          npm run build
-      - name: run Lighthouse CI
+          npm --prefix client ci
+      - name: Build
+          run: |
+            echo export const ENV_CONFIG=$PUBLIC_CONFIG > client/src/env-config.ts
+            npm run build:cms
+          env:
+            PUBLIC_CONFIG: ${{ secrets.PUBLIC_CONFIG }}
+      - name: Run Lighthouse CI
         run: |
           cd client
           npm install -g @lhci/cli@0.4.x
