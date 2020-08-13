@@ -4,9 +4,7 @@ import {of} from 'rxjs';
 import {InstanceOverviewContextService} from '../../services/instance-overview-context.service';
 import {StateService} from '../../../../../../shared/services/state/state.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CustomModuleGuard implements CanActivate {
   constructor(
     private state: StateService,

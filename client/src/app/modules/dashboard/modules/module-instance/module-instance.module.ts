@@ -35,6 +35,7 @@ import {FilterTagsComponent} from './components/filter-tags/filter-tags.componen
 import {ImportComponent} from './components/import/import.component';
 import {SortDialogComponent} from './components/sort-dialog/sort-dialog.component';
 import {ForceDisableDirective} from './directives/force-disable/force-disable.directive';
+import {CustomModuleGuard} from './guards/custom-module/custom-module.guard';
 import {ModuleInstanceComponent} from './module-instance.component';
 import {InstanceOverviewComponent} from './pages/instance-overview/instance-overview.component';
 import {InstanceSingleComponent} from './pages/instance-single/instance-single.component';
@@ -92,7 +93,8 @@ const routes: Routes = [
     ...ELEMENTS
   ],
   providers: [
-    InstanceOverviewContextService
+    InstanceOverviewContextService,
+    CustomModuleGuard
   ],
   imports: [
     CommonModule,
