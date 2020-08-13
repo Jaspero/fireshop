@@ -21,6 +21,5 @@ jobs:
           PUBLIC_CONFIG: ${{ secrets.PUBLIC_CONFIG }}
       - name: Run Lighthouse CI
         run: |
-          cd client
           npm install -g @lhci/cli@0.4.x
-          lhci autorun
+          lhci autorun --config=./client/lighthouserc.js
