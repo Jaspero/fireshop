@@ -26,7 +26,3 @@ jobs:
         with:
           uploadArtifacts: true
           configPath: ./client/lighthouserc.js
-      - name: Run Lighthouse CI
-        run: |
-          npm install -g @lhci/cli@0.4.x
-          lhci autorun --config=./client/lighthouserc.js
