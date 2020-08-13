@@ -1,7 +1,11 @@
 # https://github.com/marketplace/actions/lighthouse-ci-action
 
 name: Lighthouse CI
-on: [push]
+on:
+  push:
+    branches:
+      - master
+      - dev
 jobs:
   lhci:
     name: Lighthouse
