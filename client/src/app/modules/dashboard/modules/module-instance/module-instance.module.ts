@@ -2,7 +2,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {PortalModule} from '@angular/cdk/portal';
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
-import {NgModule} from '@angular/core';
+import {Injector, NgModule} from '@angular/core';
+import {createCustomElement} from '@angular/elements';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {MatButtonModule} from '@angular/material/button';
@@ -25,10 +26,11 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule, Routes} from '@angular/router';
 import {LoadClickModule, SanitizeModule} from '@jaspero/ng-helpers';
 import {TranslocoModule} from '@ngneat/transloco';
-import {ELEMENTS} from '../../../../elements/elements.const';
+import {ELEMENT_SELECTOR, ELEMENTS} from '../../../../elements/elements.const';
 import {CanReadModuleGuard} from '../../../../shared/guards/can-read-module/can-read-module.guard';
 import {FormBuilderSharedModule} from '../../../../shared/modules/fb/form-builder-shared.module';
 import {SearchInputModule} from '../../../../shared/modules/search-input/search-input.module';
+import {StateService} from '../../../../shared/services/state/state.service';
 import {ExportComponent} from './components/export/export.component';
 import {FilterDialogComponent} from './components/filter-dialog/filter-dialog.component';
 import {FilterTagsComponent} from './components/filter-tags/filter-tags.component';
@@ -146,4 +148,20 @@ const routes: Routes = [
     TranslocoModule
   ]
 })
-export class ModuleInstanceModule { }
+export class ModuleInstanceModule {
+  constructor(
+    private injector: Injector,
+    private state: StateService,
+  ) {
+    /**
+     * Register custom elements
+     */
+    if (!this.state.elementsRegistered) {
+      ELEMENT_SELECTOR.forEach(({component, selector}) => {
+        const element = createCustomElement(component, {injector});
+        customElements.define(selector, element);
+      });
+      this.state.elementsRegistered = true;
+    }
+  }
+}

@@ -1,8 +1,6 @@
-import {ChangeDetectionStrategy, Component, Injector, OnInit} from '@angular/core';
-import {createCustomElement} from '@angular/elements';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {map, shareReplay, switchMap, take} from 'rxjs/operators';
-import {ELEMENT_SELECTOR} from '../../../../elements/elements.const';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {InstanceOverviewContextService} from './services/instance-overview-context.service';
 
@@ -16,21 +14,8 @@ export class ModuleInstanceComponent implements OnInit {
   constructor(
     private state: StateService,
     private activatedRoute: ActivatedRoute,
-    private ioc: InstanceOverviewContextService,
-    private injector: Injector
-  ) {
-
-    /**
-     * Register custom elements
-     */
-    if (!this.state.elementsRegistered) {
-      ELEMENT_SELECTOR.forEach(({component, selector}) => {
-        const element = createCustomElement(component, {injector});
-        customElements.define(selector, element);
-      });
-      this.state.elementsRegistered = true;
-    }
-  }
+    private ioc: InstanceOverviewContextService
+  ) {}
 
   ngOnInit() {
     this.ioc.module$ = this.activatedRoute.params.pipe(
