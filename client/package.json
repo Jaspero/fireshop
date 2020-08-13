@@ -35,7 +35,7 @@
     "jsoneditor": "8.6.3",
     "lodash-es": "4.17.15",
     "rxjs": "7.0.0-alpha.1",
-    "tinymce": "5.2.2",
+    "tinymce": "5.4.0",
     "tslib": "2.0.0",
     "zone.js": "0.10.3"
   },
