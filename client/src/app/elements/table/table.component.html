@@ -165,10 +165,10 @@
                       <hr>
                     </ng-container>
 
-                    <button *ngIf="!data.hideEdit" mat-menu-item [routerLink]="['/m', data.moduleId, 'single', element.id]">
+                    <a *ngIf="!data.hideEdit" mat-menu-item routerLink="/m/{{data.moduleId}}/single/{{element.id}}">
                       <mat-icon>edit</mat-icon>
                       <span>{{'GENERAL.EDIT' | transloco}}</span>
-                    </button>
+                    </a>
                     <button *ngIf="!data.hideDelete" mat-menu-item [fDisable]="data.authorization" (click)="ioc.deleteOne(data.moduleId, element)">
                       <mat-icon>delete_forever</mat-icon>
                       <span>{{'GENERAL.DELETE' | transloco}}</span>
@@ -186,9 +186,9 @@
         <ng-container *ngIf="ioc.emptyState$ | async; else hasContent;">
           <mat-toolbar class="jc-center" *ngIf="!data.hideAdd">
             <p class="m-r-s">{{'INSTANCE_OVERVIEW.NO_ITEMS' | transloco:{value: data.name} }}</p>
-            <button mat-button color="primary" [routerLink]="['/m', data.moduleId, 'single', 'new']">
+            <a mat-button color="primary" routerLink="/m/{{data.moduleId}}/single/new">
               {{'GENERAL.ADD' | transloco}} {{data.name}}
-            </button>
+            </a>
           </mat-toolbar>
         </ng-container>
 
