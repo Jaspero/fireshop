@@ -413,10 +413,25 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
               }]
             )
               .pipe(
-                map(docs => docs[0] ?
-                  (docs[0].data())[column.populate.displayKey || 'name'] || column.populate.fallback || '-' :
-                  column.populate.fallback || '-'
-                ),
+                map(docs => {
+
+                  if (docs[0]) {
+                    const populated: any = docs[0].data();
+
+                    if (populated && populated.hasOwnProperty(column.populate.displayKey || 'name')) {
+                      return this.ioc.columnPipe.transform(
+                        populated[column.populate.displayKey || 'name'],
+                        column.pipe,
+                        column.pipeArguments,
+                        {rowData, populated}
+                      )
+                    } else {
+                      return column.populate.fallback || '-';
+                    }
+                  } else {
+                    return column.populate.fallback || '-';
+                  }
+                }),
                 shareReplay(1)
               )
           } else {
@@ -425,7 +440,18 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
               id
             )
               .pipe(
-                map(it => it[column.populate.displayKey || 'name'] || column.populate.fallback || '-'),
+                map(populated => {
+                  if (populated.hasOwnProperty(column.populate.displayKey || 'name')) {
+                    return this.ioc.columnPipe.transform(
+                      populated[column.populate.displayKey || 'name'],
+                      column.pipe,
+                      column.pipeArguments,
+                      {rowData, populated}
+                    )
+                  } else {
+                    return column.populate.fallback || '-';
+                  }
+                }),
                 shareReplay(1)
               )
           }

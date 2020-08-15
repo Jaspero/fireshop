@@ -74,7 +74,9 @@
               "tinymce/plugins/wordcount",
               "tinymce/plugins/link",
               "tinymce/plugins/print",
-              "tinymce/plugins/code"
+              "tinymce/plugins/code",
+              "tinymce/plugins/table",
+              "tinymce/plugins/advlist"
             ]
           },
           "configurations": {
