@@ -246,8 +246,8 @@ export class InstanceOverviewComponent implements OnInit, AfterViewInit {
                 startWith({}),
                 map(() =>
                   snapshots.map(it => ({
-                    id: it.id,
-                    ...it.data()
+                    ...it.data(),
+                    id: it.id
                   }))
                 )
               );
