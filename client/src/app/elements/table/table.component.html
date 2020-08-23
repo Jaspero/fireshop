@@ -160,7 +160,9 @@
                 <mat-menu #menu="matMenu">
                   <ng-template matMenuContent>
                     <ng-container *ngIf="data.actions && data.actions.length">
-                      <div mat-menu-item *ngFor="let action of data.actions" [innerHTML]="action(element) | jpSanitize"></div>
+                      <ng-container *ngFor="let action of data.actions">
+                        <div mat-menu-item *ngIf="!action.critera || action.critera(element)" [innerHTML]="action.value(element) | jpSanitize"></div>
+                      </ng-container>
 
                       <hr>
                     </ng-container>

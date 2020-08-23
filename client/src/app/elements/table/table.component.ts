@@ -52,7 +52,10 @@ interface TableData {
   hideDelete?: boolean;
   hideExport?: boolean;
   hideImport?: boolean;
-  actions?: Array<(it: any) => string>;
+  actions?: Array<(it: any) => {
+    criteria?: (d: any) => boolean;
+    value: (d: any) => string;
+  }>;
 }
 
 @UntilDestroy()
@@ -193,10 +196,15 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
             if (data.layout.table.actions) {
               hide.actions = data.layout.table.actions.reduce((acc, cur) => {
                 if (!cur.authorization || cur.authorization.includes(this.state.role)) {
+
+                  const criteria = cur.criteria && safeEval(cur.criteria);
                   const parsed = safeEval(cur.value);
 
                   if (parsed) {
-                    acc.push(parsed);
+                    acc.push({
+                      value: parsed,
+                      ...criteria && {criteria}
+                    });
                   }
                 }
 

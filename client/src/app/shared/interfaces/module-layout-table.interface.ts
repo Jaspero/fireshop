@@ -58,6 +58,12 @@ export interface ModuleLayoutTableAction {
    */
   value: string;
   authorization?: string[];
+
+  /**
+   * Doesn't render the action if the criteria isn't satisfied
+   * row => boolean
+   */
+  criteria?: string;
 }
 
 export interface ModuleLayoutTable {
