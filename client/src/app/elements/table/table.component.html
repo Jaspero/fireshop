@@ -13,7 +13,7 @@
 </ng-template>
 
 <ng-template #populateColumn let-value="value">
-  <div class="column-inner">{{value | async}}</div>
+  <div class="column-inner" [innerHTML]="value | async"></div>
 </ng-template>
 
 <ng-template #subHeaderTemplate>
