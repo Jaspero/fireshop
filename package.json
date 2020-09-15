@@ -9,7 +9,8 @@
     "lint:client": "npm --prefix client run lint",
     "lint:functions": "npm --prefix functions run lint",
     "lint": "npm run lint:client && npm run lint:functions",
-    "deploy": "firebase deploy --only storage,firestore,functions:cms,hosting"
+    "deploy": "firebase deploy --only storage,firestore,functions:cms,hosting",
+    "semantic-release": "semantic-release"
   },
   "author": {
     "name": "Jaspero Ltd",
@@ -51,8 +52,20 @@
     ]
   },
   "devDependencies": {
+    "@semantic-release/changelog": "5.0.1",
+    "@semantic-release/git": "9.0.0",
     "husky": "3.0.9",
     "lint-staged": "10.0.0-0",
-    "prettier": "1.18.2"
+    "prettier": "1.18.2",
+    "semantic-release": "17.1.1"
+  },
+  "release": {
+    "pkgRoot": "/",
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/git"
+    ]
   }
 }
