@@ -24,9 +24,9 @@ import {Parser} from '../../utils/parser';
 export class InstanceOverviewComponent extends RxDestroy
   implements OnInit, AfterViewInit {
   constructor(
+    public ioc: InstanceOverviewContextService,
     private dbService: DbService,
     private state: StateService,
-    private ioc: InstanceOverviewContextService,
     private cdr: ChangeDetectorRef
   ) {
     super();
