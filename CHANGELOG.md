@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/jaspero/jms/compare/v1.0.0...v1.0.1) (2020-09-19)
+
+
+### Bug Fixes
+
+* change private to public of ioc property ([6ca3068](https://github.com/jaspero/jms/commit/6ca3068d808627f6e820022cb5bb44a657a0301f))
+
 # 1.0.0 (2020-09-15)
 
 ### Features
