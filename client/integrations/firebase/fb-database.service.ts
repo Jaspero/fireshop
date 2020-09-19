@@ -1,10 +1,8 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {AngularFirestore, CollectionReference} from '@angular/fire/firestore';
-import {AngularFireFunctions} from '@angular/fire/functions';
-// @ts-ignore
-import * as nanoid from 'nanoid';
+import {app} from 'firebase/app';
 import {from, Observable} from 'rxjs';
-import {map, take} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {ExampleType} from '../../src/app/shared/enums/example-type.enum';
 import {FilterMethod} from '../../src/app/shared/enums/filter-method.enum';
 import {Example} from '../../src/app/shared/interfaces/example.interface';
@@ -13,14 +11,16 @@ import {Settings} from '../../src/app/shared/interfaces/settings.interface';
 import {WhereFilter} from '../../src/app/shared/interfaces/where-filter.interface';
 import {DbService} from '../../src/app/shared/services/db/db.service';
 import {FirestoreCollection} from './firestore-collection.enum';
+import {FUNCTIONS_REGION} from './functions-region.token';
 
 type FilterFunction = (ref: CollectionReference) => CollectionReference;
 
 @Injectable()
 export class FbDatabaseService extends DbService {
   constructor(
-    private afs: AngularFirestore,
-    private aff: AngularFireFunctions
+    @Inject(FUNCTIONS_REGION)
+    private region: string,
+    private afs: AngularFirestore
   ) {
     super();
   }
@@ -45,7 +45,7 @@ export class FbDatabaseService extends DbService {
     return from(
       this.afs
         .collection(FirestoreCollection.Modules)
-        .doc(id || nanoid())
+        .doc(id || this.afs.createId())
         .set(data)
     );
   }
@@ -60,16 +60,20 @@ export class FbDatabaseService extends DbService {
   }
 
   getExamples(type: ExampleType): Observable<{data: Example[]}> {
-    const func = this.aff.functions.httpsCallable('cms-getExamples');
-    return from(func(type)) as any;
+    return this.callFunction('cms-getExamples', type);
   }
 
   getUserSettings() {
     return this.afs
       .collection(FirestoreCollection.Settings)
       .doc<Settings>('user')
-      .valueChanges()
-      .pipe(take(1));
+      .get()
+      .pipe(
+        map(it => ({
+          id: it.id,
+          ...it.data() as Settings
+        }))
+      )
   }
 
   updateUserSettings(settings: Partial<Settings>) {
@@ -86,14 +90,14 @@ export class FbDatabaseService extends DbService {
     pageSize,
     sort?,
     cursor?,
-    filters?
+    filters?,
+    source?
   ) {
     return this.collection(moduleId, pageSize, sort, cursor, this.filterMethod(filters))
       .get({
-        source: 'server'
+        source: source || 'default'
       })
       .pipe(
-        take(1),
         map(res =>
           res.docs
         )
@@ -125,25 +129,40 @@ export class FbDatabaseService extends DbService {
 
     const pipes = [];
 
-    if (!stream) {
-      pipes.push(take(1));
-    }
+    if (stream) {
 
-    pipes.push(
-      map((value: any) => ({
-        ...value,
-        id: documentId
-      }))
-    );
-
-    return this.afs
-      .collection(moduleId)
-      .doc<T>(documentId)
-      .valueChanges()
-      .pipe(
-        // @ts-ignore
-        ...pipes
+      pipes.push(
+        map((value: any) => ({
+          ...value,
+          id: documentId
+        }))
       );
+
+      return this.afs
+        .collection(moduleId)
+        .doc<T>(documentId)
+        .valueChanges()
+        .pipe(
+          // @ts-ignore
+          ...pipes
+        );
+    } else {
+      pipes.push(
+        map((value: any) => ({
+          id: documentId,
+          ...value.data()
+        }))
+      );
+
+      return this.afs
+        .collection(moduleId)
+        .doc<T>(documentId)
+        .get()
+        .pipe(
+          // @ts-ignore
+          ...pipes
+        );
+    }
   }
 
   getDocumentsSimple(moduleId, orderBy?, filter?) {
@@ -159,8 +178,15 @@ export class FbDatabaseService extends DbService {
 
         return ref;
       })
-      .valueChanges({idField: 'id'})
-      .pipe(take(1));
+      .get()
+      .pipe(
+        map(data =>
+          data.docs.map(it => ({
+            id: it.id,
+            ...it.data()
+          }))
+        )
+      );
   }
 
   setDocument(moduleId, documentId, data, options) {
@@ -182,13 +208,20 @@ export class FbDatabaseService extends DbService {
   }
 
   createUserAccount(email: string, password: string) {
-    const func = this.aff.functions.httpsCallable('cms-createUser');
-    return from(func({email, password})) as any;
+    return this.callFunction('cms-createUser', {email, password}) as any;
   }
 
   removeUserAccount(id: string) {
-    const func = this.aff.functions.httpsCallable('cms-removeUser');
-    return from(func({id}));
+    return this.callFunction('cms-removeUser', {id});
+  }
+
+  callFunction(name: string, data) {
+    const func = app().functions(this.region).httpsCallable(name);
+    return from(func(data));
+  }
+
+  createId() {
+    return this.afs.createId();
   }
 
   private collection(

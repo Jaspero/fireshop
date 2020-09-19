@@ -17,7 +17,7 @@ enum Type {
 const app = express();
 app.use(CORS);
 
-app.post('/', CORS, authenticated, (req, res) => {
+app.post('/', authenticated(['admin']), (req, res) => {
   async function exec() {
     const {collection, type, ids} = req.body;
 
@@ -25,15 +25,15 @@ app.post('/', CORS, authenticated, (req, res) => {
       .firestore()
       .collection(collection)
       .get()).docs.reduce((acc: any[], doc: any) => {
-      if (!ids || !ids.includes(doc.id)) {
-        acc.push({
-          ...doc.data(),
-          id: doc.id
-        });
-      }
+        if (!ids || ids.includes(doc.id)) {
+          acc.push({
+            ...doc.data(),
+            id: doc.id
+          });
+        }
 
-      return acc;
-    }, []);
+        return acc;
+      }, []);
 
     if (!docs.length) {
       throw new Error('No data to export');

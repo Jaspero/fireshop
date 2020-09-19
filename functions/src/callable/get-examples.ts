@@ -5,7 +5,7 @@ import {join} from 'path';
 
 export const getExamples = functions.https.onCall(
   async (type: ExampleType, context) => {
-    if (!context.auth) {
+    if (!context.auth || !context.auth.token.role) {
       throw new functions.https.HttpsError(
         'failed-precondition',
         'The function must be called ' + 'while authenticated.'

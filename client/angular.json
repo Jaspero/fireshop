@@ -52,6 +52,32 @@
               {
                 "input": "node_modules/document-register-element/build/document-register-element.js"
               }
+            ],
+            "allowedCommonJsDependencies": [
+              "firebase/app",
+              "@firebase/auth",
+              "@firebase/app",
+              "@firebase/util",
+              "@firebase/component",
+              "@firebase/performance",
+              "@firebase/functions",
+              "@firebase/firestore",
+              "file-saver",
+              "jsoneditor",
+              "flat",
+              "json-pointer",
+
+              "tinymce/plugins/autolink",
+              "tinymce/plugins/lists",
+              "tinymce/plugins/fullscreen",
+              "tinymce/plugins/imagetools",
+              "tinymce/plugins/image",
+              "tinymce/plugins/wordcount",
+              "tinymce/plugins/link",
+              "tinymce/plugins/print",
+              "tinymce/plugins/code",
+              "tinymce/plugins/table",
+              "tinymce/plugins/advlist"
             ]
           },
           "configurations": {
@@ -139,5 +165,8 @@
       }
     }
   },
-  "defaultProject": "cms"
+  "defaultProject": "cms",
+  "cli": {
+    "analytics": false
+  }
 }

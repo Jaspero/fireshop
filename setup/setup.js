@@ -37,13 +37,13 @@ const COLLECTIONS = [
               children: [
                 {
                   icon: 'supervised_user_circle',
-                  label: 'Users',
+                  label: 'GENERAL.USERS',
                   type: 'link',
                   value: '/m/users/overview'
                 },
                 {
                   icon: 'vpn_key',
-                  label: 'Roles',
+                  label: 'GENERAL.ROLES',
                   type: 'link',
                   value: '/m/roles/overview'
                 }
@@ -108,6 +108,35 @@ const MODULES = [
       order: 0,
       editTitleKey: 'name',
       icon: 'supervised_user_circle',
+      filterModule: {
+        persist: true,
+        schema: {
+          properties: {
+            role: {
+              type: 'string'
+            }
+          }
+        },
+        definitions: {
+          role: {
+            label: 'Role',
+            component: {
+              type: 'select',
+              configuration: {
+                populate: {
+                  collection: 'roles'
+                }
+              }
+            }
+          }
+        },
+        segments: [{
+          type: 'empty',
+          fields: [
+            '/role'
+          ]
+        }]
+      },
       sort: {
         active: 'createdOn',
         direction: 'desc'
@@ -124,6 +153,7 @@ const MODULES = [
         }]
       },
       table: {
+        hideImport: true,
         tableColumns: [
           {
             key: '/createdOn',
@@ -144,11 +174,28 @@ const MODULES = [
             label: 'Role',
             control: true
           }
+        ],
+        actions: [
+          {
+            value: `it => '<jms-e-tpr data-email="' + it.data.email + '"></jms-e-tpr>'`
+          },
+          {
+            value: `it => '<jms-e-cp data-id="' + it.id + '"></jms-e-cp>'`
+          },
+          {
+            value: `it => '<jms-e-tus data-id="' + it.id + '"></jms-e-tus>'`
+          }
         ]
+      },
+      overview: {
+        toolbar: ['<jms-e-user-add></jms-e-user-add>']
       }
     },
     schema: {
       properties: {
+        id: {
+          type: 'string'
+        },
         name: {
           type: 'string',
         },
@@ -269,16 +316,22 @@ const MODULES = [
           configuration: {
             format: 'number'
           }
-        }
+        },
+        columnsDesktop: 4,
+        columnsMobile: 12
       },
       name: {
-        label: 'Name'
+        label: 'Name',
+        columnsDesktop: 4,
+        columnsMobile: 12
       },
       description: {
         label: 'Description',
         component: {
           type: 'textarea'
-        }
+        },
+        columnsDesktop: 4,
+        columnsMobile: 12
       }
     }
   }

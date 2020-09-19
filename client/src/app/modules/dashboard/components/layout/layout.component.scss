@@ -1,0 +1,466 @@
+@import "../../../../../scss/breakpoints";
+
+/**
+ * Dashboard layout
+ *
+ * Styles for:
+ *   - Dashboard navigation container,
+ *   - Various navigation items,
+ *   - Dashboard main content container.
+ *
+ *============================================================================*/
+
+
+
+/* Navigation container
+ *============================================================================*/
+
+.dashboard-nav {
+  position: fixed;
+  z-index: 3;
+  left: 0;
+  top: 0;
+  width: 256px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  background: var(--sidebar-theme);
+  color: var(--sidebar-primary);
+  box-shadow: 0 0 0 1px var(--sidebar-tertiary);
+
+  @media (max-width: $screen-m) {
+    width: 40px;
+    transition: .4s;
+
+    &.dashboard-nav-expanded {
+      width: 256px;
+    }
+  }
+}
+
+
+
+/* Navigation welcome section
+ *============================================================================*/
+
+.dashboard-nav-welcome {
+  background: var(--light-theme);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 128px;
+  min-height: 128px;
+  padding-left: 24px;
+  box-shadow: 0 0 0 1px var(--sidebar-tertiary);
+
+  @media (max-width: $screen-m) {
+    height: 64px;
+    min-height: 64px;
+    padding-left: 8px;
+  }
+
+  &-logo {
+    font-size: 28px;
+    @media (max-width: $screen-m) {
+      display: none;
+    }
+  }
+
+  &-menu {
+    display: none;
+    cursor: pointer;
+
+    @media (max-width: $screen-m) {
+      display: block;
+    }
+  }
+}
+
+
+
+/* Navigation scroll area
+ *============================================================================*/
+
+.dashboard-nav-scrollable {
+  height: calc(100vh - 128px - 30px); // - nav header - nav footer
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  @media (max-width: $screen-m) {
+    height: calc(100vh - 64px - 30px); // - nav header - nav footer
+  }
+}
+
+
+
+/* Navigation main items
+ *============================================================================*/
+
+.dashboard-nav-link {
+  position: relative;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  min-height: 48px;
+  padding-left: 24px;
+  border-right: 3px solid transparent;
+  border-bottom: 1px solid var(--sidebar-tertiary);
+  transition: .2s;
+
+  @media (max-width: $screen-m) {
+    padding-left: 8px;
+  }
+
+  &.active {
+    background: var(--sidebar-tertiary);
+    border-right: 3px solid var(--primary-theme);
+  }
+
+  &:hover {
+    background: var(--sidebar-tertiary);
+  }
+
+  &-icon {
+    min-width: 24px;
+  }
+
+  &-text {
+    margin-left: 16px;
+  }
+
+  &-tooltip {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    @media (max-width: $screen-m) {
+      display: block;
+
+      .dashboard-nav-expanded & {
+        display: none;
+      }
+    }
+  }
+}
+
+.dashboard-nav-empty {
+  position: relative;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  min-height: 48px;
+  padding-left: 24px;
+  border-right: 3px solid transparent;
+  border-bottom: 1px solid var(--sidebar-tertiary);
+  transition: .2s;
+
+  @media (max-width: $screen-m) {
+    padding-left: 8px;
+  }
+
+  &-icon {
+    min-width: 24px;
+  }
+
+  &-text {
+    margin-left: 16px;
+  }
+
+  &-tooltip {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    @media (max-width: $screen-m) {
+      display: block;
+
+      .dashboard-nav-expanded & {
+        display: none;
+      }
+    }
+  }
+}
+
+.dashboard-nav-expandable {
+  border-bottom: 1px solid var(--sidebar-tertiary);
+
+  &.active > .dashboard-nav-expandable-item {
+    height: 32px;
+    min-height: 32px;
+    opacity: 1;
+  }
+
+  &.active > .dashboard-nav-expandable-label {
+    color: var(--primary-theme);
+  }
+
+  &-label {
+    position: relative;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 48px;
+    min-height: 48px;
+    padding-left: 24px;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: inherit;
+    border-right: 3px solid transparent;
+    transition: .2s;
+
+    @media (max-width: $screen-m) {
+      padding-left: 8px;
+    }
+
+    &-icon {
+      min-width: 24px;
+    }
+
+    &-text {
+      margin-left: 16px;
+    }
+
+    &-tooltip {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      @media (max-width: $screen-m) {
+        display: block;
+
+        .dashboard-nav-expanded & {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &-item {
+    position: relative;
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    padding-left: 24px;
+    border-right: 3px solid transparent;
+    overflow: hidden;
+    transition: .2s;
+    height: 0;
+    min-height: 0;
+    opacity: 0;
+
+    @media (max-width: $screen-m) {
+      padding-left: 8px;
+    }
+
+    &.active {
+      background: var(--sidebar-tertiary);
+      border-right: 3px solid var(--primary-theme);
+    }
+
+    &:hover {
+      background: var(--sidebar-tertiary);
+    }
+
+    &-icon {
+      min-width: 24px;
+    }
+
+    &-text {
+      margin-left: 16px;
+    }
+
+    &-tooltip {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      @media (max-width: $screen-m) {
+        display: block;
+
+        .dashboard-nav-expanded & {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+.dashboard-nav-expanded {
+  border-bottom: 1px solid var(--sidebar-tertiary);
+
+  &-label {
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    height: 48px;
+    min-height: 48px;
+    padding-left: 24px;
+    border-right: 3px solid transparent;
+    transition: .2s;
+
+    &.active {
+      background: var(--sidebar-tertiary);
+      border-right: 3px solid var(--primary-theme);
+    }
+
+    @media (max-width: $screen-m) {
+      padding-left: 8px;
+    }
+
+    &-icon {
+      min-width: 24px;
+    }
+
+    &-text {
+      margin-left: 16px;
+    }
+  }
+
+  &-item {
+    position: relative;
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    height: 32px;
+    min-height: 32px;
+    padding-left: 24px;
+    border-right: 3px solid transparent;
+    transition: .2s;
+
+    @media (max-width: $screen-m) {
+      padding-left: 8px;
+    }
+
+    &.active {
+      background: var(--sidebar-tertiary);
+      border-right: 3px solid var(--primary-theme);
+    }
+
+    &:hover {
+      background: var(--sidebar-tertiary);
+    }
+
+    &-icon {
+      min-width: 24px;
+    }
+
+    &-text {
+      margin-left: 16px;
+    }
+
+    &-tooltip {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      @media (max-width: $screen-m) {
+        display: block;
+
+        .dashboard-nav-expanded & {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+
+
+/* Navigation footer items
+ *============================================================================*/
+
+.dashboard-nav-footer {
+  position: relative;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  height: 30px;
+  min-height: 30px;
+  padding-left: 24px;
+  box-shadow: 0 0 0 1px var(--sidebar-tertiary);
+  background: var(--sidebar-theme);
+  color: var(--sidebar-secondary);
+  transition: .2s;
+
+  &.inactive {
+    pointer-events: none;
+  }
+
+  @media (max-width: $screen-m) {
+    padding-left: 8px;
+  }
+
+  &:hover {
+    background: var(--sidebar-tertiary);
+  }
+
+  &-icon {
+    min-width: 24px;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  &-text {
+    font-size: .85em;
+    margin-left: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &-tooltip {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    @media (max-width: $screen-m) {
+      display: block;
+
+      .dashboard-nav-expanded & {
+        display: none;
+      }
+    }
+  }
+}
+
+
+
+/* Dashboard main content container
+ *============================================================================*/
+
+.dashboard-main {
+  padding-left: 256px;
+
+  @media (max-width: $screen-m) {
+    padding-left: 40px;
+  }
+}

@@ -1,0 +1,14 @@
+<h4 mat-dialog-title>Filter</h4>
+<mat-dialog-content>
+  <fb-form-builder #cForm [data]="data"></fb-form-builder>
+</mat-dialog-content>
+<mat-dialog-actions class="jc-end">
+  <ng-container *ngIf="data.clearFilters">
+    <button type="button" mat-raised-button (click)="apply(cForm.form, cForm.parser, data.clearFilters)">
+      {{data.clearFiltersLabel || 'Clear'}}
+    </button>
+  </ng-container>
+  <button type="submit" mat-raised-button color="primary" (click)="apply(cForm.form, cForm.parser)">
+    {{'INSTANCE_OVERVIEW.APPLY' | transloco}}
+  </button>
+</mat-dialog-actions>

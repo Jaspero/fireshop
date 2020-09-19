@@ -7,12 +7,13 @@ import * as admin from 'firebase-admin';
 import nanoid = require('nanoid');
 import {constants} from 'http2';
 import {CORS} from '../consts/cors-whitelist.const';
+import {safeEval} from '../utils/safe-eval';
 import {authenticated} from './middlewares/authenticated';
 
 const app = express();
 app.use(CORS);
 
-app.post('/', authenticated, (req, res) => {
+app.post('/', authenticated(['admin']), (req, res) => {
   const ajvInstance = new ajv();
   const busboy = new Busboy({headers: req.headers});
   const parsedData: any = {};
@@ -36,6 +37,7 @@ app.post('/', authenticated, (req, res) => {
     async function exec() {
       const validator = ajvInstance.compile(JSON.parse(parsedData.schema));
       const type = parsedData.type || 'csv';
+      const afs = admin.firestore();
 
       let jsonObj: any;
 
@@ -50,6 +52,12 @@ app.post('/', authenticated, (req, res) => {
           break;
       }
 
+      let rowFunction: any;
+
+      if (parsedData['importModule-rowFunction']) {
+        rowFunction = safeEval(parsedData['importModule-rowFunction']);
+      }
+
       const {errors, created} = jsonObj.reduce(
         (acc: any, cur: any, index: number) => {
           validator(cur);
@@ -57,14 +65,30 @@ app.post('/', authenticated, (req, res) => {
           if (validator.errors) {
             acc.errors.push({index, errors: validator.errors});
           } else {
-            const {id, ...saveData} = cur;
-            acc.created.push(
-              admin
-                .firestore()
-                .collection(parsedData.collection)
-                .doc(id || nanoid())
-                .set(saveData)
-            );
+            // tslint:disable-next-line:prefer-const
+            let {id, ...saveData} = cur;
+
+            if (!id) {
+              id = nanoid.nanoid();
+            }
+
+            if (rowFunction) {
+              acc.created.push(async () => {
+                const sd = await rowFunction(saveData, afs);
+
+                return afs
+                  .collection(parsedData.collection)
+                  .doc(id)
+                  .set(sd);
+              });
+            } else {
+              acc.created.push(() =>
+                afs
+                  .collection(parsedData.collection)
+                  .doc(id)
+                  .set(saveData)
+              );
+            }
           }
 
           return acc;
@@ -76,7 +100,7 @@ app.post('/', authenticated, (req, res) => {
       );
 
       if (created.length) {
-        await Promise.all(created);
+        await Promise.all(created.map((it: any) => it()));
       }
 
       return {

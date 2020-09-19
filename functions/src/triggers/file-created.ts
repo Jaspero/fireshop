@@ -60,9 +60,9 @@ export const fileCreated = functions
 
         if (webpVersion) {
           webpToGenerate.push({
-            fName: fName.replace(/(.jpg|.png|.jpeg)/, '.webp'),
+            fName: fName.replace(/(.jpg|.png|.jpeg)/i, '.webp'),
             source: tmpDir,
-            destination: tmpDir.replace(/(.jpg|.png|.jpeg)/, '.webp')
+            destination: tmpDir.replace(/(.jpg|.png|.jpeg)/i, '.webp')
           });
         }
       }

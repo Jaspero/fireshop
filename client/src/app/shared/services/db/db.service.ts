@@ -43,7 +43,8 @@ export abstract class DbService {
       direction: string;
     },
     cursor?: any,
-    filters?: WhereFilter[]
+    filters?: WhereFilter[],
+    source?: string
   ): Observable<any[]> {
     return of([]);
   }
@@ -96,5 +97,13 @@ export abstract class DbService {
 
   removeUserAccount(id: string): Observable<any> {
     return of();
+  }
+
+  callFunction(name: string, data: any): Observable<any> {
+    return of();
+  }
+
+  createId() {
+    return '';
   }
 }

@@ -12,6 +12,10 @@
   <div class="column-inner" [innerHTML]="value"></div>
 </ng-template>
 
+<ng-template #populateColumn let-value="value">
+  <div class="column-inner" [innerHTML]="value | async"></div>
+</ng-template>
+
 <ng-template #subHeaderTemplate>
   <jms-filter-tags [items$]="ioc.filterChange$" [search]="ioc.searchControl"></jms-filter-tags>
 </ng-template>
@@ -59,31 +63,44 @@
           <jms-import
             *ngIf="!data.hideImport"
             [collection]="data.moduleId"
+            [importModule]="data.importModule"
             [schema]="data.schema">
           </jms-import>
 
-          <button
-            *ngIf="data.filterModule"
-            mat-button
-            (click)="ioc.openFilterDialog(data.filterModule)">
-            <mat-icon>vertical_split</mat-icon>
-            <span>{{'GENERAL.FILTER' | transloco}}</span>
-          </button>
+          <ng-container *ngIf="data.filterModule && !data.filterModule.hidden">
+            <span class="hide-xs">
+              <button mat-button (click)="ioc.openFilterDialog(data.filterModule)">
+                <mat-icon>vertical_split</mat-icon>
+                <span>{{'GENERAL.FILTER' | transloco}}</span>
+              </button>
+            </span>
+            <span class="show-xs">
+              <button mat-icon-button (click)="ioc.openFilterDialog(data.filterModule)" [matTooltip]="'GENERAL.FILTER' | transloco">
+                <mat-icon>vertical_split</mat-icon>
+              </button>
+            </span>
+          </ng-container>
 
-          <button
-            *ngIf="data.sortModule"
-            mat-button
-            (click)="ioc.openSortDialog(data.moduleId, data.name, data.sortModule)">
-            <mat-icon>vertical_split</mat-icon>
-            <span>{{'GENERAL.SORT' | transloco}}</span>
-          </button>
+          <ng-container *ngIf="data.sortModule">
+            <span class="hide-xs">
+              <button mat-button (click)="ioc.openSortDialog(data.moduleId, data.name, data.sortModule)">
+                <mat-icon>vertical_split</mat-icon>
+                <span>{{'GENERAL.SORT' | transloco}}</span>
+              </button>
+            </span>
+            <span class="show-xs">
+              <button mat-icon-button (click)="ioc.openSortDialog(data.moduleId, data.name, data.sortModule)" [matTooltip]="'GENERAL.SORT' | transloco">
+                <mat-icon>vertical_split</mat-icon>
+              </button>
+            </span>
+          </ng-container>
 
-          <div *ngIf="data.searchModule" class="m-l-s">
+          <div *ngIf="data.searchModule" class="m-l-s hide-xs">
             <jms-search-input [formControl]="ioc.searchControl"></jms-search-input>
           </div>
         </mat-toolbar>
 
-        <div class="of-x-auto">
+        <div class="table-wrapper">
           <table
             class="jms-instance-overview-table"
             mat-table
@@ -141,29 +158,39 @@
                   <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                  <button *ngIf="!data.hideEdit" mat-menu-item [routerLink]="['/m', data.moduleId, 'single', element.id]">
-                    <mat-icon>edit</mat-icon>
-                    <span>{{'GENERAL.EDIT' | transloco}}</span>
-                  </button>
-                  <button *ngIf="!data.hideDelete" mat-menu-item [fDisable]="data.authorization" (click)="ioc.deleteOne(data.moduleId, element)">
-                    <mat-icon>delete_forever</mat-icon>
-                    <span>{{'GENERAL.DELETE' | transloco}}</span>
-                  </button>
+                  <ng-template matMenuContent>
+                    <ng-container *ngIf="data.actions && data.actions.length">
+                      <ng-container *ngFor="let action of data.actions">
+                        <div mat-menu-item *ngIf="!action.critera || action.critera(element)" [innerHTML]="action.value(element) | jpSanitize"></div>
+                      </ng-container>
+
+                      <hr>
+                    </ng-container>
+
+                    <a *ngIf="!data.hideEdit" mat-menu-item routerLink="/m/{{data.moduleId}}/single/{{element.id}}">
+                      <mat-icon>edit</mat-icon>
+                      <span>{{'GENERAL.EDIT' | transloco}}</span>
+                    </a>
+                    <button *ngIf="!data.hideDelete" mat-menu-item [fDisable]="data.authorization" (click)="ioc.deleteOne(data.moduleId, element)">
+                      <mat-icon>delete_forever</mat-icon>
+                      <span>{{'GENERAL.DELETE' | transloco}}</span>
+                    </button>
+                  </ng-template>
                 </mat-menu>
               </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="data.displayColumns"></tr>
+            <tr mat-header-row *matHeaderRowDef="data.displayColumns; sticky: data.stickyHeader"></tr>
             <tr mat-row *matRowDef="let row; columns: data.displayColumns"></tr>
           </table>
         </div>
 
         <ng-container *ngIf="ioc.emptyState$ | async; else hasContent;">
           <mat-toolbar class="jc-center" *ngIf="!data.hideAdd">
-            <p>{{'INSTANCE_OVERVIEW.NO_ITEMS' | transloco:{value: data.name} }}</p>
-            <button mat-button color="primary" [routerLink]="['/m', data.moduleId, 'single/new']">
+            <p class="m-r-s">{{'INSTANCE_OVERVIEW.NO_ITEMS' | transloco:{value: data.name} }}</p>
+            <a mat-button color="primary" routerLink="/m/{{data.moduleId}}/single/new">
               {{'GENERAL.ADD' | transloco}} {{data.name}}
-            </button>
+            </a>
           </mat-toolbar>
         </ng-container>
 

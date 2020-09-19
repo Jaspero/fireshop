@@ -52,5 +52,7 @@ export const documentDeleted = functions.firestore
       }
     }
 
-    await Promise.all(toExec);
+    if (toExec.length) {
+      await Promise.all(toExec);
+    }
   });

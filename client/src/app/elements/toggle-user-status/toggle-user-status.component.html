@@ -1,0 +1,6 @@
+<div class="action-inset flex ai-center h-full">
+  <span *ngIf="loading; else loaded;">Loading Status...</span>
+  <ng-template #loaded>
+    <mat-slide-toggle (click)="dummy($event)" [formControl]="status">User {{status.value ? 'Disabled' : 'Enabled'}}</mat-slide-toggle>
+  </ng-template>
+</div>

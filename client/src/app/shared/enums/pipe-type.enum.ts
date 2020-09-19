@@ -1,4 +1,7 @@
 export enum PipeType {
+  /**
+   * Angular
+   */
   Number = 'number',
   Currency = 'currency',
   Date = 'date',
@@ -8,11 +11,20 @@ export enum PipeType {
   Lowercase = 'lowercase',
   Titlecase = 'titlecase',
   Uppercase = 'uppercase',
+
+  /**
+   * Ng Helpers
+   */
   Sanitize = 'jpSanitize',
 
   /**
    * So users don't have to type jpSanitize
    */
   SanitizeFb = 'sanitize',
-  Custom = 'custom'
+  Custom = 'custom',
+
+  /**
+   * External
+   */
+  Transloco = 'transloco'
 }

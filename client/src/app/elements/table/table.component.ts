@@ -2,7 +2,9 @@ import {TemplatePortal} from '@angular/cdk/portal';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
-  Component, Injector, OnDestroy,
+  Component,
+  Injector,
+  OnDestroy,
   OnInit,
   QueryList,
   TemplateRef,
@@ -11,21 +13,19 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import {MatSort} from '@angular/material/sort';
-import {RxDestroy} from '@jaspero/ng-helpers';
+import {Parser, safeEval, State} from '@jaspero/form-builder';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {get, has} from 'json-pointer';
 import {JSONSchema7} from 'json-schema';
-// @ts-ignore
-import * as nanoid from 'nanoid';
 import {Observable} from 'rxjs';
-import {filter, map, shareReplay, startWith, switchMap, takeUntil} from 'rxjs/operators';
-import {InstanceSingleState} from '../../modules/module-instance/enums/instance-single-state.enum';
-import {InstanceOverviewContextService} from '../../modules/module-instance/services/instance-overview-context.service';
-import {Parser} from '../../modules/module-instance/utils/parser';
-import {safeEval} from '../../modules/module-instance/utils/safe-eval';
+import {filter, map, shareReplay, startWith, switchMap} from 'rxjs/operators';
+import {InstanceOverviewContextService} from '../../modules/dashboard/modules/module-instance/services/instance-overview-context.service';
 import {FilterModule} from '../../shared/interfaces/filter-module.interface';
+import {ImportModule} from '../../shared/interfaces/import-module.interface';
 import {InstanceSort} from '../../shared/interfaces/instance-sort.interface';
 import {ModuleAuthorization} from '../../shared/interfaces/module-authorization.interface';
-import {ModuleDefinitions, TableColumn} from '../../shared/interfaces/module.interface';
+import {ModuleLayoutTableColumn} from '../../shared/interfaces/module-layout-table.interface';
+import {ModuleDefinitions} from '../../shared/interfaces/module.interface';
 import {SearchModule} from '../../shared/interfaces/search-module.interface';
 import {SortModule} from '../../shared/interfaces/sort-module.interface';
 import {DbService} from '../../shared/services/db/db.service';
@@ -38,36 +38,41 @@ interface TableData {
   name: string;
   displayColumns: string[];
   definitions: ModuleDefinitions;
-  tableColumns: TableColumn[];
+  tableColumns: ModuleLayoutTableColumn[];
   schema: JSONSchema7;
+  stickyHeader: boolean;
   sort?: InstanceSort;
   sortModule?: SortModule;
   filterModule?: FilterModule;
   searchModule?: SearchModule;
+  importModule?: ImportModule;
   hideCheckbox?: boolean;
   hideEdit?: boolean;
   hideAdd?: boolean;
   hideDelete?: boolean;
   hideExport?: boolean;
   hideImport?: boolean;
+  actions?: Array<(it: any) => {
+    criteria?: (d: any) => boolean;
+    value: (d: any) => string;
+  }>;
 }
 
+@UntilDestroy()
 @Component({
   selector: 'jms-e-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, OnDestroy {
+export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public ioc: InstanceOverviewContextService,
     private state: StateService,
     private injector: Injector,
     private viewContainerRef: ViewContainerRef,
     private dbService: DbService
-  ) {
-    super();
-  }
+  ) {}
 
   /**
    * Using view children so we can listen for changes
@@ -81,10 +86,14 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
   @ViewChild('simpleColumn', {static: true})
   simpleColumnTemplate: TemplateRef<any>;
 
+  @ViewChild('populateColumn', {static: true})
+  populateColumnTemplate: TemplateRef<any>;
+
   data$: Observable<TableData>;
   items$: Observable<any>;
 
   parserCache: {[key: string]: Parser} = {};
+  populateCache: {[key: string]: Observable<any>} = {};
 
   ngOnInit() {
 
@@ -99,7 +108,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
     this.data$ = this.ioc.module$.pipe(
       map(data => {
         let displayColumns: string[];
-        let tableColumns: TableColumn[];
+        let tableColumns: ModuleLayoutTableColumn[];
         let sort: InstanceSort;
         let hide: any = {
           hideCheckbox: false,
@@ -129,7 +138,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
                 typeof column.key === 'string' ? column.key : column.key[0];
 
               if (acc.includes(key)) {
-                key = nanoid();
+                key = this.dbService.createId();
               }
 
               acc.push(key);
@@ -154,7 +163,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
           const topLevelProperties = Object.keys(data.schema.properties || {});
 
           displayColumns = topLevelProperties.reduce((acc, key) => {
-            acc.push(key || nanoid());
+            acc.push(key || this.dbService.createId());
             return acc;
           }, []);
           tableColumns = topLevelProperties.map(key => ({
@@ -176,13 +185,38 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
               'hideExport',
               'hideImport'
             ].reduce((acc, key) => {
-              acc[key] = data.layout.table[key] ? data.layout.table[key].includes(this.state.role) : false;
+              acc[key] = data.layout.table[key] ?
+                typeof data.layout.table[key] === 'boolean' ?
+                  true :
+                  data.layout.table[key].includes(this.state.role) :
+                false;
               return acc;
             }, {});
-          }
 
-          if (data.layout.hideAdd) {
-            hide.hideAdd = data.layout.hideAdd.includes(this.state.role);
+            if (data.layout.table.actions) {
+              hide.actions = data.layout.table.actions.reduce((acc, cur) => {
+                if (!cur.authorization || cur.authorization.includes(this.state.role)) {
+
+                  const criteria = cur.criteria && safeEval(cur.criteria);
+                  const parsed = safeEval(cur.value);
+
+                  if (parsed) {
+                    acc.push({
+                      value: parsed,
+                      ...criteria && {criteria}
+                    });
+                  }
+                }
+
+                return acc;
+              }, [])
+            }
+
+            if (data.layout.table.hideAdd) {
+              hide.hideAdd = typeof data.layout.table.hideAdd === 'boolean' ?
+                true :
+                data.layout.table.hideAdd.includes(this.state.role);
+            }
           }
         }
 
@@ -205,11 +239,15 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
           definitions: data.definitions,
           ...(
             data.layout ? {
+              stickyHeader: data.layout.table && data.layout.table.hasOwnProperty('stickyHeader') ? data.layout.table.stickyHeader : true,
               sortModule: data.layout.sortModule,
               filterModule: data.layout.filterModule,
               searchModule: data.layout.searchModule,
+              importModule: data.layout.importModule,
               ...hide
-            } : {}
+            } : {
+              stickyHeader: true
+            }
           )
         };
       }),
@@ -239,7 +277,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
       startWith(this.sort),
       filter(change => change.last),
       switchMap(change => change.last.sortChange),
-      takeUntil(this.destroyed$)
+      untilDestroyed(this)
     )
       .subscribe((value: any) => {
         this.ioc.sortChange$.next(value);
@@ -248,7 +286,6 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
 
   ngOnDestroy() {
     this.ioc.subHeaderTemplate$.next(null);
-    super.ngOnDestroy();
   }
 
   private mapRow(
@@ -282,7 +319,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
   }
 
   private getColumnValue(
-    column: TableColumn,
+    column: ModuleLayoutTableColumn,
     overview: TableData,
     rowData: any,
     nested = false
@@ -294,7 +331,8 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
         this.parserCache[rowData.id] = new Parser(
           overview.schema,
           this.injector,
-          InstanceSingleState.Edit
+          State.Edit,
+          this.state.role
         );
         this.parserCache[rowData.id].buildForm(rowData);
       }
@@ -321,7 +359,7 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
           notify({
             success: null
           }),
-          takeUntil(this.destroyed$)
+          untilDestroyed(this)
         )
         .subscribe();
 
@@ -348,6 +386,90 @@ export class TableComponent extends RxDestroy implements OnInit, AfterViewInit, 
 
       if (nested) {
         return value;
+      } else if (column.populate) {
+        let id;
+
+        try {
+          id = get(rowData, column.key as string);
+        } catch (e) {}
+
+
+        if (!id) {
+          return new TemplatePortal(
+            this.simpleColumnTemplate,
+            this.viewContainerRef,
+            {value: column.populate.fallback || '-'}
+          );
+        }
+
+        const popKey = `${column.populate.collection}-${
+          column.populate.lookUp ?
+            [column.populate.lookUp.key, column.populate.lookUp.operator, id].join('-') :
+            id
+        }`;
+
+        if (!this.populateCache[popKey]) {
+          if (column.populate.lookUp) {
+            this.populateCache[popKey] = this.dbService.getDocuments(
+              column.populate.collection,
+              1,
+              undefined,
+              undefined,
+              [{
+                ...column.populate.lookUp,
+                value: id
+              }]
+            )
+              .pipe(
+                map(docs => {
+
+                  if (docs[0]) {
+                    const populated: any = docs[0].data();
+
+                    if (populated && populated.hasOwnProperty(column.populate.displayKey || 'name')) {
+                      return this.ioc.columnPipe.transform(
+                        populated[column.populate.displayKey || 'name'],
+                        column.pipe,
+                        column.pipeArguments,
+                        {rowData, populated}
+                      )
+                    } else {
+                      return column.populate.fallback || '-';
+                    }
+                  } else {
+                    return column.populate.fallback || '-';
+                  }
+                }),
+                shareReplay(1)
+              )
+          } else {
+            this.populateCache[popKey] = this.dbService.getDocument(
+              column.populate.collection,
+              id
+            )
+              .pipe(
+                map(populated => {
+                  if (populated.hasOwnProperty(column.populate.displayKey || 'name')) {
+                    return this.ioc.columnPipe.transform(
+                      populated[column.populate.displayKey || 'name'],
+                      column.pipe,
+                      column.pipeArguments,
+                      {rowData, populated}
+                    )
+                  } else {
+                    return column.populate.fallback || '-';
+                  }
+                }),
+                shareReplay(1)
+              )
+          }
+        }
+
+        return new TemplatePortal(
+          this.populateColumnTemplate,
+          this.viewContainerRef,
+          {value: this.populateCache[popKey]}
+        )
       } else {
         return new TemplatePortal(
           this.simpleColumnTemplate,

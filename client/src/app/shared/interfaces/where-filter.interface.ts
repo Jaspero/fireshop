@@ -5,4 +5,10 @@ export interface WhereFilter {
   operator: FilterMethod;
   value: any;
   label?: string;
+
+  /**
+   * filters that are flagged to persists
+   * will be added to the query parameters
+   */
+  persist?: boolean;
 }

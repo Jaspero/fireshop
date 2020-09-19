@@ -26,7 +26,9 @@
     "PAGE_SIZE": "Page size",
     "DISMISS": "Dismiss",
     "OPERATION_COMPLETED": "Operation completed",
-    "OPERATION_FAILED": "Operation failed"
+    "OPERATION_FAILED": "Operation failed",
+    "USERS": "Users",
+    "ROLES": "Roles"
   },
   "LOGIN": {
     "LOGIN": "Login",
@@ -35,12 +37,15 @@
     "ERROR_MESSAGE": "The email and password you entered did not match our records. Please double-check and try again."
   },
   "RESET_PASSWORD": {
+    "REPEAT_PASSWORD": "Repeat Password",
     "PASSWORD_RESET": "Password Reset",
     "EMAIL_DOESNT_EXIST": "Email doesn't exist",
     "GO_BACK": "Go back",
     "RESET_MY_PASSWORD": "Reset my password",
     "SUCCESS_MESSAGE": "Password reset email has been sent to your email",
-    "ERROR_MESSAGE": "Email is invalid"
+    "ERROR_MESSAGE": "Email is invalid",
+    "RESET_SUCCESSFUL": "Your password has been reset successfully. You can now log in.",
+    "INVALID_OOB_CODE": "Your code has expired. Please restart the process of resetting your password."
   },
   "LAYOUT": {
     "MENU": "Menu",
@@ -72,6 +77,7 @@
   "INSTANCE_OVERVIEW": {
     "REMOVE_ITEMS": "Remove {{value}} items",
     "REMOVE_ONE": "This action will remove {{value}} permanently",
+    "REMOVE_ITEMS_WARNING": "This action will remove all of the following documents:",
     "NO_ITEMS": "No {{value}} yet.",
     "LOAD_MORE": "More...",
     "APPLY": "Apply",
@@ -129,6 +135,7 @@
     "PROVIDER": "Provider",
     "ADD_MEMBERS": "Add members",
     "PASSWORD_INSTRUCTIONS": "A user will only be automatically created if a password is provided",
-    "PASSWORD_RULES": "Must be at least 6 characters"
+    "PASSWORD_RULES": "Must be at least 6 characters",
+    "LANGUAGE": "Language"
   }
 }
