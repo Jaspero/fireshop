@@ -3,6 +3,7 @@
 ![Deploy Functions](https://github.com/Jaspero/jms/workflows/Deploy%20Functions/badge.svg)
 ![Deploy Firestore Indexes](https://github.com/Jaspero/jms/workflows/Deploy%20Firestore%20Indexes/badge.svg)
 ![Deploy Storage Rules](https://github.com/Jaspero/jms/workflows/Deploy%20Storage%20Rules/badge.svg)
+![Deploy Rules](https://github.com/Jaspero/jms/workflows/Deploy%20Rules/badge.svg)
 ![Lighthouse CI](https://github.com/Jaspero/jms/workflows/Lighthouse%20CI/badge.svg)
 
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/jaspero-co/JMS)
