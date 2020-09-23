@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - 'firestore.rules'
-      - '.github/workflows/storage.workflow.yml'
+      - '.github/workflows/rules.workflow.yml'
 
 jobs:
   deploy:
