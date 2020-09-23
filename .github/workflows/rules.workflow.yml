@@ -1,9 +1,9 @@
-name: Deploy Firestore Indexes
+name: Deploy Rules
 on:
   push:
     paths:
-      - 'firestore.indexes.json'
-      - '.github/workflows/indexes.workflow.yml'
+      - 'firestore.rules'
+      - '.github/workflows/rules.workflow.yml'
 
 jobs:
   deploy:
@@ -16,7 +16,7 @@ jobs:
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only firestore:indexes
+          args: deploy --only firestore:rules
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_ID: 'jaspero-jms'
