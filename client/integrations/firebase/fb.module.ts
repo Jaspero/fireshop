@@ -6,13 +6,13 @@ import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {AngularFirePerformanceModule} from '@angular/fire/performance';
 import {AngularFireStorageModule} from '@angular/fire/storage';
 import {DbService} from '../../src/app/shared/services/db/db.service';
-import {ENV_CONFIG} from '../../src/env-config';
+import {environment} from '../../src/environments/environment';
 import {FbDatabaseService} from './fb-database.service';
 import 'firebase/functions';
 
 @NgModule({
   imports: [
-    AngularFireModule.initializeApp(ENV_CONFIG.firebase),
+    AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule.enablePersistence(),
     AngularFireAuthModule,
     AngularFireStorageModule,

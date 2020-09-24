@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "start:cms": "npm --prefix client run start",
     "build:cms": "npm --prefix client run build",
     "build:functions": "npm --prefix functions run build",
     "build": "npm run build:cms && npm run build:functions",
