@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/jaspero/jms/compare/v1.0.1...v1.1.0) (2020-09-24)
+
+
+### Features
+
+* made env-config.ts public and added it to the source code ([457640d](https://github.com/jaspero/jms/commit/457640dddc9e63c649ef5e47bb51ad23be0e7e38))
+
 ## [1.0.1](https://github.com/jaspero/jms/compare/v1.0.0...v1.0.1) (2020-09-19)
 
 
