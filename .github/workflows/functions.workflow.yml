@@ -6,7 +6,7 @@ on:
       - '.github/workflows/functions.workflow.yml'
 jobs:
   deploy:
-    if: contains(github.ref, 'master')
+#    if: contains(github.ref, 'master')
     name: Deploy
     runs-on: ubuntu-latest
     strategy:
