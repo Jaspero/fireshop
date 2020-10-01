@@ -7,13 +7,14 @@ import * as sharp from 'sharp';
 import {promisify} from 'util';
 import {unpackGenerateImageString} from '../utils/unpack-generate-image-string';
 
+// Test
+
 export const fileCreated = functions
   .runWith({
     memory: '1GB',
     timeoutSeconds: 300
   })
-  .storage
-  .object()
+  .storage.object()
   .onFinalize(async ({bucket, name, contentType, metadata}: any) => {
     const fileName = basename(name);
     const dirName = dirname(name);
