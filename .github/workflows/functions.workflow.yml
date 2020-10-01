@@ -21,17 +21,18 @@ jobs:
           npm ci
           npm --prefix functions ci
           npm --prefix functions run build
-      - id: file_changes
-        uses: trilom/file-changes-action@v1.2.3
-        run: |
-          echo '${{ steps.file_changes.outputs.files_modified}}'
-          echo '${{ steps.file_changes.outputs.files_added}}'
       - name: Set project
         run: npm run firebase -- use jaspero-jms --token $FIREBASE_TOKEN
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-      - name: Deploy to Firebase
-#        if: ${{ github.event_name == 'pull_request' && github.event.action == 'unassigned' }}
-        run: npm run firebase -- deploy --only functions --token $FIREBASE_TOKEN
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      - id: file_changes
+        name: Deploy to Firebase
+        uses: trilom/file-changes-action@v1.2.3
+        run: |
+          echo '${{ steps.file_changes.outputs.files_modified}}'
+          echo '${{ steps.file_changes.outputs.files_added}}'
+#      - name: Deploy to Firebase
+##        if: ${{ github.event_name == 'pull_request' && github.event.action == 'unassigned' }}
+#        run: npm run firebase -- deploy --only functions --token $FIREBASE_TOKEN
+#        env:
+#          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
