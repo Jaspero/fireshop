@@ -7,6 +7,8 @@ const includedFolders = [
   'rest'
 ];
 
+const camelize = s => s.replace(/-./g, x => x.toUpperCase()[1])
+
 const changes = [
   ...JSON.parse(process.argv[2]),
   ...JSON.parse(process.argv[3])
@@ -14,7 +16,7 @@ const changes = [
   .map(path => {
     const fileName = path.split('/').pop().split('.');
     fileName.pop();
-    return fileName.join('.');
+    return camelize(fileName.join('.'));
   }).join(',');
 
 console.log(changes);
