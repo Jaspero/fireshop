@@ -26,8 +26,8 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       - id: file_changes
-        name: Deploy to Firebase
         uses: trilom/file-changes-action@v1.2.3
+      - name: test
         run: |
           echo '${{ steps.file_changes.outputs.files_modified}}'
           echo '${{ steps.file_changes.outputs.files_added}}'
