@@ -7,8 +7,6 @@ import * as sharp from 'sharp';
 import {promisify} from 'util';
 import {unpackGenerateImageString} from '../utils/unpack-generate-image-string';
 
-// Test
-
 export const fileCreated = functions
   .runWith({
     memory: '1GB',
