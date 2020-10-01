@@ -28,10 +28,14 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       - id: file_changes
         uses: trilom/file-changes-action@v1.2.3
-      - name: Deploy to Firebase
+      - name: Detect file changes
+        id: changes
 #        if: ${{ github.event_name == 'pull_request' && github.event.action == 'unassigned' }}
         run: |
           files=`node ./.github/utils/function-changes.js '${{ steps.file_changes.outputs.files_modified}}' '${{ steps.file_changes.outputs.files_added}}'`
-          npm run firebase -- deploy --only functions:$files --token $FIREBASE_TOKEN
+          echo '::set-output name=CHANGES::$files'
+      - name: Deploy
+        if: ${{ steps.changes.outputs.CHANGES }}
+        npm run firebase -- deploy --only ${steps.changes.outputs.CHANGES} --token $FIREBASE_TOKEN
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
