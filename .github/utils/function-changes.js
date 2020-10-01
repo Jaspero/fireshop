@@ -11,3 +11,5 @@ const changes = [
   ...JSON.parse(process.argv[2]),
   ...JSON.parse(process.argv[3])
 ]
+
+console.log(changes);
