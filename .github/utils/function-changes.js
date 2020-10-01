@@ -12,7 +12,7 @@ const changes = [
   ...JSON.parse(process.argv[3])
 ].filter(change => {
   return includedFolders.some((folder) => {
-    return change.startsWith(`function/src/${folder}`);
+    return change.startsWith(`functions/src/${folder}`);
   });
 })
 
