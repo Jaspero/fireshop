@@ -18,8 +18,6 @@ import {userDocumentUpdated} from './triggers/user-document-updated';
 
 initializeApp();
 
-// Test
-
 export const cms = {
   // Triggers
   userCreated,
