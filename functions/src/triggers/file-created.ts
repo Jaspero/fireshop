@@ -12,8 +12,7 @@ export const fileCreated = functions
     memory: '1GB',
     timeoutSeconds: 300
   })
-  .storage
-  .object()
+  .storage.object()
   .onFinalize(async ({bucket, name, contentType, metadata}: any) => {
     const fileName = basename(name);
     const dirName = dirname(name);

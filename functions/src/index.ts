@@ -40,5 +40,4 @@ export const cms = {
   exportData,
   importData,
   api
-
 };
