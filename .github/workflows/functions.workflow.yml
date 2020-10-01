@@ -19,7 +19,7 @@ jobs:
       - name: Install Dependencies
         run: |
           npm ci
-          npm install -g firebase-tools
+          npm install firebase-tools
           npm --prefix functions ci
           npm --prefix functions run build
       - name: Set project
