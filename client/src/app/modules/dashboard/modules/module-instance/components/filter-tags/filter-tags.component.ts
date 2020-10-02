@@ -50,7 +50,7 @@ export class FilterTagsComponent implements OnInit {
     if (Array.isArray(value)) {
       return value.length;
     } else {
-      return value;
+      return value !== undefined && value !== null && value !== '';
     }
   }
 
