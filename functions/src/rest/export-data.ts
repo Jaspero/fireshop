@@ -17,14 +17,60 @@ enum Type {
 const app = express();
 app.use(CORS);
 
-app.post('/', authenticated(['admin']), (req, res) => {
+app.post('/:module', authenticated(), (req, res) => {
   async function exec() {
-    const {collection, type, ids} = req.body;
 
-    const docs = (await admin
+    let moduleDoc: any = (await admin.firestore().collection('modules').doc(req.params.module).get());
+
+    if (!moduleDoc.exists) {
+      throw new Error('Requested module not found.')
+    }
+
+    moduleDoc = moduleDoc.data();
+
+    if (
+      moduleDoc.authorization &&
+      moduleDoc.authorization.write &&
+      // @ts-ignore
+      !moduleDoc.authorization.write.includes(req['user'].role)
+    ) {
+      throw new Error('User does not have permission to export this module')
+    }
+
+    const {collection, type, ids, filters, sort} = req.body;
+
+    let col: any = admin
       .firestore()
-      .collection(collection)
-      .get()).docs.reduce((acc: any[], doc: any) => {
+      .collection(collection);
+
+    if (filters && filters.length) {
+      for (const item of filters) {
+        if (
+          item.value !== undefined &&
+          item.value !== null &&
+          item.value !== '' &&
+          (
+            (
+              item.operator === 'array-contains' ||
+              item.operator === 'array-contains-any' ||
+              item.operator === 'in'
+            ) && Array.isArray(item.value) ?
+              item.value.length : true
+          )
+        ) {
+          col = col.where(item.key, item.operator, item.value);
+        }
+      }
+    }
+
+    if (sort) {
+      col = col.orderBy(
+        sort.active,
+        sort.direction
+      )
+    }
+
+    const docs = (await col.get()).docs.reduce((acc: any[], doc: any) => {
         if (!ids || ids.includes(doc.id)) {
           acc.push({
             ...doc.data(),
