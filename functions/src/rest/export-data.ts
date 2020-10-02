@@ -43,31 +43,33 @@ app.post('/:module', authenticated(), (req, res) => {
       .firestore()
       .collection(collection);
 
-    if (filters && filters.length) {
-      for (const item of filters) {
-        if (
-          item.value !== undefined &&
-          item.value !== null &&
-          item.value !== '' &&
-          (
+    if (!ids) {
+      if (filters && filters.length) {
+        for (const item of filters) {
+          if (
+            item.value !== undefined &&
+            item.value !== null &&
+            item.value !== '' &&
             (
-              item.operator === 'array-contains' ||
-              item.operator === 'array-contains-any' ||
-              item.operator === 'in'
-            ) && Array.isArray(item.value) ?
-              item.value.length : true
-          )
-        ) {
-          col = col.where(item.key, item.operator, item.value);
+              (
+                item.operator === 'array-contains' ||
+                item.operator === 'array-contains-any' ||
+                item.operator === 'in'
+              ) && Array.isArray(item.value) ?
+                item.value.length : true
+            )
+          ) {
+            col = col.where(item.key, item.operator, item.value);
+          }
         }
       }
-    }
 
-    if (sort) {
-      col = col.orderBy(
-        sort.active,
-        sort.direction
-      )
+      if (sort) {
+        col = col.orderBy(
+          sort.active,
+          sort.direction
+        )
+      }
     }
 
     const docs = (await col.get()).docs.reduce((acc: any[], doc: any) => {

@@ -8,6 +8,11 @@ import {WhereFilter} from '../../interfaces/where-filter.interface';
 
 @Injectable({providedIn: 'root'})
 export abstract class DbService {
+
+  url(url: string) {
+    return url;
+  }
+
   getModules(): Observable<Module[]> {
     return of([]);
   }

@@ -161,13 +161,28 @@ export class InstanceOverviewContextService {
       });
   }
 
-  export(collection: string) {
-    this.bottomSheet.open(ExportComponent, {
-      data: {
-        collection,
-        ids: this.selection.selected
-      }
-    });
+  export() {
+
+    combineLatest([
+      this.module$,
+      this.filterChange$,
+      this.sortChange$
+    ])
+      .pipe(
+        take(1)
+      )
+      .subscribe(([module, filterValue, sortValue]) => {
+        this.bottomSheet.open(ExportComponent, {
+          data: {
+            ids: this.selection.selected,
+            filterValue,
+            sortValue,
+            collection: module.id,
+            filterModule: module.layout?.filterModule,
+            sortModule: module.layout?.sort
+          }
+        });
+      })
   }
 
   trackById(index, item) {

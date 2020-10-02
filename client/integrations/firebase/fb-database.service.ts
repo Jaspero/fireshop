@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
+import {Inject, Injectable, Optional} from '@angular/core';
 import {AngularFirestore, CollectionReference} from '@angular/fire/firestore';
 import {app} from 'firebase/app';
 import {from, Observable} from 'rxjs';
@@ -10,6 +10,7 @@ import {Module} from '../../src/app/shared/interfaces/module.interface';
 import {Settings} from '../../src/app/shared/interfaces/settings.interface';
 import {WhereFilter} from '../../src/app/shared/interfaces/where-filter.interface';
 import {DbService} from '../../src/app/shared/services/db/db.service';
+import {environment} from '../../src/environments/environment';
 import {FirestoreCollection} from './firestore-collection.enum';
 import {FUNCTIONS_REGION} from './functions-region.token';
 
@@ -20,9 +21,29 @@ export class FbDatabaseService extends DbService {
   constructor(
     @Inject(FUNCTIONS_REGION)
     private region: string,
+    @Optional()
+    @Inject()
+    private emulator: string,
     private afs: AngularFirestore
   ) {
     super();
+  }
+
+  url(url: string) {
+
+    if (environment.emulator) {
+      return [
+        environment.emulator,
+        this.region,
+        environment.firebase.projectId,
+        url
+      ]
+        .join('/')
+    } else {
+      return `https://${this.region}-${environment.firebase.projectId}.cloudfunctions.net/${url}`
+    }
+
+    return url;
   }
 
   getModules() {
@@ -216,8 +237,15 @@ export class FbDatabaseService extends DbService {
   }
 
   callFunction(name: string, data) {
-    const func = app().functions(this.region).httpsCallable(name);
-    return from(func(data));
+    const func = app().functions(this.region);
+
+    if (this.emulator) {
+      func.useFunctionsEmulator(this.emulator)
+    }
+
+    return from(
+      func.httpsCallable(name)(data)
+    );
   }
 
   createId() {

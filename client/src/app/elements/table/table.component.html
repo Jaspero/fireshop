@@ -48,13 +48,13 @@
 
           <ng-container *ngIf="!data.hideExport">
             <span class="hide-xs">
-              <button mat-button (click)="ioc.export(data.moduleId)">
+              <button mat-button (click)="ioc.export()">
                 <mat-icon>vertical_align_top</mat-icon>
                 <span>{{'GENERAL.EXPORT' | transloco}}</span>
               </button>
             </span>
             <span class="show-xs">
-              <button mat-icon-button (click)="ioc.export(data.moduleId)" [matTooltip]="'GENERAL.EXPORT' | transloco">
+              <button mat-icon-button (click)="ioc.export()" [matTooltip]="'GENERAL.EXPORT' | transloco">
                 <mat-icon>vertical_align_top</mat-icon>
               </button>
             </span>

@@ -1,5 +1,17 @@
 <mat-action-list class="cursor">
-  <button mat-list-item *ngFor="let type of types | keyvalue" (click)="export(type.value)">
+  <button mat-list-item *ngFor="let type of types | keyvalue" (click)="selectType(type.value)">
     {{type.key}}
   </button>
 </mat-action-list>
+
+<ng-template #options>
+  <h4 mat-dialog-title>Export Options</h4>
+
+  <mat-dialog-content>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="jc-end">
+    <button type="submit" mat-flat-button color="primary" [disabled]="form.invalid" [jpLoadClick]="add()">{{'GENERAL.ADD' | transloco}}</button>
+  </mat-dialog-actions>
+</ng-template>
