@@ -7,6 +7,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {MaybeArray, TRANSLOCO_LANG, TRANSLOCO_SCOPE, TranslocoScope, TranslocoService} from '@ngneat/transloco';
 import {BehaviorSubject, combineLatest, forkJoin, Observable, Subject} from 'rxjs';
 import {filter, map, switchMap, take, tap} from 'rxjs/operators';
+import {ModuleLayoutTableColumn} from '../../../../../shared/interfaces/module-layout-table.interface';
 import {ExportComponent} from '../components/export/export.component';
 import {PAGE_SIZES} from '../../../../../shared/consts/page-sizes.const';
 import {FilterModule} from '../../../../../shared/interfaces/filter-module.interface';
@@ -161,7 +162,7 @@ export class InstanceOverviewContextService {
       });
   }
 
-  export() {
+  export(columns?: ModuleLayoutTableColumn[]) {
 
     combineLatest([
       this.module$,
@@ -171,15 +172,15 @@ export class InstanceOverviewContextService {
       .pipe(
         take(1)
       )
-      .subscribe(([module, filterValue, sortValue]) => {
+      .subscribe(([module, filterValue, sort]) => {
         this.bottomSheet.open(ExportComponent, {
           data: {
             ids: this.selection.selected,
             filterValue,
-            sortValue,
+            columns,
+            sort,
             collection: module.id,
             filterModule: module.layout?.filterModule,
-            sortModule: module.layout?.sort
           }
         });
       })

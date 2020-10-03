@@ -5,13 +5,39 @@
 </mat-action-list>
 
 <ng-template #options>
-  <h4 mat-dialog-title>Export Options</h4>
+  <h4 mat-dialog-title>{{'EXPORT.TITLE' | transloco}}</h4>
 
-  <mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-dialog-content>
+      <div class="m-b-s" *ngIf="data.filterModule && data.filterValue">
+        <mat-checkbox formControlName="useFilters">{{'EXPORT.USE_FILTERS' | transloco}}</mat-checkbox>
+      </div>
 
-  </mat-dialog-content>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{'EXPORT.ROWS_TO_SKIP' | transloco}}</mat-label>
+        <input type="number" matInput formControlName="skip">
+      </mat-form-field>
 
-  <mat-dialog-actions class="jc-end">
-    <button type="submit" mat-flat-button color="primary" [disabled]="form.invalid" [jpLoadClick]="add()">{{'GENERAL.ADD' | transloco}}</button>
-  </mat-dialog-actions>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{'EXPORT.LIMIT' | transloco}}</mat-label>
+        <input type="number" matInput formControlName="limit">
+      </mat-form-field>
+
+      <div class="m-b-s">
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>{{'EXPORT.ADJUST_COLUMNS' | transloco}}</mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <jms-column-organization *ngIf="data.columns" [tableColumns]="data.columns"></jms-column-organization>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="jc-end">
+      <button type="submit" mat-flat-button color="primary" [jpLoadClick]="export()">{{'GENERAL.EXPORT' | transloco}}</button>
+    </mat-dialog-actions>
+  </form>
 </ng-template>

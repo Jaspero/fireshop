@@ -35,16 +35,14 @@ export class FbDatabaseService extends DbService {
     if (environment.emulator) {
       return [
         environment.emulator,
-        this.region,
         environment.firebase.projectId,
+        this.region,
         url
       ]
         .join('/')
     } else {
       return `https://${this.region}-${environment.firebase.projectId}.cloudfunctions.net/${url}`
     }
-
-    return url;
   }
 
   getModules() {

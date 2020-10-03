@@ -14,7 +14,7 @@ export function roleFactory(state: StateService) {
 @NgModule({
   imports: [
     CommonModule,
-    FormBuilderModule
+    FormBuilderModule.forRoot()
   ],
   exports: [
     FormBuilderModule

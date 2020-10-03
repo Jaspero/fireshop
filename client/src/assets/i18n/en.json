@@ -126,6 +126,11 @@
     "ERROR": "There was an error while importing data."
   },
   "EXPORT": {
+    "TITLE": "Export Options",
+    "USE_FILTERS": "Use filters",
+    "ROWS_TO_SKIP": "Rows to skip",
+    "ADJUST_COLUMNS": "Adjust columns",
+    "LIMIT": "Limit",
     "ERROR": "Unknown export error"
   },
   "CONFIRMATION": {

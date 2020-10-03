@@ -1,9 +1,10 @@
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
-import * as XLSX from 'xlsx';
 import * as express from 'express';
-import {Parser} from 'json2csv';
+import * as admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
 import {constants} from 'http2';
+import {get, has} from 'json-pointer';
+import {Parser} from 'json2csv';
+import * as XLSX from 'xlsx';
 import {CORS} from '../consts/cors-whitelist.const';
 import {authenticated} from './middlewares/authenticated';
 
@@ -20,7 +21,15 @@ app.use(CORS);
 app.post('/:module', authenticated(), (req, res) => {
   async function exec() {
 
-    let moduleDoc: any = (await admin.firestore().collection('modules').doc(req.params.module).get());
+
+    const {module} = req.params;
+    // @ts-ignore
+    const role = req['user'].role;
+
+    let moduleDoc: any = await admin.firestore()
+      .collection('modules')
+      .doc(module)
+      .get();
 
     if (!moduleDoc.exists) {
       throw new Error('Requested module not found.')
@@ -32,60 +41,127 @@ app.post('/:module', authenticated(), (req, res) => {
       moduleDoc.authorization &&
       moduleDoc.authorization.write &&
       // @ts-ignore
-      !moduleDoc.authorization.write.includes(req['user'].role)
+      !moduleDoc.authorization.write.includes(role)
     ) {
       throw new Error('User does not have permission to export this module')
     }
 
-    const {collection, type, ids, filters, sort} = req.body;
+    const {
+      type,
+      ids,
+      filters,
+      sort,
+      skip,
+      limit,
+      columns
+    } = req.body;
 
     let col: any = admin
       .firestore()
-      .collection(collection);
+      .collection(module);
 
-    if (!ids) {
-      if (filters && filters.length) {
-        for (const item of filters) {
-          if (
-            item.value !== undefined &&
-            item.value !== null &&
-            item.value !== '' &&
+    if (filters && filters.length) {
+      for (const item of filters) {
+        if (
+          item.value !== undefined &&
+          item.value !== null &&
+          item.value !== '' &&
+          (
             (
-              (
-                item.operator === 'array-contains' ||
-                item.operator === 'array-contains-any' ||
-                item.operator === 'in'
-              ) && Array.isArray(item.value) ?
-                item.value.length : true
-            )
-          ) {
-            col = col.where(item.key, item.operator, item.value);
-          }
+              item.operator === 'array-contains' ||
+              item.operator === 'array-contains-any' ||
+              item.operator === 'in'
+            ) && Array.isArray(item.value) ?
+              item.value.length : true
+          )
+        ) {
+          col = col.where(item.key, item.operator, item.value);
         }
-      }
-
-      if (sort) {
-        col = col.orderBy(
-          sort.active,
-          sort.direction
-        )
       }
     }
 
-    const docs = (await col.get()).docs.reduce((acc: any[], doc: any) => {
-        if (!ids || ids.includes(doc.id)) {
-          acc.push({
-            ...doc.data(),
-            id: doc.id
-          });
-        }
+    if (sort) {
+      col = col.orderBy(
+        sort.active,
+        sort.direction
+      )
+    }
 
-        return acc;
-      }, []);
+    if (skip) {
+      col = col.offset(skip);
+    }
+
+    if (limit) {
+      col = col.limit(limit);
+    }
+
+    let docs = (await col.get()).docs.reduce((acc: any[], doc: any) => {
+      if (!ids || ids.includes(doc.id)) {
+        acc.push({
+          ...doc.data(),
+          id: doc.id
+        });
+      }
+
+      return acc;
+    }, []);
 
     if (!docs.length) {
       throw new Error('No data to export');
     }
+
+    let baseColumns: any[];
+
+    if (moduleDoc.layout?.table?.tableColumns) {
+
+      /**
+       * Filter authorized columns
+       */
+      baseColumns = moduleDoc.layout.table.tableColumns.filter((column: any) =>
+        column.authorization ? column.authorization.includes(role) : true
+      );
+    } else {
+      baseColumns = Object.keys(moduleDoc.schema.properties || {}).map(key => ({
+        key: '/' + key,
+        label: key
+      }));
+    }
+
+    const appliedColumns: any[] = columns ? columns.reduce((acc: any[], cur: any) => {
+      const ref = baseColumns.find(it => it.key === cur.key);
+
+      if (!cur.disabled && ref && (!ref.authorization || ref.authorization.includes(role))) {
+        acc.push({
+          ...ref,
+          label: cur.label
+        })
+      }
+
+      return acc;
+    }, []) : baseColumns;
+
+    const getValue = (key: string, doc: any) => {
+      if (has(doc, key)) {
+        return get(doc, key);
+      } else {
+        return '';
+      }
+    };
+
+    docs = docs.map((doc: any) =>
+      appliedColumns.reduce((acc, cur) => {
+
+        if (Array.isArray(cur.key)) {
+          acc[cur.label] = cur.key
+            .map((key: string) => getValue(key, doc))
+            .join(cur.hasOwnProperty('join') ? cur.join : ', ')
+        } else {
+          acc[cur.label] = getValue(cur.key, doc);
+        }
+
+        return acc;
+      }, [])
+    );
 
     switch (type) {
       case Type.json:
@@ -105,8 +181,7 @@ app.post('/:module', authenticated(), (req, res) => {
       case Type.tab:
       default:
         const json2csvParser = new Parser({
-          // TODO: We might need to explicitly add fields
-          fields: Object.keys(docs[0]),
+          fields: appliedColumns.map(({label}) => label),
           delimiter: type === Type.csv ? ',' : '  '
         });
 
