@@ -6,6 +6,9 @@ on:
     branches:
       - master
       - dev
+    paths:
+      - 'client/**/*'
+      - '.github/workflows/lighthouse.workflow.yml'
 jobs:
   lhci:
     name: Lighthouse
