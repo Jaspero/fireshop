@@ -34,7 +34,7 @@ jobs:
           files=`node ./.github/utils/function-changes.js '${{ steps.file_changes.outputs.files_modified}}' '${{ steps.file_changes.outputs.files_added}}'`
           echo '::set-output name=CHANGES::$files'
       - name: Deploy
-        if: $FILES
+        if: ${{ steps.changes.outputs.CHANGES }}
         run: npm run firebase -- deploy --only $FILES --token $FIREBASE_TOKEN
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
