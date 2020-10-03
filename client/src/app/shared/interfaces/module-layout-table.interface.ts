@@ -20,6 +20,7 @@ export interface ModuleLayoutTableColumn {
   tooltipFunction?: boolean;
   nestedColumns?: ModuleLayoutTableNestedColumn[];
   authorization?: string[];
+  disabled?: boolean;
   /**
    * Either ID or lookup need to be specified
    */

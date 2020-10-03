@@ -84,8 +84,8 @@ export class ExportComponent {
                 {
                   type,
                   collection: this.data.collection,
-                  ...this.data.sortM
-                  ...(this.data.ids && this.data.ids.length ? {ids: this.data.ids} : {})
+                  ...this.data.sort && {sort: this.data.sort},
+                  ...this.data.ids && this.data.ids.length && {ids: this.data.ids}
                 },
                 {
                   responseType: 'blob',

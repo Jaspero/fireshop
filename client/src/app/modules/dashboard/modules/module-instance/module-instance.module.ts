@@ -44,6 +44,7 @@ import {InstanceSingleComponent} from './pages/instance-single/instance-single.c
 import {ColumnPipe} from './pipes/column/column.pipe';
 import {ParseTemplatePipe} from './pipes/parse-template/parse-template.pipe';
 import {InstanceOverviewContextService} from './services/instance-overview-context.service';
+import { ColumnOrganizationComponent } from './components/column-organization/column-organization.component';
 
 const routes: Routes = [
   {
@@ -74,6 +75,7 @@ const routes: Routes = [
     ExportComponent,
     ImportComponent,
     FilterTagsComponent,
+    ColumnOrganizationComponent,
 
     /**
      * Dialogs
@@ -92,7 +94,7 @@ const routes: Routes = [
      */
     ForceDisableDirective,
 
-    ...ELEMENTS
+    ...ELEMENTS,
   ],
   providers: [
     InstanceOverviewContextService,

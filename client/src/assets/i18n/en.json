@@ -28,7 +28,8 @@
     "OPERATION_COMPLETED": "Operation completed",
     "OPERATION_FAILED": "Operation failed",
     "USERS": "Users",
-    "ROLES": "Roles"
+    "ROLES": "Roles",
+    "LABEL": "Label"
   },
   "LOGIN": {
     "LOGIN": "Login",
@@ -81,7 +82,10 @@
     "NO_ITEMS": "No {{value}} yet.",
     "LOAD_MORE": "More...",
     "APPLY": "Apply",
-    "UPDATE_ORDER": "Update Order"
+    "UPDATE_ORDER": "Update Order",
+    "TABLE": {
+      "COLUMNS": "Columns"
+    }
   },
   "INSTANCE_SINGLE": {
     "EDITING": "Editing",

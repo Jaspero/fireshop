@@ -20,7 +20,21 @@
   <jms-filter-tags [items$]="ioc.filterChange$" [search]="ioc.searchControl"></jms-filter-tags>
 </ng-template>
 
-<section class="grid" *ngIf="data$ | async as data">
+<ng-template #columnOrganization>
+  <h4 mat-dialog-title>Columns</h4>
+
+  <mat-dialog-content>
+    <jms-column-organization #jco [tableColumns]="data.originalColumns"></jms-column-organization>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="jc-end">
+    <button type="submit" mat-flat-button color="primary" (click)="updateColumns(jco)">
+      {{'GENERAL.SAVE' | transloco}}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<section class="grid" *ngIf="data">
   <div class="col-12">
     <mat-card>
       <mat-card-content class="mat-card-content-inset">
@@ -94,6 +108,13 @@
               </button>
             </span>
           </ng-container>
+
+          <span class="hide-xs" *ngIf="data.originalColumns">
+            <button mat-button (click)="openColumnOrganization()">
+              <mat-icon>view_column</mat-icon>
+              <span>{{'INSTANCE_OVERVIEW.TABLE.COLUMNS' | transloco}}</span>
+            </button>
+          </span>
 
           <div *ngIf="data.searchModule" class="m-l-s hide-xs">
             <jms-search-input [formControl]="ioc.searchControl"></jms-search-input>

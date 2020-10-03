@@ -12,6 +12,7 @@ import {WhereFilter} from '../../src/app/shared/interfaces/where-filter.interfac
 import {DbService} from '../../src/app/shared/services/db/db.service';
 import {environment} from '../../src/environments/environment';
 import {FirestoreCollection} from './firestore-collection.enum';
+import {FUNCTIONS_EMULATOR} from './functions-emulator.token';
 import {FUNCTIONS_REGION} from './functions-region.token';
 
 type FilterFunction = (ref: CollectionReference) => CollectionReference;
@@ -22,7 +23,7 @@ export class FbDatabaseService extends DbService {
     @Inject(FUNCTIONS_REGION)
     private region: string,
     @Optional()
-    @Inject()
+    @Inject(FUNCTIONS_EMULATOR)
     private emulator: string,
     private afs: AngularFirestore
   ) {

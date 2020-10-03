@@ -1,0 +1,14 @@
+<div class="columns" cdkDropList (cdkDropListDropped)="drop($event)">
+  <div class="column" *ngFor="let column of columns; index as index;" cdkDrag>
+    <div>
+      <mat-checkbox [formControl]="column.active"></mat-checkbox>
+      &nbsp;
+      <mat-form-field appearance="outline" class="mat-form-field-no-hint">
+        <input matInput [placeholder]="'GENERAL.LABEL' | transloco" [formControl]="column.label">
+      </mat-form-field>
+    </div>
+    <button mat-icon-button cdkDragHandle>
+      <mat-icon>drag_indicator</mat-icon>
+    </button>
+  </div>
+</div>
