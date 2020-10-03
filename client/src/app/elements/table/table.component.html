@@ -21,7 +21,7 @@
 </ng-template>
 
 <ng-template #columnOrganization>
-  <h4 mat-dialog-title>Columns</h4>
+  <h4 mat-dialog-title>{{'INSTANCE_OVERVIEW.TABLE.COLUMNS' | transloco}}</h4>
 
   <mat-dialog-content>
     <jms-column-organization #jco [tableColumns]="data.originalColumns"></jms-column-organization>
