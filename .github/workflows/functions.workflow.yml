@@ -36,6 +36,6 @@ jobs:
           echo '::set-output name=CHANGES::$files'
       - name: Deploy
         if: ${{ steps.changes.outputs.CHANGES }}
-        npm run firebase -- deploy --only ${steps.changes.outputs.CHANGES} --token $FIREBASE_TOKEN
+        run: npm run firebase -- deploy --only ${steps.changes.outputs.CHANGES} --token $FIREBASE_TOKEN
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
