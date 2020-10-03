@@ -1,3 +1,23 @@
+# [2.0.0](https://github.com/jaspero/jms/compare/v1.1.0...v2.0.0) (2020-10-03)
+
+
+### Bug Fixes
+
+* **client:** filter-tags not showing if value is false ([aad43ee](https://github.com/jaspero/jms/commit/aad43ee2d447be228dd69c702bf5e23241a5e411))
+
+
+### Features
+
+* export is now configurable and takes in account table setup on a module ([cedd9e2](https://github.com/jaspero/jms/commit/cedd9e24aef33994698fa5212668e876aec35e95))
+* **client:** added url() method to DbService ([b519d00](https://github.com/jaspero/jms/commit/b519d009b952270a6d7865bd56fa96356de22767))
+* **client:** adjustable columns in table :tada: closes [#190](https://github.com/jaspero/jms/issues/190) ([8b11bf2](https://github.com/jaspero/jms/commit/8b11bf206c90a157a4517911223771c3facd6af7))
+* **functions:** export now looks at provided module for authorization, added filter and sort options ([19982ed](https://github.com/jaspero/jms/commit/19982edcd4cf4a897a9468590c4a7144f2395a58))
+
+
+### BREAKING CHANGES
+
+* **client:** we removed the restApi property from the environment. It's now costructed from the region and project in FbService.
+
 # [1.1.0](https://github.com/jaspero/jms/compare/v1.0.1...v1.1.0) (2020-09-24)
 
 
