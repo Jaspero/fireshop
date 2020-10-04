@@ -1,13 +1,14 @@
 name: Deploy Firestore Indexes
 on:
   push:
+    branches:
+      - master
     paths:
       - 'firestore.indexes.json'
       - '.github/workflows/indexes.workflow.yml'
 
 jobs:
   deploy:
-    if: contains(github.ref, 'master')
     name: Deploy
     runs-on: ubuntu-latest
     steps:
