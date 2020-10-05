@@ -29,7 +29,7 @@ const changes = [
       fileName = camelize(fileName.join('.'));
 
       if (folderMatch.p) {
-        fileName = folderMatch.p + '-' + fileName;
+        fileName = folderMatch.p + '.' + fileName;
       }
 
       acc.push(`functions:${fileName}`);
