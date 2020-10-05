@@ -17,22 +17,24 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
-      - name: Install Dependencies
-        run: |
-          npm ci
-          npm install firebase-tools
-          npm --prefix functions ci
-          npm --prefix functions run build
-      - name: Set project
-        run: npm run firebase -- use jaspero-jms --token $FIREBASE_TOKEN
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       - id: file_changes
         uses: trilom/file-changes-action@v1.2.3
       - name: Detect file changes
         id: changes
         run: |
           echo ::set-output name=CHANGES::$(node ./.github/utils/function-changes.js '${{ steps.file_changes.outputs.files_modified}}' '${{ steps.file_changes.outputs.files_added}}')
+      - name: Install Dependencies
+        if: ${{ steps.changes.outputs.CHANGES }}
+        run: |
+          npm ci
+          npm install firebase-tools
+          npm --prefix functions ci
+          npm --prefix functions run build
+      - name: Set project
+        if: ${{ steps.changes.outputs.CHANGES }}
+        run: npm run firebase -- use jaspero-jms --token $FIREBASE_TOKEN
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       - name: Deploy
         if: ${{ steps.changes.outputs.CHANGES }}
         run: npm run firebase -- deploy --only $FILES --token $FIREBASE_TOKEN
