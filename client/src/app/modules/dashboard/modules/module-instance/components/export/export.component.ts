@@ -1,5 +1,5 @@
 import {HttpClient} from '@angular/common/http';
-import {Component, Inject, TemplateRef, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from '@angular/material/bottom-sheet';
 import {MatDialog} from '@angular/material/dialog';
@@ -25,7 +25,8 @@ enum ExportType {
 @Component({
   selector: 'jms-export',
   templateUrl: './export.component.html',
-  styleUrls: ['./export.component.scss']
+  styleUrls: ['./export.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExportComponent {
   constructor(
