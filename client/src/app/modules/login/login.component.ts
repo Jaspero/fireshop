@@ -48,11 +48,11 @@ export class LoginComponent implements OnInit {
   }
 
   loginGoogle() {
-    auth().signInWithPopup(new auth.GoogleAuthProvider());
+    this.afAuth.signInWithPopup(new auth.GoogleAuthProvider());
   }
 
   loginFacebook() {
-    auth().signInWithPopup(new auth.FacebookAuthProvider());
+    this.afAuth.signInWithPopup(new auth.FacebookAuthProvider());
   }
 
   loginEmail() {
@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
       const data = this.loginForm.getRawValue();
 
       return from(
-        auth().signInWithEmailAndPassword(
+        this.afAuth.signInWithEmailAndPassword(
           data.emailLogin,
           data.passwordLogin
         )
