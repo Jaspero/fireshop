@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/jaspero/jms/compare/v2.1.0...v2.1.1) (2020-10-06)
+
+
+### Bug Fixes
+
+* revert imports to afAuth ([c360a13](https://github.com/jaspero/jms/commit/c360a130738578cbfc22d577c937e538303ea54c))
+
 # [2.1.0](https://github.com/jaspero/jms/compare/v2.0.1...v2.1.0) (2020-10-06)
 
 
