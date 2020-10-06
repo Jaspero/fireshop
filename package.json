@@ -64,7 +64,6 @@
     "semantic-release": "17.1.1"
   },
   "release": {
-    "pkgRoot": "/",
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
