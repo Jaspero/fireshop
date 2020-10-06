@@ -39,9 +39,9 @@ app.post('/:module', authenticated(), (req, res) => {
 
     if (
       moduleDoc.authorization &&
-      moduleDoc.authorization.write &&
+      moduleDoc.authorization.read &&
       // @ts-ignore
-      !moduleDoc.authorization.write.includes(role)
+      !moduleDoc.authorization.read.includes(role)
     ) {
       throw new Error('User does not have permission to export this module')
     }
