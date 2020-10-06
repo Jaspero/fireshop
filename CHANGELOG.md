@@ -1,3 +1,15 @@
+# [2.1.0](https://github.com/jaspero/jms/compare/v2.0.1...v2.1.0) (2020-10-06)
+
+
+### Bug Fixes
+
+* removed pkgRoot from release in package.json ([cec11e4](https://github.com/jaspero/jms/commit/cec11e4fb27df2d4e7eb0ba145b97be7e8d6151d))
+
+
+### Features
+
+* added @semantic-release/npm to increment package.json version ([cc7b001](https://github.com/jaspero/jms/commit/cc7b00193a3d1dfe667091a5b737128ace45f819))
+
 ## [2.0.1](https://github.com/jaspero/jms/compare/v2.0.0...v2.0.1) (2020-10-06)
 
 
