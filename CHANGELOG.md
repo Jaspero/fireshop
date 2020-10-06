@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/jaspero/jms/compare/v2.0.0...v2.0.1) (2020-10-06)
+
+
+### Bug Fixes
+
+* **functions:** export based on read not write permission ([92a34c3](https://github.com/jaspero/jms/commit/92a34c364cbbde3f64f065c44fab6047dcb520fa))
+
 # [2.0.0](https://github.com/jaspero/jms/compare/v1.1.0...v2.0.0) (2020-10-03)
 
 
