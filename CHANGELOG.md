@@ -1,3 +1,10 @@
+## [2.1.2](https://github.com/jaspero/jms/compare/v2.1.1...v2.1.2) (2020-10-08)
+
+
+### Bug Fixes
+
+* using AngularFireFunctions instead of firebase functions directly ([5e0acde](https://github.com/jaspero/jms/commit/5e0acde8147d1fe94b3b8b5f744edf0f2667d11d))
+
 ## [2.1.1](https://github.com/jaspero/jms/compare/v2.1.0...v2.1.1) (2020-10-06)
 
 
