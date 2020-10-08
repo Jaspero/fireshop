@@ -8,7 +8,6 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FirebaseModule} from '../../integrations/firebase/fb.module';
-import {FUNCTIONS_REGION} from '../../integrations/firebase/functions-region.token';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {ConfirmationComponent} from './shared/components/confirmation/confirmation.component';
@@ -69,10 +68,6 @@ const PIPES = [
       useFactory: init,
       deps: [Injector],
       multi: true
-    },
-    {
-      provide: FUNCTIONS_REGION,
-      useValue: 'us-central1'
     }
   ],
   bootstrap: [AppComponent]

@@ -1,6 +1,6 @@
 import {Inject, Injectable, Optional} from '@angular/core';
 import {AngularFirestore, CollectionReference} from '@angular/fire/firestore';
-import {app} from 'firebase/app';
+import {AngularFireFunctions, ORIGIN, REGION} from '@angular/fire/functions';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {ExampleType} from '../../src/app/shared/enums/example-type.enum';
@@ -12,29 +12,28 @@ import {WhereFilter} from '../../src/app/shared/interfaces/where-filter.interfac
 import {DbService} from '../../src/app/shared/services/db/db.service';
 import {environment} from '../../src/environments/environment';
 import {FirestoreCollection} from './firestore-collection.enum';
-import {FUNCTIONS_EMULATOR} from './functions-emulator.token';
-import {FUNCTIONS_REGION} from './functions-region.token';
 
 type FilterFunction = (ref: CollectionReference) => CollectionReference;
 
 @Injectable()
 export class FbDatabaseService extends DbService {
   constructor(
-    @Inject(FUNCTIONS_REGION)
+    @Inject(REGION)
     private region: string,
     @Optional()
-    @Inject(FUNCTIONS_EMULATOR)
-    private emulator: string,
-    private afs: AngularFirestore
+    @Inject(ORIGIN)
+    private origin: string,
+    private afs: AngularFirestore,
+    private aff: AngularFireFunctions
   ) {
     super();
   }
 
   url(url: string) {
 
-    if (environment.emulator) {
+    if (environment.origin) {
       return [
-        environment.emulator,
+        environment.origin,
         environment.firebase.projectId,
         this.region,
         url
@@ -236,15 +235,7 @@ export class FbDatabaseService extends DbService {
   }
 
   callFunction(name: string, data) {
-    const func = app().functions(this.region);
-
-    if (this.emulator) {
-      func.useFunctionsEmulator(this.emulator)
-    }
-
-    return from(
-      func.httpsCallable(name)(data)
-    );
+    return this.aff.httpsCallable(name)(data)
   }
 
   createId() {
