@@ -19,16 +19,6 @@ import {FbDatabaseService} from './fb-database.service';
     AngularFireAuthGuardModule,
     AngularFirePerformanceModule,
     AngularFireFunctionsModule
-  ],
-  providers: [
-    {
-      provide: REGION,
-      useValue: 'us-central1'
-    },
-    {
-      provide: ORIGIN,
-      useValue: environment.origin
-    }
   ]
 })
 export class FirebaseModule {
@@ -43,7 +33,20 @@ export class FirebaseModule {
   static forRoot(): ModuleWithProviders<FirebaseModule> {
     return {
       ngModule: FirebaseModule,
-      providers: [{provide: DbService, useClass: FbDatabaseService}]
+      providers: [
+        {
+          provide: DbService,
+          useClass: FbDatabaseService
+        },
+        {
+          provide: REGION,
+          useValue: 'us-central1'
+        },
+        {
+          provide: ORIGIN,
+          useValue: environment.origin
+        }
+      ]
     };
   }
 }
