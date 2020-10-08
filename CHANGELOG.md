@@ -1,3 +1,10 @@
+## [2.1.4](https://github.com/jaspero/jms/compare/v2.1.3...v2.1.4) (2020-10-08)
+
+
+### Bug Fixes
+
+* don't use emulator in prod ([108655c](https://github.com/jaspero/jms/commit/108655c03ed042a1d52051f5322ab8b2bf92b4a6))
+
 ## [2.1.3](https://github.com/jaspero/jms/compare/v2.1.2...v2.1.3) (2020-10-08)
 
 
