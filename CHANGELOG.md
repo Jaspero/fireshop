@@ -1,3 +1,10 @@
+## [2.1.3](https://github.com/jaspero/jms/compare/v2.1.2...v2.1.3) (2020-10-08)
+
+
+### Bug Fixes
+
+* properly registering providers in FbModule ([7681bf0](https://github.com/jaspero/jms/commit/7681bf036ec03d301f08ce66204e2f57dbbbb287))
+
 ## [2.1.2](https://github.com/jaspero/jms/compare/v2.1.1...v2.1.2) (2020-10-08)
 
 
