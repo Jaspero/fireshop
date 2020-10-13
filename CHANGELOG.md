@@ -1,3 +1,17 @@
+# [3.0.0](https://github.com/jaspero/jms/compare/v2.1.4...v3.0.0) (2020-10-13)
+
+
+### Features
+
+* **client:** bumped version; implemented custom component duplicate component; ([d472343](https://github.com/jaspero/jms/commit/d4723432e83ce90b537329238ff78f5f8184d244))
+
+
+### BREAKING CHANGES
+
+* **client:** We removed the hideDuplicate property on ModuleInstance.
+
+Features like "duplicate" are now implemented through custom components on the form.
+
 ## [2.1.4](https://github.com/jaspero/jms/compare/v2.1.3...v2.1.4) (2020-10-08)
 
 
