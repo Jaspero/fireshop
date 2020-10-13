@@ -1,7 +1,6 @@
-import {ModuleInstanceSegment} from './module-instance-segment.interface';
+import {Segment} from '@jaspero/form-builder';
 
 export interface ModuleInstance {
-  hideDuplicate?: string[];
 
   /**
    * Receives the final results of the form
@@ -17,5 +16,5 @@ export interface ModuleInstance {
    * (form: FormGroup) => void;
    */
   formatOnLoad?: string;
-  segments: ModuleInstanceSegment[];
+  segments: Segment[];
 }

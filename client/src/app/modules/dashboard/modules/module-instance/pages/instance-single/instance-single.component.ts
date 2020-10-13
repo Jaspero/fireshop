@@ -15,7 +15,6 @@ import {queue} from '../../../../../../shared/utils/queue.operator';
 import {InstanceOverviewContextService} from '../../services/instance-overview-context.service';
 
 interface Instance {
-  hideDuplicate: boolean;
   module: {
     id: string;
     name: string;
@@ -89,7 +88,6 @@ export class InstanceSingleComponent implements OnInit {
             this.currentValue = JSON.stringify(this.initialValue);
 
             let editTitleKey = 'id';
-            let hideDuplicate = false;
 
             const formatOn: any = {};
 
@@ -99,10 +97,6 @@ export class InstanceSingleComponent implements OnInit {
               }
 
               if (module.layout.instance) {
-                if (module.layout.instance.hideDuplicate) {
-                  hideDuplicate = module.layout.instance.hideDuplicate.includes(this.state.role);
-                }
-
                 if (module.layout.instance.formatOnLoad) {
                   const method = safeEval(module.layout.instance.formatOnLoad);
 
@@ -124,7 +118,6 @@ export class InstanceSingleComponent implements OnInit {
             }
 
             return {
-              hideDuplicate,
               module: {
                 id: module.id,
                 name: module.name,
@@ -189,15 +182,5 @@ export class InstanceSingleComponent implements OnInit {
     this.initialValue = '';
     this.currentValue = '';
     this.router.navigate(['../..', 'overview'], {relativeTo: this.activatedRoute});
-  }
-
-  duplicate(instance: Instance) {
-    this.router.navigate([
-      '..',
-      'single',
-      `${instance.formBuilder.value.id}--copy`
-    ], {
-      relativeTo: this.activatedRoute
-    });
   }
 }

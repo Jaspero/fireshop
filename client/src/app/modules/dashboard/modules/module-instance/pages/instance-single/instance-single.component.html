@@ -39,23 +39,5 @@
     <!--<mat-progress-bar class="jms-instance-single-loading" color="accent" mode="determinate" value="40"></mat-progress-bar>-->
   </mat-toolbar>
 
-  <ng-container *ngSwitchCase="viewState.Edit">
-    <section class="grid" *ngIf="!data.directLink && !data.hideDuplicate">
-      <div class="col-12">
-        <mat-card>
-          <div class="flex ai-center">
-            <ng-container *ngIf="!data.hideDuplicate">
-              <button mat-button (click)="duplicate(data)">
-                <mat-icon>filter_none</mat-icon>
-                <span>&nbsp;{{'GENERAL.DUPLICATE' | transloco}}</span>
-              </button>
-              <div class="flex-1"></div>
-            </ng-container>
-          </div>
-        </mat-card>
-      </div>
-    </section>
-  </ng-container>
-
   <fb-form-builder [data]="data.formBuilder" [state]="formState"></fb-form-builder>
 </form>

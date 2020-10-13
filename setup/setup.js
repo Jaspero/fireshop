@@ -267,13 +267,22 @@ const MODULES = [
         direction: 'desc'
       },
       instance: {
-        segments: [{
-          fields: [
-            '/createdOn',
-            '/name',
-            '/description'
-          ]
-        }]
+        segments: [
+          {
+            components: [
+              {
+                selector: 'duplicate'
+              }
+            ]
+          },
+          {
+            fields: [
+              '/createdOn',
+              '/name',
+              '/description'
+            ]
+          }
+        ]
       },
       table: {
         tableColumns: [
@@ -296,6 +305,9 @@ const MODULES = [
     },
     schema: {
       properties: {
+        id: {
+          type: 'string'
+        },
         name: {
           type: 'string',
         },
