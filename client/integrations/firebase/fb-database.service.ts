@@ -38,24 +38,24 @@ export class FbDatabaseService extends DbService {
         this.region,
         url
       ]
-        .join('/')
+        .join('/');
     } else {
-      return `https://${this.region}-${environment.firebase.projectId}.cloudfunctions.net/${url}`
+      return `https://${this.region}-${environment.firebase.projectId}.cloudfunctions.net/${url}`;
     }
   }
 
   getModules() {
     return this.afs
-      .collection(FirestoreCollection.Modules, ref =>
-        ref.orderBy('layout.order', 'asc')
-      )
+      .collection(FirestoreCollection.Modules)
       .snapshotChanges()
       .pipe(
         map(actions =>
-          actions.map(action => ({
-            id: action.payload.doc.id,
-            ...(action.payload.doc.data() as Module)
-          }))
+          actions
+            .map(action => ({
+              id: action.payload.doc.id,
+              ...(action.payload.doc.data() as Module)
+            }))
+            .sort((a, b) => b?.layout?.order - a?.layout.order)
         )
       );
   }

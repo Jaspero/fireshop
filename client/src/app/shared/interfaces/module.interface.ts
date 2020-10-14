@@ -14,6 +14,7 @@ import {SortModule} from './sort-module.interface';
 export interface ModuleLayout {
   icon?: string;
   editTitleKey?: string;
+  order?: number;
 
   /**
    * ID of a document in the collection.
