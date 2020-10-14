@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/jaspero/jms/compare/v3.0.0...v3.1.0) (2020-10-14)
+
+
+### Features
+
+* **client:** don't require layout.order on modules to fetch them ([4f3d748](https://github.com/jaspero/jms/commit/4f3d748d9a5f74fc6c76e3e2d4491d3639e44304))
+
 # [3.0.0](https://github.com/jaspero/jms/compare/v2.1.4...v3.0.0) (2020-10-13)
 
 
