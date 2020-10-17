@@ -1,3 +1,16 @@
+# [3.2.0](https://github.com/jaspero/jms/compare/v3.1.0...v3.2.0) (2020-10-17)
+
+
+### Bug Fixes
+
+* **client:** buttons are type=button and have tabindex=-1 on password input in UserAddComponent ([1c31b09](https://github.com/jaspero/jms/commit/1c31b094a08556b6d97d6e95d8bb428a6517db65))
+
+
+### Features
+
+* **client:** allow toggling the type on password input in UserAddComponent, prevented autofill for email/password ([2b15f3a](https://github.com/jaspero/jms/commit/2b15f3ad18012812de7a0821f46518abaaf735e3))
+* **client:** prevent login to dashboard for users without a role claim ([37743eb](https://github.com/jaspero/jms/commit/37743eb31a93f795f4aaa490179b84dc0d50bfd0))
+
 # [3.1.0](https://github.com/jaspero/jms/compare/v3.0.0...v3.1.0) (2020-10-14)
 
 
