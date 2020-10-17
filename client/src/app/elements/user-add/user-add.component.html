@@ -12,8 +12,16 @@
 
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>{{'GENERAL.PASSWORD' | transloco}}</mat-label>
-        <input type="password" formControlName="password" matInput>
-        <mat-icon class="pointer" matSuffix matTooltip="Generate Random Password" (click)="generateRandomPassword()">cached</mat-icon>
+        <input [type]="type" formControlName="password" autocomplete="new-password" name="pwd" matInput>
+        <div class="flex" matSuffix>
+          <button mat-icon-button (click)="toggleType()">
+            <mat-icon>{{type === 'password' ? 'visibility' : 'visibility_off'}}</mat-icon>
+          </button>
+          &nbsp;
+          <button mat-icon-button matTooltip="Generate Random Password" (click)="generateRandomPassword()">
+            <mat-icon>cached</mat-icon>
+          </button>
+        </div>
         <mat-hint>{{'SETTINGS.PASSWORD_INSTRUCTIONS' | transloco}}</mat-hint>
         <mat-error>{{'SETTINGS.PASSWORD_RULES' | transloco}}</mat-error>
       </mat-form-field>

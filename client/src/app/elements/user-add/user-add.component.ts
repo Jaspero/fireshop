@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {firestore} from 'firebase/app';
@@ -20,19 +20,26 @@ export class UserAddComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private fb: FormBuilder,
-    private dbService: DbService
+    private dbService: DbService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   @ViewChild('addDialog', {static: true})
   addDialogTemplate: TemplateRef<any>;
   roles$: Observable<Role[]>;
   form: FormGroup;
+  type = 'password';
 
   ngOnInit() {
     this.roles$ = this.dbService.getDocumentsSimple(FirestoreCollection.Roles)
       .pipe(
         shareReplay(1)
       );
+  }
+
+  toggleType() {
+    this.type = this.type === 'password' ? 'text' : 'password';
+    this.cdr.markForCheck();
   }
 
   generateRandomPassword() {
