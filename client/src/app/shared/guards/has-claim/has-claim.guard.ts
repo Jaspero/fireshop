@@ -2,10 +2,12 @@ import {Injectable} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {CanActivate, Router} from '@angular/router';
-import {Observable, of} from 'rxjs';
+import {TranslocoService} from '@ngneat/transloco';
+import {Observable, of, throwError} from 'rxjs';
 import {catchError, map, switchMap, take} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../../integrations/firebase/firestore-collection.enum';
 import {StateService} from '../../services/state/state.service';
+import {notify} from '../../utils/notify.operator';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,8 @@ export class HasClaimGuard implements CanActivate {
     private afAuth: AngularFireAuth,
     private state: StateService,
     private router: Router,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private transloco: TranslocoService
   ) {}
 
   canActivate(): Observable<boolean> {
@@ -28,7 +31,20 @@ export class HasClaimGuard implements CanActivate {
       .pipe(
         take(1),
         switchMap(({claims}) => {
+
+          /**
+           * It's assumed that any user with a role claim
+           * is allowed to access tha dashboard
+           */
+          if (!claims.role) {
+            return throwError(
+              () =>
+                this.transloco.translate('ERRORS.DASHBOARD_ACCESS')
+            )
+          }
+
           this.state.role = claims.role;
+
           return this.afs
             .collection(FirestoreCollection.Users)
             .doc(claims.user_id)
@@ -46,13 +62,17 @@ export class HasClaimGuard implements CanActivate {
           this.state.user = user;
           return true;
         }),
-        catchError((e) => {
-          return this.signOut();
+        catchError((e) =>
+          this.signOut(e)
+        ),
+        notify({
+          showThrownError: true,
+          success: false
         })
       );
   }
 
-  signOut() {
+  signOut(error: Error) {
     this.afAuth.signOut()
       .then()
       .catch()
@@ -60,6 +80,6 @@ export class HasClaimGuard implements CanActivate {
         this.router.navigate(['/login']);
       });
 
-    return of(false);
+    return throwError(() => error);
   }
 }

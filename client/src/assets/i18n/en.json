@@ -146,5 +146,14 @@
     "PASSWORD_INSTRUCTIONS": "A user will only be automatically created if a password is provided",
     "PASSWORD_RULES": "Must be at least 6 characters",
     "LANGUAGE": "Language"
+  },
+  "USERS": {
+    "ROLE": "Role",
+    "PASSWORD_INSTRUCTIONS": "A user will only be automatically created if a password is provided",
+    "PASSWORD_RULES": "Must be at least 6 characters"
+  },
+
+  "ERRORS": {
+    "DASHBOARD_ACCESS": "You don't have access to the dashboard."
   }
 }

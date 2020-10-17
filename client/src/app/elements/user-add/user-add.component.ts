@@ -97,7 +97,9 @@ export class UserAddComponent implements OnInit {
 
           return of(true);
         }),
-        notify(),
+        notify({
+          showThrownError: true
+        }),
         tap(() => {
           this.dialog.closeAll();
         })

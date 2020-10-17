@@ -5,7 +5,7 @@ export const createUser = functions.https.onCall(async (data, context) => {
   if (!context.auth || !context.auth.token.role) {
     throw new functions.https.HttpsError(
       'failed-precondition',
-      'The function must be called ' + 'while authenticated.'
+      'This function must be called while authenticated.'
     );
   }
 
@@ -14,7 +14,8 @@ export const createUser = functions.https.onCall(async (data, context) => {
   try {
     user = await admin.auth().createUser(data);
   } catch (e) {
-    throw new functions.https.HttpsError('internal', e.toString());
+    console.error(e);
+    throw new functions.https.HttpsError('internal', e.message);
   }
 
   return {

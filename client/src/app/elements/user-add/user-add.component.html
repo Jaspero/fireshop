@@ -22,12 +22,12 @@
             <mat-icon>cached</mat-icon>
           </button>
         </div>
-        <mat-hint>{{'SETTINGS.PASSWORD_INSTRUCTIONS' | transloco}}</mat-hint>
-        <mat-error>{{'SETTINGS.PASSWORD_RULES' | transloco}}</mat-error>
+        <mat-hint>{{'USERS.PASSWORD_INSTRUCTIONS' | transloco}}</mat-hint>
+        <mat-error>{{'USERS.PASSWORD_RULES' | transloco}}</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="w-full m-t-m">
-        <mat-label>{{'SETTINGS.ROLE' | transloco}}</mat-label>
+        <mat-label>{{'USERS.ROLE' | transloco}}</mat-label>
         <mat-select formControlName="role">
           <mat-option *ngFor="let role of roles$ | async" [value]="role.id">{{role.name}}</mat-option>
         </mat-select>
