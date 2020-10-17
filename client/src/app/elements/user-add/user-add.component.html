@@ -14,11 +14,11 @@
         <mat-label>{{'GENERAL.PASSWORD' | transloco}}</mat-label>
         <input [type]="type" formControlName="password" autocomplete="new-password" name="pwd" matInput>
         <div class="flex" matSuffix>
-          <button mat-icon-button (click)="toggleType()">
+          <button type="button" tabindex="-1" mat-icon-button (click)="toggleType()">
             <mat-icon>{{type === 'password' ? 'visibility' : 'visibility_off'}}</mat-icon>
           </button>
           &nbsp;
-          <button mat-icon-button matTooltip="Generate Random Password" (click)="generateRandomPassword()">
+          <button type="button" tabindex="-1" mat-icon-button matTooltip="Generate Random Password" (click)="generateRandomPassword()">
             <mat-icon>cached</mat-icon>
           </button>
         </div>
