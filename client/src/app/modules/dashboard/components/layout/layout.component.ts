@@ -44,6 +44,14 @@ export class LayoutComponent implements OnInit {
                 !item.authorized ||
                 item.authorized.includes(this.state.role)
               ) {
+
+                if (item.function) {
+                  const value = safeEval(item.value);
+                  if (value) {
+                    item.value = value(this.state.user, this.state.role);
+                  }
+                }
+
                 acc.push({
                   ...item,
                   ...item.children ?
