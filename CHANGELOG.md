@@ -1,3 +1,10 @@
+## [3.2.1](https://github.com/jaspero/jms/compare/v3.2.0...v3.2.1) (2020-10-20)
+
+
+### Bug Fixes
+
+* **client:** missing function parser for root navigation item ([e04c604](https://github.com/jaspero/jms/commit/e04c604ca08c13bb3ff0767d883777865aaa25b6))
+
 # [3.2.0](https://github.com/jaspero/jms/compare/v3.1.0...v3.2.0) (2020-10-17)
 
 
