@@ -1,3 +1,10 @@
+## [3.2.2](https://github.com/jaspero/jms/compare/v3.2.1...v3.2.2) (2020-10-22)
+
+
+### Bug Fixes
+
+* replace space in image name ([829f5c4](https://github.com/jaspero/jms/commit/829f5c4588dde3347a8dfcef24a283e8cd85bb7c))
+
 ## [3.2.1](https://github.com/jaspero/jms/compare/v3.2.0...v3.2.1) (2020-10-20)
 
 
