@@ -1,3 +1,10 @@
+## [3.2.3](https://github.com/jaspero/jms/compare/v3.2.2...v3.2.3) (2020-10-22)
+
+
+### Bug Fixes
+
+* get modules layout not defined ([7c80e1f](https://github.com/jaspero/jms/commit/7c80e1f056337eeac25926ddb21a8069870482ed))
+
 ## [3.2.2](https://github.com/jaspero/jms/compare/v3.2.1...v3.2.2) (2020-10-22)
 
 
