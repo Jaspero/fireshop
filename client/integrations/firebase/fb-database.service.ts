@@ -55,7 +55,7 @@ export class FbDatabaseService extends DbService {
               id: action.payload.doc.id,
               ...(action.payload.doc.data() as Module)
             }))
-            .sort((a, b) => b?.layout?.order - a?.layout.order)
+            .sort((a, b) => b.layout?.order - a.layout?.order)
         )
       );
   }
