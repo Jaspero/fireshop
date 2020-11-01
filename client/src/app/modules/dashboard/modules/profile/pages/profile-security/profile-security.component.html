@@ -1,0 +1,79 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Change Password</mat-card-title>
+    <mat-card-subtitle *ngIf="(passwordProvider$ | async) === undefined">
+      You don't have password authentication on this account. However, you can still use this form
+      and an additional password authentication will be attached to your account.
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <form [formGroup]="pwForm" #nForm="ngForm" autocomplete="off">
+    <mat-card-content>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>New Password</mat-label>
+        <input type="password" matInput formControlName="password">
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Repeat Password</mat-label>
+        <input type="password" matInput formControlName="repeatPassword">
+      </mat-form-field>
+    </mat-card-content>
+
+    <mat-card-actions class="ta-right">
+      <button
+        mat-button
+        type="submit"
+        [disabled]="pwForm.invalid"
+        [jpLoadClick]="changePassword(nForm)">
+        {{'GENERAL.SAVE' | transloco}}
+      </button>
+    </mat-card-actions>
+  </form>
+</mat-card>
+
+<div class="m-t-s"></div>
+
+<ng-container *ngIf="passwordProvider$ | async">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Change Email</mat-card-title>
+    </mat-card-header>
+
+    <form [formGroup]="emailForm">
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{'GENERAL.EMAIL' | transloco}}</mat-label>
+          <input type="email" matInput formControlName="email">
+        </mat-form-field>
+      </mat-card-content>
+
+      <mat-card-actions class="ta-right">
+        <button
+          mat-button
+          type="submit"
+          [disabled]="emailForm.invalid"
+          [jpLoadClick]="changeEmail()">
+          {{'GENERAL.SAVE' | transloco}}
+        </button>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+
+  <div class="m-t-s"></div>
+</ng-container>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Other</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <ng-container *ngIf="multipleProviders$ | async">
+      <button mat-button color="warn" *ngIf="passwordProvider$ | async" (click)="removeProvider('password')">Remove Password Authentication</button>
+      <br>
+      <button mat-button color="warn" *ngIf="googleProvider$ | async" (click)="removeProvider('google.com')">Remove Google Authentication</button>
+      <br>
+    </ng-container>
+    <button mat-button color="warn" (click)="removeAccount()">Remove Account</button>
+  </mat-card-content>
+</mat-card>

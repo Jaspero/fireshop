@@ -61,11 +61,11 @@
     </ng-container>
   </div>
 
-  <span class="dashboard-nav-footer inactive" *ngIf="currentUser$ | async as user">
+  <a class="dashboard-nav-footer" *ngIf="currentUser$ | async as user" routerLink="/profile/information" routerLinkActive="active">
     <mat-icon aria-hidden="true" class="dashboard-nav-footer-icon">account_circle</mat-icon>
     <span class="dashboard-nav-footer-text">{{user.email}}</span>
     <span class="dashboard-nav-footer-tooltip" [matTooltip]="user.email" matTooltipPosition="right"></span>
-  </span>
+  </a>
 
   <a class="dashboard-nav-footer" (click)="logOut()">
     <mat-icon aria-hidden="true" class="dashboard-nav-footer-icon">power_settings_new</mat-icon>

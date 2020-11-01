@@ -24,6 +24,12 @@ const routes: Routes = [{
           .then(m => m.OverviewModule)
     },
     {
+      path: 'profile',
+      loadChildren: () =>
+        import('./modules/profile/profile.module')
+          .then(m => m.ProfileModule)
+    },
+    {
       path: 'module-definition',
       loadChildren: () =>
         import('./modules/module-definition/module-definition.module')

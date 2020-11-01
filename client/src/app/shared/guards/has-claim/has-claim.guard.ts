@@ -30,24 +30,24 @@ export class HasClaimGuard implements CanActivate {
     return this.afAuth.idTokenResult
       .pipe(
         take(1),
-        switchMap(({claims}) => {
+        switchMap((data) => {
 
           /**
            * It's assumed that any user with a role claim
            * is allowed to access tha dashboard
            */
-          if (!claims.role) {
+          if (!data || !data.claims.role) {
             return throwError(
               () =>
                 this.transloco.translate('ERRORS.DASHBOARD_ACCESS')
             )
           }
 
-          this.state.role = claims.role;
+          this.state.role = data.claims.role;
 
           return this.afs
             .collection(FirestoreCollection.Users)
-            .doc(claims.user_id)
+            .doc(data.claims.user_id)
             .get({
               source: 'server'
             })

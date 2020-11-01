@@ -147,6 +147,10 @@
     "PASSWORD_RULES": "Must be at least 6 characters",
     "LANGUAGE": "Language"
   },
+  "PROFILE": {
+    "NAME": "Name",
+    "IMAGE": "Profile Image"
+  },
   "USERS": {
     "ROLE": "Role",
     "PASSWORD_INSTRUCTIONS": "A user will only be automatically created if a password is provided",
