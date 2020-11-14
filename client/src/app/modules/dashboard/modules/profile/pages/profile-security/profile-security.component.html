@@ -9,11 +9,11 @@
 
   <form [formGroup]="pwForm" #nForm="ngForm" autocomplete="off">
     <mat-card-content>
-      <mat-form-field appearance="outline" class="w-full">
+      <mat-form-field class="w-full">
         <mat-label>New Password</mat-label>
         <input type="password" matInput formControlName="password">
       </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full">
+      <mat-form-field class="w-full">
         <mat-label>Repeat Password</mat-label>
         <input type="password" matInput formControlName="repeatPassword">
       </mat-form-field>
@@ -41,7 +41,7 @@
 
     <form [formGroup]="emailForm">
       <mat-card-content>
-        <mat-form-field appearance="outline" class="w-full">
+        <mat-form-field class="w-full">
           <mat-label>{{'GENERAL.EMAIL' | transloco}}</mat-label>
           <input type="email" matInput formControlName="email">
         </mat-form-field>

@@ -3,6 +3,7 @@ import {APP_INITIALIZER, Injector, NgModule} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {BrowserModule} from '@angular/platform-browser';
@@ -62,6 +63,12 @@ const PIPES = [
     {
       provide: MAT_DATE_LOCALE,
       useValue: 'en-US'
+    },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {
+        appearance: 'outline'
+      }
     },
     {
       provide: APP_INITIALIZER,

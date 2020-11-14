@@ -35,14 +35,14 @@
 
 <ng-template #dialog>
   <form [formGroup]="form" (ngSubmit)="file.click()">
-    <mat-form-field class="w-full" appearance="outline">
+    <mat-form-field class="w-full">
       <mat-label>{{'IMPORT.TYPE' | transloco}}</mat-label>
       <mat-select formControlName="type">
         <mat-option *ngFor="let option of importType | keyvalue" [value]="option.value">{{option.key}}</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field class="w-full" appearance="outline" *ngIf="form.get('type').value === importType.CSV">
+    <mat-form-field class="w-full" *ngIf="form.get('type').value === importType.CSV">
       <mat-label>{{'IMPORT.DELIMITER' | transloco}}</mat-label>
       <input matInput formControlName="delimiter">
     </mat-form-field>

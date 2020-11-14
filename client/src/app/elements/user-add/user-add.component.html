@@ -5,12 +5,12 @@
 
   <form [formGroup]="form" autocomplete="off">
     <mat-dialog-content>
-      <mat-form-field appearance="outline" class="w-full">
+      <mat-form-field class="w-full">
         <mat-label>{{'GENERAL.EMAIL' | transloco}}</mat-label>
         <input type="email" formControlName="email" matInput>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="w-full">
+      <mat-form-field class="w-full">
         <mat-label>{{'GENERAL.PASSWORD' | transloco}}</mat-label>
         <input [type]="type" formControlName="password" autocomplete="new-password" name="pwd" matInput>
         <div class="flex" matSuffix>
@@ -26,7 +26,7 @@
         <mat-error>{{'USERS.PASSWORD_RULES' | transloco}}</mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="w-full m-t-m">
+      <mat-form-field class="w-full m-t-m">
         <mat-label>{{'USERS.ROLE' | transloco}}</mat-label>
         <mat-select formControlName="role">
           <mat-option *ngFor="let role of roles$ | async" [value]="role.id">{{role.name}}</mat-option>

@@ -28,7 +28,7 @@
 
       <!--Regular login-->
       <form [formGroup]="loginForm">
-        <mat-form-field class="w-full" appearance="outline">
+        <mat-form-field class="w-full">
           <mat-label>{{'GENERAL.EMAIL' | transloco}}</mat-label>
           <input
             matInput
@@ -36,7 +36,7 @@
             formControlName="emailLogin"
           />
         </mat-form-field>
-        <mat-form-field class="w-full" appearance="outline">
+        <mat-form-field class="w-full">
           <mat-label>{{'GENERAL.PASSWORD' | transloco}}</mat-label>
           <input
             matInput

@@ -227,7 +227,7 @@
               (click)="ioc.loadMore$.next(true)">
               {{'INSTANCE_OVERVIEW.LOAD_MORE' | transloco}}
             </button>
-            <mat-form-field appearance="outline" class="mat-form-field-no-hint">
+            <mat-form-field class="mat-form-field-no-hint">
               <mat-label>{{'GENERAL.PAGE_SIZE' | transloco}}</mat-label>
               <mat-select [formControl]="ioc.pageSize">
                 <mat-option *ngFor="let size of ioc.pageSizes" [value]="size">

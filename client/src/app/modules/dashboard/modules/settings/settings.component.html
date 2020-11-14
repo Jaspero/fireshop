@@ -67,12 +67,12 @@
 
         <form [formGroup]="form" #nForm="ngForm" autocomplete="off">
           <mat-card-content>
-            <mat-form-field appearance="outline" class="w-full">
+            <mat-form-field class="w-full">
               <mat-label>{{'GENERAL.EMAIL' | transloco}}</mat-label>
               <input type="email" formControlName="email" matInput>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="w-full">
+            <mat-form-field class="w-full">
               <mat-label>{{'GENERAL.PASSWORD' | transloco}}</mat-label>
               <input type="password" formControlName="password" matInput>
               <mat-icon class="pointer" matSuffix matTooltip="Generate Random Password" (click)="generateRandomPassword()">cached</mat-icon>
@@ -80,7 +80,7 @@
               <mat-error>{{'SETTINGS.PASSWORD_RULES' | transloco}}</mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="w-full m-t-m">
+            <mat-form-field class="w-full m-t-m">
               <mat-label>{{'SETTINGS.ROLE' | transloco}}</mat-label>
               <mat-select formControlName="role">
                 <mat-option *ngFor="let role of roles$ | async" [value]="role.id">{{role.name}}</mat-option>
@@ -101,7 +101,7 @@
           <h1>{{'SETTINGS.LANGUAGE' | transloco}}</h1>
         </mat-card-header>
         <mat-card-content>
-          <mat-form-field appearance="outline" class="w-full">
+          <mat-form-field class="w-full">
             <mat-label>{{'SETTINGS.LANGUAGE' | transloco}}</mat-label>
             <mat-select [formControl]="languageControl">
               <mat-option *ngFor="let language of availableLanguages" [value]="language.id">{{language.label}}</mat-option>

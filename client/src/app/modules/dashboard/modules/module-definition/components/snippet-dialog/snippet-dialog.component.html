@@ -2,19 +2,19 @@
 
 <form [formGroup]="snippetForm">
   <mat-dialog-content>
-    <mat-form-field appearance="outline" class="w-full">
+    <mat-form-field class="w-full">
       <mat-label>Snippet</mat-label>
       <mat-select formControlName="snippet">
         <mat-option *ngFor="let item of snippetExamples$ | async" [value]="item.name">{{item.name | titlecase}}</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="w-full">
+    <mat-form-field class="w-full">
       <mat-label>Field name</mat-label>
       <input matInput formControlName="name">
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="w-full">
+    <mat-form-field class="w-full">
       <mat-label>Label</mat-label>
       <input matInput formControlName="label">
     </mat-form-field>
