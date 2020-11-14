@@ -1,3 +1,12 @@
+# [3.4.0](https://github.com/jaspero/jms/compare/v3.3.1...v3.4.0) (2020-11-14)
+
+
+### Features
+
+* **client:** made appearance outline default for mat form fields ([f8afbce](https://github.com/jaspero/jms/commit/f8afbcea4905fff8dc618666fe6b3014e4af4d1e))
+* **client:** updated to angular v11 ([26e65bf](https://github.com/jaspero/jms/commit/26e65bfc3c5882b5fa295907ddab03c7e227da4a))
+* **setup:** split out in to modules and collections and switched to typescript ([107e1ee](https://github.com/jaspero/jms/commit/107e1ee3ef1831dad289bfcd5c7995745aa5fd19))
+
 ## [3.3.1](https://github.com/jaspero/jms/compare/v3.3.0...v3.3.1) (2020-11-09)
 
 
