@@ -28,14 +28,14 @@ export class TranslocoHttpLoader implements TranslocoLoader {
         availableLangs: [{
           id: 'en',
           label: 'English'
-        }, {
-          id: 'hr',
-          label: 'Hrvatski'
         }],
         defaultLang: 'en',
         fallbackLang: 'en',
         reRenderOnLangChange: true,
         prodMode: environment.production,
+        missingHandler: {
+          logMissingKey: false
+        }
       })
     },
     { provide: TRANSLOCO_LOADER, useClass: TranslocoHttpLoader }

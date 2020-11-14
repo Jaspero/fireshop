@@ -24,7 +24,7 @@
     "@angular/platform-browser-dynamic": "11.0.0",
     "@angular/router": "11.0.0",
     "@jaspero/form-builder": "3.4.0",
-    "@jaspero/ng-helpers": "4.0.2",
+    "@jaspero/ng-helpers": "4.2.0",
     "@ngneat/transloco": "2.19.1",
     "@ngneat/until-destroy": "8.0.2",
     "ajv": "6.12.5",

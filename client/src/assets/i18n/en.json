@@ -29,7 +29,12 @@
     "OPERATION_FAILED": "Operation failed",
     "USERS": "Users",
     "ROLES": "Roles",
-    "LABEL": "Label"
+    "LABEL": "Label",
+
+    "CREATED_ON": "Created On",
+    "DATE": "Date",
+    "HOURS": "Hours",
+    "MINUTES": "Minutes"
   },
   "LOGIN": {
     "LOGIN": "Login",

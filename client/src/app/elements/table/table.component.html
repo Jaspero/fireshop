@@ -151,13 +151,13 @@
 
               <ng-container *ngIf="column.sortable; else notSortable">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                  {{column.label}}
+                  {{column.label | transloco}}
                 </th>
               </ng-container>
 
               <ng-template #notSortable>
                 <th mat-header-cell *matHeaderCellDef>
-                  {{column.label}}
+                  {{column.label | transloco}}
                 </th>
               </ng-template>
 

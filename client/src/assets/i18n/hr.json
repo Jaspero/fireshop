@@ -28,7 +28,12 @@
     "OPERATION_COMPLETED": "Operacija završena",
     "OPERATION_FAILED": "Operacija neuspješna",
     "USERS": "Korisnici",
-    "ROLES": "Uloge"
+    "ROLES": "Uloge",
+
+    "CREATED_ON": "Datum kreiranja",
+    "DATE": "Datum",
+    "HOURS": "Sati",
+    "MINUTES": "Minute"
   },
   "LOGIN": {
     "LOGIN": "Prijava",
