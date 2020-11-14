@@ -1,3 +1,17 @@
+## [3.3.1](https://github.com/jaspero/jms/compare/v3.3.0...v3.3.1) (2020-11-09)
+
+
+### Bug Fixes
+
+* **FileCreated:** removed space replace ([735f14f](https://github.com/jaspero/jms/commit/735f14f0ddf89ac65bcd9396bb5271b6d3cae64a))
+
+# [3.3.0](https://github.com/jaspero/jms/compare/v3.2.3...v3.3.0) (2020-11-01)
+
+
+### Features
+
+* **client:** profile page closes [#171](https://github.com/jaspero/jms/issues/171) ([b3d846d](https://github.com/jaspero/jms/commit/b3d846d42f34756d6e1c15d619a56a9b65de6a7a))
+
 ## [3.2.3](https://github.com/jaspero/jms/compare/v3.2.2...v3.2.3) (2020-10-22)
 
 
