@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SnippetDialogComponent } from './snippet-dialog.component';
 
@@ -6,7 +6,7 @@ describe('SnippetDialogComponent', () => {
   let component: SnippetDialogComponent;
   let fixture: ComponentFixture<SnippetDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SnippetDialogComponent ]
     })

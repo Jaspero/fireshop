@@ -50,7 +50,8 @@
             "scripts": [
               "./node_modules/tinymce/tinymce.min.js",
               {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
+                "input": "node_modules/document-register-element/build/document-register-element.js",
+                "inject": true
               }
             ],
             "allowedCommonJsDependencies": [
@@ -66,7 +67,6 @@
               "jsoneditor",
               "flat",
               "json-pointer",
-
               "tinymce/plugins/autolink",
               "tinymce/plugins/lists",
               "tinymce/plugins/fullscreen",
@@ -91,7 +91,6 @@
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": false,
               "extractLicenses": true,

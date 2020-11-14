@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {SortDialogComponent} from './sort-dialog.component';
 
@@ -6,7 +6,7 @@ describe('SortDialogComponent', () => {
   let component: SortDialogComponent;
   let fixture: ComponentFixture<SortDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SortDialogComponent]
     }).compileComponents();

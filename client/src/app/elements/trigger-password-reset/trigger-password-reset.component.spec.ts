@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TriggerPasswordResetComponent } from './trigger-password-reset.component';
 
@@ -6,7 +6,7 @@ describe('TriggerPasswordResetComponent', () => {
   let component: TriggerPasswordResetComponent;
   let fixture: ComponentFixture<TriggerPasswordResetComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TriggerPasswordResetComponent ]
     })
