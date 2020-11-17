@@ -51,6 +51,12 @@ const routes: Routes = [
         .then(m => m.ResetPasswordModule)
   },
   {
+    path: 'mfa',
+    loadChildren: () =>
+      import('./modules/mfa/mfa.module')
+        .then(m => m.MfaModule)
+  },
+  {
     path: '**',
     redirectTo: 'dashboard',
     pathMatch: 'full'

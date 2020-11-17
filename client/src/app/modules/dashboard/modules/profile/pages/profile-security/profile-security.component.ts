@@ -30,6 +30,7 @@ export class ProfileSecurityComponent implements OnInit {
   multipleProviders$: Observable<boolean>;
   passwordProvider$: Observable<any>;
   googleProvider$: Observable<any>;
+  hasTwoFactor$: Observable<boolean>;
 
   pwForm: FormGroup;
   emailForm: FormGroup;
@@ -44,6 +45,11 @@ export class ProfileSecurityComponent implements OnInit {
     this.multipleProviders$ = this.afAuth.user
       .pipe(
         map(item => item.providerData?.length > 1)
+      );
+
+    this.hasTwoFactor$ = this.afAuth.user
+      .pipe(
+        map(user => !!user.multiFactor?.enrolledFactors?.length)
       );
 
     this.googleProvider$ = this.afAuth.user
@@ -202,5 +208,26 @@ export class ProfileSecurityComponent implements OnInit {
           'This action is permanent and can not be reverted. You would need to link your account again in order to be able to use this authentication method.'
       }
     )
+  }
+
+  toggleTwoFactor() {
+    return () => {
+      return this.hasTwoFactor$
+        .pipe(
+          switchMap((hasTwoFactor) =>
+            this.afAuth.user
+              .pipe(
+                switchMap(user =>
+                  from(
+                    hasTwoFactor ?
+                      user.multiFactor.unenroll(user.multiFactor.enrolledFactors.pop()) :
+                      user.sendEmailVerification({url: `${location.origin}/mfa/authentication`})
+                  )
+                )
+              )
+          ),
+          notify()
+        )
+    }
   }
 }

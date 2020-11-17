@@ -1,0 +1,34 @@
+<section class="grid p-y-l">
+  <div class="col-4 col-m-5 col-s-8 col-xs-12">
+    <mat-card>
+      <h6 class="m-b-l p-t-m ta-center">{{'MFA.CONNECT' | transloco}}</h6>
+
+      <form [formGroup]="form" (submit)="submit()">
+        <mat-form-field class="w-full">
+          <mat-label>{{'GENERAL.COUNTRY' | transloco}}</mat-label>
+          <mat-select formControlName="countryCode">
+            <mat-option *ngFor="let country of countries" [value]="country.code">
+              {{country.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+          <mat-label>{{'MFA.PHONE' | transloco}}</mat-label>
+          <input formControlName="phone" inputmode="numeric" matInput>
+          <span matPrefix *ngIf="prefix" class="m-r-s">{{prefix}}</span>
+        </mat-form-field>
+
+        <button
+          type="submit"
+          mat-flat-button
+          color="primary"
+          class="w-full"
+          id="mfa-submit"
+          [disabled]="form.invalid">
+          {{'GENERAL.SUBMIT' | transloco}}
+        </button>
+      </form>
+    </mat-card>
+  </div>
+</section>

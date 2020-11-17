@@ -30,7 +30,9 @@
     "USERS": "Users",
     "ROLES": "Roles",
     "LABEL": "Label",
+    "SUBMIT": "Submit",
 
+    "COUNTRY": "Country",
     "CREATED_ON": "Created On",
     "DATE": "Date",
     "HOURS": "Hours",
@@ -52,6 +54,10 @@
     "ERROR_MESSAGE": "Email is invalid",
     "RESET_SUCCESSFUL": "Your password has been reset successfully. You can now log in.",
     "INVALID_OOB_CODE": "Your code has expired. Please restart the process of resetting your password."
+  },
+  "MFA": {
+    "CONNECT": "Connect Multi-Factor Authentication",
+    "PHONE": "Phone number"
   },
   "LAYOUT": {
     "MENU": "Menu",
