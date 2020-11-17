@@ -1,3 +1,10 @@
+# [3.6.0](https://github.com/jaspero/jms/compare/v3.5.0...v3.6.0) (2020-11-17)
+
+
+### Features
+
+* extended password reset to support action-controller ([5be6b3f](https://github.com/jaspero/jms/commit/5be6b3f98b2362057e077547eb335e3cc55f06cd))
+
 # [3.5.0](https://github.com/jaspero/jms/compare/v3.4.0...v3.5.0) (2020-11-17)
 
 
