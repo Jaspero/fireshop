@@ -136,5 +136,11 @@
     "PASSWORD_INSTRUCTIONS": "Korisnik će se automatski kreirati jedino ako je šifra unesena",
     "PASSWORD_RULES": "Najmanje 6 znamenki",
     "LANGUAGE": "Jezik"
+  },
+  "PROFILE": {
+    "NAME": "Ime",
+    "IMAGE": "Profil",
+    "CONNECT_MFA": "Email sa linkom za verifikaciju je poslan na vašu adresu.",
+    "REMOVE_MFA": "Vaš MFA je obrisan uspješno."
   }
 }

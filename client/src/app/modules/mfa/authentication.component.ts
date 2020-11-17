@@ -1,12 +1,13 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import 'firebase/auth';
-import {auth} from 'firebase/app';
-import {from} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
+import {auth, User} from 'firebase/app';
+import {from, Subscription, throwError} from 'rxjs';
+import {catchError, switchMap, tap} from 'rxjs/operators';
 import {COUNTRIES} from '../../shared/consts/countries.const';
 import {notify} from '../../shared/utils/notify.operator';
 
@@ -23,23 +24,31 @@ export class AuthenticationComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private afAuth: AngularFireAuth
+    private afAuth: AngularFireAuth,
+    private dialog: MatDialog
   ) { }
+
+  @ViewChild('verificationDialog', {static: true})
+  verificationDialogTemp: TemplateRef<any>;
 
   form: FormGroup;
   oobCode: string;
   countries = COUNTRIES;
 
   recaptcha: auth.RecaptchaVerifier;
-
+  mfa: User.MultiFactorUser;
+  codeForm: FormGroup;
   prefix: string;
+  confirmationResult: string;
+
+  private subscription: Subscription;
 
   ngOnInit() {
     this.oobCode = this.activatedRoute.snapshot.queryParams.oobCode;
 
-    // if (!this.oobCode) {
-    //   this.router.navigate(['/login']);
-    // }
+    if (!this.oobCode) {
+      this.router.navigate(['/login']);
+    }
 
     this.form = this.fb.group({
       countryCode: ['', Validators.required],
@@ -59,39 +68,32 @@ export class AuthenticationComponent implements OnInit {
         if (!this.recaptcha) {
           this.recaptcha = new auth.RecaptchaVerifier('mfa-submit', {
             size: 'invisible',
-            callback: () => {
-              console.log(321);
-            }
+            callback: () => this.submit()
           });
-        } else {
-          this.recaptcha.clear();
-        }
 
-        this.recaptcha.render();
+          this.recaptcha.render();
+        }
 
         this.cdr.markForCheck();
       })
   }
 
   submit() {
-    console.log(21312);
-
-    from(
-      this.recaptcha.verify()
+    console.log('here');
+    this.subscription = from(
+      this.afAuth.checkActionCode(this.oobCode)
     )
       .pipe(
-        switchMap(() =>
-          this.afAuth.checkActionCode(this.oobCode)
-        ),
         switchMap(() =>
           this.afAuth.applyActionCode(this.oobCode)
         ),
         switchMap(() =>
           this.afAuth.user
         ),
-        switchMap(user =>
-          user.multiFactor.getSession()
-        ),
+        switchMap(user => {
+          this.mfa = user.multiFactor;
+          return this.mfa.getSession();
+        }),
         switchMap(session => {
 
           const {phone} = this.form.getRawValue();
@@ -99,10 +101,58 @@ export class AuthenticationComponent implements OnInit {
           const phoneAuthProvider = new auth.PhoneAuthProvider();
           return phoneAuthProvider.verifyPhoneNumber({phoneNumber: this.prefix + phone, session}, this.recaptcha);
         }),
-        tap(() => {
-        }),
-        notify()
-      )
+        catchError(e => {
+          if (e.code === 'auth/requires-recent-login') {
+            this.router.navigate(['/login']);
+            this.afAuth.signOut();
+          }
 
+          return throwError(e);
+        }),
+        notify({
+          success: false,
+          showThrownError: true
+        })
+      )
+      .subscribe((verificationId) => {
+
+        this.recaptcha.clear();
+        this.recaptcha = null;
+
+        this.subscription.unsubscribe();
+
+        this.confirmationResult = verificationId;
+
+        this.codeForm = this.fb.group({
+          code: ['', Validators.required]
+        });
+
+        this.dialog.open(this.verificationDialogTemp, {
+          width: '400px'
+        });
+      })
+  }
+
+  verify() {
+    return () => {
+
+      console.log('in here');
+
+      const {code} = this.codeForm.getRawValue();
+
+      const cred = auth.PhoneAuthProvider.credential(this.confirmationResult, code);
+      const multiFactorAssertion = auth.PhoneMultiFactorGenerator.assertion(cred);
+
+      return from(
+        this.mfa.enroll(multiFactorAssertion, 'Phone Number')
+      )
+        .pipe(
+          notify(),
+          tap(() => {
+            this.dialog.closeAll();
+            this.router.navigate(['/dashboard']);
+          })
+        )
+    }
   }
 }

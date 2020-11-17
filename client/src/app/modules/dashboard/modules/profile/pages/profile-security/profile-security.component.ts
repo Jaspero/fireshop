@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup, FormGroupDirective, Validators} from '@angular/f
 import {Router} from '@angular/router';
 import {auth} from 'firebase/app';
 import {combineLatest, from, Observable, throwError} from 'rxjs';
-import {catchError, map, switchMap, tap} from 'rxjs/operators';
+import {catchError, map, switchMap, take, tap} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../../../../../integrations/firebase/firestore-collection.enum';
 import {DbService} from '../../../../../../shared/services/db/db.service';
 import {StateService} from '../../../../../../shared/services/state/state.service';
@@ -44,18 +44,20 @@ export class ProfileSecurityComponent implements OnInit {
 
     this.multipleProviders$ = this.afAuth.user
       .pipe(
-        map(item => item.providerData?.length > 1)
+        map(item => item?.providerData?.length > 1)
       );
 
     this.hasTwoFactor$ = this.afAuth.user
       .pipe(
-        map(user => !!user.multiFactor?.enrolledFactors?.length)
+        map(user =>
+          !!(user.multiFactor?.enrolledFactors?.length)
+        )
       );
 
     this.googleProvider$ = this.afAuth.user
       .pipe(
         map(item =>
-          (item.providerData || [])
+          (item?.providerData || [])
             .find(it => it.providerId === 'google.com')
         )
       );
@@ -212,21 +214,38 @@ export class ProfileSecurityComponent implements OnInit {
 
   toggleTwoFactor() {
     return () => {
+
+      let htf: boolean;
+
       return this.hasTwoFactor$
         .pipe(
-          switchMap((hasTwoFactor) =>
-            this.afAuth.user
+          take(1),
+          switchMap((hasTwoFactor) => {
+            htf = hasTwoFactor;
+            return this.afAuth.user
               .pipe(
+                take(1),
                 switchMap(user =>
                   from(
                     hasTwoFactor ?
                       user.multiFactor.unenroll(user.multiFactor.enrolledFactors.pop()) :
-                      user.sendEmailVerification({url: `${location.origin}/mfa/authentication`})
+                      user.sendEmailVerification({url: `${location.origin}/mfa`})
                   )
-                )
-              )
-          ),
-          notify()
+                ),
+                catchError(e => {
+                  if (e.code === 'auth/requires-recent-login') {
+                    this.router.navigate(['/login']);
+                    this.afAuth.signOut();
+                  }
+
+                  return throwError(e);
+                }),
+                notify({
+                  success: htf ? 'PROFILE.REMOVE_MFA' : 'PROFILE.CONNECT_MFA',
+                  showThrownError: true
+                })
+              );
+          })
         )
     }
   }

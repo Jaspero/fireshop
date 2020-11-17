@@ -4,6 +4,7 @@ import {getUser} from './callable/get-user';
 import {removeUser} from './callable/remove-user';
 import {triggerPasswordReset} from './callable/trigger-password-reset';
 import {updateUser} from './callable/update-user';
+import {actionController} from './rest/action-controller';
 import {api} from './rest/api';
 import {exportData} from './rest/export-data';
 import {importData} from './rest/import-data';
@@ -39,5 +40,6 @@ export const cms = {
   // Rest
   exportData,
   importData,
-  api
+  api,
+  actionController
 };

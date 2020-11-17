@@ -3,7 +3,7 @@
     <mat-card>
       <h6 class="m-b-l p-t-m ta-center">{{'MFA.CONNECT' | transloco}}</h6>
 
-      <form [formGroup]="form" (submit)="submit()">
+      <form [formGroup]="form">
         <mat-form-field class="w-full">
           <mat-label>{{'GENERAL.COUNTRY' | transloco}}</mat-label>
           <mat-select formControlName="countryCode">
@@ -32,3 +32,23 @@
     </mat-card>
   </div>
 </section>
+
+<ng-template #verificationDialog>
+  <h4 mat-dialog-title>{{'MFA.VERIFICATION' | transloco}}</h4>
+
+  <mat-dialog-content>
+    <p class="m-b-m">{{'MFA.DESCRIPTION' | transloco}}</p>
+
+    <form [formGroup]="codeForm">
+      <mat-form-field class="w-full">
+        <mat-label>{{'MFA.VERIFICATION_CODE' | transloco}}</mat-label>
+        <input inputmode="numeric" matInput formControlName="code">
+      </mat-form-field>
+
+      <button mat-stroked-button color="primary" type="submit" [jpLoadClick]="verify()">
+        {{'MFA.AUTHENTICATE' | transloco}}
+      </button>
+    </form>
+
+  </mat-dialog-content>
+</ng-template>

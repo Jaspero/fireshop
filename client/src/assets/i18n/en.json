@@ -42,7 +42,9 @@
     "LOGIN": "Login",
     "LOGIN_WITH": "Log in with {{value}}",
     "FORGOT_PASSWORD": "Forgot password?",
-    "ERROR_MESSAGE": "The email and password you entered did not match our records. Please double-check and try again."
+    "ERROR_MESSAGE": "The email and password you entered did not match our records. Please double-check and try again.",
+    "MFA_AUTHENTICATION": "Authenticate",
+    "MFA_SELECT_DEVICE": "Device"
   },
   "RESET_PASSWORD": {
     "REPEAT_PASSWORD": "Repeat Password",
@@ -57,7 +59,11 @@
   },
   "MFA": {
     "CONNECT": "Connect Multi-Factor Authentication",
-    "PHONE": "Phone number"
+    "PHONE": "Phone number",
+    "VERIFICATION": "Verification",
+    "DESCRIPTION": "A code has been sent to you",
+    "AUTHENTICATE": "Authenticate",
+    "VERIFICATION_CODE": "Code"
   },
   "LAYOUT": {
     "MENU": "Menu",
@@ -160,7 +166,9 @@
   },
   "PROFILE": {
     "NAME": "Name",
-    "IMAGE": "Profile Image"
+    "IMAGE": "Profile Image",
+    "CONNECT_MFA": "An email with the verification link has been sent to your account.",
+    "REMOVE_MFA": "Your MFA connection has been removed successfully."
   },
   "USERS": {
     "ROLE": "Role",
