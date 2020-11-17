@@ -16,7 +16,7 @@ export const triggerPasswordReset = functions.https.onCall(async (data, context)
    * Send the link via email using your mail provider
    */
   try {
-    link = await auth().generatePasswordResetLink(data);
+    link = await auth().generatePasswordResetLink(data, {url: data.url});
   } catch (e) {
     throw new functions.https.HttpsError('internal', e.toString());
   }
