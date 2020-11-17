@@ -1,3 +1,10 @@
+# [3.7.0](https://github.com/jaspero/jms/compare/v3.6.0...v3.7.0) (2020-11-17)
+
+
+### Features
+
+* incremented form-builder library ([63a3243](https://github.com/jaspero/jms/commit/63a32435b854f85708fd6f098f29537044aa2402))
+
 # [3.6.0](https://github.com/jaspero/jms/compare/v3.5.0...v3.6.0) (2020-11-17)
 
 
