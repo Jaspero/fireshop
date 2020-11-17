@@ -1,3 +1,11 @@
+# [3.5.0](https://github.com/jaspero/jms/compare/v3.4.0...v3.5.0) (2020-11-17)
+
+
+### Features
+
+* connected mfa :tada: closes [#192](https://github.com/jaspero/jms/issues/192) ([3d8d615](https://github.com/jaspero/jms/commit/3d8d615f5884aa5bff235cc3c80664bd5166b97f))
+* connecting MFA :construction: [#192](https://github.com/jaspero/jms/issues/192) ([dd9fde7](https://github.com/jaspero/jms/commit/dd9fde74b1d667b5befb564bf791e275d1f1b677))
+
 # [3.4.0](https://github.com/jaspero/jms/compare/v3.3.1...v3.4.0) (2020-11-14)
 
 
