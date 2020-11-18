@@ -15,7 +15,7 @@ import {TranslocoModule} from '@ngneat/transloco';
 import {environment} from '../../../../environments/environment';
 import {DbService} from '../../services/db/db.service';
 import {StateService} from '../../services/state/state.service';
-import { DuplicateComponent } from './custom-components/duplicate/duplicate.component';
+import {DuplicateComponent} from './custom-components/duplicate/duplicate.component';
 
 export function roleFactory(state: StateService) {
   return state.role;

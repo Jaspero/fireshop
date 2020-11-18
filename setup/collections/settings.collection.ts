@@ -17,6 +17,11 @@ export const SETTINGS_COLLECTION = {
           email: 'test@test.com',
           role: 'user'
         },
+
+        {
+          email: 'info@jaspero.co',
+          role: 'admin'
+        }
       ]
     },
     {
