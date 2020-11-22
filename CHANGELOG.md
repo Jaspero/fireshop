@@ -1,3 +1,10 @@
+# [3.8.0](https://github.com/jaspero/jms/compare/v3.7.1...v3.8.0) (2020-11-22)
+
+
+### Features
+
+* **client:** table columns can now be populated with data from sub-collections. ([edee4eb](https://github.com/jaspero/jms/commit/edee4eb8ec0ad02a0815837e640b60c90f1e6de6))
+
 ## [3.7.1](https://github.com/jaspero/jms/compare/v3.7.0...v3.7.1) (2020-11-18)
 
 
