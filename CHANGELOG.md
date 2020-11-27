@@ -1,3 +1,10 @@
+## [3.9.2](https://github.com/jaspero/jms/compare/v3.9.1...v3.9.2) (2020-11-27)
+
+
+### Bug Fixes
+
+* **client:** table populate working when parsing template ([06857d4](https://github.com/jaspero/jms/commit/06857d466758ce5723190fd34c94f981c494f8e9))
+
 ## [3.9.1](https://github.com/jaspero/jms/compare/v3.9.0...v3.9.1) (2020-11-27)
 
 
