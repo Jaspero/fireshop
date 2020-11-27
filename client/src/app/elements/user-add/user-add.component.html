@@ -1,7 +1,7 @@
 <button mat-flat-button (click)="open()">{{'GENERAL.ADD' | transloco}} User</button>
 
 <ng-template #addDialog>
-  <h4 mat-dialog-title>Add User</h4>
+  <h4 mat-dialog-title>{{'USERS.ADD' | transloco}}</h4>
 
   <form [formGroup]="form" autocomplete="off">
     <mat-dialog-content>

@@ -159,5 +159,12 @@
     "IMAGE": "Profil",
     "CONNECT_MFA": "Email sa linkom za verifikaciju je poslan na vašu adresu.",
     "REMOVE_MFA": "Vaš MFA je obrisan uspješno."
+  },
+
+  "USERS": {
+    "ADD": "Dodaj Korisnika",
+    "ROLE": "Uloga",
+    "PASSWORD_INSTRUCTIONS": "Korisnik će se automatski kreirati ako je dodana lozinka",
+    "PASSWORD_RULES": "Lozinka mora imati barem 6 znakova"
   }
 }
