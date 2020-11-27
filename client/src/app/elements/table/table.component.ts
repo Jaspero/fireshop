@@ -453,7 +453,8 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
         const parsedCollection = parseTemplate(
           column.populate.collection,
           rowData,
-          (key, entry) => get(entry, key)
+          (key, entry) => get(entry, key),
+          true
         );
         const popKey = `${parsedCollection}-${
           column.populate.lookUp ?
