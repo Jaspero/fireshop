@@ -20,7 +20,10 @@ export class TriggerPasswordResetComponent {
         email
       } = this.el.nativeElement.dataset;
 
-      return this.dbService.callFunction('cms-triggerPasswordReset', email)
+      return this.dbService.callFunction(
+        'cms-triggerPasswordReset',
+        {email, url: `${location.origin}/reset-password`}
+      )
         .pipe(
           notify({
             success: 'Reset password request sent successfully',

@@ -28,6 +28,12 @@ export interface ModuleLayoutTableColumn {
     collection: string;
 
     /**
+     * If no id is provided the value of column.key
+     * is used instead
+     */
+    id?: string;
+
+    /**
      * If a lookup is provided then the id isn't used
      */
     lookUp?: {

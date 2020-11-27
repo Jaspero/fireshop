@@ -15,7 +15,7 @@ import {
 } from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSort} from '@angular/material/sort';
-import {Parser, safeEval, State} from '@jaspero/form-builder';
+import {Parser, parseTemplate, safeEval, State} from '@jaspero/form-builder';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {get, has} from 'json-pointer';
 import {JSONSchema7} from 'json-schema';
@@ -433,11 +433,13 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
       if (nested) {
         return value;
       } else if (column.populate) {
-        let id;
+        let id = column.populate.id;
 
-        try {
-          id = get(rowData, column.key as string);
-        } catch (e) {}
+        if (!id) {
+          try {
+            id = get(rowData, column.key as string);
+          } catch (e) {}
+        }
 
 
         if (!id) {
@@ -448,7 +450,12 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
           );
         }
 
-        const popKey = `${column.populate.collection}-${
+        const parsedCollection = parseTemplate(
+          column.populate.collection,
+          rowData,
+          (key, entry) => get(entry, key)
+        );
+        const popKey = `${parsedCollection}-${
           column.populate.lookUp ?
             [column.populate.lookUp.key, column.populate.lookUp.operator, id].join('-') :
             id
@@ -457,7 +464,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!this.populateCache[popKey]) {
           if (column.populate.lookUp) {
             this.populateCache[popKey] = this.dbService.getDocuments(
-              column.populate.collection,
+              parsedCollection,
               1,
               undefined,
               undefined,
@@ -490,7 +497,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
               )
           } else {
             this.populateCache[popKey] = this.dbService.getDocument(
-              column.populate.collection,
+              parsedCollection,
               id
             )
               .pipe(

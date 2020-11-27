@@ -20,6 +20,7 @@ export class HasCodeGuard implements CanActivate {
         .pipe(
           map(() => true),
           notify({
+            success: false,
             error: 'RESET_PASSWORD.INVALID_OOB_CODE'
           }),
           catchError(() => {

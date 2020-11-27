@@ -36,7 +36,14 @@ export class TriggerPasswordResetComponent implements OnInit {
 
   reset() {
     return () =>
-      from(this.afAuth.sendPasswordResetEmail(this.form.get('email').value))
+      from(
+        this.afAuth.sendPasswordResetEmail(
+          this.form.get('email').value,
+          {
+            url: `${location.origin}/reset-password`
+          }
+        )
+      )
         .pipe(
           tap(() => {
             this.form.reset();

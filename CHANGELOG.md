@@ -1,3 +1,39 @@
+# [3.8.0](https://github.com/jaspero/jms/compare/v3.7.1...v3.8.0) (2020-11-22)
+
+
+### Features
+
+* **client:** table columns can now be populated with data from sub-collections. ([edee4eb](https://github.com/jaspero/jms/commit/edee4eb8ec0ad02a0815837e640b60c90f1e6de6))
+
+## [3.7.1](https://github.com/jaspero/jms/compare/v3.7.0...v3.7.1) (2020-11-18)
+
+
+### Bug Fixes
+
+* **setup:** created-on populates on load ([79d7d3f](https://github.com/jaspero/jms/commit/79d7d3ff37aa7791ed1ecd2e3ecf5c73f66fc9f9))
+
+# [3.7.0](https://github.com/jaspero/jms/compare/v3.6.0...v3.7.0) (2020-11-17)
+
+
+### Features
+
+* incremented form-builder library ([63a3243](https://github.com/jaspero/jms/commit/63a32435b854f85708fd6f098f29537044aa2402))
+
+# [3.6.0](https://github.com/jaspero/jms/compare/v3.5.0...v3.6.0) (2020-11-17)
+
+
+### Features
+
+* extended password reset to support action-controller ([5be6b3f](https://github.com/jaspero/jms/commit/5be6b3f98b2362057e077547eb335e3cc55f06cd))
+
+# [3.5.0](https://github.com/jaspero/jms/compare/v3.4.0...v3.5.0) (2020-11-17)
+
+
+### Features
+
+* connected mfa :tada: closes [#192](https://github.com/jaspero/jms/issues/192) ([3d8d615](https://github.com/jaspero/jms/commit/3d8d615f5884aa5bff235cc3c80664bd5166b97f))
+* connecting MFA :construction: [#192](https://github.com/jaspero/jms/issues/192) ([dd9fde7](https://github.com/jaspero/jms/commit/dd9fde74b1d667b5befb564bf791e275d1f1b677))
+
 # [3.4.0](https://github.com/jaspero/jms/compare/v3.3.1...v3.4.0) (2020-11-14)
 
 

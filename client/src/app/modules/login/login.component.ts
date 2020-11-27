@@ -155,7 +155,7 @@ export class LoginComponent implements OnInit {
 
     this.deviceForm = this.fb.group({
       device: resolver.hints[resolver.hints.length - 1].uid
-    })
+    });
 
     this.dialog.open(
       this.mfaVerificationTemp,
