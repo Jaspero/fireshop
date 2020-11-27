@@ -28,7 +28,12 @@
     "OPERATION_COMPLETED": "Operacija završena",
     "OPERATION_FAILED": "Operacija neuspješna",
     "USERS": "Korisnici",
+    "USER": "Korisnik",
     "ROLES": "Uloge",
+    "LABEL": "Labela",
+    "SUBMIT": "Pošali",
+    "DISABLED": "Blokiran",
+    "ENABLED": "Aktivan",
 
     "CREATED_ON": "Datum kreiranja",
     "DATE": "Datum",
@@ -42,7 +47,8 @@
     "ERROR_MESSAGE": "Uneseni Email i Lozinka nisu pronađeni. Molim vas pokušajte ponovo."
   },
   "RESET_PASSWORD": {
-    "PASSWORD_RESET": "Resetiraj Lozinku",
+    "REPEAT_PASSWORD": "Ponovite lozinku",
+    "PASSWORD_RESET": "Resetiraj lozinku",
     "EMAIL_DOESNT_EXIST": "Email ne postoji",
     "GO_BACK": "Nazad",
     "RESET_MY_PASSWORD": "Resetiraj lozinku",
@@ -85,7 +91,7 @@
     "APPLY": "Primjeni",
     "UPDATE_ORDER": "Ažuriraj poredak",
     "TABLE": {
-      "COLUMNS": "Columns"
+      "COLUMNS": "Kolumne"
     }
   },
   "INSTANCE_SINGLE": {

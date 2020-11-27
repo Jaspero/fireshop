@@ -32,8 +32,8 @@
     "ROLES": "Roles",
     "LABEL": "Label",
     "SUBMIT": "Submit",
-    "DISABLE": "Disabled",
-    "ENABLE": "Enabled",
+    "DISABLED": "Disabled",
+    "ENABLED": "Enabled",
 
     "COUNTRY": "Country",
     "CREATED_ON": "Created On",
