@@ -166,5 +166,17 @@
     "ROLE": "Uloga",
     "PASSWORD_INSTRUCTIONS": "Korisnik će se automatski kreirati ako je dodana lozinka",
     "PASSWORD_RULES": "Lozinka mora imati barem 6 znakova"
+  },
+  "ELEMENTS": {
+    "CHANGE_PASSWORD": {
+      "TITLE": "Promijeni lozinku",
+      "DIALOG_TITLE": "Promijeni korisnikovu lozinku"
+    },
+    "USER_STATUS": {
+      "LOADING": "Učitavanje statusa..."
+    },
+    "TRIGGER_PASSWORD_RESET": {
+      "TITLE": "Pošalji email za resetiranje lozinke"
+    }
   }
 }

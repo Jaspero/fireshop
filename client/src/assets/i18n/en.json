@@ -28,9 +28,12 @@
     "OPERATION_COMPLETED": "Operation completed",
     "OPERATION_FAILED": "Operation failed",
     "USERS": "Users",
+    "USER": "User",
     "ROLES": "Roles",
     "LABEL": "Label",
     "SUBMIT": "Submit",
+    "DISABLE": "Disabled",
+    "ENABLE": "Enabled",
 
     "COUNTRY": "Country",
     "CREATED_ON": "Created On",
@@ -189,6 +192,18 @@
     "ROLE": "Role",
     "PASSWORD_INSTRUCTIONS": "A user will only be automatically created if a password is provided",
     "PASSWORD_RULES": "Must be at least 6 characters"
+  },
+  "ELEMENTS": {
+    "CHANGE_PASSWORD": {
+      "TITLE": "Change Password",
+      "DIALOG_TITLE": "Change Users Password"
+    },
+    "USER_STATUS": {
+      "LOADING": "Loading Status..."
+    },
+    "TRIGGER_PASSWORD_RESET": {
+      "TITLE": "Send password reset email"
+    }
   },
 
   "ERRORS": {
