@@ -1,3 +1,10 @@
+# [3.9.0](https://github.com/jaspero/jms/compare/v3.8.0...v3.9.0) (2020-11-27)
+
+
+### Features
+
+* **functions:** added static-config; added option for controlling functions region; ([74ed60c](https://github.com/jaspero/jms/commit/74ed60c46220e023e73b56a7d24c6e75119a1321))
+
 # [3.8.0](https://github.com/jaspero/jms/compare/v3.7.1...v3.8.0) (2020-11-22)
 
 
