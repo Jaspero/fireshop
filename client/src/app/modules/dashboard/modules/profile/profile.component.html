@@ -1,5 +1,5 @@
 <mat-toolbar role="heading" color="primary" class="sticky-header">
-  <span>Profile</span>
+  <span>{{'PROFILE.TITLE' | transloco}}</span>
 </mat-toolbar>
 
 <div class="grid">
@@ -8,11 +8,11 @@
       <mat-list>
         <mat-list-item>
           <mat-icon matListIcon>account_box</mat-icon>
-          <a matLine routerLink="/profile/information" routerLinkActive="active">Information</a>
+          <a matLine routerLink="/profile/information" routerLinkActive="active">{{'PROFILE.INFORMATION' | transloco}}</a>
         </mat-list-item>
         <mat-list-item>
           <mat-icon matListIcon>admin_panel_settings</mat-icon>
-          <a matLine routerLink="/profile/security" routerLinkActive="active">Security</a>
+          <a matLine routerLink="/profile/security" routerLinkActive="active">{{'PROFILE.SECURITY' | transloco}}</a>
         </mat-list-item>
       </mat-list>
     </mat-card>

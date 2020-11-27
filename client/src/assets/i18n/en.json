@@ -101,7 +101,7 @@
     "APPLY": "Apply",
     "UPDATE_ORDER": "Update Order",
     "TABLE": {
-      "COLUMNS": "Columns"
+      "COLUMNS": "Kolumne"
     }
   },
   "INSTANCE_SINGLE": {
@@ -165,6 +165,20 @@
     "LANGUAGE": "Language"
   },
   "PROFILE": {
+    "TITLE": "Profile",
+    "INFORMATION": "Information",
+    "SECURITY": "Security",
+    "CHANGE_PASSWORD": "Change Password",
+    "CHANGE_PASSWORD_DESCRIPTION": "You don't have password authentication on this account. However, you can still use this form and an additional password authentication will be attached to your account.",
+    "NEW_PASSWORD": "New Password",
+    "REPEAT_PASSWORD": "Repeat Password",
+    "CHANGE_EMAIL": "Change Email",
+    "REMOVE_MFA_TRIGGER": "Remove MFA",
+    "CONNECT_MFA_TRIGGER": "Connect MFA",
+    "REMOVE_PASSWORD_AUTHENTICATION": "Remove Password Authentication",
+    "REMOVE_GOOGLE_AUTHENTICATION": "Remove Google Authentication",
+    "REMOVE_ACCOUNT": "Remove Account",
+    "OTHER": "Other",
     "NAME": "Name",
     "IMAGE": "Profile Image",
     "CONNECT_MFA": "An email with the verification link has been sent to your account.",

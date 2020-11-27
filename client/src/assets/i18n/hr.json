@@ -83,7 +83,10 @@
     "NO_ITEMS": "{{value}} još ne postoji.",
     "LOAD_MORE": "Učitaj još...",
     "APPLY": "Primjeni",
-    "UPDATE_ORDER": "Ažuriraj poredak"
+    "UPDATE_ORDER": "Ažuriraj poredak",
+    "TABLE": {
+      "COLUMNS": "Columns"
+    }
   },
   "INSTANCE_SINGLE": {
     "EDITING": "Uređivanje",
@@ -138,6 +141,20 @@
     "LANGUAGE": "Jezik"
   },
   "PROFILE": {
+    "TITLE": "Profil",
+    "INFORMATION": "Informacije",
+    "SECURITY": "Sigurnost",
+    "CHANGE_PASSWORD": "Promijeni Lozinku",
+    "CHANGE_PASSWORD_DESCRIPTION": "Nemate autentikaciju sa lozinkom na ovom računu. Idalje možete iskoristiti ovaj formular za postaviti lozinku.",
+    "NEW_PASSWORD": "Nova Lozinka",
+    "REPEAT_PASSWORD": "Ponovi Lozinku",
+    "CHANGE_EMAIL": "Promijeni Email",
+    "REMOVE_MFA_TRIGGER": "Obriši MFA",
+    "CONNECT_MFA_TRIGGER": "Poveži MFA",
+    "REMOVE_PASSWORD_AUTHENTICATION": "Obriši autentikaciju sa lozinkom",
+    "REMOVE_GOOGLE_AUTHENTICATION": "Obriši google autentikaciju",
+    "REMOVE_ACCOUNT": "Obriši Račun",
+    "OTHER": "Ostalo",
     "NAME": "Ime",
     "IMAGE": "Profil",
     "CONNECT_MFA": "Email sa linkom za verifikaciju je poslan na vašu adresu.",
