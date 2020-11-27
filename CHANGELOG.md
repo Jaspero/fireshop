@@ -1,3 +1,10 @@
+## [3.9.1](https://github.com/jaspero/jms/compare/v3.9.0...v3.9.1) (2020-11-27)
+
+
+### Bug Fixes
+
+* **functions:** added region to user triggers ([ee17d66](https://github.com/jaspero/jms/commit/ee17d66ef169e6aa175be544531a3b678752b125))
+
 # [3.9.0](https://github.com/jaspero/jms/compare/v3.8.0...v3.9.0) (2020-11-27)
 
 
