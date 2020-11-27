@@ -6,6 +6,7 @@ import {get, has} from 'json-pointer';
 import {Parser} from 'json2csv';
 import * as XLSX from 'xlsx';
 import {CORS} from '../consts/cors-whitelist.const';
+import {STATIC_CONFIG} from '../consts/static-config.const';
 import {authenticated} from './middlewares/authenticated';
 
 enum Type {
@@ -205,4 +206,7 @@ app.post('/:module', authenticated(), (req, res) => {
     });
 });
 
-export const exportData = functions.https.onRequest(app);
+export const exportData = functions
+  .region(STATIC_CONFIG.cloudRegion)
+  .https
+  .onRequest(app);

@@ -7,6 +7,7 @@ import * as admin from 'firebase-admin';
 import nanoid = require('nanoid');
 import {constants} from 'http2';
 import {CORS} from '../consts/cors-whitelist.const';
+import {STATIC_CONFIG} from '../consts/static-config.const';
 import {safeEval} from '../utils/safe-eval';
 import {authenticated} from './middlewares/authenticated';
 
@@ -123,4 +124,7 @@ app.post('/', authenticated(['admin']), (req, res) => {
   busboy.end(req['rawBody']);
 });
 
-export const importData = functions.https.onRequest(app);
+export const importData = functions
+  .region(STATIC_CONFIG.cloudRegion)
+  .https
+  .onRequest(app);

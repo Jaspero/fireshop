@@ -1,9 +1,12 @@
 import {Storage} from '@google-cloud/storage';
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import {STATIC_CONFIG} from '../consts/static-config.const';
 import {deleteCollection} from '../utils/delete-collection';
 
-export const documentDeleted = functions.firestore
+export const documentDeleted = functions
+  .region(STATIC_CONFIG.cloudRegion)
+  .firestore
   .document('{moduleId}/{documentId}')
   .onDelete(async (snap, context) => {
     const storage = new Storage().bucket(admin.storage().bucket().name);

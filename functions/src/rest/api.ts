@@ -2,6 +2,7 @@ import * as cors from 'cors';
 import * as express from 'express';
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import {STATIC_CONFIG} from '../consts/static-config.const';
 
 interface RequestWithCollection extends express.Request {
   collectionDoc: any;
@@ -117,4 +118,7 @@ app.get('/:collection/:id', ca('read'), (req: RequestWithCollection, res: expres
     )
 });
 
-export const api = functions.https.onRequest(app);
+export const api = functions
+  .region(STATIC_CONFIG.cloudRegion)
+  .https
+  .onRequest(app);
