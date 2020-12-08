@@ -53,7 +53,9 @@
           [jpLoadClick]="loginEmail()">
           {{'LOGIN.LOGIN' | transloco}}
         </button>
-        <a routerLink="/trigger-password-reset" class="block ta-right fg-secondary fs-small">{{'LOGIN.FORGOT_PASSWORD' | transloco}}</a>
+        <div class="flex jc-end">
+          <a routerLink="/trigger-password-reset" class="iblock ta-right fg-secondary fs-small">{{'LOGIN.FORGOT_PASSWORD' | transloco}}</a>
+        </div>
       </form>
 
     </mat-card>
