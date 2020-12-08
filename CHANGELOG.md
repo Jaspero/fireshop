@@ -1,3 +1,10 @@
+## [3.9.3](https://github.com/jaspero/jms/compare/v3.9.2...v3.9.3) (2020-12-08)
+
+
+### Bug Fixes
+
+* forgot password a tag style ([f3260e9](https://github.com/jaspero/jms/commit/f3260e94f016d76939b81d3bd8e0f4b939c6f946))
+
 ## [3.9.2](https://github.com/jaspero/jms/compare/v3.9.1...v3.9.2) (2020-11-27)
 
 
