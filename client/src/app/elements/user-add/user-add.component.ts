@@ -66,16 +66,14 @@ export class UserAddComponent implements OnInit {
     return () => {
       const data = this.form.getRawValue();
 
-      let newUser: any = {
-        email: data.email,
-        role: data.role
-      };
-
       return this.dbService.setDocument(
         'settings',
         'user',
         {
-          roles: firestore.FieldValue.arrayUnion(newUser)
+          roles: firestore.FieldValue.arrayUnion({
+            email: data.email,
+            role: data.role
+          })
         },
         {
           merge: true
@@ -84,15 +82,7 @@ export class UserAddComponent implements OnInit {
         switchMap(() => {
           if (data.password) {
             return this.dbService
-              .createUserAccount(data.email, data.password)
-              .pipe(
-                tap((dt: any) => {
-                  newUser = {
-                    ...newUser,
-                    id: dt.data.id
-                  };
-                })
-              );
+              .createUserAccount(data.email, data.password);
           }
 
           return of(true);
