@@ -1,3 +1,10 @@
+## [3.9.4](https://github.com/jaspero/jms/compare/v3.9.3...v3.9.4) (2020-12-09)
+
+
+### Bug Fixes
+
+* **user-add:** breaking after user creates successfully ([0b32a88](https://github.com/jaspero/jms/commit/0b32a8869fcf80b4d7b12c3ed302ec7f0fb30e09))
+
 ## [3.9.3](https://github.com/jaspero/jms/compare/v3.9.2...v3.9.3) (2020-12-08)
 
 
