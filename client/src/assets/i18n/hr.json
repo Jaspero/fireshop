@@ -44,7 +44,9 @@
     "LOGIN": "Prijava",
     "LOGIN_WITH": "Prijava koristeći {{value}}",
     "FORGOT_PASSWORD": "Zaboravljena lozinka?",
-    "ERROR_MESSAGE": "Uneseni Email i Lozinka nisu pronađeni. Molim vas pokušajte ponovo."
+    "ERROR_MESSAGE": "Uneseni Email i Lozinka nisu pronađeni. Molim vas pokušajte ponovo.",
+    "TOO_MANY_ATTEMPTS_TRY_LATER": "Pristup ovom računu je tretnuo onemogućen zbog učestalnosti netočnih pokušaja prijave. Možete odmah zatražiti novu lozinku pomoći \"Zaboravili ste lozinku?\" ili pokušati se kasnije prijaviti.",
+    "USER_NOT_FOUND": "Email ne postoji u sustavu."
   },
   "RESET_PASSWORD": {
     "REPEAT_PASSWORD": "Ponovite lozinku",

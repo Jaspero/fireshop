@@ -51,6 +51,12 @@ export class LoginComponent implements OnInit {
   verificationId: string;
   deviceForm: FormGroup;
 
+  errorMap = {
+    'auth/wrong-password': 'LOGIN.ERROR_MESSAGE',
+    'auth/too-many-requests': 'LOGIN.TOO_MANY_ATTEMPTS_TRY_LATER',
+    'auth/user-not-found': 'LOGIN.USER_NOT_FOUND'
+  };
+
   ngOnInit() {
 
     /**
@@ -98,21 +104,15 @@ export class LoginComponent implements OnInit {
           data.passwordLogin
         )
       ).pipe(
-        notify({
-          success: null,
-          error: 'LOGIN.ERROR_MESSAGE'
+        catchError(error => {
+          this.loginForm.get('passwordLogin').reset();
+          this.passwordField.nativeElement.focus();
+
+          return throwError({
+            message: this.errorMap[error.code] || 'LOGIN.ERROR_MESSAGE'
+          });
         }),
-        catchError(e => {
-
-          if (e.code === 'auth/multi-factor-auth-required') {
-            this.openMfa(e.resolver);
-          } else {
-            this.loginForm.get('passwordLogin').reset();
-            this.passwordField.nativeElement.focus();
-          }
-
-          return throwError(e);
-        })
+        notify()
       );
     };
   }
