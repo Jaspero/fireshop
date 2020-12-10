@@ -41,7 +41,7 @@ export function notify(
         if (finalOptions.error || finalOptions.showThrownError) {
           snackBar.open(
             finalOptions.showThrownError && (err || err.message) ?
-              (err || err.message) : transloco.translate(finalOptions.error as string),
+              (err || err.message) : transloco.translate(err?.message || finalOptions.error as string),
             transloco.translate('GENERAL.DISMISS'),
             {
               panelClass: 'snack-bar-error',

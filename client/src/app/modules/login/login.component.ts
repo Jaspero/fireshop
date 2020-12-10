@@ -19,6 +19,12 @@ import {STATIC_CONFIG} from '../../../environments/static-config';
 import {StateService} from '../../shared/services/state/state.service';
 import {notify} from '../../shared/utils/notify.operator';
 
+const ERROR_MAP = {
+  'auth/wrong-password': 'LOGIN.ERROR_MESSAGE',
+  'auth/too-many-requests': 'LOGIN.TOO_MANY_ATTEMPTS_TRY_LATER',
+  'auth/user-not-found': 'LOGIN.USER_NOT_FOUND'
+}
+
 @Component({
   selector: 'jms-login',
   templateUrl: './login.component.html',
@@ -98,21 +104,15 @@ export class LoginComponent implements OnInit {
           data.passwordLogin
         )
       ).pipe(
-        notify({
-          success: null,
-          error: 'LOGIN.ERROR_MESSAGE'
+        catchError(error => {
+          this.loginForm.get('passwordLogin').reset();
+          this.passwordField.nativeElement.focus();
+
+          return throwError({
+            message: ERROR_MAP[error.code] || 'LOGIN.ERROR_MESSAGE'
+          });
         }),
-        catchError(e => {
-
-          if (e.code === 'auth/multi-factor-auth-required') {
-            this.openMfa(e.resolver);
-          } else {
-            this.loginForm.get('passwordLogin').reset();
-            this.passwordField.nativeElement.focus();
-          }
-
-          return throwError(e);
-        })
+        notify()
       );
     };
   }
