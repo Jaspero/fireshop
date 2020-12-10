@@ -19,12 +19,6 @@ import {STATIC_CONFIG} from '../../../environments/static-config';
 import {StateService} from '../../shared/services/state/state.service';
 import {notify} from '../../shared/utils/notify.operator';
 
-const ERROR_MAP = {
-  'auth/wrong-password': 'LOGIN.ERROR_MESSAGE',
-  'auth/too-many-requests': 'LOGIN.TOO_MANY_ATTEMPTS_TRY_LATER',
-  'auth/user-not-found': 'LOGIN.USER_NOT_FOUND'
-}
-
 @Component({
   selector: 'jms-login',
   templateUrl: './login.component.html',
@@ -56,6 +50,12 @@ export class LoginComponent implements OnInit {
   verificationState: string;
   verificationId: string;
   deviceForm: FormGroup;
+
+  errorMap = {
+    'auth/wrong-password': 'LOGIN.ERROR_MESSAGE',
+    'auth/too-many-requests': 'LOGIN.TOO_MANY_ATTEMPTS_TRY_LATER',
+    'auth/user-not-found': 'LOGIN.USER_NOT_FOUND'
+  };
 
   ngOnInit() {
 
@@ -109,7 +109,7 @@ export class LoginComponent implements OnInit {
           this.passwordField.nativeElement.focus();
 
           return throwError({
-            message: ERROR_MAP[error.code] || 'LOGIN.ERROR_MESSAGE'
+            message: this.errorMap[error.code] || 'LOGIN.ERROR_MESSAGE'
           });
         }),
         notify()
