@@ -1,3 +1,12 @@
+# [3.10.0](https://github.com/jaspero/jms/compare/v3.9.4...v3.10.0) (2020-12-10)
+
+
+### Features
+
+* error login ([7a666af](https://github.com/jaspero/jms/commit/7a666aff74730cc7ceabc3fd599cfec9dc11b64f))
+* login error translations ([813b001](https://github.com/jaspero/jms/commit/813b001737258013b48fd4998c3f5ff7d2ac956e))
+* login error translations ([7832eb3](https://github.com/jaspero/jms/commit/7832eb39db484647f8777170de93055e262a9c33))
+
 ## [3.9.4](https://github.com/jaspero/jms/compare/v3.9.3...v3.9.4) (2020-12-09)
 
 
