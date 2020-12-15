@@ -27,11 +27,14 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule, Routes} from '@angular/router';
 import {LoadClickModule, SanitizeModule} from '@jaspero/ng-helpers';
 import {TranslocoModule} from '@ngneat/transloco';
+import {STATIC_CONFIG} from '../../../../../environments/static-config';
 import {ELEMENT_SELECTOR, ELEMENTS} from '../../../../elements/elements.const';
 import {CanReadModuleGuard} from '../../../../shared/guards/can-read-module/can-read-module.guard';
 import {FormBuilderSharedModule} from '../../../../shared/modules/fb/form-builder-shared.module';
 import {SearchInputModule} from '../../../../shared/modules/search-input/search-input.module';
+import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
+import {ColumnOrganizationComponent} from './components/column-organization/column-organization.component';
 import {ExportComponent} from './components/export/export.component';
 import {FilterDialogComponent} from './components/filter-dialog/filter-dialog.component';
 import {FilterTagsComponent} from './components/filter-tags/filter-tags.component';
@@ -45,7 +48,10 @@ import {InstanceSingleComponent} from './pages/instance-single/instance-single.c
 import {ColumnPipe} from './pipes/column/column.pipe';
 import {ParseTemplatePipe} from './pipes/parse-template/parse-template.pipe';
 import {InstanceOverviewContextService} from './services/instance-overview-context.service';
-import { ColumnOrganizationComponent } from './components/column-organization/column-organization.component';
+
+export function moduleProvider(ic: InstanceOverviewContextService) {
+  return ic.module$;
+}
 
 const routes: Routes = [
   {
@@ -99,7 +105,29 @@ const routes: Routes = [
   ],
   providers: [
     InstanceOverviewContextService,
-    CustomModuleGuard
+    CustomModuleGuard,
+
+    /**
+     * We register a few general providers for
+     * easier access in plugins
+     */
+    {
+      provide: 'module',
+      useFactory: moduleProvider,
+      deps: [InstanceOverviewContextService]
+    },
+    {
+      provide: 'dbService',
+      useExisting: DbService
+    },
+    {
+      provide: 'stateService',
+      useExisting: StateService
+    },
+    {
+      provide: 'elementsPrefix',
+      useValue: STATIC_CONFIG.elementSelectorPrefix
+    }
   ],
   imports: [
     CommonModule,

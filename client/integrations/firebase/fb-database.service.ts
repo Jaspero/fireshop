@@ -18,13 +18,13 @@ type FilterFunction = (ref: CollectionReference) => CollectionReference;
 @Injectable()
 export class FbDatabaseService extends DbService {
   constructor(
+    public afs: AngularFirestore,
+    public aff: AngularFireFunctions,
     @Inject(REGION)
     private region: string,
     @Optional()
     @Inject(ORIGIN)
-    private origin: string,
-    private afs: AngularFirestore,
-    private aff: AngularFireFunctions
+    private origin: string
   ) {
     super();
   }
