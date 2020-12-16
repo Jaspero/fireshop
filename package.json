@@ -1,10 +1,11 @@
 {
   "name": "@jaspero/jms",
-  "version": "3.10.0",
+  "version": "3.12.0",
   "license": "MIT",
   "scripts": {
     "start:cms": "npm --prefix client run start",
     "start:functions": "npm --prefix functions run serve",
+    "start:setup": "npm --prefix setup start",
     "build:cms": "npm --prefix client run build",
     "build:functions": "npm --prefix functions run build",
     "build": "npm run build:cms && npm run build:functions",

@@ -1,3 +1,17 @@
+# [3.12.0](https://github.com/jaspero/jms/compare/v3.11.0...v3.12.0) (2020-12-16)
+
+
+### Features
+
+* **client:** added notes to users ([50137f2](https://github.com/jaspero/jms/commit/50137f2c3911f4b11b4aea865a88f41bc4d20128))
+
+# [3.11.0](https://github.com/jaspero/jms/compare/v3.10.0...v3.11.0) (2020-12-15)
+
+
+### Features
+
+* **client:** added module, dbService, stateService and elementsPrefix providers for use in plugins ([584f721](https://github.com/jaspero/jms/commit/584f72113d59e9850b2427bc77f8bd70ae4af034))
+
 # [3.10.0](https://github.com/jaspero/jms/compare/v3.9.4...v3.10.0) (2020-12-10)
 
 
