@@ -157,10 +157,10 @@ export class SettingsComponent implements OnInit {
             return this.dbService
               .createUserAccount(data.email, data.password)
               .pipe(
-                tap((dt: any) => {
+                tap(dt => {
                   newUser = {
                     ...newUser,
-                    id: dt.data.id
+                    id: dt.id
                   };
                 })
               );
