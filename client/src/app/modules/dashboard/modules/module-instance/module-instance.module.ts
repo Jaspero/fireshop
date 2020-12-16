@@ -25,6 +25,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule, Routes} from '@angular/router';
+import {JMSPNotesModule} from '@jaspero/jmsp-notes';
 import {LoadClickModule, SanitizeModule} from '@jaspero/ng-helpers';
 import {TranslocoModule} from '@ngneat/transloco';
 import {STATIC_CONFIG} from '../../../../../environments/static-config';
@@ -135,6 +136,7 @@ const routes: Routes = [
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
+    JMSPNotesModule,
 
     /**
      * Local
