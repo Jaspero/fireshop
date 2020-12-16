@@ -1,3 +1,10 @@
+## [3.12.1](https://github.com/jaspero/jms/compare/v3.12.0...v3.12.1) (2020-12-16)
+
+
+### Bug Fixes
+
+* create-user proper mapping ([a1ef7b8](https://github.com/jaspero/jms/commit/a1ef7b877cf85fb691438f4b88af84ffe7c34ad9))
+
 # [3.12.0](https://github.com/jaspero/jms/compare/v3.11.0...v3.12.0) (2020-12-16)
 
 
