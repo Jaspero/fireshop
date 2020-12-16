@@ -1,3 +1,10 @@
+# [3.12.0](https://github.com/jaspero/jms/compare/v3.11.0...v3.12.0) (2020-12-16)
+
+
+### Features
+
+* **client:** added notes to users ([50137f2](https://github.com/jaspero/jms/commit/50137f2c3911f4b11b4aea865a88f41bc4d20128))
+
 # [3.11.0](https://github.com/jaspero/jms/compare/v3.10.0...v3.11.0) (2020-12-15)
 
 
