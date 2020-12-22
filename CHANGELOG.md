@@ -1,3 +1,10 @@
+## [3.12.2](https://github.com/jaspero/jms/compare/v3.12.1...v3.12.2) (2020-12-22)
+
+
+### Bug Fixes
+
+* pass correct key to sort header ([146bf68](https://github.com/jaspero/jms/commit/146bf688884f76874bf9372d237c55a3936a1d9d))
+
 ## [3.12.1](https://github.com/jaspero/jms/compare/v3.12.0...v3.12.1) (2020-12-16)
 
 
