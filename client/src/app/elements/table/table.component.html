@@ -150,7 +150,7 @@
             <ng-container *ngFor="let column of data.tableColumns; index as index" [matColumnDef]="data.displayColumns[index + (data.hideCheckbox ? 0 : 1)]">
 
               <ng-container *ngIf="column.sortable; else notSortable">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                <th mat-header-cell *matHeaderCellDef [mat-sort-header]='column.key'>
                   {{column.label | transloco}}
                 </th>
               </ng-container>
