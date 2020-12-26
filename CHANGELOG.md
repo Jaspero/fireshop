@@ -1,3 +1,10 @@
+# [3.13.0](https://github.com/jaspero/jms/compare/v3.12.2...v3.13.0) (2020-12-26)
+
+
+### Features
+
+* **client:** updated link element to work with query params ([a93fe34](https://github.com/jaspero/jms/commit/a93fe34e29e7e2f712e1378387550f63fcfd2711))
+
 ## [3.12.2](https://github.com/jaspero/jms/compare/v3.12.1...v3.12.2) (2020-12-22)
 
 
