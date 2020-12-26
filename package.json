@@ -6,6 +6,7 @@
     "start:cms": "npm --prefix client run start",
     "start:functions": "npm --prefix functions run serve",
     "start:setup": "npm --prefix setup start",
+    "start:setup:prod": "npm --prefix setup run start:prod",
     "build:cms": "npm --prefix client run build",
     "build:functions": "npm --prefix functions run build",
     "build": "npm run build:cms && npm run build:functions",
@@ -14,7 +15,8 @@
     "lint": "npm run lint:client && npm run lint:functions",
     "firebase": "firebase",
     "deploy": "firebase deploy --only storage,firestore,functions:cms,hosting",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "config:set": "firebase functions:config:set"
   },
   "author": {
     "name": "Jaspero Ltd",
