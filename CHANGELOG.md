@@ -1,3 +1,10 @@
+# [3.15.0](https://github.com/jaspero/jms/compare/v3.14.0...v3.15.0) (2020-12-27)
+
+
+### Features
+
+* various adjustments for edit and delete on subcollections ([a2050bc](https://github.com/jaspero/jms/commit/a2050bc2a0bc5a141dd525b62f8cb5eb6e719629))
+
 # [3.14.0](https://github.com/jaspero/jms/compare/v3.13.0...v3.14.0) (2020-12-27)
 
 
