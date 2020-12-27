@@ -22,7 +22,15 @@ export class ModuleInstanceComponent implements OnInit {
     this.ioc.module$ = this.activatedRoute.params.pipe(
       switchMap(params =>
         this.state.modules$.pipe(
-          map(modules => findModule(modules, params)),
+          map(modules => {
+            const module = findModule(modules, params);
+
+            if (module && module.id.includes('{docId}')) {
+              module.id = module.id.replace('{docId}', params.documentId);
+            }
+
+            return module;
+          }),
           take(1)
         )
       ),

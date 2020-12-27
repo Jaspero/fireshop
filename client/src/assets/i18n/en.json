@@ -106,7 +106,7 @@
     "APPLY": "Apply",
     "UPDATE_ORDER": "Update Order",
     "TABLE": {
-      "COLUMNS": "Kolumne"
+      "COLUMNS": "Columns"
     }
   },
   "INSTANCE_SINGLE": {
@@ -207,7 +207,10 @@
       "TITLE": "Send password reset email"
     }
   },
-
+  "NOTES": {
+    "TITLE": "Notes",
+    "LABEL": "Note"
+  },
   "ERRORS": {
     "DASHBOARD_ACCESS": "You don't have access to the dashboard."
   }

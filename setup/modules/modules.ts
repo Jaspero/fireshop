@@ -9,12 +9,19 @@ export const MODULES = [
   ROLES_MODULE,
 
   {
-    id: 'users~{documentId}~notes',
+    id: 'users~{docId}~notes',
     name: 'User Notes',
     layout: {
       authorization: {
         read: ['admin'],
         write: ['admin']
+      },
+      instance: {
+        segments: [
+          {
+            fields: ['/note']
+          }
+        ]
       },
       table: {
         tableColumns: [
@@ -27,6 +34,7 @@ export const MODULES = [
     },
     schema: {
       properties: {
+        id: {type: 'string'},
         note: {type: 'string'}
       }
     }

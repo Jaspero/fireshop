@@ -13,7 +13,7 @@ export function findModule(
     return modules.find(mod => mod.id === query.id);
   } else {
     return modules.find(mod => {
-      const [collection, document, subCollection] = mod.id.split('~');
+      const [collection, document, subCollection] = mod.id.split('/');
 
       if  (!subCollection) {
         return;
