@@ -1,3 +1,10 @@
+# [3.14.0](https://github.com/jaspero/jms/compare/v3.13.0...v3.14.0) (2020-12-27)
+
+
+### Features
+
+* first class support for firestore sub-collections ([74421a2](https://github.com/jaspero/jms/commit/74421a2cb25831610f0eab008fd228516907f1b2))
+
 # [3.13.0](https://github.com/jaspero/jms/compare/v3.12.2...v3.13.0) (2020-12-26)
 
 
