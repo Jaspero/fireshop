@@ -54,23 +54,32 @@ export function moduleProvider(ic: InstanceOverviewContextService) {
   return ic.module$;
 }
 
+const innerRoutes = {
+  canActivate: [
+    CanReadModuleGuard
+  ],
+  children: [
+    {
+      path: 'overview',
+      component: InstanceOverviewComponent
+    },
+    {
+      path: 'single/:id',
+      component: InstanceSingleComponent
+    }
+  ]
+};
+
 const routes: Routes = [
   {
     path: ':id',
     component: ModuleInstanceComponent,
-    canActivate: [
-      CanReadModuleGuard
-    ],
-    children: [
-      {
-        path: 'overview',
-        component: InstanceOverviewComponent
-      },
-      {
-        path: 'single/:id',
-        component: InstanceSingleComponent
-      }
-    ]
+    ...innerRoutes
+  },
+  {
+    path: ':collectionId/:documentId/:subCollectionId',
+    component: ModuleInstanceComponent,
+    ...innerRoutes
   }
 ];
 

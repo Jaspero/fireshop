@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {map, shareReplay, switchMap, take} from 'rxjs/operators';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {InstanceOverviewContextService} from './services/instance-overview-context.service';
+import {findModule} from './utils/find-module';
 
 @Component({
   selector: 'jms-module-instance',
@@ -21,7 +22,7 @@ export class ModuleInstanceComponent implements OnInit {
     this.ioc.module$ = this.activatedRoute.params.pipe(
       switchMap(params =>
         this.state.modules$.pipe(
-          map(modules => modules.find(module => module.id === params.id)),
+          map(modules => findModule(modules, params)),
           take(1)
         )
       ),
