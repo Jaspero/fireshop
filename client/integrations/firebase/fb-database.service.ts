@@ -200,7 +200,7 @@ export class FbDatabaseService extends DbService {
       .get()
       .pipe(
         map(data =>
-          data.docs.map(it => ({
+          data.docs.map((it: any) => ({
             id: it.id,
             ...it.data()
           }))
