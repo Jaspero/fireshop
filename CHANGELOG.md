@@ -1,3 +1,31 @@
+# [3.15.0](https://github.com/jaspero/jms/compare/v3.14.0...v3.15.0) (2020-12-27)
+
+
+### Features
+
+* various adjustments for edit and delete on subcollections ([a2050bc](https://github.com/jaspero/jms/commit/a2050bc2a0bc5a141dd525b62f8cb5eb6e719629))
+
+# [3.14.0](https://github.com/jaspero/jms/compare/v3.13.0...v3.14.0) (2020-12-27)
+
+
+### Features
+
+* first class support for firestore sub-collections ([74421a2](https://github.com/jaspero/jms/commit/74421a2cb25831610f0eab008fd228516907f1b2))
+
+# [3.13.0](https://github.com/jaspero/jms/compare/v3.12.2...v3.13.0) (2020-12-26)
+
+
+### Features
+
+* **client:** updated link element to work with query params ([a93fe34](https://github.com/jaspero/jms/commit/a93fe34e29e7e2f712e1378387550f63fcfd2711))
+
+## [3.12.2](https://github.com/jaspero/jms/compare/v3.12.1...v3.12.2) (2020-12-22)
+
+
+### Bug Fixes
+
+* pass correct key to sort header ([146bf68](https://github.com/jaspero/jms/commit/146bf688884f76874bf9372d237c55a3936a1d9d))
+
 ## [3.12.1](https://github.com/jaspero/jms/compare/v3.12.0...v3.12.1) (2020-12-16)
 
 

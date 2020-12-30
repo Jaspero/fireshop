@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router} from '@angular/router';
+import {findModule} from '../../../modules/dashboard/modules/module-instance/utils/find-module';
 import {StateService} from '../../services/state/state.service';
 import {map, take} from 'rxjs/operators';
 
@@ -15,11 +16,10 @@ export class CanReadModuleGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot
   ) {
-    const {id} = route.params;
-
     return this.state.modules$.pipe(
       map(modules => {
-        const module = modules.find(mod => mod.id === id);
+        const module = findModule(modules, route.params);
+
         if (
           !module ||
           module.authorization &&

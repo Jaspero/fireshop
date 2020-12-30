@@ -71,6 +71,9 @@ export const USERS_MODULE = {
       ],
       actions: [
         {
+          value: `it => '<jms-e-notes data-id="' + it.id + '"></jms-e-notes>'`
+        },
+        {
           value: `it => '<jms-e-tpr data-email="' + it.data.email + '"></jms-e-tpr>'`
         },
         {
@@ -78,9 +81,6 @@ export const USERS_MODULE = {
         },
         {
           value: `it => '<jms-e-tus data-id="' + it.id + '"></jms-e-tus>'`
-        },
-        {
-          value: `it => '<jms-e-notes data-id="' + it.id + '"></jms-e-notes>'`
         }
       ]
     },
