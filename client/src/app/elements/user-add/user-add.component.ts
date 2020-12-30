@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
-import {firestore} from 'firebase/app';
+import firebase from 'firebase/app';
 import {Observable, of} from 'rxjs';
 import {shareReplay, switchMap, tap} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../integrations/firebase/firestore-collection.enum';
@@ -70,7 +70,7 @@ export class UserAddComponent implements OnInit {
         'settings',
         'user',
         {
-          roles: firestore.FieldValue.arrayUnion({
+          roles: firebase.firestore.FieldValue.arrayUnion({
             email: data.email,
             role: data.role
           })

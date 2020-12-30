@@ -31,7 +31,7 @@
     "ajv": "6.12.5",
     "document-register-element": "1.14.6",
     "file-saver": "2.0.2",
-    "firebase": "^7.23.0",
+    "firebase": "8.2.1",
     "json-pointer": "0.6.0",
     "jsoneditor": "9.0.5",
     "lodash-es": "4.17.15",

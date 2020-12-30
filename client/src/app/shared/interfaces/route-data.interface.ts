@@ -1,3 +1,4 @@
+import firebase from 'firebase/app'
 import OrderByDirection = firebase.firestore.OrderByDirection;
 
 export interface RouteData {

@@ -2,10 +2,9 @@ import {HttpClient} from '@angular/common/http';
 import {ChangeDetectionStrategy, Component, ElementRef, Input, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
-import {auth} from 'firebase/app';
+import firebase from 'firebase/app';
 import {from} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-import {environment} from '../../../../../../../environments/environment';
 import {ImportModule} from '../../../../../../shared/interfaces/import-module.interface';
 import {DbService} from '../../../../../../shared/services/db/db.service';
 import {notify} from '../../../../../../shared/utils/notify.operator';
@@ -89,7 +88,7 @@ export class ImportComponent {
     this.dialog.closeAll();
 
     from(
-      auth().currentUser.getIdToken()
+      firebase.auth().currentUser.getIdToken()
     )
       .pipe(
         switchMap(token =>

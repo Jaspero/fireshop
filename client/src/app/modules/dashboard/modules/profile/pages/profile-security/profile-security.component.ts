@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {FormBuilder, FormGroup, FormGroupDirective, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {auth} from 'firebase/app';
+import firebase from 'firebase/app';
 import {combineLatest, from, Observable, throwError} from 'rxjs';
 import {catchError, map, switchMap, take, tap} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../../../../../integrations/firebase/firestore-collection.enum';
@@ -82,7 +82,7 @@ export class ProfileSecurityComponent implements OnInit {
   changePassword(form: FormGroupDirective) {
     return () =>
       from(
-        auth()
+        firebase.auth()
           .currentUser
           .updatePassword(this.pwForm.get('password').value)
       )
@@ -92,7 +92,7 @@ export class ProfileSecurityComponent implements OnInit {
 
             if (err.code === 'auth/requires-recent-login') {
               message = 'For security reasons please login to your account again before changing your password.';
-              auth()
+              firebase.auth()
                 .signOut()
                 .then(() =>
                   this.router.navigate(['/login'])
@@ -127,7 +127,7 @@ export class ProfileSecurityComponent implements OnInit {
           {merge: true}
         ),
         from(
-          auth()
+          firebase.auth()
             .currentUser
             .updateEmail(email)
         )
@@ -137,7 +137,7 @@ export class ProfileSecurityComponent implements OnInit {
 
               if (err.code === 'auth/requires-recent-login') {
                 message = 'For security reasons please login to your account again before changing your email.';
-                auth()
+                firebase.auth()
                   .signOut()
                   .then(() =>
                     this.router.navigate(['/login'])
@@ -163,10 +163,10 @@ export class ProfileSecurityComponent implements OnInit {
   removeAccount() {
     confirmation(
       [
-        switchMap(() => from(auth().currentUser.delete())),
+        switchMap(() => from(firebase.auth().currentUser.delete())),
         catchError(error => {
           if (error.code === 'auth/requires-recent-login') {
-            auth().signOut();
+            firebase.auth().signOut();
             this.router.navigate(['/login']);
           }
 
@@ -196,7 +196,7 @@ export class ProfileSecurityComponent implements OnInit {
     confirmation(
       [
         switchMap(() =>
-          auth()
+          firebase.auth()
             .currentUser
             .unlink(provider)
         ),

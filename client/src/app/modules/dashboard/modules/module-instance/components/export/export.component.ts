@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from '@angular/material/bottom-sheet';
 import {MatDialog} from '@angular/material/dialog';
 import {saveAs} from 'file-saver';
-import {auth} from 'firebase/app';
+import firebase from 'firebase/app';
 import {from} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 import {FilterModule} from '../../../../../../shared/interfaces/filter-module.interface';
@@ -101,7 +101,7 @@ export class ExportComponent {
       }
 
       return from(
-        auth().currentUser.getIdToken()
+        firebase.auth().currentUser.getIdToken()
       )
         .pipe(
           switchMap(token =>
