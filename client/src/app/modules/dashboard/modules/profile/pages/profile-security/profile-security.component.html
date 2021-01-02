@@ -68,7 +68,7 @@
 
   <mat-card-content>
     <button mat-button [jpLoadClick]="toggleTwoFactor()">
-      {{(hasTwoFactor$ | async) ? 'PROFILE.REMOVE_MFA_TRIGGER' : 'PROFILE.CONNECT_MFA_TRIGGER'}}
+      {{((hasTwoFactor$ | async) ? 'PROFILE.REMOVE_MFA_TRIGGER' : 'PROFILE.CONNECT_MFA_TRIGGER') | transloco}}
     </button>
     <ng-container *ngIf="multipleProviders$ | async">
       <button mat-button color="warn" *ngIf="passwordProvider$ | async" (click)="removeProvider('password')">{{'PROFILE.REMOVE_PASSWORD_AUTHENTICATION' | transloco}}</button>

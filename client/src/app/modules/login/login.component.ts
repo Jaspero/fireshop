@@ -13,7 +13,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import firebase from 'firebase/app';
-import {from, throwError} from 'rxjs';
+import {from, of, throwError} from 'rxjs';
 import {catchError, filter, tap} from 'rxjs/operators';
 import {STATIC_CONFIG} from '../../../environments/static-config';
 import {StateService} from '../../shared/services/state/state.service';
@@ -108,11 +108,22 @@ export class LoginComponent implements OnInit {
           this.loginForm.get('passwordLogin').reset();
           this.passwordField.nativeElement.focus();
 
+
+          if (error.code === 'auth/multi-factor-auth-required') {
+            this.openMfa(error.resolver);
+            return of(true);
+          } else {
+            this.loginForm.get('passwordLogin').reset();
+            this.passwordField.nativeElement.focus();
+          }
+
           return throwError({
             message: this.errorMap[error.code] || 'LOGIN.ERROR_MESSAGE'
-          });
+          })
+            .pipe(
+              notify()
+            );
         }),
-        notify()
       );
     };
   }
