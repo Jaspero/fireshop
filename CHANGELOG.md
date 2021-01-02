@@ -1,3 +1,10 @@
+## [3.15.1](https://github.com/jaspero/jms/compare/v3.15.0...v3.15.1) (2021-01-02)
+
+
+### Bug Fixes
+
+* **client:** MFA login not working ([62f43c6](https://github.com/jaspero/jms/commit/62f43c633e28eb33e2854ff8ba1d781dcddbc289))
+
 # [3.15.0](https://github.com/jaspero/jms/compare/v3.14.0...v3.15.0) (2020-12-27)
 
 
