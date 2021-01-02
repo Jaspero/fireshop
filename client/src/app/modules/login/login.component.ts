@@ -105,10 +105,6 @@ export class LoginComponent implements OnInit {
         )
       ).pipe(
         catchError(error => {
-          this.loginForm.get('passwordLogin').reset();
-          this.passwordField.nativeElement.focus();
-
-
           if (error.code === 'auth/multi-factor-auth-required') {
             this.openMfa(error.resolver);
             return of(true);
