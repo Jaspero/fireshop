@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
@@ -79,7 +79,6 @@ export class AuthenticationComponent implements OnInit {
   }
 
   submit() {
-    console.log('here');
     this.subscription = from(
       this.afAuth.checkActionCode(this.oobCode)
     )
@@ -135,11 +134,7 @@ export class AuthenticationComponent implements OnInit {
 
   verify() {
     return () => {
-
-      console.log('in here');
-
       const {code} = this.codeForm.getRawValue();
-
       const cred = firebase.auth.PhoneAuthProvider.credential(this.confirmationResult, code);
       const multiFactorAssertion = firebase.auth.PhoneMultiFactorGenerator.assertion(cred);
 
