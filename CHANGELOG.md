@@ -1,3 +1,10 @@
+## [3.15.3](https://github.com/jaspero/jms/compare/v3.15.2...v3.15.3) (2021-01-03)
+
+
+### Bug Fixes
+
+* **client:** removed console logs from mfa page ([f560a0d](https://github.com/jaspero/jms/commit/f560a0d491b2e468f036d4280289ff65f075dc47))
+
 ## [3.15.2](https://github.com/jaspero/jms/compare/v3.15.1...v3.15.2) (2021-01-02)
 
 
