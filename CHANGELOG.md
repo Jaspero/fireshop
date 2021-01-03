@@ -1,3 +1,10 @@
+## [3.15.2](https://github.com/jaspero/jms/compare/v3.15.1...v3.15.2) (2021-01-02)
+
+
+### Bug Fixes
+
+* **client:** resetting fields twice on login error ([611ed24](https://github.com/jaspero/jms/commit/611ed247eccefb2e490c67508106aa473bd6e0f3))
+
 ## [3.15.1](https://github.com/jaspero/jms/compare/v3.15.0...v3.15.1) (2021-01-02)
 
 
