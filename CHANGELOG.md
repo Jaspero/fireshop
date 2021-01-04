@@ -1,3 +1,10 @@
+## [3.15.4](https://github.com/jaspero/jms/compare/v3.15.3...v3.15.4) (2021-01-04)
+
+
+### Bug Fixes
+
+* **functions:** trigger-password-reset receiving email wrongly ([d96c9f4](https://github.com/jaspero/jms/commit/d96c9f4468f432ea9bf1ea18f7b0c0614226bffe))
+
 ## [3.15.3](https://github.com/jaspero/jms/compare/v3.15.2...v3.15.3) (2021-01-03)
 
 
