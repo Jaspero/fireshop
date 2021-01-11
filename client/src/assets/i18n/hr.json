@@ -37,7 +37,8 @@
 
     "CREATED_ON": "Datum kreiranja",
     "DATE": "Datum",
-    "HOURS": "Sati"
+    "HOURS": "Sati",
+    "MINUTES": "Minuta"
   },
   "LOGIN": {
     "LOGIN": "Prijava",

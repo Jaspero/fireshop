@@ -38,7 +38,8 @@
     "COUNTRY": "Country",
     "CREATED_ON": "Created On",
     "DATE": "Date",
-    "HOURS": "Hours"
+    "HOURS": "Hours",
+    "MINUTES": "Minutes"
   },
   "LOGIN": {
     "LOGIN": "Login",
