@@ -1,3 +1,10 @@
+# [3.16.0](https://github.com/jaspero/jms/compare/v3.15.4...v3.16.0) (2021-01-11)
+
+
+### Features
+
+* update user email from actions ([0d0c07d](https://github.com/jaspero/jms/commit/0d0c07da068db8d83108ac9b37177cd0c0c08584))
+
 ## [3.15.4](https://github.com/jaspero/jms/compare/v3.15.3...v3.15.4) (2021-01-04)
 
 
