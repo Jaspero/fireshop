@@ -206,6 +206,10 @@
     },
     "TRIGGER_PASSWORD_RESET": {
       "TITLE": "Send password reset email"
+    },
+    "CHANGE_EMAIL": {
+      "TITLE": "Change Email",
+      "DIALOG_TITLE": "Change Users Email"
     }
   },
   "NOTES": {
