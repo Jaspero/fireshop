@@ -81,6 +81,9 @@ export const USERS_MODULE = {
         },
         {
           value: `it => '<jms-e-tus data-id="' + it.id + '"></jms-e-tus>'`
+        },
+        {
+          value: `it => '<ga-e-ce data-id="' + it.id + '"></ga-e-ce>'`
         }
       ]
     },

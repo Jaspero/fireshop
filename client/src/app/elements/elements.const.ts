@@ -1,4 +1,5 @@
 import {STATIC_CONFIG} from '../../environments/static-config';
+import {ChangeEmailComponent} from './change-email/change-email.component';
 import {ChangePasswordComponent} from './change-password/change-password.component';
 import {LinkComponent} from './link/link.component';
 import {TableComponent} from './table/table.component';
@@ -12,7 +13,8 @@ export const ELEMENTS = [
   TriggerPasswordResetComponent,
   UserAddComponent,
   ChangePasswordComponent,
-  ToggleUserStatusComponent
+  ToggleUserStatusComponent,
+  ChangeEmailComponent
 ];
 
 export const ELEMENT_SELECTOR = [
@@ -39,5 +41,9 @@ export const ELEMENT_SELECTOR = [
   {
     selector: STATIC_CONFIG.elementSelectorPrefix + 'tus',
     component: ToggleUserStatusComponent
+  },
+  {
+    selector: STATIC_CONFIG.elementSelectorPrefix + 'ce',
+    component: ChangeEmailComponent
   }
 ];

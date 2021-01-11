@@ -39,7 +39,8 @@
     "CREATED_ON": "Created On",
     "DATE": "Date",
     "HOURS": "Hours",
-    "MINUTES": "Minutes"
+    "MINUTES": "Minutes",
+    "VENUES": "Venues"
   },
   "LOGIN": {
     "LOGIN": "Login",
@@ -206,6 +207,10 @@
     },
     "TRIGGER_PASSWORD_RESET": {
       "TITLE": "Send password reset email"
+    },
+    "CHANGE_EMAIL": {
+      "TITLE": "Change Email",
+      "DIALOG_TITLE": "Change Users Email"
     }
   },
   "NOTES": {

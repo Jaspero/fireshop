@@ -38,7 +38,8 @@
     "CREATED_ON": "Datum kreiranja",
     "DATE": "Datum",
     "HOURS": "Sati",
-    "MINUTES": "Minute"
+    "MINUTES": "Minute",
+    "VENUES": "Lokacije"
   },
   "LOGIN": {
     "LOGIN": "Prijava",
@@ -185,6 +186,10 @@
     },
     "TRIGGER_PASSWORD_RESET": {
       "TITLE": "Pošalji email za resetiranje lozinke"
+    },
+    "CHANGE_EMAIL": {
+      "TITLE": "Promijeni Email",
+      "DIALOG_TITLE": "Promijeni korisnikovu email adresu"
     }
   }
 }
