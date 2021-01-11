@@ -38,9 +38,7 @@
     "COUNTRY": "Country",
     "CREATED_ON": "Created On",
     "DATE": "Date",
-    "HOURS": "Hours",
-    "MINUTES": "Minutes",
-    "VENUES": "Venues"
+    "HOURS": "Hours"
   },
   "LOGIN": {
     "LOGIN": "Login",

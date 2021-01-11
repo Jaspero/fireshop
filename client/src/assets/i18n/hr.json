@@ -37,9 +37,7 @@
 
     "CREATED_ON": "Datum kreiranja",
     "DATE": "Datum",
-    "HOURS": "Sati",
-    "MINUTES": "Minute",
-    "VENUES": "Lokacije"
+    "HOURS": "Sati"
   },
   "LOGIN": {
     "LOGIN": "Prijava",
