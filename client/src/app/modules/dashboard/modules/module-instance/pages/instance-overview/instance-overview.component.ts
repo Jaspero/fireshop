@@ -69,7 +69,7 @@ export class InstanceOverviewComponent implements OnInit, AfterViewInit {
         this.currentView = this.getCurrentView('table');
         this.showViewSelector = false;
         this.views = [];
-        this.toolbar = ['add'];
+        this.toolbar = module.layout?.table?.hideAdd ? [] : ['add'];
 
         if (module.layout) {
 
