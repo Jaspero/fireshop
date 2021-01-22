@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Definitions, FormBuilderComponent, safeEval, Segment, State} from '@jaspero/form-builder';
 import {JSONSchema7} from 'json-schema';
 import {Observable, of} from 'rxjs';
-import {map, shareReplay, switchMap, tap} from 'rxjs/operators';
+import {map, switchMap, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../../../shared/enums/view-state.enum';
 import {ModuleAuthorization} from '../../../../../../shared/interfaces/module-authorization.interface';
 import {Module} from '../../../../../../shared/interfaces/module.interface';
@@ -47,7 +47,8 @@ export class InstanceSingleComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
     private ioc: InstanceOverviewContextService
-  ) {}
+  ) {
+  }
 
   @ViewChild(FormBuilderComponent, {static: false})
   formBuilderComponent: FormBuilderComponent;
@@ -68,7 +69,7 @@ export class InstanceSingleComponent implements OnInit {
             if (params.id === 'new') {
               this.currentState = ViewState.New;
               this.formState = State.Create;
-              return of(this.state.prepopulateData.value);
+              return of(history.state?.data);
             } else if (params.id.endsWith('--copy')) {
               this.currentState = ViewState.Copy;
               this.formState = State.Create;
@@ -137,8 +138,7 @@ export class InstanceSingleComponent implements OnInit {
             };
           })
         )
-      ),
-      shareReplay(1)
+      )
     );
   }
 
