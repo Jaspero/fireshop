@@ -28,7 +28,12 @@ export class NewPrepopulateComponent implements OnInit {
   data: any;
 
   ngOnInit(): void {
-    this.data = Object.assign({}, this.el.nativeElement.dataset);
+    const camelize = s => s.replace(/-./g, x => x.toUpperCase()[1]);
+    const dataset = this.el.nativeElement.dataset;
+    this.data = Object.keys(dataset).reduce((data, key) => {
+      data[camelize(key)] = dataset[key];
+      return data;
+    }, {});
   }
 
   prepopulate() {
