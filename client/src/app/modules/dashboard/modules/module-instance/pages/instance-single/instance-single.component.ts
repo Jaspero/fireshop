@@ -68,7 +68,7 @@ export class InstanceSingleComponent implements OnInit {
             if (params.id === 'new') {
               this.currentState = ViewState.New;
               this.formState = State.Create;
-              return of(null);
+              return of(this.state.prepopulateData.value);
             } else if (params.id.endsWith('--copy')) {
               this.currentState = ViewState.Copy;
               this.formState = State.Create;

@@ -195,7 +195,6 @@ export class DefinitionOverviewComponent implements OnInit {
   }
 
   export(schemes: any[]) {
-    console.log(1);
     forkJoin(
       schemes.map(schema => this.dbService.callFunction('cms-jsonSchemaToTypescript', schema))
     )

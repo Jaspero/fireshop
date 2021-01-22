@@ -40,6 +40,11 @@ export const ROLES_MODULE = {
           key: '/description',
           label: 'Description'
         }
+      ],
+      actions: [
+        {
+          value: `it => '<jms-e-new-prepopulate collection="users" data-name="Prefill Test" data-email="{{it.data.description}}" label="Assign User"></jms-e-new-prepopulate>'`
+        }
       ]
     }
   },
