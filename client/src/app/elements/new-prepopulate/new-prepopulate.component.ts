@@ -1,6 +1,5 @@
 import {ChangeDetectionStrategy, Component, ElementRef, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {StateService} from '../../shared/services/state/state.service';
 
 @Component({
   selector: 'jms-new-prepopulate',
@@ -12,7 +11,6 @@ export class NewPrepopulateComponent implements OnInit {
 
   constructor(
     private el: ElementRef,
-    private state: StateService,
     private router: Router
   ) { }
 
@@ -34,12 +32,14 @@ export class NewPrepopulateComponent implements OnInit {
   }
 
   prepopulate() {
-    this.state.prepopulateData.next(this.data);
+    const url = (this.docId && this.subCollection)
+      ? `/m/${this.collection}/${this.docId}/${this.subCollection}/single/new`
+      : `/m/${this.collection}/single/new`;
 
-    if (this.docId && this.subCollection) {
-      this.router.navigate([`/m/${this.collection}/${this.docId}/${this.subCollection}/single/new`]);
-    } else {
-      this.router.navigate([`/m/${this.collection}/single/new`])
-    }
+    return this.router.navigate([url], {
+      state: {
+        data: this.data
+      }
+    });
   }
 }
