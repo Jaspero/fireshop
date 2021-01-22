@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Observable, Subject} from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {map, shareReplay} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../../integrations/firebase/firestore-collection.enum';
 import {Layout} from '../../interfaces/layout.interface';
@@ -56,6 +56,11 @@ export class StateService {
   routerData: {[url: string]: any} = {};
 
   elementsRegistered = false;
+
+  /**
+   * Contains data which will be prepopulated on single/new page
+   */
+  prepopulateData = new BehaviorSubject<any>(null);
 
   setRouteData(
     data: any,
