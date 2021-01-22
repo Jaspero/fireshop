@@ -1,3 +1,10 @@
+# [3.17.0](https://github.com/jaspero/jms/compare/v3.16.0...v3.17.0) (2021-01-22)
+
+
+### Features
+
+* prefill collection/subcollection document directly from table actions. added string interpolation in modules ([3cd9008](https://github.com/jaspero/jms/commit/3cd90081d07ec71d9dc6bc7a42e4644cacfb9f44))
+
 # [3.16.0](https://github.com/jaspero/jms/compare/v3.15.4...v3.16.0) (2021-01-11)
 
 
