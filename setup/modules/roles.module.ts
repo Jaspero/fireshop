@@ -55,21 +55,21 @@ export const ROLES_MODULE = {
         type: 'string',
       },
       ...CREATED_ON.property
-    }
+    },
+    required: [
+      'name',
+      'createdOn'
+    ]
   },
   definitions: {
     name: {
-      label: 'Name',
-      columnsDesktop: 4,
-      columnsMobile: 12
+      label: 'Name'
     },
     description: {
       label: 'Description',
       component: {
         type: 'textarea'
-      },
-      columnsDesktop: 4,
-      columnsMobile: 12
+      }
     },
     ...CREATED_ON.definition()
   }
