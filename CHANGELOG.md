@@ -1,3 +1,15 @@
+# [3.18.0](https://github.com/jaspero/jms/compare/v3.17.0...v3.18.0) (2021-01-23)
+
+
+### Bug Fixes
+
+* data attribute converts uppercase characters to lowercase, so use kebab-case which will be converted to camelCase ([e110f6e](https://github.com/jaspero/jms/commit/e110f6ecc8f1c00a3b42861a1182e2b7473714fe))
+
+
+### Features
+
+* prefill collection/subcollection document directly from table actions. added string interpolation in modules ([3555b96](https://github.com/jaspero/jms/commit/3555b9678519c03f30cfbc37545a64270e99ccce))
+
 # [3.17.0](https://github.com/jaspero/jms/compare/v3.16.0...v3.17.0) (2021-01-22)
 
 ### Features
