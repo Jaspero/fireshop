@@ -186,6 +186,10 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
             if (data.layout.table.actions) {
               hide.actions = data.layout.table.actions.reduce((acc, cur) => {
                 if (!cur.authorization || cur.authorization.includes(this.state.role)) {
+                  const interpolations = (cur.value.match(/[^{{}}]*(?=\}})/g) || []).filter(it => it);
+                  for (const param of interpolations) {
+                    cur.value = cur.value.replace(`{{${param}}}`, `' + ${param} + '`);
+                  }
 
                   const criteria = cur.criteria && safeEval(cur.criteria);
                   const parsed = safeEval(cur.value);
