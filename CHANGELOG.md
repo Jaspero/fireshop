@@ -1,3 +1,10 @@
+## [3.18.1](https://github.com/jaspero/jms/compare/v3.18.0...v3.18.1) (2021-01-24)
+
+
+### Bug Fixes
+
+* **client:** lock file update ([d582ea8](https://github.com/jaspero/jms/commit/d582ea828ebdad720e631ac41911cb27413a0238))
+
 # [3.18.0](https://github.com/jaspero/jms/compare/v3.17.0...v3.18.0) (2021-01-23)
 
 
