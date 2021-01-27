@@ -1,3 +1,10 @@
+## [3.18.2](https://github.com/jaspero/jms/compare/v3.18.1...v3.18.2) (2021-01-27)
+
+
+### Bug Fixes
+
+* **client:** collection names not being translated ([8fc931e](https://github.com/jaspero/jms/commit/8fc931edea481672ed5fe9dd1a1910f2785386bb))
+
 ## [3.18.1](https://github.com/jaspero/jms/compare/v3.18.0...v3.18.1) (2021-01-24)
 
 
