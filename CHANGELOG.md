@@ -1,3 +1,10 @@
+# [3.19.0](https://github.com/jaspero/jms/compare/v3.18.2...v3.19.0) (2021-01-28)
+
+
+### Features
+
+* **client:** added InstanceOverviewContextService as an argument to the custom pipe ([0731ad6](https://github.com/jaspero/jms/commit/0731ad6c3849fe982ea2c6c1c08ca3db113481cf))
+
 ## [3.18.2](https://github.com/jaspero/jms/compare/v3.18.1...v3.18.2) (2021-01-27)
 
 
