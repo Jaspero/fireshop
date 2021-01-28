@@ -197,6 +197,7 @@ export class InstanceOverviewContextService {
       this.domSanitizer,
       this.transloco,
       cdr,
+      this,
       this.providerScope,
       this.providerLang
     )
