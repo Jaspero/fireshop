@@ -32,7 +32,6 @@ export class ColumnPipe implements PipeTransform {
     private sanitizer: DomSanitizer,
     private transloco: TranslocoService,
     private cdr: ChangeDetectorRef,
-    private ioc: InstanceOverviewContextService,
     @Optional()
     @Inject(TRANSLOCO_SCOPE)
     private providerScope: MaybeArray<TranslocoScope>,
@@ -63,6 +62,7 @@ export class ColumnPipe implements PipeTransform {
   }
 
   pipes: {[key: string]: any};
+  ioc: InstanceOverviewContextService;
 
   transform(
     value: any,
