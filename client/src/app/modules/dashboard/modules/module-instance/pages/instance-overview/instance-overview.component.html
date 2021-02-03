@@ -4,12 +4,13 @@
     <div class="flex-1"></div>
     <div>
       <ng-container *ngFor="let item of toolbar">
-        <a
-          *ngIf="item === 'add'; else element;"
-          mat-flat-button
-          routerLink="../single/new">
-          {{'GENERAL.ADD' | transloco}} {{name}}
-        </a>
+        <div *ngIf="item === 'add'; else element;">
+          <a *ngIf="!hideAdd"
+             mat-flat-button
+             routerLink="../single/new">
+            {{'GENERAL.ADD' | transloco}} {{name}}
+          </a>
+        </div>
         <ng-template #element>
           <div [innerHTML]="item | jpSanitize"></div>
         </ng-template>
