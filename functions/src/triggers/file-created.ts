@@ -45,9 +45,10 @@ export const fileCreated = functions
           filePrefix,
           height,
           width,
-          webpVersion
+          webpVersion,
+          folder
         } = unpackGenerateImageString(metadata[key]);
-        const fName = filePrefix + fileName;
+        const fName = (filePrefix || '') + fileName;
         const tmpDir = join(tmpdir(), fName);
 
         if (filePrefix || width || height) {
@@ -55,12 +56,14 @@ export const fileCreated = functions
             tmpDir,
             fName,
             height,
-            width
+            width,
+            folder: folder || 'generated'
           });
         }
 
         if (webpVersion) {
           webpToGenerate.push({
+            folder: folder || 'generated',
             fName: fName.replace(/(.jpg|.png|.jpeg)/i, '.webp'),
             source: tmpDir,
             destination: tmpDir.replace(/(.jpg|.png|.jpeg)/i, '.webp')
@@ -106,7 +109,7 @@ export const fileCreated = functions
             metadata: generateMetadata,
             contentType
           },
-          destination: join(dirName, 'generated', file.fName)
+          destination: join(dirName, file.folder, file.fName)
         })
       ),
 
@@ -116,7 +119,7 @@ export const fileCreated = functions
             metadata: generateMetadata,
             contentType: 'image/webp'
           },
-          destination: join(dirName, 'generated', file.fName)
+          destination: join(dirName, file.folder, file.fName)
         })
       )
     ]);

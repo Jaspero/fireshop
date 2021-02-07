@@ -4,6 +4,7 @@ export function unpackGenerateImageString(data: string) {
 
     switch (key) {
       case 'filePrefix':
+      case 'folder':
         acc[key] = value;
         break;
       case 'height':
@@ -22,6 +23,7 @@ export function unpackGenerateImageString(data: string) {
       case 'webpVersion':
         acc[key] = value === 'true';
         break;
+
       default:
         break;
     }
@@ -29,6 +31,7 @@ export function unpackGenerateImageString(data: string) {
     return acc;
   }, {
     filePrefix: '',
+    folder: '',
     height: 0,
     width: 0,
     webpVersion: false
