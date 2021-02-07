@@ -1,3 +1,10 @@
+# [3.20.0](https://github.com/jaspero/jms/compare/v3.19.2...v3.20.0) (2021-02-07)
+
+
+### Features
+
+* **functions:** added support for overriding original image with generated version. ([121cdd3](https://github.com/jaspero/jms/commit/121cdd314b17d9f9aea115688da3b72b243b4614))
+
 ## [3.19.2](https://github.com/jaspero/jms/compare/v3.19.1...v3.19.2) (2021-02-03)
 
 
