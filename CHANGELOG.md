@@ -1,3 +1,17 @@
+## [3.19.2](https://github.com/jaspero/jms/compare/v3.19.1...v3.19.2) (2021-02-03)
+
+
+### Bug Fixes
+
+* hideAdd would always return true if any bool is assigned. hideAdd was overridden on init. improved double braces regex ([670224a](https://github.com/jaspero/jms/commit/670224aa070f46783f2cdde4302c454cd6bb6da9))
+
+## [3.19.1](https://github.com/jaspero/jms/compare/v3.19.0...v3.19.1) (2021-01-31)
+
+
+### Bug Fixes
+
+* **client:** ColumnPipe set up working ([b3df354](https://github.com/jaspero/jms/commit/b3df354961ef98252cb29ac911fdecfa956ec449))
+
 # [3.19.0](https://github.com/jaspero/jms/compare/v3.18.2...v3.19.0) (2021-01-28)
 
 

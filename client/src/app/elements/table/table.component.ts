@@ -78,7 +78,8 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     private dbService: DbService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+  }
 
   /**
    * Using view children so we can listen for changes
@@ -130,7 +131,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
           hideEdit: false,
           hideDelete: false,
           hideExport: false,
-          hideImport: false,
+          hideImport: false
         };
 
         if (
@@ -148,7 +149,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
 
           const columns = this.constructColumns(pColumns);
           displayColumns = columns.displayColumns;
-          tableColumns = columns.tableColumns
+          tableColumns = columns.tableColumns;
         } else {
           const topLevelProperties = Object.keys(data.schema.properties || {});
 
@@ -186,9 +187,9 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
             if (data.layout.table.actions) {
               hide.actions = data.layout.table.actions.reduce((acc, cur) => {
                 if (!cur.authorization || cur.authorization.includes(this.state.role)) {
-                  const interpolations = (cur.value.match(/[^{{}}]*(?=\}})/g) || []).filter(it => it);
+                  const interpolations = (cur.value.match(/{{\s*[\w.]+\s*}}/g) || []).filter(it => it);
                   for (const param of interpolations) {
-                    cur.value = cur.value.replace(`{{${param}}}`, `' + ${param} + '`);
+                    cur.value = cur.value.replace(param, `' + ${param.slice(2, -2)} + '`);
                   }
 
                   const criteria = cur.criteria && safeEval(cur.criteria);
@@ -203,13 +204,13 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
                 }
 
                 return acc;
-              }, [])
+              }, []);
             }
 
             if (data.layout.table.hideAdd) {
-              hide.hideAdd = typeof data.layout.table.hideAdd === 'boolean' ?
-                true :
-                data.layout.table.hideAdd.includes(this.state.role);
+              hide.hideAdd = data?.layout?.table?.hideAdd?.constructor === Boolean
+                ? data.layout.table.hideAdd
+                : (data.layout.table.hideAdd as string[]).includes(this.state.role);
             }
           }
         }
@@ -287,7 +288,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
       {
         width: '400px'
       }
-    )
+    );
   }
 
   updateColumns(columnOrganization: ColumnOrganizationComponent) {
@@ -342,13 +343,13 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
           tooltip,
           tooltipFunction: typeof tooltip === 'function'
         }
-      })
+      });
     }
 
     return {
       displayColumns,
       tableColumns
-    }
+    };
   }
 
   private parseColumns(overview: TableData, rowData: any) {
@@ -442,7 +443,8 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!id) {
           try {
             id = get(rowData, column.key as string);
-          } catch (e) {}
+          } catch (e) {
+          }
         }
 
 
@@ -490,7 +492,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
                         column.pipe,
                         column.pipeArguments,
                         {rowData, populated}
-                      )
+                      );
                     } else {
                       return column.populate.fallback || '-';
                     }
@@ -499,7 +501,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
                   }
                 }),
                 shareReplay(1)
-              )
+              );
           } else {
             this.populateCache[popKey] = this.dbService.getDocument(
               parsedCollection,
@@ -513,13 +515,13 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
                       column.pipe,
                       column.pipeArguments,
                       {rowData, populated}
-                    )
+                    );
                   } else {
                     return column.populate.fallback || '-';
                   }
                 }),
                 shareReplay(1)
-              )
+              );
           }
         }
 
@@ -527,7 +529,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
           this.populateColumnTemplate,
           this.viewContainerRef,
           {value: this.populateCache[popKey]}
-        )
+        );
       } else {
         return new TemplatePortal(
           this.simpleColumnTemplate,
