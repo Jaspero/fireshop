@@ -1,3 +1,10 @@
+# [3.21.0](https://github.com/jaspero/jms/compare/v3.20.0...v3.21.0) (2021-02-12)
+
+
+### Features
+
+* added workflow_dispatch to all workflows ([992c83f](https://github.com/jaspero/jms/commit/992c83f06e38a8b3fcc74d846efac4d2e0c0eefd))
+
 # [3.20.0](https://github.com/jaspero/jms/compare/v3.19.2...v3.20.0) (2021-02-07)
 
 
