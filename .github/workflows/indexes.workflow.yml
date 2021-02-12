@@ -1,5 +1,6 @@
 name: Deploy Firestore Indexes
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
