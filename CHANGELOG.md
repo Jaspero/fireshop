@@ -1,3 +1,10 @@
+## [3.21.1](https://github.com/jaspero/jms/compare/v3.21.0...v3.21.1) (2021-02-13)
+
+
+### Bug Fixes
+
+* **client:** translate labels of fields in column sort closes [#209](https://github.com/jaspero/jms/issues/209) ([0975d72](https://github.com/jaspero/jms/commit/0975d72c9dd1a6458d53bd74380cd285fa522dee))
+
 # [3.21.0](https://github.com/jaspero/jms/compare/v3.20.0...v3.21.0) (2021-02-12)
 
 
