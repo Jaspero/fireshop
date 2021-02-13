@@ -1,6 +1,7 @@
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
+import {TranslocoService} from '@ngneat/transloco';
 import {ModuleLayoutTableColumn} from '../../../../../../shared/interfaces/module-layout-table.interface';
 
 interface AdjustableColumn {
@@ -16,6 +17,9 @@ interface AdjustableColumn {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ColumnOrganizationComponent implements OnInit {
+  constructor(
+    private transloco: TranslocoService
+  ) {}
 
   @Input()
   tableColumns: ModuleLayoutTableColumn[];
@@ -26,7 +30,7 @@ export class ColumnOrganizationComponent implements OnInit {
     this.columns = this.tableColumns.map(data => ({
       data,
       active: new FormControl(!data.disabled),
-      label: new FormControl(data.label)
+      label: new FormControl(this.transloco.translate(data.label))
     }))
   }
 
