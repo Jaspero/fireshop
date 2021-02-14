@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {map, shareReplay, switchMap, take} from 'rxjs/operators';
+import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {InstanceOverviewContextService} from './services/instance-overview-context.service';
 import {findModule} from './utils/find-module';
@@ -34,6 +34,9 @@ export class ModuleInstanceComponent implements OnInit {
           take(1)
         )
       ),
+      tap(module => {
+        this.state.page$.next(module ? {module: {id: module.id, name: module.name}} : {});
+      }),
       shareReplay(1)
     );
   }

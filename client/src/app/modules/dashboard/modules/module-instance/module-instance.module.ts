@@ -33,7 +33,6 @@ import {ELEMENT_SELECTOR, ELEMENTS} from '../../../../elements/elements.const';
 import {CanReadModuleGuard} from '../../../../shared/guards/can-read-module/can-read-module.guard';
 import {FormBuilderSharedModule} from '../../../../shared/modules/fb/form-builder-shared.module';
 import {SearchInputModule} from '../../../../shared/modules/search-input/search-input.module';
-import {DbService} from '../../../../shared/services/db/db.service';
 import {StateService} from '../../../../shared/services/state/state.service';
 import {ColumnOrganizationComponent} from './components/column-organization/column-organization.component';
 import {ExportComponent} from './components/export/export.component';
@@ -125,14 +124,6 @@ const routes: Routes = [
       provide: 'module',
       useFactory: moduleProvider,
       deps: [InstanceOverviewContextService]
-    },
-    {
-      provide: 'dbService',
-      useExisting: DbService
-    },
-    {
-      provide: 'stateService',
-      useExisting: StateService
     },
     {
       provide: 'elementsPrefix',

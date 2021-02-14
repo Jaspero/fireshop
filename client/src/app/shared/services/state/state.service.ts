@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslocoService} from '@ngneat/transloco';
-import {Observable, Subject} from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {map, shareReplay} from 'rxjs/operators';
 import {FirestoreCollection} from '../../../../../integrations/firebase/firestore-collection.enum';
 import {Layout} from '../../interfaces/layout.interface';
@@ -48,6 +48,8 @@ export class StateService {
   modules$: Observable<Module[]>;
   layout$: Observable<Layout>;
   language: string;
+
+  page$ = new BehaviorSubject<{module?: {id: string, name: string}}>({});
 
   /**
    * Holds state information for all

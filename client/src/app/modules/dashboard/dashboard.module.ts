@@ -4,6 +4,8 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule, Routes} from '@angular/router';
 import {TranslocoModule} from '@ngneat/transloco';
+import {DbService} from '../../shared/services/db/db.service';
+import {StateService} from '../../shared/services/state/state.service';
 import {ActiveLinkDirective} from './components/active-link/active-link.directive';
 import {LayoutComponent} from './components/layout/layout.component';
 
@@ -76,6 +78,20 @@ const DIRECTIVES = [
      * External
      */
     TranslocoModule
+  ],
+  providers: [
+    /**
+     * We provide it with a string referenc here
+     * so that it can be used in plugins
+     */
+    {
+      provide: 'stateService',
+      useExisting: StateService
+    },
+    {
+      provide: 'dbService',
+      useExisting: DbService
+    },
   ]
 })
 export class DashboardModule { }
