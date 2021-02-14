@@ -1,3 +1,10 @@
+# [3.22.0](https://github.com/jaspero/jms/compare/v3.21.1...v3.22.0) (2021-02-14)
+
+
+### Features
+
+* **client:** moved dbService and stateService providers to dashboard. Added page$ observable to state. ([3e71851](https://github.com/jaspero/jms/commit/3e71851e00f6fdcf7276721369f3955e3bca20a5))
+
 ## [3.21.1](https://github.com/jaspero/jms/compare/v3.21.0...v3.21.1) (2021-02-13)
 
 
