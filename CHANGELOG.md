@@ -1,3 +1,10 @@
+## [3.22.1](https://github.com/jaspero/jms/compare/v3.22.0...v3.22.1) (2021-02-16)
+
+
+### Bug Fixes
+
+* nav & children should overlay main content ([cd24e76](https://github.com/jaspero/jms/commit/cd24e76de3eaf2894fe6bb2e453945166f87fa71))
+
 # [3.22.0](https://github.com/jaspero/jms/compare/v3.21.1...v3.22.0) (2021-02-14)
 
 
