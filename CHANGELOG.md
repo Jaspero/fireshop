@@ -1,3 +1,10 @@
+# [3.23.0](https://github.com/jaspero/jms/compare/v3.22.1...v3.23.0) (2021-02-18)
+
+
+### Features
+
+* **client:** connected autosave option ([e3e97e9](https://github.com/jaspero/jms/commit/e3e97e99fa6e8348186109915afe53157c9b50ba))
+
 ## [3.22.1](https://github.com/jaspero/jms/compare/v3.22.0...v3.22.1) (2021-02-16)
 
 
