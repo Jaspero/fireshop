@@ -1,3 +1,10 @@
+## [3.23.1](https://github.com/jaspero/jms/compare/v3.23.0...v3.23.1) (2021-02-18)
+
+
+### Bug Fixes
+
+* **client:** missing untilDestroyed on auto-save interval ([8dd8236](https://github.com/jaspero/jms/commit/8dd82369e019389f61566745599caca6bdc39587))
+
 # [3.23.0](https://github.com/jaspero/jms/compare/v3.22.1...v3.23.0) (2021-02-18)
 
 
