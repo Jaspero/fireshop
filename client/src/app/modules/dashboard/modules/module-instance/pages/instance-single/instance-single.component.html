@@ -6,16 +6,17 @@
     <div class="flex-1"></div>
     <ng-container *ngIf="!data.directLink">
       <span class="hide-xs">
-        <a mat-button (click)="back()">{{'GENERAL.CANCEL' | transloco}}</a>&nbsp;
+        <a mat-button (click)="back()">{{(data.autoSave ? 'GENERAL.BACK' : 'GENERAL.CANCEL') | transloco}}</a>&nbsp;
       </span>
       <span class="show-xs">
-        <a mat-icon-button (click)="back()" [matTooltip]="'GENERAL.CANCEL' | transloco">
+        <a mat-icon-button (click)="back()" [matTooltip]="(data.autoSave ? 'GENERAL.BACK' : 'GENERAL.CANCEL') | transloco">
           <mat-icon>cancel</mat-icon>
         </a>&nbsp;
       </span>
     </ng-container>
     <span class="hide-xs">
       <button
+        *ngIf="!data.autoSave"
         type="submit"
         mat-flat-button
         [disabled]="formBuilderComponent?.form.invalid"
@@ -39,5 +40,5 @@
     <!--<mat-progress-bar class="jms-instance-single-loading" color="accent" mode="determinate" value="40"></mat-progress-bar>-->
   </mat-toolbar>
 
-  <fb-form-builder [data]="data.formBuilder" [state]="formState"></fb-form-builder>
+  <fb-form-builder [data]="data.formBuilder" [state]="formState" (valueChanges)="valueChange($event, data)"></fb-form-builder>
 </form>

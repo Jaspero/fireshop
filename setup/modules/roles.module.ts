@@ -77,5 +77,8 @@ export const ROLES_MODULE = {
       }
     },
     ...CREATED_ON.definition()
+  },
+  metadata: {
+    autoSave: 0
   }
 };

@@ -2,12 +2,12 @@ import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/co
 import {FormBuilder} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Definitions, FormBuilderComponent, safeEval, Segment, State} from '@jaspero/form-builder';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {JSONSchema7} from 'json-schema';
-import {Observable, of} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {interval, Observable, of, Subject, Subscription} from 'rxjs';
+import {debounceTime, map, switchMap, tap} from 'rxjs/operators';
 import {ViewState} from '../../../../../../shared/enums/view-state.enum';
 import {ModuleAuthorization} from '../../../../../../shared/interfaces/module-authorization.interface';
-import {Module} from '../../../../../../shared/interfaces/module.interface';
 import {DbService} from '../../../../../../shared/services/db/db.service';
 import {StateService} from '../../../../../../shared/services/state/state.service';
 import {notify} from '../../../../../../shared/utils/notify.operator';
@@ -20,6 +20,7 @@ interface Instance {
     name: string;
     editTitleKey: string;
   };
+  autoSave?: true;
   directLink: boolean;
   formatOnSave: (data: any) => any;
   formatOnEdit: (data: any) => any;
@@ -33,6 +34,7 @@ interface Instance {
   }
 }
 
+@UntilDestroy()
 @Component({
   selector: 'jms-instance-single',
   templateUrl: './instance-single.component.html',
@@ -60,6 +62,12 @@ export class InstanceSingleComponent implements OnInit {
   formState: State;
 
   data$: Observable<Instance>;
+  change: Instance;
+
+  saveBuffer$ = new Subject<Instance>();
+  first = true;
+
+  private autoSaveListener: Subscription;
 
   ngOnInit() {
     this.data$ = this.ioc.module$.pipe(
@@ -84,13 +92,14 @@ export class InstanceSingleComponent implements OnInit {
                 .pipe(queue());
             }
           }),
-          map((value: Partial<Module>) => {
+          map((value: any) => {
             this.initialValue = JSON.stringify(value);
             this.currentValue = JSON.stringify(this.initialValue);
 
             let editTitleKey = 'id';
 
             const formatOn: any = {};
+            const autoSave = module.metadata?.hasOwnProperty('autoSave') && this.currentState === ViewState.Edit;
 
             if (module.layout) {
               if (module.layout.editTitleKey) {
@@ -118,6 +127,20 @@ export class InstanceSingleComponent implements OnInit {
               }
             }
 
+            if (this.autoSaveListener) {
+              this.autoSaveListener.unsubscribe();
+            }
+
+            if (autoSave && module.metadata.autoSave) {
+              this.autoSaveListener = interval(module.metadata.autoSave)
+                .subscribe(() => {
+                  if (this.change) {
+                    this.saveBuffer$.next(this.change);
+                    this.change = null;
+                  }
+                })
+            }
+
             return {
               module: {
                 id: module.id,
@@ -134,23 +157,31 @@ export class InstanceSingleComponent implements OnInit {
                 ...module.layout && module.layout.instance && module.layout.instance.segments && {
                   segments: module.layout.instance.segments
                 }
-              }
+              },
+              ...autoSave && {autoSave: true}
             };
           })
         )
       )
     );
+
+    this.saveBuffer$
+      .pipe(
+        debounceTime(300),
+        switchMap(instance =>
+          this.save(instance, false)()
+        ),
+        untilDestroyed(this)
+      )
+      .subscribe()
   }
 
-  save(instance: Instance) {
+  save(instance: Instance, navigate = true) {
     return () => {
       this.formBuilderComponent.process();
       const id = this.formBuilderComponent.form.getRawValue().id || this.dbService.createId();
 
-      return this.formBuilderComponent.save(
-        instance.module.id,
-        id
-      ).pipe(
+      const actions: any[] = [
         switchMap(() => {
           let data = this.formBuilderComponent.form.getRawValue();
 
@@ -167,14 +198,21 @@ export class InstanceSingleComponent implements OnInit {
           delete data.id;
 
           return this.dbService.setDocument(instance.module.id, id, data);
-        }),
-        notify(),
-        tap(() => {
-          if (!instance.directLink) {
-            this.back();
-          }
         })
-      );
+      ];
+
+      if (navigate) {
+        actions.push(notify());
+
+        if (!instance.directLink) {
+          actions.push(tap(() => this.back()))
+        }
+      }
+
+      return (this.formBuilderComponent.save(
+        instance.module.id,
+        id
+      ).pipe as any)(...actions)
     };
   }
 
@@ -182,5 +220,24 @@ export class InstanceSingleComponent implements OnInit {
     this.initialValue = '';
     this.currentValue = '';
     this.router.navigate(['../..', 'overview'], {relativeTo: this.activatedRoute});
+  }
+
+  valueChange(data: any, instance: Instance) {
+    if (instance.autoSave) {
+      if (this.first) {
+        this.first = false;
+        return;
+      }
+
+      const newValue = JSON.stringify(data);
+
+      if (newValue !== this.initialValue) {
+        if (this.autoSaveListener) {
+          this.change = instance;
+        } else {
+          this.saveBuffer$.next(instance)
+        }
+      }
+    }
   }
 }
