@@ -1,3 +1,10 @@
+## [3.23.2](https://github.com/jaspero/jms/compare/v3.23.1...v3.23.2) (2021-02-18)
+
+
+### Bug Fixes
+
+* **client:** initialValue not being saved on instance-single ([d4b4d68](https://github.com/jaspero/jms/commit/d4b4d68e6fb30ba9d9d5cab200ffdf0518a5c7f9))
+
 ## [3.23.1](https://github.com/jaspero/jms/compare/v3.23.0...v3.23.1) (2021-02-18)
 
 
