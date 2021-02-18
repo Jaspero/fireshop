@@ -198,6 +198,8 @@ export class InstanceSingleComponent implements OnInit {
             data = instance.formatOnSave(data);
           }
 
+          this.initialValue = JSON.stringify(data);
+
           delete data.id;
 
           return this.dbService.setDocument(instance.module.id, id, data);
