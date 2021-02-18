@@ -133,6 +133,9 @@ export class InstanceSingleComponent implements OnInit {
 
             if (autoSave && module.metadata.autoSave) {
               this.autoSaveListener = interval(module.metadata.autoSave)
+                .pipe(
+                  untilDestroyed(this)
+                )
                 .subscribe(() => {
                   if (this.change) {
                     this.saveBuffer$.next(this.change);
