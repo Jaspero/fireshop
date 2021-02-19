@@ -17,7 +17,9 @@
 </ng-template>
 
 <ng-template #subHeaderTemplate>
-  <jms-filter-tags [items$]="ioc.filterChange$" [search]="ioc.searchControl"></jms-filter-tags>
+  <div class="p-t-s p-l-s">
+    <jms-filter-tags [items$]="ioc.filterChange$" [search]="ioc.searchControl"></jms-filter-tags>
+  </div>
 </ng-template>
 
 <ng-template #columnOrganization>
