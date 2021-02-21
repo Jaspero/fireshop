@@ -2,8 +2,12 @@ rules_version = '2';
 service cloud.firestore {
   function access(database, module, operation) {
     return
-      !get(/databases/$(database)/documents/modules/$(module)).data.authorization.keys().hasAll([operation])||
+      !get(/databases/$(database)/documents/modules/$(module)).data.authorization.keys().hasAll([operation]) ||
       request.auth.token.role in get(/databases/$(database)/documents/modules/$(module)).data.authorization[operation]
+  }
+
+  function hasId(resource) {
+    return resource.id == request.auth.uid
   }
 
   function authenticated() {
@@ -26,7 +30,8 @@ service cloud.firestore {
     }
 
     match /users/{user=**} {
-      allow read, write: if access(database, 'users', 'read') || resource.id == request.auth.uid;
+      allow read: if access(database, 'users', 'read') || hasId(resource);
+      allow write: if access(database, 'users', 'write') || hasId(resource);
     }
 
     match /modules/{module=**} {
