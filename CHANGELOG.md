@@ -1,3 +1,15 @@
+# [3.24.0](https://github.com/jaspero/jms/compare/v3.23.2...v3.24.0) (2021-02-21)
+
+
+### Bug Fixes
+
+* **client:** filter tags not showing if there aren't any views on the module ([22ee8b9](https://github.com/jaspero/jms/commit/22ee8b97eba420254367afe5114bc8d4544c01af))
+
+
+### Features
+
+* **rules:** added hasId method ([9cbcd71](https://github.com/jaspero/jms/commit/9cbcd717c2258ae95091785ed578ac04c20ea63b))
+
 ## [3.23.2](https://github.com/jaspero/jms/compare/v3.23.1...v3.23.2) (2021-02-18)
 
 
