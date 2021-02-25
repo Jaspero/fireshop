@@ -212,6 +212,30 @@ export class FbDatabaseService extends DbService {
       );
   }
 
+  getSubdocumentsSimple(moduleId, orderBy?, filter?) {
+    return this.afs
+      .collectionGroup(moduleId, (ref: any) => {
+        if (orderBy) {
+          ref = ref.orderBy(orderBy);
+        }
+
+        if (filter) {
+          ref = ref.where(filter.key, filter.operator, filter.value);
+        }
+
+        return ref;
+      })
+      .get()
+      .pipe(
+        map(data =>
+          data.docs.map((it: any) => ({
+            id: it.id,
+            ...it.data()
+          }))
+        )
+      );
+  }
+
   setDocument(moduleId, documentId, data, options) {
     return from(
       this.afs

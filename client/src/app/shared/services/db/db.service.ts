@@ -62,6 +62,14 @@ export abstract class DbService {
     return of([]);
   }
 
+  getSubdocumentsSimple(
+    moduleId: string,
+    orderBy?: string,
+    filter?: WhereFilter
+  ): Observable<any[]> {
+    return of([]);
+  }
+
   getStateChanges(
     moduleId: string,
     pageSize?: number,
