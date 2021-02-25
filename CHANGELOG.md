@@ -1,3 +1,10 @@
+# [3.25.0](https://github.com/jaspero/jms/compare/v3.24.0...v3.25.0) (2021-02-25)
+
+
+### Features
+
+* added getSubdocumentsSimple collectionGroup query ([b374477](https://github.com/jaspero/jms/commit/b37447703e8a1a4b33f7c628312f603727bccdc7))
+
 # [3.24.0](https://github.com/jaspero/jms/compare/v3.23.2...v3.24.0) (2021-02-21)
 
 
