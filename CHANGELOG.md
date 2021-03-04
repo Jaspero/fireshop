@@ -1,3 +1,10 @@
+## [3.25.1](https://github.com/jaspero/jms/compare/v3.25.0...v3.25.1) (2021-03-04)
+
+
+### Bug Fixes
+
+* **client:** only redirecting to login after logout is successful. ([7945b13](https://github.com/jaspero/jms/commit/7945b13bceb04e1bd5b298b5ce82d534b690b916))
+
 # [3.25.0](https://github.com/jaspero/jms/compare/v3.24.0...v3.25.0) (2021-02-25)
 
 
