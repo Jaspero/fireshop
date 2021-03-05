@@ -1,3 +1,20 @@
+# [3.26.0](https://github.com/jaspero/jms/compare/v3.25.1...v3.26.0) (2021-03-05)
+
+
+### Bug Fixes
+
+* stop error on reading constructor property of undefined ([ec66597](https://github.com/jaspero/jms/commit/ec665976e7134375ffe4c0db6614e96edc6a154e))
+
+
+### Features
+
+* **tableColumns:** pass resolveObservables flag to the column object which resolves Observable-like objects before passing value to next pipe ([edfad39](https://github.com/jaspero/jms/commit/edfad39bc0cd5e825ac907e167052217d8e80fc9))
+
+
+### Performance Improvements
+
+* type checking of constructor ([6d428d8](https://github.com/jaspero/jms/commit/6d428d8cd97183da3a5bd2abf42cee42341bcb67))
+
 ## [3.25.1](https://github.com/jaspero/jms/compare/v3.25.0...v3.25.1) (2021-03-04)
 
 
