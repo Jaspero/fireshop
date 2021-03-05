@@ -19,7 +19,15 @@ import {Parser, parseTemplate, safeEval, State} from '@jaspero/form-builder';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {get, has} from 'json-pointer';
 import {JSONSchema7} from 'json-schema';
-import {AsyncSubject, BehaviorSubject, combineLatest, Observable, of, ReplaySubject, Subject} from 'rxjs';
+import {
+  AsyncSubject,
+  BehaviorSubject,
+  combineLatest,
+  Observable,
+  of,
+  ReplaySubject,
+  Subject
+} from 'rxjs';
 import {filter, map, shareReplay, startWith, switchMap} from 'rxjs/operators';
 import {ColumnOrganizationComponent} from '../../modules/dashboard/modules/module-instance/components/column-organization/column-organization.component';
 import {InstanceOverviewContextService} from '../../modules/dashboard/modules/module-instance/services/instance-overview-context.service';
@@ -57,10 +65,14 @@ interface TableData {
   hideDelete?: boolean;
   hideExport?: boolean;
   hideImport?: boolean;
-  actions?: Array<(it: any) => {
-    criteria?: (d: any) => boolean;
-    value: (d: any) => string;
-  }>;
+  actions?: Array<
+    (
+      it: any
+    ) => {
+      criteria?: (d: any) => boolean;
+      value: (d: any) => string;
+    }
+  >;
 }
 
 @UntilDestroy()
@@ -79,8 +91,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     private dbService: DbService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef
-  ) {
-  }
+  ) {}
 
   /**
    * Using view children so we can listen for changes
@@ -111,7 +122,6 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   populateCache: {[key: string]: Observable<any>} = {};
 
   ngOnInit() {
-
     /**
      * Component isn't necessarily destroyed
      * before it's instantiated again
@@ -120,163 +130,160 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
       this.ioc.subHeaderTemplate$.next(this.subHeaderTemplate);
     }, 100);
 
-    this.ioc.module$
-      .pipe(
-        untilDestroyed(this)
-      )
-      .subscribe(data => {
-        let displayColumns: string[];
-        let tableColumns: ModuleLayoutTableColumn[];
-        let pColumns: ModuleLayoutTableColumn[];
-        let sort: InstanceSort;
-        let hide: any = {
-          hideCheckbox: false,
-          hideAdd: false,
-          hideEdit: false,
-          hideDelete: false,
-          hideExport: false,
-          hideImport: false
-        };
+    this.ioc.module$.pipe(untilDestroyed(this)).subscribe(data => {
+      let displayColumns: string[];
+      let tableColumns: ModuleLayoutTableColumn[];
+      let pColumns: ModuleLayoutTableColumn[];
+      let sort: InstanceSort;
+      let hide: any = {
+        hideCheckbox: false,
+        hideAdd: false,
+        hideEdit: false,
+        hideDelete: false,
+        hideExport: false,
+        hideImport: false
+      };
 
-        if (
-          data.layout &&
-          data.layout.table &&
-          data.layout.table.tableColumns
-        ) {
+      if (data.layout && data.layout.table && data.layout.table.tableColumns) {
+        /**
+         * Filter authorized columns
+         */
+        pColumns = data.layout.table.tableColumns.filter(column =>
+          column.authorization
+            ? column.authorization.includes(this.state.role)
+            : true
+        );
 
-          /**
-           * Filter authorized columns
-           */
-          pColumns = data.layout.table.tableColumns.filter(column =>
-            column.authorization ? column.authorization.includes(this.state.role) : true
-          );
+        const columns = this.constructColumns(pColumns);
+        displayColumns = columns.displayColumns;
+        tableColumns = columns.tableColumns;
+      } else {
+        const topLevelProperties = Object.keys(data.schema.properties || {});
 
-          const columns = this.constructColumns(pColumns);
-          displayColumns = columns.displayColumns;
-          tableColumns = columns.tableColumns;
-        } else {
-          const topLevelProperties = Object.keys(data.schema.properties || {});
+        displayColumns = topLevelProperties.reduce((acc, key) => {
+          acc.push(key || this.dbService.createId());
+          return acc;
+        }, []);
+        tableColumns = topLevelProperties.map(key => ({
+          // Make the key a valid json pointer
+          key: '/' + key,
+          label: key
+        }));
+      }
 
-          displayColumns = topLevelProperties.reduce((acc, key) => {
-            acc.push(key || this.dbService.createId());
+      if (data.layout) {
+        sort = data.layout.sort;
+
+        if (data.layout.table) {
+          hide = [
+            'hideCheckbox',
+            'hideEdit',
+            'hideDelete',
+            'hideExport',
+            'hideImport'
+          ].reduce((acc, key) => {
+            acc[key] = data.layout.table[key]
+              ? typeof data.layout.table[key] === 'boolean'
+                ? true
+                : data.layout.table[key].includes(this.state.role)
+              : false;
             return acc;
-          }, []);
-          tableColumns = topLevelProperties.map(key => ({
-            // Make the key a valid json pointer
-            key: '/' + key,
-            label: key
-          }));
-        }
+          }, {});
 
-        if (data.layout) {
-
-          sort = data.layout.sort;
-
-          if (data.layout.table) {
-            hide = [
-              'hideCheckbox',
-              'hideEdit',
-              'hideDelete',
-              'hideExport',
-              'hideImport'
-            ].reduce((acc, key) => {
-              acc[key] = data.layout.table[key] ?
-                typeof data.layout.table[key] === 'boolean' ?
-                  true :
-                  data.layout.table[key].includes(this.state.role) :
-                false;
-              return acc;
-            }, {});
-
-            if (data.layout.table.actions) {
-              hide.actions = data.layout.table.actions.reduce((acc, cur) => {
-                if (!cur.authorization || cur.authorization.includes(this.state.role)) {
-                  const interpolations = (cur.value.match(/{{\s*[\w.]+\s*}}/g) || []).filter(it => it);
-                  for (const param of interpolations) {
-                    cur.value = cur.value.replace(param, `' + ${param.slice(2, -2)} + '`);
-                  }
-
-                  const criteria = cur.criteria && safeEval(cur.criteria);
-                  const parsed = safeEval(cur.value);
-
-                  if (parsed) {
-                    acc.push({
-                      value: parsed,
-                      ...criteria && {criteria}
-                    });
-                  }
+          if (data.layout.table.actions) {
+            hide.actions = data.layout.table.actions.reduce((acc, cur) => {
+              if (
+                !cur.authorization ||
+                cur.authorization.includes(this.state.role)
+              ) {
+                const interpolations = (
+                  cur.value.match(/{{\s*[\w.]+\s*}}/g) || []
+                ).filter(it => it);
+                for (const param of interpolations) {
+                  cur.value = cur.value.replace(
+                    param,
+                    `' + ${param.slice(2, -2)} + '`
+                  );
                 }
 
-                return acc;
-              }, []);
-            }
+                const criteria = cur.criteria && safeEval(cur.criteria);
+                const parsed = safeEval(cur.value);
 
-            if (data.layout.table.hideAdd) {
-              hide.hideAdd = data?.layout?.table?.hideAdd?.constructor === Boolean
+                if (parsed) {
+                  acc.push({
+                    value: parsed,
+                    ...(criteria && {criteria})
+                  });
+                }
+              }
+
+              return acc;
+            }, []);
+          }
+
+          if (data.layout.table.hideAdd) {
+            hide.hideAdd =
+              data?.layout?.table?.hideAdd?.constructor === Boolean
                 ? data.layout.table.hideAdd
-                : (data.layout.table.hideAdd as string[]).includes(this.state.role);
-            }
+                : (data.layout.table.hideAdd as string[]).includes(
+                    this.state.role
+                  );
           }
         }
+      }
 
-        if (!hide.hideCheckbox) {
-          displayColumns.unshift('check');
-        }
+      if (!hide.hideCheckbox) {
+        displayColumns.unshift('check');
+      }
 
-        if (!hide.hideDelete || !hide.hideEdit) {
-          displayColumns.push('actions');
-        }
+      if (!hide.hideDelete || !hide.hideEdit) {
+        displayColumns.push('actions');
+      }
 
-        this.data = {
-          moduleId: data.id,
-          moduleAuthorization: data.authorization,
-          name: data.name,
-          schema: data.schema,
-          displayColumns,
-          tableColumns,
-          sort,
-          originalColumns: pColumns,
-          definitions: data.definitions,
-          ...(
-            data.layout ? {
-              stickyHeader: data.layout.table && data.layout.table.hasOwnProperty('stickyHeader') ? data.layout.table.stickyHeader : true,
+      this.data = {
+        moduleId: data.id,
+        moduleAuthorization: data.authorization,
+        name: data.name,
+        schema: data.schema,
+        displayColumns,
+        tableColumns,
+        sort,
+        originalColumns: pColumns,
+        definitions: data.definitions,
+        ...(data.layout
+          ? {
+              stickyHeader:
+                data.layout.table &&
+                data.layout.table.hasOwnProperty('stickyHeader')
+                  ? data.layout.table.stickyHeader
+                  : true,
               sortModule: data.layout.sortModule,
               filterModule: data.layout.filterModule,
               searchModule: data.layout.searchModule,
               importModule: data.layout.importModule,
               ...hide
-            } : {
-              stickyHeader: true
             }
-          )
-        };
+          : {
+              stickyHeader: true
+            })
+      };
 
-        this.items$ = combineLatest([
-          this.ioc.items$,
-          this.columnsSorted$
-        ])
-          .pipe(
-            map(([items]) =>
-              items
-                .map(item => this.mapRow(
-                  this.data,
-                  item
-                  )
-                )
-            )
-          );
+      this.items$ = combineLatest([this.ioc.items$, this.columnsSorted$]).pipe(
+        map(([items]) => items.map(item => this.mapRow(this.data, item)))
+      );
 
-        this.cdr.markForCheck();
-      });
+      this.cdr.markForCheck();
+    });
   }
 
   ngAfterViewInit() {
-    this.sort.changes.pipe(
-      startWith(this.sort),
-      filter(change => change.last),
-      switchMap(change => change.last.sortChange),
-      untilDestroyed(this)
-    )
+    this.sort.changes
+      .pipe(
+        startWith(this.sort),
+        filter(change => change.last),
+        switchMap(change => change.last.sortChange),
+        untilDestroyed(this)
+      )
       .subscribe((value: any) => {
         this.ioc.sortChange$.next(value);
       });
@@ -287,12 +294,9 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   openColumnOrganization() {
-    this.dialog.open(
-      this.columnOrganizationTemplate,
-      {
-        width: '400px'
-      }
-    );
+    this.dialog.open(this.columnOrganizationTemplate, {
+      width: '400px'
+    });
   }
 
   updateColumns(columnOrganization: ColumnOrganizationComponent) {
@@ -314,10 +318,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     this.columnsSorted$.next(true);
   }
 
-  private mapRow(
-    overview: TableData,
-    rowData: any
-  ) {
+  private mapRow(overview: TableData, rowData: any) {
     const {id, ...data} = rowData;
 
     return {
@@ -328,25 +329,25 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private constructColumns(columns: ModuleLayoutTableColumn[]) {
-
     const displayColumns = [];
     const tableColumns = [];
 
     for (const column of columns) {
-
       if (column.disabled) {
         continue;
       }
 
-      const tooltip = column.tooltip ? safeEval(column.tooltip as string) : column.tooltip;
+      const tooltip = column.tooltip
+        ? safeEval(column.tooltip as string)
+        : column.tooltip;
 
       displayColumns.push(this.dbService.createId());
       tableColumns.push({
         ...column,
-        ...tooltip && {
+        ...(tooltip && {
           tooltip,
           tooltipFunction: typeof tooltip === 'function'
-        }
+        })
       });
     }
 
@@ -362,11 +363,11 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
         value: this.getColumnValue(column, overview, rowData),
         ...(column.nestedColumns
           ? {
-            nested: this.parseColumns(
-              {...overview, tableColumns: column.nestedColumns},
-              rowData
-            )
-          }
+              nested: this.parseColumns(
+                {...overview, tableColumns: column.nestedColumns},
+                rowData
+              )
+            }
           : {})
       };
       return acc;
@@ -430,7 +431,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
         const pipes: any[] = [];
         for (const [i, item] of (column.pipe as Array<PipeType>).entries()) {
           pipes.push(
-            switchMap((data) => {
+            switchMap(data => {
               const result = this.ioc.columnPipe.transform(
                 data,
                 item,
@@ -439,13 +440,16 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
               );
 
               const constructor = result.constructor;
-              if (constructor && (
-                constructor === Observable
-                || constructor === Subject
-                || constructor === BehaviorSubject
-                || constructor === ReplaySubject
-                || constructor === AsyncSubject
-              )) {
+              if (
+                constructor &&
+                [
+                  Observable,
+                  Subject,
+                  BehaviorSubject,
+                  ReplaySubject,
+                  AsyncSubject
+                ].includes(constructor)
+              ) {
                 return result;
               } else {
                 return of(result);
@@ -487,10 +491,8 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!id) {
           try {
             id = get(rowData, column.key as string);
-          } catch (e) {
-          }
+          } catch (e) {}
         }
-
 
         if (!id) {
           return new TemplatePortal(
@@ -507,30 +509,35 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
           true
         );
         const popKey = `${parsedCollection}-${
-          column.populate.lookUp ?
-            [column.populate.lookUp.key, column.populate.lookUp.operator, id].join('-') :
-            id
+          column.populate.lookUp
+            ? [
+                column.populate.lookUp.key,
+                column.populate.lookUp.operator,
+                id
+              ].join('-')
+            : id
         }`;
 
         if (!this.populateCache[popKey]) {
           if (column.populate.lookUp) {
-            this.populateCache[popKey] = this.dbService.getDocuments(
-              parsedCollection,
-              1,
-              undefined,
-              undefined,
-              [{
-                ...column.populate.lookUp,
-                value: id
-              }]
-            )
+            this.populateCache[popKey] = this.dbService
+              .getDocuments(parsedCollection, 1, undefined, undefined, [
+                {
+                  ...column.populate.lookUp,
+                  value: id
+                }
+              ])
               .pipe(
                 map(docs => {
-
                   if (docs[0]) {
                     const populated: any = docs[0].data();
 
-                    if (populated && populated.hasOwnProperty(column.populate.displayKey || 'name')) {
+                    if (
+                      populated &&
+                      populated.hasOwnProperty(
+                        column.populate.displayKey || 'name'
+                      )
+                    ) {
                       return this.ioc.columnPipe.transform(
                         populated[column.populate.displayKey || 'name'],
                         column.pipe,
@@ -547,13 +554,15 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
                 shareReplay(1)
               );
           } else {
-            this.populateCache[popKey] = this.dbService.getDocument(
-              parsedCollection,
-              id
-            )
+            this.populateCache[popKey] = this.dbService
+              .getDocument(parsedCollection, id)
               .pipe(
                 map(populated => {
-                  if (populated.hasOwnProperty(column.populate.displayKey || 'name')) {
+                  if (
+                    populated.hasOwnProperty(
+                      column.populate.displayKey || 'name'
+                    )
+                  ) {
                     return this.ioc.columnPipe.transform(
                       populated[column.populate.displayKey || 'name'],
                       column.pipe,
