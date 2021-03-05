@@ -439,10 +439,8 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
                 rowData
               );
 
-              const constructor = result.constructor;
-              if (
-                constructor &&
-                [
+              const constructor = result?.constructor;
+              if ([
                   Observable,
                   Subject,
                   BehaviorSubject,
