@@ -19,10 +19,11 @@ import {Parser, parseTemplate, safeEval, State} from '@jaspero/form-builder';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {get, has} from 'json-pointer';
 import {JSONSchema7} from 'json-schema';
-import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
+import {AsyncSubject, BehaviorSubject, combineLatest, Observable, of, ReplaySubject, Subject} from 'rxjs';
 import {filter, map, shareReplay, startWith, switchMap} from 'rxjs/operators';
 import {ColumnOrganizationComponent} from '../../modules/dashboard/modules/module-instance/components/column-organization/column-organization.component';
 import {InstanceOverviewContextService} from '../../modules/dashboard/modules/module-instance/services/instance-overview-context.service';
+import {PipeType} from '../../shared/enums/pipe-type.enum';
 import {FilterModule} from '../../shared/interfaces/filter-module.interface';
 import {ImportModule} from '../../shared/interfaces/import-module.interface';
 import {InstanceSort} from '../../shared/interfaces/instance-sort.interface';
@@ -95,6 +96,9 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('populateColumn', {static: true})
   populateColumnTemplate: TemplateRef<any>;
+
+  @ViewChild('observableColumn', {static: true})
+  observableColumnTemplate: TemplateRef<any>;
 
   @ViewChild('columnOrganization', {static: true})
   columnOrganizationTemplate: TemplateRef<any>;
@@ -417,6 +421,46 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
       return field.portal;
     } else {
       let value;
+
+      if (column.resolveObservables && column.pipe) {
+        if (!column.pipe.length) {
+          column.pipe = [column.pipe as PipeType];
+        }
+
+        const pipes: any[] = [];
+        for (const [i, item] of (column.pipe as Array<PipeType>).entries()) {
+          pipes.push(
+            switchMap((data) => {
+              const result = this.ioc.columnPipe.transform(
+                data,
+                item,
+                column.pipeArguments[i],
+                rowData
+              );
+
+              const constructor = result.constructor;
+              if (constructor && (
+                constructor === Observable
+                || constructor === Subject
+                || constructor === BehaviorSubject
+                || constructor === ReplaySubject
+                || constructor === AsyncSubject
+              )) {
+                return result;
+              } else {
+                return of(result);
+              }
+            })
+          );
+        }
+
+        return new TemplatePortal(
+          this.observableColumnTemplate,
+          this.viewContainerRef,
+          // @ts-ignore
+          {value: of(true).pipe(...pipes)}
+        );
+      }
 
       if (typeof column.key !== 'string') {
         value = column.key

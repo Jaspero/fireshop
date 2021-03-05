@@ -8,7 +8,13 @@ import {
   TitleCasePipe,
   UpperCasePipe
 } from '@angular/common';
-import {ChangeDetectorRef, Inject, Optional, Pipe, PipeTransform} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Inject,
+  Optional,
+  Pipe,
+  PipeTransform
+} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {safeEval} from '@jaspero/form-builder';
 import {SanitizePipe} from '@jaspero/ng-helpers';
@@ -22,6 +28,7 @@ import {
 } from '@ngneat/transloco';
 import {PipeType} from '../../../../../../shared/enums/pipe-type.enum';
 import {MathPipe} from '../../../../../../shared/pipes/math/math-pipe.';
+import {DbService} from '../../../../../../shared/services/db/db.service';
 import {InstanceOverviewContextService} from '../../services/instance-overview-context.service';
 
 @Pipe({
@@ -38,6 +45,7 @@ export class ColumnPipe implements PipeTransform {
     @Optional()
     @Inject(TRANSLOCO_LANG)
     private providerLang: string | null,
+    private db: DbService
   ) {
     this.pipes = {
       [PipeType.Number]: new DecimalPipe('en'),
@@ -57,7 +65,8 @@ export class ColumnPipe implements PipeTransform {
         this.providerLang,
         this.cdr
       ),
-      [PipeType.Custom]: ''
+      [PipeType.Custom]: '',
+      [PipeType.GetModule]: ''
     };
   }
 
@@ -75,7 +84,11 @@ export class ColumnPipe implements PipeTransform {
     }
 
     if (Array.isArray(pipeTypes)) {
-      return pipeTypes.reduce((acc, type, index) => this.executePipeTransform(type, acc, (allArgs || {})[index], row), value);
+      return pipeTypes.reduce(
+        (acc, type, index) =>
+          this.executePipeTransform(type, acc, (allArgs || {})[index], row),
+        value
+      );
     } else {
       return this.executePipeTransform(pipeTypes, value, allArgs, row);
     }
@@ -109,8 +122,23 @@ export class ColumnPipe implements PipeTransform {
           return '';
         }
         break;
-      case PipeType.Custom:
+      case PipeType.GetModule:
+        const getModuleMethod = safeEval(args);
 
+        if (!getModuleMethod || typeof getModuleMethod !== 'function') {
+          return [];
+        }
+
+        let getModuleResponse = '';
+
+        try {
+          getModuleResponse = getModuleMethod(val, row);
+        } catch (e) {
+          return [];
+        }
+
+        return this.db.getDocumentsSimple(getModuleResponse);
+      case PipeType.Custom:
         if (!args) {
           return '';
         }
@@ -124,11 +152,7 @@ export class ColumnPipe implements PipeTransform {
         let response = '';
 
         try {
-          response = method(
-            val,
-            row,
-            this.ioc
-          );
+          response = method(val, row);
         } catch (e) {}
 
         return response;

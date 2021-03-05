@@ -22,6 +22,7 @@ export enum PipeType {
    */
   SanitizeFb = 'sanitize',
   Custom = 'custom',
+  GetModule = 'getModule',
 
   /**
    * External

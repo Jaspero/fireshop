@@ -52,7 +52,12 @@ export interface ModuleLayoutTableColumn {
      * defaults to '-'
      */
     fallback?: string;
-  }
+  };
+
+  /**
+   * Resolves Observable-like objects before passing value to next pipe
+   */
+  resolveObservables?: boolean;
 }
 
 export interface ModuleLayoutTableNestedColumn extends ModuleLayoutTableColumn {

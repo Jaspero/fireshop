@@ -198,7 +198,8 @@ export class InstanceOverviewContextService {
       this.transloco,
       cdr,
       this.providerScope,
-      this.providerLang
+      this.providerLang,
+      this.dbService
     );
 
     this.columnPipe.ioc = this;

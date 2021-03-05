@@ -16,6 +16,10 @@
   <div class="column-inner" [innerHTML]="value | async"></div>
 </ng-template>
 
+<ng-template #observableColumn let-value="value">
+  <div class="column-inner" [innerHTML]="value | async"></div>
+</ng-template>
+
 <ng-template #subHeaderTemplate>
   <div class="p-t-s p-l-s">
     <jms-filter-tags [items$]="ioc.filterChange$" [search]="ioc.searchControl"></jms-filter-tags>
