@@ -1,14 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  HostListener,
-  OnInit,
-  TemplateRef,
-  ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore, QueryDocumentSnapshot} from '@angular/fire/firestore';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {RxDestroy} from '@jaspero/ng-helpers';
@@ -17,13 +9,14 @@ import {FirebaseOperator} from '@jf/enums/firebase-operator.enum';
 import {FirestoreCollections} from '@jf/enums/firestore-collections.enum';
 import {Category} from '@jf/interfaces/category.interface';
 import {Product} from '@jf/interfaces/product.interface';
-import {debounceTime, delay, map, switchMap, tap} from 'rxjs/operators';
-import {BehaviorSubject, Observable, of} from 'rxjs';
+import {filter, map, scan, startWith, switchMap, take, takeUntil, throttleTime} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, fromEvent, Observable} from 'rxjs';
 import {CartService} from '../../shared/services/cart/cart.service';
 
 import * as firebase from 'firebase';
 import {DYNAMIC_CONFIG} from '@jf/consts/dynamic-config.const';
 import {animate, style, transition, trigger} from '@angular/animations';
+import {queue} from '../../../../../dashboard/src/app/shared/utils/queue.operator';
 import FieldPath = firebase.firestore.FieldPath;
 
 @Component({
@@ -46,24 +39,16 @@ export class ShopComponent extends RxDestroy implements OnInit {
   @ViewChild('filterDialog', {static: true})
   filterDialog: TemplateRef<any>;
 
-  // .next() anything on this and more products will load
-  loadMore$ = new BehaviorSubject<boolean>(true);
-
-  // With BehaviorSubject no twitches during loading of new products
-  products$ = new BehaviorSubject([]);
-
-  loading$ = new BehaviorSubject<boolean>(true);
-
-  // Last loaded product, so it is easier to tell firestore startAfter with specific field
-  lastProduct: Product = null;
+  products$: Observable<Product[]>;
+  hasMore$ = new BehaviorSubject(true);
+  loading$ = new BehaviorSubject(true);
+  updatedFilters$ = new BehaviorSubject(false);
+  cursor: QueryDocumentSnapshot<Product>;
 
   // When scrolled this close from bottom, load more products
   loadOffset = 400;
+  pageSize = 13;
 
-  // Whether there are still products to load from firestore
-  productsLeft = true;
-  pageSize = 6;
-  limit = 6;
   orderName = 'Name A - Z';
   sortByList = [
     {
@@ -98,7 +83,6 @@ export class ShopComponent extends RxDestroy implements OnInit {
     }
   ];
   chipArray = [];
-  priceLimit: number;
   categories$: Observable<Category[]>;
   primaryCurrency = DYNAMIC_CONFIG.currency.primary;
 
@@ -113,156 +97,6 @@ export class ShopComponent extends RxDestroy implements OnInit {
     private fb: FormBuilder
   ) {
     super();
-  }
-
-  @HostListener('window:scroll', [])
-  onScroll() {
-    if (
-      window.innerHeight + window.scrollY >=
-      document.body.scrollHeight - this.loadOffset
-    ) {
-      this.loadMore$.next(true);
-    }
-  }
-
-  initProducts() {
-    this.filters.valueChanges
-      .pipe(
-        debounceTime(300),
-        tap(() => {
-          this.lastProduct = null;
-          this.productsLeft = true;
-          this.products$.next([]);
-          this.loadMore$.next(true);
-        })
-      )
-      .subscribe();
-
-    this.loadMore$
-      .pipe(
-        switchMap(loadMore => {
-          if (!this.productsLeft || !loadMore) {
-            return of([]);
-          }
-
-          this.loading$.next(true);
-
-          const filters = this.filters.getRawValue();
-          return this.afs
-            .collection<Product>(
-              `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}`,
-              ref => {
-                let final = ref.where('active', FirebaseOperator.Equal, true);
-
-                this.chipArray = [];
-
-                if (filters.order && filters.order.name) {
-                  const type =
-                    filters.order.type !== 'price'
-                      ? filters.order.type
-                      : new FieldPath('price', this.primaryCurrency);
-
-                  final = final.orderBy(type, filters.order.direction);
-
-                  if (filters.order.type === 'price') {
-                    final = final.orderBy('name');
-                  }
-                }
-
-                if (filters.category) {
-                  this.chipArray.push({
-                    filter: 'category',
-                    value: filters.category.name
-                  });
-
-                  final = final.where(
-                    'category',
-                    FirebaseOperator.Equal,
-                    filters.category.id
-                  );
-                }
-
-                if (filters.price) {
-                  this.chipArray.push({
-                    filter: 'price',
-                    value: filters.price
-                  });
-
-                  final = final.where(
-                    'price',
-                    FirebaseOperator.LargerThenOrEqual,
-                    filters.price
-                  );
-                }
-
-                final = final.limit(this.limit);
-                if (this.lastProduct) {
-                  if (filters.order.type === 'price') {
-                    final = final.startAfter(
-                      this.lastProduct.price[this.primaryCurrency],
-                      this.lastProduct.name
-                    );
-                  } else {
-                    final = final.startAfter(
-                      this.lastProduct[filters.order.type]
-                    );
-                  }
-                }
-                return final;
-              }
-            )
-            .snapshotChanges()
-            .pipe();
-        }),
-        map(actions => {
-          if (!actions.length) return [];
-
-          const products = actions.reduce((acc, cur) => {
-            acc.push({
-              id: cur.payload.doc.id,
-              ...cur.payload.doc.data()
-            });
-            return acc;
-          }, []);
-
-          this.lastProduct = products[products.length - 1];
-          return products;
-        }),
-        map(data => {
-          if (!data.length) return;
-
-          if (data.length < this.pageSize) {
-            this.productsLeft = false;
-          }
-
-          const newIds = new Set([]);
-          data.map(product => {
-            newIds.add(product.id);
-          });
-
-          // Check for duplicates when Dashboard user changes data
-          const oldProducts = this.products$
-            .getValue()
-            .filter(product => !newIds.has(product.id));
-          this.products$.next([...oldProducts, ...data]);
-
-          return true;
-        }),
-        delay(1000),
-        tap(response => {
-          this.loading$.next(false);
-
-          if (!response) return;
-
-          if (
-            this.productList.nativeElement.offsetHeight < window.innerHeight &&
-            this.productsLeft
-          ) {
-            this.loadMore$.next(true);
-          }
-        })
-      )
-      .subscribe();
   }
 
   ngOnInit() {
@@ -282,7 +116,125 @@ export class ShopComponent extends RxDestroy implements OnInit {
       },
       price: null
     });
-    this.initProducts();
+
+    this.filters.valueChanges.pipe(
+      map(() => {
+        this.cursor = null;
+        this.hasMore$.next(true);
+        this.updatedFilters$.next(true);
+
+        // TODO: Alternative for firing products$ pipeline
+        window.scroll(0, window.scrollY + 1);
+        window.scroll(0, window.scrollY - 1);
+      }),
+      takeUntil(this.destroyed$)
+    ).subscribe();
+
+    this.hasMore$.next(true);
+    this.products$ = fromEvent(window, 'scroll', {passive: true}).pipe(
+      throttleTime(1000),
+      switchMap(() => combineLatest([this.loading$, this.hasMore$]).pipe(take(1))
+      ),
+      filter(
+        ([loading, hasMore]) =>
+          !loading && hasMore &&
+          window.innerHeight + window.scrollY >= document.body.offsetHeight - this.loadOffset
+      ),
+      startWith(window),
+      switchMap(() => {
+        this.loading$.next(true);
+
+        const filters = this.filters.getRawValue();
+        return this.afs
+          .collection<Product>(
+            `${FirestoreCollections.Products}-${STATIC_CONFIG.lang}`,
+            ref => {
+              let final = ref
+                .limit(this.pageSize)
+                .where('active', FirebaseOperator.Equal, true);
+
+              this.chipArray = [];
+
+              if (filters?.order?.name) {
+                const type =
+                  filters.order.type !== 'price'
+                    ? filters.order.type
+                    : new FieldPath('price', this.primaryCurrency);
+
+                final = final.orderBy(type, filters.order.direction);
+
+                if (filters.order.type === 'price') {
+                  final = final.orderBy('name');
+                }
+              }
+
+              if (filters.category) {
+                this.chipArray.push({
+                  filter: 'category',
+                  value: filters.category.name
+                });
+
+                final = final.where(
+                  'category',
+                  FirebaseOperator.Equal,
+                  filters.category.id
+                );
+              }
+
+              if (filters.price) {
+                this.chipArray.push({
+                  filter: 'price',
+                  value: filters.price
+                });
+
+                final = final.where(
+                  'price',
+                  FirebaseOperator.LargerThenOrEqual,
+                  filters.price
+                );
+              }
+
+              if (this.cursor) {
+                final = final.startAfter(this.cursor);
+              }
+
+              return final;
+            }
+          ).get().pipe(
+            queue(),
+            take(1),
+            map(actions => {
+              this.loading$.next(false);
+
+              if (actions.docs.length < this.pageSize) {
+                this.hasMore$.next(false);
+              } else {
+                this.cursor = actions.docs[actions.docs.length - 2] as QueryDocumentSnapshot<Product>;
+              }
+
+              return actions.docs.reduce((acc, curr, ind) => {
+                if (ind < this.pageSize - 1) {
+                  acc.push({
+                    id: curr.id,
+                    ...curr.data()
+                  });
+                }
+                return acc;
+              }, []);
+
+            })
+          );
+
+      }),
+      scan((acc, curr) => {
+        if (this.updatedFilters$.value) {
+          this.updatedFilters$.next(false);
+          return curr;
+        }
+
+        return acc.concat(curr);
+      }, [])
+    );
   }
 
   openFilter() {
