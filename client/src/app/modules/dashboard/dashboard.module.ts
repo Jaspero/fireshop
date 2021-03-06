@@ -3,6 +3,7 @@ import {NgModule} from '@angular/core';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule, Routes} from '@angular/router';
+import {JMSPHelpModule} from '@jaspero/jmsp-help';
 import {TranslocoModule} from '@ngneat/transloco';
 import {DbService} from '../../shared/services/db/db.service';
 import {StateService} from '../../shared/services/state/state.service';
@@ -24,6 +25,12 @@ const routes: Routes = [{
       loadChildren: () =>
         import('./modules/overview/overview.module')
           .then(m => m.OverviewModule)
+    },
+    {
+      path: 'file-manager',
+      loadChildren: () =>
+        import('./modules/file-manager/file-manager.module')
+          .then(m => m.FileManagerModule)
     },
     {
       path: 'profile',
@@ -67,6 +74,11 @@ const DIRECTIVES = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
+
+    /**
+     * Plugins
+     */
+    JMSPHelpModule.forRoot(),
 
     /**
      * Material

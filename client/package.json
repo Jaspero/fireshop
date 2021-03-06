@@ -1,5 +1,5 @@
 {
-  "name": "cms",
+  "name": "fireshop-cms",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -9,7 +9,6 @@
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "11.1.0",
     "@angular/cdk": "11.1.0",
@@ -23,7 +22,10 @@
     "@angular/platform-browser": "11.1.0",
     "@angular/platform-browser-dynamic": "11.1.0",
     "@angular/router": "11.1.0",
+    "@jaspero/fb-tinymce": "^1.5.5",
     "@jaspero/form-builder": "3.13.3",
+    "@jaspero/jmsp-file-manager": "^1.1.1",
+    "@jaspero/jmsp-help": "^1.0.0",
     "@jaspero/jmsp-notes": "1.0.1",
     "@jaspero/ng-helpers": "4.3.0",
     "@ngneat/transloco": "2.19.1",
