@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  function access(database, module, operation) {
+    return
+      !get(/databases/$(database)/documents/modules/$(module)).data.authorization.keys().hasAll([operation]) ||
+      request.auth.token.role in get(/databases/$(database)/documents/modules/$(module)).data.authorization[operation]
+  }
+
+  function hasId(resource) {
+    return resource.id == request.auth.uid
+  }
+
+  function authenticated() {
+    return request.auth.token != null;
+  }
+
+  function admin() {
+    return request.auth.token.role == 'admin';
+  }
+
+  match /databases/{database}/documents {
+
+    match /settings/user {
+      allow read, write: if admin();
+    }
+
+    match /settings/layout {
+      allow read: if authenticated();
+      allow write: if admin();
+    }
+
+    match /users/{user=**} {
+      allow read: if access(database, 'users', 'read') || hasId(resource);
+      allow write: if access(database, 'users', 'write') || hasId(resource);
+    }
+
+    match /modules/{module=**} {
+      allow read: if authenticated();
+      allow write: if admin();
+    }
+
+    match /{module}/{document=**} {
+      allow read: if access(database, module, 'read');
+      allow write: if access(database, module, 'write');
+    }
+  }
+}

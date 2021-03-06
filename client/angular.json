@@ -1,0 +1,171 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "cms": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss",
+          "changeDetection": "OnPush"
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "jms",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "../public/cms",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce/themes/silver",
+                "output": "/themes/silver"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce/skins/ui/oxide",
+                "output": "/skins/ui/oxide"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce/skins/content/default",
+                "output": "/skins/content/default"
+              }
+            ],
+            "showCircularDependencies": false,
+            "styles": [
+              "node_modules/jsoneditor/dist/jsoneditor.min.css",
+              "src/styles.scss"
+            ],
+            "scripts": [
+              "./node_modules/tinymce/tinymce.min.js",
+              {
+                "input": "node_modules/document-register-element/build/document-register-element.js",
+                "inject": true
+              }
+            ],
+            "allowedCommonJsDependencies": [
+              "firebase/app",
+              "@firebase/auth",
+              "@firebase/app",
+              "@firebase/util",
+              "@firebase/component",
+              "@firebase/performance",
+              "@firebase/functions",
+              "@firebase/firestore",
+              "file-saver",
+              "jsoneditor",
+              "flat",
+              "json-pointer",
+              "tinymce/plugins/autolink",
+              "tinymce/plugins/lists",
+              "tinymce/plugins/fullscreen",
+              "tinymce/plugins/imagetools",
+              "tinymce/plugins/image",
+              "tinymce/plugins/wordcount",
+              "tinymce/plugins/link",
+              "tinymce/plugins/print",
+              "tinymce/plugins/code",
+              "tinymce/plugins/table",
+              "tinymce/plugins/advlist"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": false,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": false,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "10mb",
+                  "maximumError": "20mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "cms:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "cms:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "cms:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "tsconfig.app.json",
+              "tsconfig.spec.json",
+              "e2e/tsconfig.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "e2e/protractor.conf.js",
+            "devServerTarget": "cms:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "cms:serve:production"
+            }
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "cms",
+  "cli": {
+    "analytics": false
+  }
+}

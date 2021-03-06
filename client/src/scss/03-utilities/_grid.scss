@@ -1,0 +1,74 @@
+@import "../breakpoints";
+
+/**
+ * Grid
+ *
+ * A 12-column grid based on display: flex.
+ *
+ *============================================================================*/
+
+
+
+/* Grid
+ *============================================================================*/
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
+}
+
+
+
+/* Columns
+ *============================================================================*/
+
+[class*="col-"] {
+  padding: 10px;
+}
+
+.col-0 { display: none; }
+@for $i from 1 through 12 {
+  .col-#{$i} {
+    display: block;
+    width: #{$i / 12 * 100%};
+  }
+}
+@media (max-width: $screen-l) {
+  .col-l-0 { display: none; }
+  @for $i from 1 through 12 {
+    .col-l-#{$i} {
+      display: block;
+      width: #{$i / 12 * 100%};
+    }
+  }
+}
+@media (max-width: $screen-m) {
+  .col-m-0 { display: none; }
+  @for $i from 1 through 12 {
+    .col-m-#{$i} {
+      display: block;
+      width: #{$i / 12 * 100%};
+    }
+  }
+}
+@media (max-width: $screen-s) {
+  .col-s-0 { display: none; }
+  @for $i from 1 through 12 {
+    .col-s-#{$i} {
+      display: block;
+      width: #{$i / 12 * 100%};
+    }
+  }
+}
+@media (max-width: $screen-xs) {
+  .col-xs-0 { display: none; }
+  @for $i from 1 through 12 {
+    .col-xs-#{$i} {
+      display: block;
+      width: #{$i / 12 * 100%};
+    }
+  }
+}

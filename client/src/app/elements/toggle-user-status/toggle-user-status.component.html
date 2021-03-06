@@ -1,0 +1,6 @@
+<div class="action-inset flex ai-center h-full">
+  <span *ngIf="loading; else loaded;">{{'ELEMENTS.USER_STATUS.LOADING' | transloco}}</span>
+  <ng-template #loaded>
+    <mat-slide-toggle (click)="dummy($event)" [formControl]="status">{{'GENERAL.USER' | transloco}} {{(status.value ? 'GENERAL.DISABLED' : 'GENERAL.ENABLED') | transloco}}</mat-slide-toggle>
+  </ng-template>
+</div>

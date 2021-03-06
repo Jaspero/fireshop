@@ -1,0 +1,195 @@
+{
+  "GENERAL": {
+    "NEW": "Novo",
+    "ADD": "Dodaj",
+    "DELETE": "Obriši",
+    "REMOVE": "Ukloni",
+    "EDIT": "Uredi",
+    "ACTIONS": "Akcije",
+    "SORT": "Sortiraj",
+    "FILTER": "Filteri",
+    "IMPORT": "Uvoz",
+    "EXPORT": "Izvoz",
+    "SELECT": "Odaberi",
+    "OK": "Ok",
+    "ERROR": "Pogreška",
+    "SUCCESS": "Uspjeh",
+    "OR": "ili",
+    "EMAIL": "Email",
+    "PASSWORD": "Lozinka",
+    "SEARCH": "Pretraga",
+    "DUPLICATE": "Dupliciraj",
+    "PREVIOUS": "Prethodno",
+    "NEXT": "Slijedeće",
+    "CANCEL": "Prekini",
+    "SAVE": "Spremi",
+    "PAGE_SIZE": "Veličina stranice",
+    "DISMISS": "Odbaci",
+    "OPERATION_COMPLETED": "Operacija završena",
+    "OPERATION_FAILED": "Operacija neuspješna",
+    "USERS": "Korisnici",
+    "USER": "Korisnik",
+    "ROLES": "Uloge",
+    "LABEL": "Labela",
+    "SUBMIT": "Pošali",
+    "DISABLED": "Blokiran",
+    "ENABLED": "Aktivan",
+    "BACK": "Natrag",
+
+    "CREATED_ON": "Datum kreiranja",
+    "DATE": "Datum",
+    "HOURS": "Sati",
+    "MINUTES": "Minuta"
+  },
+  "LOGIN": {
+    "LOGIN": "Prijava",
+    "LOGIN_WITH": "Prijava koristeći {{value}}",
+    "FORGOT_PASSWORD": "Zaboravljena lozinka?",
+    "ERROR_MESSAGE": "Uneseni Email i Lozinka nisu pronađeni. Molim vas pokušajte ponovo.",
+    "TOO_MANY_ATTEMPTS_TRY_LATER": "Pristup ovom računu je tretnuo onemogućen zbog učestalnosti netočnih pokušaja prijave. Možete odmah zatražiti novu lozinku pomoći \"Zaboravili ste lozinku?\" ili pokušati se kasnije prijaviti.",
+    "USER_NOT_FOUND": "Email ne postoji u sustavu."
+  },
+  "RESET_PASSWORD": {
+    "REPEAT_PASSWORD": "Ponovite lozinku",
+    "PASSWORD_RESET": "Resetiraj lozinku",
+    "EMAIL_DOESNT_EXIST": "Email ne postoji",
+    "GO_BACK": "Nazad",
+    "RESET_MY_PASSWORD": "Resetiraj lozinku",
+    "SUCCESS_MESSAGE": "Nova lozinka vam je poslana na email.",
+    "ERROR_MESSAGE": "Email nije valjan"
+  },
+  "LAYOUT": {
+    "MENU": "Izbornik",
+    "DASHBOARD": "Nadzorna ploča",
+    "MODULES": "Moduli",
+    "SETTINGS": "Postavke",
+    "LOG_OUT": "Odjavi se",
+
+    "MANAGEMENT": "Upravljanje",
+    "SYSTEM": "Sustav"
+  },
+  "MODULES": {
+    "ADD_MODULE": "Dodaj Modul",
+    "REMOVE_ITEMS": "Ukloni {{value}} predmete",
+    "REMOVE_ONE": "Ova akcija će u potpunosti ukloniti {{value}}",
+    "REMOVE_MODULE_SETUP": "Ova akcija će prepraviti trenutnu kofiguraciju modula.",
+    "EXPORT_SELECTED_FILES": "Izvezi odabrane dokumente",
+    "CREATE_INTERFACES_FOR_SELECTION": "Kreiraj sučelja za odabir.",
+    "NAME_ID": "Ime/ID",
+    "CREATED_ON": "Kreirano na",
+    "DESCRIPTION": "Opis",
+    "GO_TO": "Idi na",
+    "GENERATE_TS_INTERFACE": "Generiraj TS Sučelje",
+    "SELECT_TEMPLATE": "Odaberi predložak",
+    "NAME": "Ime",
+    "NO_MODULES": "Nijedan Modul ne postoji.",
+    "COPIED_TO_CLIPBOARD": "Kopirano u međuspremnik",
+    "LAYOUT_SETTINGS": "Postavke izgleda"
+  },
+  "INSTANCE_OVERVIEW": {
+    "REMOVE_ITEMS": "Ukloni {{value}} predmete",
+    "REMOVE_ONE": "Ova akcija će u potpunosti ukloniti {{value}}",
+    "NO_ITEMS": "{{value}} još ne postoji.",
+    "LOAD_MORE": "Učitaj još...",
+    "APPLY": "Primjeni",
+    "UPDATE_ORDER": "Ažuriraj poredak",
+    "TABLE": {
+      "COLUMNS": "Kolumne"
+    }
+  },
+  "INSTANCE_SINGLE": {
+    "EDITING": "Uređivanje",
+    "COPY_OF": "Kopija od"
+  },
+  "FIELDS": {
+    "IMAGE": {
+      "PREVIEW": "Pregled slike"
+    },
+    "GALLERY": {
+      "ENTER_URL": "Unesi URL",
+      "CHOOSE_FILES": "Odaberi datoteke",
+      "SORT_IMAGES": "Sortiraj slike",
+      "IMAGE_URL": "URL Slike",
+      "ADD_IMAGE": "Dodaj sliku",
+      "UPLOAD_ERROR": "Pogreška s učitavanjem slike."
+    },
+    "WYSIWYG": {
+      "EMBED_YOUTUBE": "Embed YouTube",
+      "VIDEO_ID": "Video ID",
+      "FULL_WIDTH": "Puna širina",
+      "SHOW_PLAYER_CONTROLS": "Prikaži kontrole video playera",
+      "PRIVACY_ENHANCED_MODE": "Privatni način",
+      "ALIGNMENT": "Poravnanje",
+      "LEFT": "Lijevo",
+      "CENTER": "Sredina",
+      "RIGHT": "Desno"
+    }
+  },
+  "IMPORT": {
+    "TYPE": "Vrsta",
+    "DELIMITER": "Graničnik",
+    "PROBLEM_UPLOADING": "Problem s prenošenjem podataka",
+    "SUCCESS_MESSAGE": "Uspješno preneseno {{value}} stavki",
+    "ERROR": "Došlo je do pogreške pri importu podataka"
+  },
+  "EXPORT": {
+    "ERROR": "Nepoznata pogreška pri izvozu"
+  },
+  "CONFIRMATION": {
+    "TITLE": "Jeste li sigurni?"
+  },
+  "SETTINGS": {
+    "LATEST_RELEASE": "Najnovija Verzija",
+    "MEMBERS": "Korisnici",
+    "EXISTS": "Postoji",
+    "ROLE": "Uloga",
+    "PROVIDER": "Pružatelj usluge",
+    "ADD_MEMBERS": "Dodaj korisnike",
+    "PASSWORD_INSTRUCTIONS": "Korisnik će se automatski kreirati jedino ako je šifra unesena",
+    "PASSWORD_RULES": "Najmanje 6 znamenki",
+    "LANGUAGE": "Jezik"
+  },
+  "PROFILE": {
+    "TITLE": "Profil",
+    "INFORMATION": "Informacije",
+    "SECURITY": "Sigurnost",
+    "CHANGE_PASSWORD": "Promijeni Lozinku",
+    "CHANGE_PASSWORD_DESCRIPTION": "Nemate autentikaciju sa lozinkom na ovom računu. Idalje možete iskoristiti ovaj formular za postaviti lozinku.",
+    "NEW_PASSWORD": "Nova Lozinka",
+    "REPEAT_PASSWORD": "Ponovi Lozinku",
+    "CHANGE_EMAIL": "Promijeni Email",
+    "REMOVE_MFA_TRIGGER": "Obriši MFA",
+    "CONNECT_MFA_TRIGGER": "Poveži MFA",
+    "REMOVE_PASSWORD_AUTHENTICATION": "Obriši autentikaciju sa lozinkom",
+    "REMOVE_GOOGLE_AUTHENTICATION": "Obriši google autentikaciju",
+    "REMOVE_ACCOUNT": "Obriši Račun",
+    "OTHER": "Ostalo",
+    "NAME": "Ime",
+    "IMAGE": "Profil",
+    "CONNECT_MFA": "Email sa linkom za verifikaciju je poslan na vašu adresu.",
+    "REMOVE_MFA": "Vaš MFA je obrisan uspješno."
+  },
+
+  "USERS": {
+    "ADD": "Dodaj Korisnika",
+    "ROLE": "Uloga",
+    "PASSWORD_INSTRUCTIONS": "Korisnik će se automatski kreirati ako je dodana lozinka",
+    "PASSWORD_RULES": "Lozinka mora imati barem 6 znakova"
+  },
+  "ELEMENTS": {
+    "CHANGE_PASSWORD": {
+      "TITLE": "Promijeni lozinku",
+      "DIALOG_TITLE": "Promijeni korisnikovu lozinku"
+    },
+    "USER_STATUS": {
+      "LOADING": "Učitavanje statusa..."
+    },
+    "TRIGGER_PASSWORD_RESET": {
+      "TITLE": "Pošalji email za resetiranje lozinke"
+    },
+    "CHANGE_EMAIL": {
+      "TITLE": "Promijeni Email",
+      "DIALOG_TITLE": "Promijeni korisnikovu email adresu"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "definition": {
+    "text": "Input",
+    "title": "Insert a definition for a input component",
+    "field": "pointer",
+    "value": {
+      "component": {
+        "type": "input"
+      }
+    }
+  },
+  "schema": {
+    "type": "string"
+  }
+}

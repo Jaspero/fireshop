@@ -1,0 +1,331 @@
+@import "../breakpoints";
+
+/**
+ * Material Design components for Angular
+ *
+ * Style overrides for Angular Material. Original elements:
+ * https://material.angular.io/
+ *
+ *============================================================================*/
+
+
+
+/* Buttons
+ *============================================================================*/
+
+// Ripple color adjustment
+.mat-flat-button.mat-primary .mat-ripple-element,
+.mat-raised-button.mat-primary .mat-ripple-element,
+.mat-fab.mat-primary .mat-ripple-element,
+.mat-mini-fab.mat-primary .mat-ripple-element {
+  background-color: rgba(255,255,255,.15);
+}
+
+
+
+/* Form field
+ *============================================================================*/
+
+.mat-form-field {
+  font-size: 13px;
+}
+
+// 'mat-form-field-has-hint' custom class for extra white space after hint
+.mat-form-field-has-hint {
+  margin-bottom: 1.25em;
+}
+
+// 'mat-form-field-no-hint' custom class for no white space
+.mat-form-field-no-hint > .mat-form-field-wrapper {
+  padding-bottom: 0;
+}
+
+// 'mat-form-field-small' custom class for smaller form fields
+.mat-form-field.mat-form-field-small .mat-form-field-infix {
+  width: 90px;
+}
+
+// 'mat-form-field-large' custom class for larger form fields
+.mat-form-field.mat-form-field-large .mat-form-field-infix {
+  width: 240px;
+}
+
+
+
+/* Radio
+ *============================================================================*/
+
+.mat-radio-group {
+  display: block;
+}
+
+.mat-radio-container {
+  margin: 0 4px;
+}
+
+
+
+/* Slide toggle
+ *============================================================================*/
+
+.mat-slide-toggle.mat-slide-toggle {
+  overflow: hidden; // it was causing unnecessary overflows on parents
+  padding: 1px 2px;
+}
+
+.mat-slide-toggle-thumb.mat-slide-toggle-thumb {
+  background-color: var(--panel-theme);
+  border: 1px solid var(--panel-secondary);
+}
+
+.mat-slide-toggle-bar.mat-slide-toggle-bar {
+  background-color: var(--panel-tertiary);
+
+  .mat-checked & {
+    background-color: var(--panel-tertiary);
+  }
+}
+
+
+
+/* Toolbar
+ *============================================================================*/
+
+.mat-toolbar-row.mat-toolbar-row,
+.mat-toolbar-single-row.mat-toolbar-single-row {
+  height: 64px;
+
+  @media (max-width: $screen-m) {
+    font-size: 16px;
+  }
+
+  span, button, a {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+
+
+/* Table
+ *============================================================================*/
+
+.mat-table.mat-table {
+  width: 100%;
+  background: transparent;
+  border-collapse: separate;
+}
+
+tr.mat-header-row.mat-header-row,
+tr.mat-footer-row.mat-footer-row,
+tr.mat-row.mat-row {
+  height: unset;
+}
+
+.mat-cell.mat-cell,
+.mat-footer-cell.mat-footer-cell,
+.mat-header-cell.mat-header-cell {
+  padding: 8px;
+  background: var(--panel-theme);
+  font-size: 12px;
+  overflow: hidden;
+  vertical-align: top;
+
+  // row checkbox
+  &.cta-column {
+    padding: 0;
+    width: 48px;
+    min-width: 48px;
+    box-shadow: inset -1px 0 0 0 var(--tertiary);
+    vertical-align: middle;
+    text-align: center;
+  }
+
+  // row actions
+  &.cta-column-last {
+    padding: 0;
+    width: 48px;
+    min-width: 48px;
+    box-shadow: inset 1px 0 0 0 var(--tertiary);
+    vertical-align: middle;
+  }
+}
+
+.mat-sort-header-button.mat-sort-header-button {
+  text-align: left;
+}
+
+// Mobile layout
+@media (max-width: $screen-s) {
+  .mat-header-row {
+    opacity : 0;
+    position: absolute;
+    z-index : -1;
+  }
+
+  .mat-row.mat-row {
+    display: block;
+    height: unset;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--panel-tertiary);
+  }
+
+  .mat-cell.mat-cell,
+  .mat-footer-cell.mat-footer-cell,
+  .mat-header-cell.mat-header-cell {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: baseline;
+    border: none;
+    padding: 8px;
+    text-align: right;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+
+    &:before {
+      content: attr(data-label);
+      text-align: left;
+      order: 2;
+    }
+
+    &:after {
+      content: "";
+      flex: 1;
+      order: 1;
+      border-top: 1px dashed var(--tertiary);
+      margin: 0 16px;
+      height: .35em;
+      opacity: .75;
+    }
+
+    // row checkbox
+    &:first-of-type {
+      width: 100%;
+      padding: 8px;
+      box-shadow: none;
+    }
+
+    // row actions
+    &:last-of-type {
+      width: 100%;
+      padding: 8px 0 8px 8px;
+      box-shadow: none;
+    }
+  }
+}
+
+
+
+/* Snackbar
+ *============================================================================*/
+
+.mat-snack-bar-container {
+  background: var(--primary-theme);
+  color: var(--primary-secondary);
+
+  .mat-simple-snackbar-action {
+    color: var(--primary-primary);
+  }
+}
+
+.mat-snack-bar-container.snack-bar-error {
+  background: var(--warn-theme);
+  color: var(--warn-secondary);
+
+  .mat-simple-snackbar-action {
+    color: var(--warn-primary);
+  }
+}
+
+
+
+/* Progress bar
+ *============================================================================*/
+
+.mat-progress-bar[mode="query"] > .mat-progress-bar-background,
+.mat-progress-bar[mode="determinate"] > .mat-progress-bar-background,
+.mat-progress-bar[mode="indeterminate"] > .mat-progress-bar-background {
+  display: none;
+}
+
+.mat-progress-bar.mat-accent {
+  & > .mat-progress-bar-buffer      { background: var(--accent-secondary); }
+  & > .mat-progress-bar-fill::after { background: var(--accent-theme); }
+  & > .mat-progress-bar-background  { fill      : var(--accent-theme); }
+}
+
+
+
+/* Card
+ *============================================================================*/
+
+.mat-card {
+  --theme    : var(--panel-theme);
+  --primary  : var(--panel-primary);
+  --secondary: var(--panel-secondary);
+  --tertiary : var(--panel-tertiary );
+}
+.mat-card.mat-card {
+  box-shadow: 0 0 0 1px var(--panel-tertiary);
+  background: var(--panel-theme);
+  color: var(--panel-primary);
+}
+
+.mat-card-header.mat-card-header {
+  margin-top: -16px !important;
+  margin-right: -16px;
+  margin-bottom: 16px;
+  margin-left: -16px;
+  padding: 16px;
+  border-bottom: 1px solid var(--panel-tertiary);
+  align-items: center;
+}
+
+.mat-card-header-text.mat-card-header-text {
+  margin: 0;
+}
+
+.mat-card-actions.mat-card-actions {
+  margin-top: 16px !important;
+  margin-right: -16px;
+  margin-bottom: -16px;
+  margin-left: -16px;
+  padding: 16px;
+  border-top: 1px solid var(--panel-tertiary);
+}
+
+.mat-card-content.mat-card-content-inset {
+  margin-top: -16px !important;
+  margin-right: -16px;
+  margin-bottom: -16px !important;
+  margin-left: -16px;
+}
+
+
+
+/* Dialog
+ *============================================================================*/
+
+.mat-dialog-title.mat-dialog-title {
+  margin: -24px -24px 24px;
+  padding: 24px;
+  border-bottom: 1px solid var(--tertiary);
+}
+
+.mat-dialog-content.mat-dialog-content {}
+
+.mat-dialog-actions.mat-dialog-actions {
+  margin: 24px -24px -24px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--tertiary);
+}
+
+
+// Temporary material fix
+// https://github.com/angular/components/issues/15880
+html.cdk-global-scrollblock {
+  position: initial !important;
+}

@@ -1,0 +1,15 @@
+{
+  "definition": {
+    "text": "Wysiwyg",
+    "title": "Insert a definition for a wysiwyg component",
+    "field": "pointer",
+    "value": {
+      "component": {
+        "type": "wysiwyg"
+      }
+    }
+  },
+  "schema": {
+    "type": "string"
+  }
+}

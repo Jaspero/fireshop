@@ -1,0 +1,24 @@
+// TODO: custom styles for elements inside table
+
+.jms-instance-overview-table::ng-deep {
+  .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+}
+
+.column-inner {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+// TODO: add this to the table above
+// Don't let images grow out of control
+.column-inner {
+  ::ng-deep svg,
+  ::ng-deep img {
+    max-width: 50px;
+    padding: 5px;
+  }
+}

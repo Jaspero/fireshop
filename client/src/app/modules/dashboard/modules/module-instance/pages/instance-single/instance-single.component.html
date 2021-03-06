@@ -1,0 +1,44 @@
+<form *ngIf="data$ | async as data" [ngSwitch]="currentState">
+  <mat-toolbar role="heading" color="primary" class="sticky-header">
+    <span *ngSwitchCase="viewState.Edit">{{'INSTANCE_SINGLE.EDITING' | transloco}} {{formBuilderComponent?.form.get(data.module.editTitleKey).value}}</span>
+    <span *ngSwitchCase="viewState.New">{{'GENERAL.NEW' | transloco}} {{data.module.name | transloco}}</span>
+    <span *ngSwitchCase="viewState.Copy">{{'INSTANCE_SINGLE.COPY_OF' | transloco}} {{formBuilderComponent?.form.get('id').value}}</span>
+    <div class="flex-1"></div>
+    <ng-container *ngIf="!data.directLink">
+      <span class="hide-xs">
+        <a mat-button (click)="back()">{{(data.autoSave ? 'GENERAL.BACK' : 'GENERAL.CANCEL') | transloco}}</a>&nbsp;
+      </span>
+      <span class="show-xs">
+        <a mat-icon-button (click)="back()" [matTooltip]="(data.autoSave ? 'GENERAL.BACK' : 'GENERAL.CANCEL') | transloco">
+          <mat-icon>cancel</mat-icon>
+        </a>&nbsp;
+      </span>
+    </ng-container>
+    <span class="hide-xs">
+      <button
+        *ngIf="!data.autoSave"
+        type="submit"
+        mat-flat-button
+        [disabled]="formBuilderComponent?.form.invalid"
+        [fDisable]="data.authorization"
+        [jpLoadClick]="save(data)">
+      {{'GENERAL.SAVE' | transloco}}
+    </button>
+    </span>
+    <span class="show-xs">
+      <button
+        type="submit"
+        mat-icon-button
+        [disabled]="formBuilderComponent?.form.invalid"
+        [fDisable]="data.authorization"
+        [jpLoadClick]="save(data)"
+        [matTooltip]="'GENERAL.SAVE' | transloco">
+      <mat-icon>save</mat-icon>
+    </button>
+    </span>
+    <!--TODO: Connect #63-->
+    <!--<mat-progress-bar class="jms-instance-single-loading" color="accent" mode="determinate" value="40"></mat-progress-bar>-->
+  </mat-toolbar>
+
+  <fb-form-builder [data]="data.formBuilder" [state]="formState" (valueChanges)="valueChange($event, data)"></fb-form-builder>
+</form>

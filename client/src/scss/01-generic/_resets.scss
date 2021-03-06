@@ -1,0 +1,126 @@
+/**
+ * Resets
+ *
+ * Style resets in order to synchronize different browser default styles.
+ *
+ *============================================================================*/
+
+
+
+/* Basic page behaviour resets
+ *============================================================================*/
+/**
+ * 1. Best practice box-sizing. Source:
+ *    css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice
+ * 2. Forces long words to break into new lines if they don't fit a container.
+ */
+
+*, *:before, *:after {
+  box-sizing: inherit; /* [1] */
+}
+
+html {
+  box-sizing: border-box; /* [1] */
+  word-wrap: break-word; /* [2] */
+  overflow-wrap: break-word; /* [2] */
+}
+
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 100vh;
+  margin: 0;
+}
+
+
+
+/* Margin resets
+ *============================================================================*/
+
+h1, h2, h3, h4, h5, h6,
+p, ol, ul, hr {
+  margin:  0;
+}
+
+// Removes trailing margins from nested lists
+li > ol, ul {
+    margin-bottom: 0;
+}
+
+
+
+/* Tables
+ *============================================================================*/
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+
+
+/* Semantic markup
+ *============================================================================*/
+
+small {
+  font-size: .8em;
+}
+
+b, strong {
+  font-weight: 700;
+}
+
+i, em {
+  font-style: italic;
+}
+
+u {
+  text-decoration: underline;
+}
+
+
+
+/* Hyperlinks
+ *============================================================================*/
+
+a {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+
+
+/* Buttons
+ *============================================================================*/
+
+button {
+  cursor: pointer;
+}
+
+
+
+/* Images
+ *============================================================================*/
+/**
+ * 1. Images will retain their aspect ratio on screen resizing. They
+      will never scale up to be larger than their original size.
+ * 2. Removes whitespace under images.
+ */
+
+img {
+  max-width: 100%; /* [1] */
+  height: auto; /* [1] */
+  vertical-align: middle; /* [2] */
+}
+
+
+
+/* Disabled content
+ *============================================================================*/
+
+.disabled, :disabled, [disabled] {
+  opacity: .5;
+  user-select: none;
+  pointer-events: none;
+}

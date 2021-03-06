@@ -1,0 +1,223 @@
+{
+  "GENERAL": {
+    "NEW": "New",
+    "ADD": "Add",
+    "DELETE": "Delete",
+    "REMOVE": "Remove",
+    "EDIT": "Edit",
+    "ACTIONS": "Actions",
+    "SORT": "Sort",
+    "FILTER": "Filter",
+    "IMPORT": "Import",
+    "EXPORT": "Export",
+    "SELECT": "Select",
+    "OK": "Ok",
+    "ERROR": "Error",
+    "SUCCESS": "Success",
+    "OR": "Or",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "SEARCH": "Search",
+    "DUPLICATE": "Duplicate",
+    "PREVIOUS": "Previous",
+    "NEXT": "Next",
+    "CANCEL": "Cancel",
+    "SAVE": "Save",
+    "PAGE_SIZE": "Page size",
+    "DISMISS": "Dismiss",
+    "OPERATION_COMPLETED": "Operation completed",
+    "OPERATION_FAILED": "Operation failed",
+    "USERS": "Users",
+    "USER": "User",
+    "ROLES": "Roles",
+    "LABEL": "Label",
+    "SUBMIT": "Submit",
+    "DISABLED": "Disabled",
+    "ENABLED": "Enabled",
+    "BACK": "Back",
+
+    "COUNTRY": "Country",
+    "CREATED_ON": "Created On",
+    "DATE": "Date",
+    "HOURS": "Hours",
+    "MINUTES": "Minutes"
+  },
+  "LOGIN": {
+    "LOGIN": "Login",
+    "LOGIN_WITH": "Log in with {{value}}",
+    "FORGOT_PASSWORD": "Forgot password?",
+    "ERROR_MESSAGE": "The email and password you entered did not match our records. Please double-check and try again.",
+    "MFA_VERIFICATION": "Multi-factor Verification",
+    "MFA_AUTHENTICATION": "Authenticate",
+    "MFA_SELECT_DEVICE": "Device",
+    "TOO_MANY_ATTEMPTS_TRY_LATER": "Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.",
+    "USER_NOT_FOUND": "There is no user record corresponding to this identifier."
+  },
+  "RESET_PASSWORD": {
+    "REPEAT_PASSWORD": "Repeat Password",
+    "PASSWORD_RESET": "Password Reset",
+    "EMAIL_DOESNT_EXIST": "Email doesn't exist",
+    "GO_BACK": "Go back",
+    "RESET_MY_PASSWORD": "Reset my password",
+    "SUCCESS_MESSAGE": "Password reset email has been sent to your email",
+    "ERROR_MESSAGE": "Email is invalid",
+    "RESET_SUCCESSFUL": "Your password has been reset successfully. You can now log in.",
+    "INVALID_OOB_CODE": "Your code has expired. Please restart the process of resetting your password."
+  },
+  "MFA": {
+    "CONNECT": "Connect Multi-Factor Authentication",
+    "PHONE": "Phone number",
+    "VERIFICATION": "Verification",
+    "DESCRIPTION": "A code has been sent to you",
+    "AUTHENTICATE": "Authenticate",
+    "VERIFICATION_CODE": "Code"
+  },
+  "LAYOUT": {
+    "MENU": "Menu",
+    "DASHBOARD": "Dashboard",
+    "MODULES": "Modules",
+    "SETTINGS": "Settings",
+    "LOG_OUT": "Log out",
+    "MANAGEMENT": "Management",
+    "SYSTEM": "System"
+  },
+  "MODULES": {
+    "ADD_MODULE": "Add module",
+    "REMOVE_ITEMS": "Remove {{value}} items",
+    "REMOVE_ONE": "This action will remove {{value}} permanently",
+    "REMOVE_MODULE_SETUP": "This action will override your current module setup.",
+    "EXPORT_SELECTED_FILES": "Export selected files",
+    "CREATE_INTERFACES_FOR_SELECTION": "Create interfaces for selection",
+    "NAME_ID": "Name/ID",
+    "CREATED_ON": "Created on",
+    "DESCRIPTION": "Description",
+    "GO_TO": "Go to",
+    "GENERATE_TS_INTERFACE": "Generate TS Interface",
+    "SELECT_TEMPLATE": "Selecte template",
+    "NAME": "Name",
+    "NO_MODULES": "No modules yet.",
+    "COPIED_TO_CLIPBOARD": "Copied to clipboard",
+    "LAYOUT_SETTINGS": "Layout Settings"
+  },
+  "INSTANCE_OVERVIEW": {
+    "REMOVE_ITEMS": "Remove {{value}} items",
+    "REMOVE_ONE": "This action will remove {{value}} permanently",
+    "REMOVE_ITEMS_WARNING": "This action will remove all of the following documents:",
+    "NO_ITEMS": "No {{value}} yet.",
+    "LOAD_MORE": "More...",
+    "APPLY": "Apply",
+    "UPDATE_ORDER": "Update Order",
+    "TABLE": {
+      "COLUMNS": "Columns"
+    }
+  },
+  "INSTANCE_SINGLE": {
+    "EDITING": "Editing",
+    "COPY_OF": "Copy of"
+  },
+  "FIELDS": {
+    "IMAGE": {
+      "PREVIEW": "Image preview"
+    },
+    "FILE": {
+      "EMPTY": "No file selected"
+    },
+    "GALLERY": {
+      "ENTER_URL": "Enter URL",
+      "CHOOSE_FILES": "Choose files",
+      "SORT_IMAGES": "Sort images",
+      "IMAGE_URL": "Image URL",
+      "ADD_IMAGE": "Add image",
+      "UPLOAD_ERROR": "Error on uploading image."
+    },
+    "WYSIWYG": {
+      "EMBED_YOUTUBE": "Embed YouTube",
+      "VIDEO_ID": "Video ID",
+      "FULL_WIDTH": "Full Width",
+      "SHOW_PLAYER_CONTROLS": "Show Player Controls",
+      "PRIVACY_ENHANCED_MODE": "Privacy Enhanced Mode",
+      "ALIGNMENT": "Alignment",
+      "LEFT": "Left",
+      "CENTER": "Center",
+      "RIGHT": "Right"
+    }
+  },
+  "IMPORT": {
+    "TYPE": "Type",
+    "DELIMITER": "Delimiter",
+    "PROBLEM_UPLOADING": "Problem uploading",
+    "SUCCESS_MESSAGE": "You have successfully uploaded {{value}} items",
+    "ERROR": "There was an error while importing data."
+  },
+  "EXPORT": {
+    "TITLE": "Export Options",
+    "USE_FILTERS": "Use filters",
+    "ROWS_TO_SKIP": "Rows to skip",
+    "ADJUST_COLUMNS": "Adjust columns",
+    "LIMIT": "Limit",
+    "ERROR": "Unknown export error"
+  },
+  "CONFIRMATION": {
+    "TITLE": "Are you sure?"
+  },
+  "SETTINGS": {
+    "LATEST_RELEASE": "Latest release",
+    "MEMBERS": "Members",
+    "EXISTS": "Exists",
+    "ROLE": "Role",
+    "PROVIDER": "Provider",
+    "ADD_MEMBERS": "Add members",
+    "PASSWORD_INSTRUCTIONS": "A user will only be automatically created if a password is provided",
+    "PASSWORD_RULES": "Must be at least 6 characters",
+    "LANGUAGE": "Language"
+  },
+  "PROFILE": {
+    "TITLE": "Profile",
+    "INFORMATION": "Information",
+    "SECURITY": "Security",
+    "CHANGE_PASSWORD": "Change Password",
+    "CHANGE_PASSWORD_DESCRIPTION": "You don't have password authentication on this account. However, you can still use this form and an additional password authentication will be attached to your account.",
+    "NEW_PASSWORD": "New Password",
+    "REPEAT_PASSWORD": "Repeat Password",
+    "CHANGE_EMAIL": "Change Email",
+    "REMOVE_MFA_TRIGGER": "Remove MFA",
+    "CONNECT_MFA_TRIGGER": "Connect MFA",
+    "REMOVE_PASSWORD_AUTHENTICATION": "Remove Password Authentication",
+    "REMOVE_GOOGLE_AUTHENTICATION": "Remove Google Authentication",
+    "REMOVE_ACCOUNT": "Remove Account",
+    "OTHER": "Other",
+    "NAME": "Name",
+    "IMAGE": "Profile Image",
+    "CONNECT_MFA": "An email with the verification link has been sent to your account.",
+    "REMOVE_MFA": "Your MFA connection has been removed successfully."
+  },
+  "USERS": {
+    "ADD": "Add User",
+    "ROLE": "Role",
+    "PASSWORD_INSTRUCTIONS": "A user will only be automatically created if a password is provided",
+    "PASSWORD_RULES": "Must be at least 6 characters"
+  },
+  "ELEMENTS": {
+    "CHANGE_PASSWORD": {
+      "TITLE": "Change Password",
+      "DIALOG_TITLE": "Change Users Password"
+    },
+    "USER_STATUS": {
+      "LOADING": "Loading Status..."
+    },
+    "TRIGGER_PASSWORD_RESET": {
+      "TITLE": "Send password reset email"
+    },
+    "CHANGE_EMAIL": {
+      "TITLE": "Change Email",
+      "DIALOG_TITLE": "Change Users Email"
+    }
+  },
+  "NOTES": {
+    "TITLE": "Notes",
+    "LABEL": "Note"
+  },
+  "ERRORS": {
+    "DASHBOARD_ACCESS": "You don't have access to the dashboard."
+  }
+}

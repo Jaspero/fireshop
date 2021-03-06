@@ -1,0 +1,41 @@
+<button mat-flat-button (click)="open()">{{'GENERAL.ADD' | transloco}} User</button>
+
+<ng-template #addDialog>
+  <h4 mat-dialog-title>{{'USERS.ADD' | transloco}}</h4>
+
+  <form [formGroup]="form" autocomplete="off">
+    <mat-dialog-content>
+      <mat-form-field class="w-full">
+        <mat-label>{{'GENERAL.EMAIL' | transloco}}</mat-label>
+        <input type="email" formControlName="email" matInput>
+      </mat-form-field>
+
+      <mat-form-field class="w-full">
+        <mat-label>{{'GENERAL.PASSWORD' | transloco}}</mat-label>
+        <input [type]="type" formControlName="password" autocomplete="new-password" name="pwd" matInput>
+        <div class="flex" matSuffix>
+          <button type="button" tabindex="-1" mat-icon-button (click)="toggleType()">
+            <mat-icon>{{type === 'password' ? 'visibility' : 'visibility_off'}}</mat-icon>
+          </button>
+          &nbsp;
+          <button type="button" tabindex="-1" mat-icon-button matTooltip="Generate Random Password" (click)="generateRandomPassword()">
+            <mat-icon>cached</mat-icon>
+          </button>
+        </div>
+        <mat-hint>{{'USERS.PASSWORD_INSTRUCTIONS' | transloco}}</mat-hint>
+        <mat-error>{{'USERS.PASSWORD_RULES' | transloco}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="w-full m-t-m">
+        <mat-label>{{'USERS.ROLE' | transloco}}</mat-label>
+        <mat-select formControlName="role">
+          <mat-option *ngFor="let role of roles$ | async" [value]="role.id">{{role.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="jc-end">
+      <button type="submit" mat-flat-button color="primary" [disabled]="form.invalid" [jpLoadClick]="add()">{{'GENERAL.ADD' | transloco}}</button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>

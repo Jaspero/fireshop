@@ -1,0 +1,249 @@
+<ng-template #columnLayout let-column="column" let-row="row" let-index="index">
+  <ng-container *ngIf="row[index]">
+    <ng-template [cdkPortalOutlet]="row[index].value"></ng-template>
+
+    <ng-container *ngFor="let nested of (column.nestedColumns || []); index as nestedIndex;">
+      <ng-container *ngTemplateOutlet="columnLayout; context: {column: nested, row: row[index].nested, index: nestedIndex}"></ng-container>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #simpleColumn let-value="value">
+  <div class="column-inner" [innerHTML]="value"></div>
+</ng-template>
+
+<ng-template #populateColumn let-value="value">
+  <div class="column-inner" [innerHTML]="value | async"></div>
+</ng-template>
+
+<ng-template #observableColumn let-value="value">
+  <div class="column-inner" [innerHTML]="value | async"></div>
+</ng-template>
+
+<ng-template #subHeaderTemplate>
+  <div class="p-t-s p-l-s">
+    <jms-filter-tags [items$]="ioc.filterChange$" [search]="ioc.searchControl"></jms-filter-tags>
+  </div>
+</ng-template>
+
+<ng-template #columnOrganization>
+  <h4 mat-dialog-title>{{'INSTANCE_OVERVIEW.TABLE.COLUMNS' | transloco}}</h4>
+
+  <form>
+    <mat-dialog-content>
+      <jms-column-organization #jco [tableColumns]="data.originalColumns"></jms-column-organization>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="jc-end">
+      <button type="submit" mat-flat-button color="primary" (click)="updateColumns(jco)">
+        {{'GENERAL.SAVE' | transloco}}
+      </button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>
+
+<section class="grid" *ngIf="data">
+  <div class="col-12">
+    <mat-card>
+      <mat-card-content class="mat-card-content-inset">
+        <mat-toolbar class="b-b">
+          <ng-container *ngIf="!data.hideCheckbox">
+            <ng-container *ngIf="ioc.allChecked$ | async as ac">
+              <mat-checkbox
+                (change)="$event ? ioc.masterToggle() : null"
+                [checked]="ioc.selection.hasValue() && ac.checked"
+                [indeterminate]="ioc.selection.hasValue() && !ac.checked"
+                color="primary"
+                [matTooltip]="'GENERAL.SELECT' | transloco">
+              </mat-checkbox>&nbsp;&nbsp;&nbsp;
+            </ng-container>
+          </ng-container>
+          <button
+            mat-icon-button
+            [matTooltip]="'INSTANCE_OVERVIEW.REMOVE_ITEMS' | transloco:{value: ioc.selection.selected.length} "
+            *ngIf="ioc.selection.hasValue()"
+            (click)="ioc.deleteSelection(data.moduleId)">
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+
+          <div class="flex-1"></div>
+
+          <ng-container *ngIf="!data.hideExport">
+            <span class="hide-xs">
+              <button mat-button (click)="ioc.export(data.originalColumns)">
+                <mat-icon>vertical_align_top</mat-icon>
+                <span>{{'GENERAL.EXPORT' | transloco}}</span>
+              </button>
+            </span>
+            <span class="show-xs">
+              <button mat-icon-button (click)="ioc.export(data.originalColumns)" [matTooltip]="'GENERAL.EXPORT' | transloco">
+                <mat-icon>vertical_align_top</mat-icon>
+              </button>
+            </span>
+          </ng-container>
+
+          <jms-import
+            *ngIf="!data.hideImport"
+            [collection]="data.moduleId"
+            [importModule]="data.importModule"
+            [schema]="data.schema">
+          </jms-import>
+
+          <ng-container *ngIf="data.filterModule && !data.filterModule.hidden">
+            <span class="hide-xs">
+              <button mat-button (click)="ioc.openFilterDialog(data.filterModule)">
+                <mat-icon>vertical_split</mat-icon>
+                <span>{{'GENERAL.FILTER' | transloco}}</span>
+              </button>
+            </span>
+            <span class="show-xs">
+              <button mat-icon-button (click)="ioc.openFilterDialog(data.filterModule)" [matTooltip]="'GENERAL.FILTER' | transloco">
+                <mat-icon>vertical_split</mat-icon>
+              </button>
+            </span>
+          </ng-container>
+
+          <ng-container *ngIf="data.sortModule">
+            <span class="hide-xs">
+              <button mat-button (click)="ioc.openSortDialog(data.moduleId, data.name, data.sortModule)">
+                <mat-icon>vertical_split</mat-icon>
+                <span>{{'GENERAL.SORT' | transloco}}</span>
+              </button>
+            </span>
+            <span class="show-xs">
+              <button mat-icon-button (click)="ioc.openSortDialog(data.moduleId, data.name, data.sortModule)" [matTooltip]="'GENERAL.SORT' | transloco">
+                <mat-icon>vertical_split</mat-icon>
+              </button>
+            </span>
+          </ng-container>
+
+          <span class="hide-xs" *ngIf="data.originalColumns">
+            <button mat-button (click)="openColumnOrganization()">
+              <mat-icon>view_column</mat-icon>
+              <span>{{'INSTANCE_OVERVIEW.TABLE.COLUMNS' | transloco}}</span>
+            </button>
+          </span>
+
+          <div *ngIf="data.searchModule" class="m-l-s hide-xs">
+            <jms-search-input [formControl]="ioc.searchControl"></jms-search-input>
+          </div>
+        </mat-toolbar>
+
+        <div class="table-wrapper">
+          <table
+            class="jms-instance-overview-table"
+            mat-table
+            matSort
+            matSortDisableClear
+            [trackBy]="ioc.trackById"
+            [dataSource]="items$ | async"
+            [matSortActive]="data.sort?.active"
+            [matSortDirection]="data.sort?.direction">
+            <ng-container *ngIf="!data.hideCheckbox">
+              <ng-container matColumnDef="check" sticky>
+                <th class="cta-column" mat-header-cell *matHeaderCellDef></th>
+                <td class="cta-column" mat-cell *matCellDef="let row" [attr.data-label]="'GENERAL.SELECT' | transloco">
+                  <mat-checkbox
+                    (click)="$event.stopPropagation()"
+                    (change)="$event ? ioc.selection.toggle(row.id) : null"
+                    [checked]="ioc.selection.isSelected(row.id)"
+                    color="primary">
+                  </mat-checkbox>
+                </td>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngFor="let column of data.tableColumns; index as index" [matColumnDef]="data.displayColumns[index + (data.hideCheckbox ? 0 : 1)]">
+
+              <ng-container *ngIf="column.sortable; else notSortable">
+                <th mat-header-cell *matHeaderCellDef [mat-sort-header]='column.key'>
+                  {{column.label | transloco}}
+                </th>
+              </ng-container>
+
+              <ng-template #notSortable>
+                <th mat-header-cell *matHeaderCellDef>
+                  {{column.label | transloco}}
+                </th>
+              </ng-template>
+
+              <ng-container *ngIf="column.tooltip; else noTooltip">
+                <td mat-cell *matCellDef="let row;" [attr.data-label]="column.label" matTooltipPosition="above" [matTooltip]="column.tooltipFunction ? column.tooltip(row.data) : column.tooltip">
+                  <ng-container *ngTemplateOutlet="columnLayout; context: {row: row.parsed, column: column, index: index}"></ng-container>
+                </td>
+              </ng-container>
+
+              <ng-template #noTooltip>
+                <td mat-cell *matCellDef="let row;" [attr.data-label]="column.label">
+                  <ng-container *ngTemplateOutlet="columnLayout; context: {row: row.parsed, column: column, index: index}"></ng-container>
+                </td>
+              </ng-template>
+            </ng-container>
+
+            <ng-container *ngIf="!data.hideEdit || !data.hideDelete" matColumnDef="actions" stickyEnd>
+              <th class="cta-column-last" mat-header-cell *matHeaderCellDef></th>
+              <td class="cta-column-last" mat-cell *matCellDef="let element" [attr.data-label]="'GENERAL.ACTIONS' | transloco">
+                <button mat-icon-button [matMenuTriggerFor]="menu" [attr.aria-label]="'GENERAL.ACTIONS' | transloco" [matTooltip]="'GENERAL.ACTIONS' | transloco">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <ng-template matMenuContent>
+                    <ng-container *ngIf="data.actions && data.actions.length">
+                      <ng-container *ngFor="let action of data.actions">
+                        <div mat-menu-item *ngIf="!action.critera || action.critera(element)" [innerHTML]="action.value(element) | jpSanitize"></div>
+                      </ng-container>
+
+                      <hr>
+                    </ng-container>
+
+                    <a *ngIf="!data.hideEdit" mat-menu-item routerLink="/m/{{data.moduleId}}/single/{{element.id}}">
+                      <mat-icon>edit</mat-icon>
+                      <span>{{'GENERAL.EDIT' | transloco}}</span>
+                    </a>
+                    <button *ngIf="!data.hideDelete" mat-menu-item [fDisable]="data.authorization" (click)="ioc.deleteOne(data.moduleId, element)">
+                      <mat-icon>delete_forever</mat-icon>
+                      <span>{{'GENERAL.DELETE' | transloco}}</span>
+                    </button>
+                  </ng-template>
+                </mat-menu>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="data.displayColumns; sticky: data.stickyHeader"></tr>
+            <tr mat-row *matRowDef="let row; columns: data.displayColumns"></tr>
+          </table>
+        </div>
+
+        <ng-container *ngIf="ioc.emptyState$ | async; else hasContent;">
+          <mat-toolbar class="jc-center" *ngIf="!data.hideAdd">
+            <p class="m-r-s">{{'INSTANCE_OVERVIEW.NO_ITEMS' | transloco:{value: data.name} }}</p>
+            <a mat-button color="primary" routerLink="/m/{{data.moduleId}}/single/new">
+              {{'GENERAL.ADD' | transloco}} {{data.name}}
+            </a>
+          </mat-toolbar>
+        </ng-container>
+
+        <ng-template #hasContent>
+          <mat-toolbar class="jc-between">
+            <button
+              mat-button
+              color="primary"
+              [disabled]="(ioc.hasMore$ | async) === false"
+              [class.loading]="ioc.loading$ | async"
+              (click)="ioc.loadMore$.next(true)">
+              {{'INSTANCE_OVERVIEW.LOAD_MORE' | transloco}}
+            </button>
+            <mat-form-field class="mat-form-field-no-hint">
+              <mat-label>{{'GENERAL.PAGE_SIZE' | transloco}}</mat-label>
+              <mat-select [formControl]="ioc.pageSize">
+                <mat-option *ngFor="let size of ioc.pageSizes" [value]="size">
+                  {{size}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-toolbar>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</section>

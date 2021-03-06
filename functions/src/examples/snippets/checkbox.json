@@ -1,0 +1,15 @@
+{
+  "definition": {
+    "field": "pointer",
+    "text": "Checkbox",
+    "title": "Insert a definition for a checkbox component",
+    "value": {
+      "component": {
+        "type": "checkbox"
+      }
+    }
+  },
+  "schema": {
+    "type": "boolean"
+  }
+}

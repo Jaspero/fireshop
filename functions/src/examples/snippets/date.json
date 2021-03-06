@@ -1,0 +1,22 @@
+{
+  "definition": {
+    "text": "Date",
+    "title": "Insert a definition for a date component",
+    "field": "pointer",
+    "value": {
+      "component": {
+        "type": "date",
+        "configuration": {
+          "startYear": 2019,
+          "startAt": 1572360045133,
+          "touchUi": true,
+          "startView": "month",
+          "format": "number"
+        }
+      }
+    }
+  },
+  "schema": {
+    "type": "string"
+  }
+}

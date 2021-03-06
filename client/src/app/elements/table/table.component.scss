@@ -1,0 +1,8 @@
+.table-wrapper {
+  overflow-x: auto;
+  /**
+   * Height of the screen minus the top
+   * navigation and the table header and footer
+   */
+  max-height: calc(100vh - 212px);
+}

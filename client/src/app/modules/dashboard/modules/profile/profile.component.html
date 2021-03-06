@@ -1,0 +1,24 @@
+<mat-toolbar role="heading" color="primary" class="sticky-header">
+  <span>{{'PROFILE.TITLE' | transloco}}</span>
+</mat-toolbar>
+
+<div class="grid">
+  <div class="col-4 col-s-12">
+    <mat-card>
+      <mat-list>
+        <mat-list-item>
+          <mat-icon matListIcon>account_box</mat-icon>
+          <a matLine routerLink="/profile/information" routerLinkActive="active">{{'PROFILE.INFORMATION' | transloco}}</a>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListIcon>admin_panel_settings</mat-icon>
+          <a matLine routerLink="/profile/security" routerLinkActive="active">{{'PROFILE.SECURITY' | transloco}}</a>
+        </mat-list-item>
+      </mat-list>
+    </mat-card>
+  </div>
+
+  <div class="col-8 col-s-12">
+    <router-outlet></router-outlet>
+  </div>
+</div>

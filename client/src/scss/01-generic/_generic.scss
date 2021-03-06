@@ -1,0 +1,40 @@
+/**
+ * Generic
+ *
+ * Style for generic & low-spec HTML elements.
+ *
+ *============================================================================*/
+
+
+
+/* HTML
+ *============================================================================*/
+
+html {
+  font-size: 14px;
+  line-height: 1.4;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+}
+
+
+
+/* Headings
+ *============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: 20px;
+  line-height: 1.25;
+  font-weight: 400;
+}
+
+
+
+/* Horizontal rule
+ *============================================================================*/
+
+hr {
+  border-top: 1px solid var(--tertiary);
+  border-right: none;
+  border-bottom: none;
+  border-left: none;
+}
