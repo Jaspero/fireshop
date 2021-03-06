@@ -9,7 +9,7 @@ const serviceAccount = require('./serviceAccountKey.json');
  */
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://jaspero-jms.firebaseio.com'
+  databaseURL: "https://jaspero-fireshop.firebaseio.com"
 });
 
 async function exec() {

@@ -4,7 +4,6 @@ export const SETTINGS_COLLECTION = {
     {
       id: 'user',
       roles: [
-
         /**
          * List all users that should be created initially.
          * Initially created users can only login through
@@ -13,11 +12,6 @@ export const SETTINGS_COLLECTION = {
          * add an account for him in Authentication in the
          * firebase dashboard.
          */
-        {
-          email: 'test@test.com',
-          role: 'user'
-        },
-
         {
           email: 'info@jaspero.co',
           role: 'admin'
@@ -33,6 +27,31 @@ export const SETTINGS_COLLECTION = {
             label: 'LAYOUT.DASHBOARD',
             type: 'link',
             value: '/dashboard'
+          },
+          {
+            children: [
+              {
+                icon: 'workspaces',
+                label: 'LAYOUT.PRODUCTS',
+                type: 'link',
+                value: '/m/products/overview'
+              },
+              {
+                icon: 'style',
+                label: 'LAYOUT.CATEGORIES',
+                type: 'link',
+                value: '/m/categories/overview'
+              },
+              {
+                icon: 'games',
+                label: 'LAYOUT.SUB_CATEGORIES',
+                type: 'link',
+                value: '/m/sub-categories/overview'
+              }
+            ],
+            icon: 'inventory_2',
+            label: 'LAYOUT.INVENTORY',
+            type: 'expandable'
           },
           {
             children: [
