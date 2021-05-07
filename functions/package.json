@@ -27,7 +27,7 @@
     "express": "4.17.1",
     "firebase-admin": "8.4.0",
     "firebase-functions": "3.2.0",
-    "handlebars": "^4.7.2",
+    "handlebars": "^4.7.7",
     "json2csv": "4.5.2",
     "nanoid": "2.0.3",
     "reflect-metadata": "0.1.13",
