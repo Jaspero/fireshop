@@ -35,7 +35,7 @@
     "sharp": "0.23.0",
     "simple-oauth2": "2.2.1",
     "stripe": "7.4.0",
-    "xlsx": "0.14.4"
+    "xlsx": "0.17.0"
   },
   "devDependencies": {
     "@types/ajv": "1.0.0",
