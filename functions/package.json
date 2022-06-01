@@ -32,7 +32,7 @@
     "nanoid": "2.0.3",
     "reflect-metadata": "0.1.13",
     "rxjs": "6.5.2",
-    "sharp": "0.23.0",
+    "sharp": "0.30.5",
     "simple-oauth2": "2.2.1",
     "stripe": "7.4.0",
     "xlsx": "0.17.0"
