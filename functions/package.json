@@ -29,7 +29,7 @@
     "firebase-functions": "3.2.0",
     "handlebars": "^4.7.2",
     "json2csv": "4.5.2",
-    "nanoid": "2.0.3",
+    "nanoid": "3.1.31",
     "reflect-metadata": "0.1.13",
     "rxjs": "6.5.2",
     "sharp": "0.23.0",
